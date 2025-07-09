@@ -110,8 +110,6 @@ class MonitoringDataExportViewModel(
         val query = MonitoringDataQuery(
             beginTime = startTime,
             endTime = endTime,
-            currentPage = 1,
-            pageSize = 10, // 每页10条数据
             apiKey = apiKey,
             msgId = UUID.randomUUID().toString()
         )

@@ -12,8 +12,6 @@ import kotlinx.parcelize.Parcelize
 data class MonitoringDataQuery(
     val beginTime: String,      // 格式: yyyyMMddHHmmss
     val endTime: String,        // 格式: yyyyMMddHHmmss
-    val currentPage: Int = 1,
-    val pageSize: Int = 20,
     val apiKey: String,
     val msgId: String
 ) : Parcelable
@@ -24,12 +22,10 @@ data class MonitoringDataQuery(
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class MonitoringDataResponse(
-    val totalCount: Int = 0,
-    val totalPage: Int = 0,
-    val pageSize: Int = 0,
     val currentPageData: List<MonitoringDataItem>,
     val result: Boolean,         //
     val reason: String? = null, // 失败原因
+    val readEnd: Boolean = false // 是否已读取完毕
 ) : Parcelable
 
 /**
@@ -48,11 +44,9 @@ data class MonitoringDataItem(
 sealed class TransferState {
     object Idle : TransferState()
     data class Transferring(
-        val currentPage: Int,
-        val totalPage: Int,
         val progress: Float,
-        val speed: String,          // 传输速度
-        val remainingTime: String   // 剩余时间
+        val speed: String,                  // 传输速度
+        val transferredDataSize: String     // 已传输数据大小
     ) : TransferState()
 
     data class Success(val totalCount: Int) : TransferState()

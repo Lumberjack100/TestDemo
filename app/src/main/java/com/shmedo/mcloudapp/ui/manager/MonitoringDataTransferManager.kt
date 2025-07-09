@@ -1,13 +1,11 @@
 package com.shmedo.mcloudapp.ui.manager
 
-import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.model.MonitoringDataItem
 import com.shmedo.core.model.MonitoringDataQuery
 import com.shmedo.core.model.MonitoringDataResponse
 import com.shmedo.core.model.TransferState
 import com.shmedo.lib.ble.communicate.service.MedoBleRepository
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
@@ -26,6 +24,8 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import org.json.JSONObject
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -50,6 +50,9 @@ class MonitoringDataTransferManager(
     private var transferJob: Job? = null
     private var startTime = 0L
     private var totalBytesTransferred = 0L
+    
+    // 动态更新的begin参数
+    private var currentBeginTime: String = ""
 
     // 重试
     private val maxRetryCount = 2
@@ -72,6 +75,7 @@ class MonitoringDataTransferManager(
             isTransferring.set(true)
             startTime = System.currentTimeMillis()
             totalBytesTransferred = 0L
+            currentBeginTime = query.beginTime // 初始化begin参数
 
             try {
                 _transferState.value = TransferState.Idle
@@ -100,33 +104,42 @@ class MonitoringDataTransferManager(
         query: MonitoringDataQuery,
         onPageReceived: suspend (List<MonitoringDataItem>) -> Unit
     ) {
-        var currentPage = 1
-        var totalPage = 1
         var totalCount = 0
+        var hasMoreData = true
 
-        while (currentPage <= totalPage && coroutineContext.isActive) {
-            val pageQuery = query.copy(currentPage = currentPage)
-
+        while (hasMoreData && coroutineContext.isActive) {
             var retryCount = 0
             var success = false
 
             while (retryCount < maxRetryCount && !success && coroutineContext.isActive) {
                 try {
-                    val response = queryPage(pageQuery)
+                    // 使用当前的begin时间构建查询
+                    val currentQuery = query.copy(beginTime = currentBeginTime)
+                    val response = queryPage(currentQuery)
 
                     if (response.result) {
-                        // 更新总页数和总条数
-                        totalPage = response.totalPage
-                        totalCount = response.totalCount
+                        // 更新总条数
+                        totalCount += response.currentPageData.size
 
                         // 保存当前页数据
                         onPageReceived(response.currentPageData)
 
                         // 更新传输状态
-                        updateTransferProgress(currentPage, totalPage, response)
+                        updateTransferProgress(response)
+
+                        // 检查是否已读取完毕
+                        if (response.readEnd) {
+                            Timber.d("服务器返回 readend=true，数据传输完成")
+                            hasMoreData = false
+                        } else if (response.currentPageData.isNotEmpty()) {
+                            // 更新begin时间为当前批次数据的最大时间戳
+                            updateBeginTime(response.currentPageData)
+                        } else {
+                            // 没有数据且没有readEnd标志，也停止传输
+                            hasMoreData = false
+                        }
 
                         success = true
-                        currentPage++
                     } else {
                         throw Exception(response.reason ?: "查询失败")
                     }
@@ -136,7 +149,7 @@ class MonitoringDataTransferManager(
                     if (retryCount >= maxRetryCount) {
                         throw e
                     }
-                    Timber.w("查询第${currentPage}页失败，${retryCount}秒后重试...")
+                    Timber.w("查询数据失败，${retryCount}秒后重试...")
                     delay(retryDelayMs * retryCount)
                 }
             }
@@ -144,6 +157,49 @@ class MonitoringDataTransferManager(
 
         // 传输完成
         _transferState.value = TransferState.Success(totalCount)
+    }
+
+    /**
+     * 更新begin时间为数据中的最大时间戳
+     */
+    private fun updateBeginTime(dataList: List<MonitoringDataItem>) {
+        try {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            val targetFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault())
+            
+            var maxTime = 0L
+            
+            for (item in dataList) {
+                try {
+                    // 解析JSON格式的传感器数据
+                    val jsonObject = JSONObject(item.content)
+                    val keys = jsonObject.keys()
+                    
+                    while (keys.hasNext()) {
+                        val sensorKey = keys.next()
+                        val sensorData = jsonObject.getJSONObject(sensorKey)
+                        val timeKeys = sensorData.keys()
+                        
+                        while (timeKeys.hasNext()) {
+                            val timeStr = timeKeys.next()
+                            val time = dateFormat.parse(timeStr)?.time ?: 0
+                            if (time > maxTime) {
+                                maxTime = time
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e, "解析数据时间失败: ${item.content}")
+                }
+            }
+            
+            if (maxTime > 0) {
+                currentBeginTime = targetFormat.format(Date(maxTime))
+                Timber.d("更新begin时间为: $currentBeginTime")
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "更新begin时间失败")
+        }
     }
 
     /**
@@ -168,21 +224,15 @@ class MonitoringDataTransferManager(
      * 构建查询命令
      */
     private fun buildQueryCommand(query: MonitoringDataQuery): String {
-//        return IOTCommandUtil.getCommand(
-//            IOTCommandType.MD_GET_DEVICE_SENSOR_HISTORY_DATA,
-//            buildString {
-//                append("begin=").append(query.beginTime)
-//                append("&end=").append(query.endTime)
-//                append("&currentPage=").append(query.currentPage)
-//                append("&apikey=").append(query.apiKey.ifEmpty { "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9" })
-//                append("&msgid=").append(query.msgId)
-//            }
-//        )
-
-        return IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS,buildString {
-            append("apikey=").append(query.apiKey.ifEmpty { "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9" })
-            append("&msgid=").append(query.msgId)
-        })
+        return IOTCommandUtil.getCommand(
+            IOTCommandType.MD_GET_DEVICE_SENSOR_HISTORY_DATA,
+            buildString {
+                append("begin=").append(query.beginTime)
+                append("&end=").append(query.endTime)
+                append("&apikey=").append(query.apiKey.ifEmpty { "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9" })
+                append("&msgid=").append(query.msgId)
+            }
+        )
     }
 
     /**
@@ -220,8 +270,109 @@ class MonitoringDataTransferManager(
      * 解析响应数据
      */
     private fun parseResponse(response: String): MonitoringDataResponse {
-        // TODO: 当设备支持实际指令后，替换为真实的解析逻辑
+//        return try {
+//            parseRealResponse(response)
+//        } catch (e: Exception) {
+//            Timber.e(e, "解析真实响应失败，使用模拟数据")
+//            generateMockResponse()
+//        }
+
         return generateMockResponse()
+    }
+
+    /**
+     * 解析真实响应数据
+     */
+    private fun parseRealResponse(response: String): MonitoringDataResponse {
+//        val result = iotParseManager.parse<Map<String, String>>(
+//            response,
+//            IOTCommandType.MD_GET_DEVICE_SENSOR_HISTORY_DATA
+//        )
+
+        // 解析指令响应格式: $cmd=md_getsensordata&datastreams=[...]&apikey=...&msgid=...
+        if (!response.contains("cmd=md_getsensordata")) {
+            throw Exception("非监测数据查询响应")
+        }
+
+        // 检查是否成功
+        if (response.contains("result=fail")) {
+            val reason = extractParameter(response, "reason") ?: "未知错误"
+            return MonitoringDataResponse(
+                currentPageData = emptyList(),
+                result = false,
+                reason = reason,
+                readEnd = false
+            )
+        }
+
+        // 检查是否已读取完毕
+        val readEnd = extractParameter(response, "readend")?.equals("true", ignoreCase = true) ?: false
+        
+        // 提取datastreams参数
+        val datastreamsStr = extractParameter(response, "datastreams")
+        if (datastreamsStr.isNullOrEmpty()) {
+            return MonitoringDataResponse(
+                currentPageData = emptyList(),
+                result = true,
+                reason = if (readEnd) "数据读取完毕" else "无数据",
+                readEnd = readEnd
+            )
+        }
+
+        // 解析datastreams JSON数组
+        val dataList = parseDataStreams(datastreamsStr)
+
+        return MonitoringDataResponse(
+            currentPageData = dataList,
+            result = true,
+            reason = if (readEnd) "数据读取完毕" else "数据获取成功",
+            readEnd = readEnd
+        )
+    }
+
+    /**
+     * 提取命令参数
+     */
+    private fun extractParameter(response: String, paramName: String): String? {
+        val pattern = "$paramName=([^&]+)".toRegex()
+        return pattern.find(response)?.groupValues?.get(1)
+    }
+
+    /**
+     * 解析datastreams JSON数组
+     */
+    private fun parseDataStreams(datastreamsStr: String): List<MonitoringDataItem> {
+        val dataList = mutableListOf<MonitoringDataItem>()
+        
+        try {
+            val jsonArray = JSONArray(datastreamsStr)
+            for (i in 0 until jsonArray.length()) {
+                val jsonObject = jsonArray.getJSONObject(i)
+                val keys = jsonObject.keys()
+                
+                while (keys.hasNext()) {
+                    val sensorKey = keys.next()
+                    val sensorData = jsonObject.getJSONObject(sensorKey)
+                    val timeKeys = sensorData.keys()
+                    
+                    while (timeKeys.hasNext()) {
+                        val timeStr = timeKeys.next()
+                        val dataItem = MonitoringDataItem(
+                            timeStr = timeStr,
+                            content = "{\"$sensorKey\":{\"$timeStr\":\"${sensorData.getString(timeStr)}\"}}"
+                        )
+                        dataList.add(dataItem)
+                    }
+                }
+            }
+            
+            // 按时间排序
+            dataList.sortBy { it.timeStr }
+        } catch (e: Exception) {
+            Timber.e(e, "解析datastreams失败: $datastreamsStr")
+        }
+        
+        return dataList
     }
 
     /**
@@ -246,87 +397,49 @@ class MonitoringDataTransferManager(
         )
 
         return MonitoringDataResponse(
-            totalCount = 5000,
-            totalPage = 5000,
-            pageSize = 1,
             currentPageData = listOf(mockDataItem),
             result = true,
-            reason = "模拟数据返回成功"
+            reason = "模拟数据返回成功",
+            readEnd = false // 模拟数据默认不结束，可以根据需要调整
         )
-    }
-
-    /**
-     * 生成 真实响应数据
-     */
-    private fun generateRealResponse(response: String): MonitoringDataResponse {
-        val result = iotParseManager.parse<Map<String, String>>(
-            response,
-            IOTCommandType.MD_GET_DEVICE_SENSOR_HISTORY_DATA
-        )
-        when (result) {
-            is IOTCommandResult.Failure -> {
-                throw Exception(result.message.ifEmpty { "查询失败" })
-            }
-
-            is IOTCommandResult.Success -> {
-                // 解析数据列表
-                val currentPageDataStr = result.data["currentPageData"] ?: "[]"
-                val dataList = parsePageData(currentPageDataStr)
-
-                return MonitoringDataResponse(
-                    totalCount = result.data["totalCount"]?.toIntOrNull() ?: 0,
-                    totalPage = result.data["totalPage"]?.toIntOrNull() ?: 0,
-                    pageSize = result.data["pageSize"]?.toIntOrNull() ?: 0,
-                    currentPageData = dataList,
-                    result = true,
-                    reason = result.data["reason"] ?: "",
-                )
-            }
-        }
-    }
-
-    /**
-     * 解析页面数据
-     */
-    private fun parsePageData(jsonStr: String): List<MonitoringDataItem> {
-        return try {
-            MoshiUtil.fromJson<List<MonitoringDataItem>>(jsonStr) ?: emptyList()
-        } catch (e: Exception) {
-            Timber.e(e, "解析页面数据失败: $jsonStr")
-            emptyList()
-        }
     }
 
     /**
      * 更新传输进度
      */
-    private fun updateTransferProgress(
-        currentPage: Int,
-        totalPage: Int,
-        response: MonitoringDataResponse
-    ) {
-        val progress = currentPage.toFloat() / totalPage
+    private fun updateTransferProgress(response: MonitoringDataResponse) {
         val elapsedTime = System.currentTimeMillis() - startTime
-        val bytesTransferred = response.currentPageData.sumOf { it.content.length }
+        val bytesTransferred = response.currentPageData.sumOf { it.content.length.toLong() }
         totalBytesTransferred += bytesTransferred
 
-        // 计算速度和剩余时间
+        // 计算传输速度
         val speed = if (elapsedTime > 0) {
             val bytesPerSecond = totalBytesTransferred * 1000 / elapsedTime
             formatSpeed(bytesPerSecond)
         } else "计算中..."
 
-        val remainingPages = totalPage - currentPage
-        val averageTimePerPage = if (currentPage > 0) elapsedTime / currentPage else 0
-        val remainingTime = formatTime(remainingPages * averageTimePerPage)
+        // 格式化已传输数据大小
+        val transferredDataSize = formatDataSize(totalBytesTransferred)
+
+        // 计算进度（这里使用一个简单的进度计算，实际可能需要更复杂的逻辑）
+        val progress = if (response.currentPageData.isNotEmpty()) 0.5f else 1.0f
 
         _transferState.value = TransferState.Transferring(
-            currentPage = currentPage,
-            totalPage = totalPage,
             progress = progress,
             speed = speed,
-            remainingTime = remainingTime
+            transferredDataSize = transferredDataSize
         )
+    }
+
+    /**
+     * 格式化数据大小
+     */
+    private fun formatDataSize(bytes: Long): String {
+        return when {
+            bytes < 1024 -> "$bytes B"
+            bytes < 1024 * 1024 -> "${bytes / 1024} KB"
+            else -> "${bytes / 1024 / 1024} MB"
+        }
     }
 
     /**
@@ -337,21 +450,6 @@ class MonitoringDataTransferManager(
             bytesPerSecond < 1024 -> "$bytesPerSecond B/s"
             bytesPerSecond < 1024 * 1024 -> "${bytesPerSecond / 1024} KB/s"
             else -> "${bytesPerSecond / 1024 / 1024} MB/s"
-        }
-    }
-
-    /**
-     * 格式化时间
-     */
-    private fun formatTime(milliseconds: Long): String {
-        val seconds = milliseconds / 1000
-        val minutes = seconds / 60
-        val hours = minutes / 60
-
-        return when {
-            hours > 0 -> "${hours}小时${minutes % 60}分钟"
-            minutes > 0 -> "${minutes}分钟${seconds % 60}秒"
-            else -> "${seconds}秒"
         }
     }
 

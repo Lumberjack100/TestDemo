@@ -148,6 +148,8 @@ class MonitoringDataExportFragment : BaseFragment() {
                 is TransferState.Idle -> {
                     binding.cardTransferProgress.visibility = View.GONE
                     binding.tvTransferStatus.text = "传输状态：未开始"
+                    // 重置已传输数据大小显示
+                    binding.tvTransferredDataSize.text = "已传输数据大小：0 B"
                 }
 
                 is TransferState.Transferring -> {
@@ -155,9 +157,8 @@ class MonitoringDataExportFragment : BaseFragment() {
                     binding.tvTransferStatus.text = "传输状态：传输中"
                     binding.progressTransfer.isIndeterminate = false
                     binding.progressTransfer.progress = (state.progress * 100).toInt()
-                    binding.tvProgressInfo.text = "${state.currentPage}/${state.totalPage} 页"
                     binding.tvTransferSpeed.text = state.speed
-                    binding.tvRemainingTime.text = "剩余时间：${state.remainingTime}"
+                    binding.tvTransferredDataSize.text = "已传输数据大小：${state.transferredDataSize}"
                 }
 
                 is TransferState.Success -> {
