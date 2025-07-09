@@ -8,7 +8,8 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileWriter
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 /**
  * Excel 导出工具类
@@ -38,7 +39,7 @@ object ExcelExporter {
                 writer.write("\uFEFF")
                 
                 // 写入标题行
-                writer.append("序号,设备编号,时间,传感器数据,备注\n")
+                writer.append("序号,设备编号,时间,数据内容,备注\n")
                 
                 // 写入数据
                 dataList.forEachIndexed { index, data ->

@@ -56,13 +56,13 @@
             app:cardElevation="2dp"
             app:layout_constraintTop_toBottomOf="@+id/tv_msg">
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <TextView
+               <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="选择时间范围"
@@ -70,7 +70,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
@@ -112,9 +112,9 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -128,13 +128,13 @@
             app:cardElevation="2dp"
             app:layout_constraintTop_toBottomOf="@id/card_time_selector">
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <TextView
+               <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="数据信息"
@@ -142,34 +142,37 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <TextView
+               <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_local_data_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="本地数据：0 条"
+                    android:text="@{stateVM.localDataCountText}"
                     android:textColor="@color/title_text_color_black_90"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:text="本地数据：0 条" />
 
-                <TextView
+               <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_transfer_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="传输状态：未开始"
+                    android:text="@{stateVM.transferStatusText}"
                     android:textColor="@color/title_text_color_black_90"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:text="传输状态：未开始" />
 
-                <TextView
+               <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_transferred_data_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="已传输数据大小：0 B"
+                    android:text="@{stateVM.transferredDataSizeText}"
                     android:textColor="@color/title_text_color_black_90"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:text="已传输数据大小：0 B" />
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -179,13 +182,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:visibility="gone"
+            android:visibility="@{stateVM.transferProgressVisibility}"
             app:cardCornerRadius="8dp"
             app:cardElevation="2dp"
             app:layout_constraintTop_toBottomOf="@id/card_data_info"
             tools:visibility="visible">
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -204,29 +207,31 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:progress="@{stateVM.progressPercentage}"
                     app:indicatorColor="@color/colorPrimary" />
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:orientation="horizontal">
 
-                    <TextView
+                   <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_transfer_speed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0 KB/s"
-                        android:textSize="12sp" />
+                        android:text="@{stateVM.transferSpeedText}"
+                        android:textSize="12sp"
+                        tools:text="0 KB/s" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </com.google.android.material.card.MaterialCardView>
 
         <!-- 操作按钮区域 -->
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -241,7 +246,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="开始传输" />
+                android:enabled="@{stateVM.canStartTransfer}"
+                android:text="@{stateVM.startTransferButtonText}"
+                tools:text="开始传输" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_export_excel"
@@ -251,9 +258,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
+                android:enabled="@{stateVM.canExportExcel}"
                 android:text="导出Excel" />
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

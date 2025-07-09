@@ -29,25 +29,25 @@ class MonitoringDataRepository(
                 sensorData = item.content
             )
         }
-        monitoringDataDao.insertAll(entities)
+        monitoringDataDao.batchInsert(entities)
     }
     
     /**
      * 获取设备的监测数据
      */
-    fun getMonitoringData(deviceSn: String): Flow<List<MonitoringDataEntity>> {
+    fun getDataByDevice(deviceSn: String): Flow<List<MonitoringDataEntity>> {
         return monitoringDataDao.getDataByDevice(deviceSn)
     }
     
     /**
      * 按时间范围查询数据
      */
-    suspend fun getDataByTimeRange(
+    suspend fun getDataByDeviceAndTimeRange(
         deviceSn: String,
         startTime: String,
         endTime: String
     ): List<MonitoringDataEntity> = withContext(Dispatchers.IO) {
-        monitoringDataDao.getDataByTimeRange(deviceSn, startTime, endTime)
+        monitoringDataDao.getDataByDeviceAndTimeRange(deviceSn, startTime, endTime)
     }
     
     /**

@@ -50,7 +50,7 @@ class MonitoringDataTransferManager(
     private var transferJob: Job? = null
     private var startTime = 0L
     private var totalBytesTransferred = 0L
-    
+
     // 动态更新的begin参数
     private var currentBeginTime: String = ""
 
@@ -149,8 +149,8 @@ class MonitoringDataTransferManager(
                     if (retryCount >= maxRetryCount) {
                         throw e
                     }
-                    Timber.w("查询数据失败，${retryCount}秒后重试...")
-                    delay(retryDelayMs * retryCount)
+                    Timber.w("查询数据失败，${retryDelayMs}秒后重试...")
+                    delay(retryDelayMs)
                 }
             }
         }
@@ -166,20 +166,20 @@ class MonitoringDataTransferManager(
         try {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             val targetFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault())
-            
+
             var maxTime = 0L
-            
+
             for (item in dataList) {
                 try {
                     // 解析JSON格式的传感器数据
                     val jsonObject = JSONObject(item.content)
                     val keys = jsonObject.keys()
-                    
+
                     while (keys.hasNext()) {
                         val sensorKey = keys.next()
                         val sensorData = jsonObject.getJSONObject(sensorKey)
                         val timeKeys = sensorData.keys()
-                        
+
                         while (timeKeys.hasNext()) {
                             val timeStr = timeKeys.next()
                             val time = dateFormat.parse(timeStr)?.time ?: 0
@@ -192,7 +192,7 @@ class MonitoringDataTransferManager(
                     Timber.e(e, "解析数据时间失败: ${item.content}")
                 }
             }
-            
+
             if (maxTime > 0) {
                 currentBeginTime = targetFormat.format(Date(maxTime))
                 Timber.d("更新begin时间为: $currentBeginTime")
@@ -241,7 +241,7 @@ class MonitoringDataTransferManager(
     private suspend fun waitForResponse(msgId: String): String {
         return suspendCancellableCoroutine { cont ->
             val timeoutJob = scope.launch {
-                delay(30000) // 30秒超时
+                delay(10000) // 10秒超时
                 if (cont.isActive) {
                     cont.resumeWithException(Exception("响应超时"))
                 }
@@ -270,25 +270,19 @@ class MonitoringDataTransferManager(
      * 解析响应数据
      */
     private fun parseResponse(response: String): MonitoringDataResponse {
-//        return try {
-//            parseRealResponse(response)
-//        } catch (e: Exception) {
-//            Timber.e(e, "解析真实响应失败，使用模拟数据")
-//            generateMockResponse()
-//        }
-
-        return generateMockResponse()
+        return try {
+            parseRealResponse(generateMockResponse())
+        } catch (e: Exception) {
+            Timber.e(e, "解析真实响应失败，使用模拟数据")
+            // 生成模拟响应字符串并解析
+            parseRealResponse(generateMockResponse())
+        }
     }
 
     /**
      * 解析真实响应数据
      */
     private fun parseRealResponse(response: String): MonitoringDataResponse {
-//        val result = iotParseManager.parse<Map<String, String>>(
-//            response,
-//            IOTCommandType.MD_GET_DEVICE_SENSOR_HISTORY_DATA
-//        )
-
         // 解析指令响应格式: $cmd=md_getsensordata&datastreams=[...]&apikey=...&msgid=...
         if (!response.contains("cmd=md_getsensordata")) {
             throw Exception("非监测数据查询响应")
@@ -306,8 +300,9 @@ class MonitoringDataTransferManager(
         }
 
         // 检查是否已读取完毕
-        val readEnd = extractParameter(response, "readend")?.equals("true", ignoreCase = true) ?: false
-        
+        val readEnd =
+            extractParameter(response, "readend")?.equals("true", ignoreCase = true) ?: false
+
         // 提取datastreams参数
         val datastreamsStr = extractParameter(response, "datastreams")
         if (datastreamsStr.isNullOrEmpty()) {
@@ -343,65 +338,81 @@ class MonitoringDataTransferManager(
      */
     private fun parseDataStreams(datastreamsStr: String): List<MonitoringDataItem> {
         val dataList = mutableListOf<MonitoringDataItem>()
-        
+
         try {
             val jsonArray = JSONArray(datastreamsStr)
             for (i in 0 until jsonArray.length()) {
                 val jsonObject = jsonArray.getJSONObject(i)
                 val keys = jsonObject.keys()
-                
+
                 while (keys.hasNext()) {
                     val sensorKey = keys.next()
                     val sensorData = jsonObject.getJSONObject(sensorKey)
                     val timeKeys = sensorData.keys()
-                    
+
                     while (timeKeys.hasNext()) {
                         val timeStr = timeKeys.next()
                         val dataItem = MonitoringDataItem(
                             timeStr = timeStr,
-                            content = "{\"$sensorKey\":{\"$timeStr\":\"${sensorData.getString(timeStr)}\"}}"
+                            content = "{\"$sensorKey\":{\"$timeStr\":\"${
+                                sensorData.getString(
+                                    timeStr
+                                )
+                            }\"}}"
                         )
                         dataList.add(dataItem)
                     }
                 }
             }
-            
+
             // 按时间排序
             dataList.sortBy { it.timeStr }
         } catch (e: Exception) {
             Timber.e(e, "解析datastreams失败: $datastreamsStr")
         }
-        
+
         return dataList
     }
 
     /**
      * 生成模拟响应数据
+     * 格式：$cmd=md_getsensordata&datastreams=[{"222_2":{"2025-07-01 07:55:25":"-2073.765,0.000"}},{"222_11":{"2025-07-01 07:55:25":"-1355.635,0.000"}},{"222_1":{"2025-07-01 08:05:21":"-2468.713,0.000"}},{"222_1":{"2025-07-01 08:15:17":"-2468.569,0.000"}}{"103_5":{"2025-07-06 23:00:00":"0.835,-0.009,0.540,57.106,0.509,-32.935"}}]&apikey=123456&msgid=123456
      */
-    private fun generateMockResponse(): MonitoringDataResponse {
+    private fun generateMockResponse(): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val currentTime = dateFormat.format(Date())
 
-        // 模拟传感器数据
-        val sensorNumber = "222_11"
-        val sensorTime = currentTime
-        val sensorData = "-1355.779,0.000"
+        val jsonArray = JSONArray()
 
-        // 构造 content JSON 字符串
-        val contentJson = "{\"$sensorNumber\":{\"$sensorTime\":\"$sensorData\"}}"
+        // 生成10个传感器数据
+        for (i in 1..10) {
+            // 生成传感器编号：222_随机数
+            val sensorNumber = "222_${(1..7).random()}"
 
-        // 创建模拟的监测数据项
-        val mockDataItem = MonitoringDataItem(
-            timeStr = currentTime,
-            content = contentJson
-        )
+            // 生成3个浮点数的数据值
+            val value1 = String.format("%.3f", (-3000..3000).random().toDouble() + Math.random())
+            val value2 = String.format("%.3f", (-1000..1000).random().toDouble() + Math.random())
+            val value3 = String.format("%.3f", (-500..500).random().toDouble() + Math.random())
+            val dataValue = "$value1,$value2,$value3"
 
-        return MonitoringDataResponse(
-            currentPageData = listOf(mockDataItem),
-            result = true,
-            reason = "模拟数据返回成功",
-            readEnd = false // 模拟数据默认不结束，可以根据需要调整
-        )
+            // 构建传感器时间数据
+            val sensorTimeData = JSONObject()
+            sensorTimeData.put(currentTime, dataValue)
+
+            // 添加到datastreams
+            val sensorData = JSONObject()
+            sensorData.put(sensorNumber, sensorTimeData)
+            jsonArray.put(sensorData)
+        }
+
+        // 构建完整的响应字符串
+        return buildString {
+            append("\$cmd=md_getsensordata")
+            // append("&readend=true")
+            append("&datastreams=").append(jsonArray.toString())
+            append("&apikey=123456")
+            append("&msgid=123456")
+        }
     }
 
     /**

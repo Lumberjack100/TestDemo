@@ -1,6 +1,9 @@
 package com.shmedo.core.data.source.local.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.shmedo.core.data.source.local.entity.MonitoringDataEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -13,13 +16,13 @@ interface MonitoringDataDao {
     suspend fun insert(data: MonitoringDataEntity)
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(dataList: List<MonitoringDataEntity>)
+    suspend fun batchInsert(dataList: List<MonitoringDataEntity>)
     
     @Query("SELECT * FROM monitoring_data WHERE device_sn = :deviceSn ORDER BY time_str DESC")
     fun getDataByDevice(deviceSn: String): Flow<List<MonitoringDataEntity>>
     
     @Query("SELECT * FROM monitoring_data WHERE device_sn = :deviceSn AND time_str BETWEEN :startTime AND :endTime ORDER BY time_str DESC")
-    suspend fun getDataByTimeRange(deviceSn: String, startTime: String, endTime: String): List<MonitoringDataEntity>
+    suspend fun getDataByDeviceAndTimeRange(deviceSn: String, startTime: String, endTime: String): List<MonitoringDataEntity>
     
     @Query("DELETE FROM monitoring_data WHERE device_sn = :deviceSn")
     suspend fun deleteByDevice(deviceSn: String)
