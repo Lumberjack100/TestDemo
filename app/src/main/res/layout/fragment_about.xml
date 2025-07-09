@@ -57,6 +57,7 @@
             tools:text="米易通 v3.2.0" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:visibility="invisible"
             android:id="@+id/cl_agreements"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
