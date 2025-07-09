@@ -370,7 +370,6 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
-            swtoken = mStates.hydrologicalIdentification.get().hexStringToDecimalString(),
             baseflag = if (siteTypeList.indexOf(mStates.siteType.get()) == 0) IOTConstants.NULL_KEY else (siteTypeList.indexOf(
                 mStates.siteType.get()
             ) - 1).toString(),
@@ -395,6 +394,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//采集项名称GBK编码
             egbk = mStates.modelFieldUnit.get().stringToGBK16UByteString(),//采集项单位GBK编码
+            swtoken = mStates.hydrologicalIdentification.get().hexStringToDecimalString(),
             cmd = mStates.collectionInstructions.get(),
             ratio = mStates.ratio.get(),
             dataformat = (dataFormatList.indexOf(mStates.dataFormat.get())).toString(),
