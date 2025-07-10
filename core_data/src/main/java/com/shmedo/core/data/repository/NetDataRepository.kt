@@ -26,7 +26,7 @@ import rxhttp.wrapper.param.toAwaitResponse
 @SuppressLint("CheckResult")
 class NetDataRepository private constructor() {
 
-    //<editor-fold desc="孙建伟通用配置接口">
+    //<editor-fold desc="米易通远程配置管理系统 Api">
     /**
      * 获取App应用信息
      */
@@ -54,15 +54,18 @@ class NetDataRepository private constructor() {
             .toAwaitResponse<MR702PortSensorConfig>()
             .tryAwait(onCatch)
 
+    // </editor-fold>
+
+   //<editor-fold desc="孙建伟通用配置接口">
     /**
      * 查询设备远程调试连接地址信息
      */
-    suspend fun getRemoteDeviceLogin(
+    suspend fun getRemoteDebugDeviceServerInfo(
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
     ): DeviceDebugAddress? =
         RxHttp.postJson("/DeviceLogin")
-            .setDomainIfAbsent(BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl)
+            .setDomainIfAbsent(BaseURL.AMS_CONFIG_ADDRESS.baseUrl)
             .addAll(jsonParam)
             .toAwaitResponse<DeviceDebugAddress>()
             .tryAwait(onCatch)

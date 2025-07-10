@@ -536,11 +536,11 @@ class DeviceRequestViewModel(
         jsonObjectRequest.put("deviceKey", deviceKey)
         jsonObjectRequest.put("reCreate", false)
 
-        return NetDataRepository.instance.getRemoteDeviceLogin(jsonObjectRequest.toString()) { error: Throwable ->
+        return NetDataRepository.instance.getRemoteDebugDeviceServerInfo(jsonObjectRequest.toString()) { error: Throwable ->
             handleError(
                 MutableResult<DataResult<Unit>>(),
                 error,
-                "${BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl}/Login"
+                "${BaseURL.AMS_CONFIG_ADDRESS.baseUrl}/DeviceLogin"
             )
             onCatch?.invoke(error)
         }

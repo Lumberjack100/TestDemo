@@ -9,6 +9,10 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
+import com.shmedo.mcloudapp.utils.DataFormatUtils
+import com.shmedo.mcloudapp.utils.PerformanceMonitor
+import com.shmedo.mcloudapp.utils.TransferErrorHandler
+import com.shmedo.mcloudapp.utils.TransferLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -36,7 +40,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 /**
- * 监测数据传输管理器
+ * 监测数据传输管理器 - 优化版本
  */
 class MonitoringDataTransferManager(
     private val bleRepository: MedoBleRepository,
@@ -50,16 +54,32 @@ class MonitoringDataTransferManager(
     private var transferJob: Job? = null
     private var startTime = 0L
     private var totalBytesTransferred = 0L
+    private var totalDataCount = 0
 
     // 动态更新的begin参数
     private var currentBeginTime: String = ""
+    private var currentDeviceSn: String = ""
 
-    // 重试
-    private val maxRetryCount = 2
-    private val retryDelayMs = 2000L
+    // 性能监控
+    private val performanceMonitor = PerformanceMonitor()
+    
+    // 错误处理配置
+    private val retryConfig = TransferErrorHandler.RetryConfig(
+        maxRetries = 3,
+        initialDelay = 1000L,
+        maxDelay = 5000L,
+        multiplier = 2.0
+    )
+
+    // 常量
+    private companion object {
+        const val BATCH_SIZE = 100
+        const val TIMEOUT_MS = 30000L
+        const val MAX_CONCURRENT_OPERATIONS = 1
+    }
 
     /**
-     * 开始传输监测数据
+     * 开始传输监测数据 - 优化版本
      */
     fun startTransfer(
         query: MonitoringDataQuery,
@@ -75,30 +95,92 @@ class MonitoringDataTransferManager(
             isTransferring.set(true)
             startTime = System.currentTimeMillis()
             totalBytesTransferred = 0L
-            currentBeginTime = query.beginTime // 初始化begin参数
+            totalDataCount = 0
+            currentBeginTime = query.beginTime
+            currentDeviceSn = extractDeviceSnFromQuery(query)
 
             try {
                 _transferState.value = TransferState.Idle
-
-                // 检查BLE连接
-                if (!bleRepository.isConnected()) {
-                    throw Exception("蓝牙未连接")
-                }
+                
+                // 开始性能监控
+                performanceMonitor.startMonitoring(currentDeviceSn)
+                
+                // 预检查
+                performPreTransferChecks()
+                
+                // 记录传输开始
+                TransferLogger.logTransferStart(query, currentDeviceSn)
+                TransferLogger.logSystemInfo()
+                TransferLogger.logBluetoothStatus(bleRepository.isConnected(), currentDeviceSn)
 
                 // 开始查询数据
-                queryDataWithRetry(query, onPageReceived)
+                performanceMonitor.measureExecutionTime("数据传输") {
+                    queryDataWithRetry(query, onPageReceived)
+                }
 
             } catch (e: Exception) {
-                Timber.e(e, "数据传输失败")
-                _transferState.value = TransferState.Error(e.message ?: "未知错误")
+                handleTransferError(e)
             } finally {
                 isTransferring.set(false)
+                performanceMonitor.stopMonitoring(currentDeviceSn)
             }
         }
     }
 
     /**
-     * 查询数据（带重试）
+     * 预检查
+     */
+    private suspend fun performPreTransferChecks() {
+        // 检查BLE连接
+        if (!bleRepository.isConnected()) {
+            throw Exception("蓝牙连接已断开")
+        }
+        
+        // 检查存储空间
+        checkStorageSpace()
+    }
+    
+    /**
+     * 检查存储空间
+     */
+    private fun checkStorageSpace() {
+        val freeSpace = android.os.Environment.getDataDirectory().freeSpace
+        val requiredSpace = 100 * 1024 * 1024L // 100MB
+        
+        if (freeSpace < requiredSpace) {
+            throw Exception("存储空间不足")
+        }
+    }
+    
+    /**
+     * 从查询中提取设备SN
+     */
+    private fun extractDeviceSnFromQuery(query: MonitoringDataQuery): String {
+        return query.apiKey.take(8) // 使用apiKey的前8位作为设备标识
+    }
+    
+    /**
+     * 处理传输错误
+     */
+    private fun handleTransferError(exception: Throwable) {
+        val transferError = TransferErrorHandler.mapExceptionToTransferError(exception)
+        val userMessage = TransferErrorHandler.getUserFriendlyErrorMessage(transferError)
+        
+        // 记录错误日志
+        val duration = if (startTime > 0) System.currentTimeMillis() - startTime else 0
+        TransferLogger.logTransferError(
+            error = userMessage,
+            deviceSn = currentDeviceSn,
+            duration = duration,
+            context = exception.stackTraceToString().take(500)
+        )
+        
+        performanceMonitor.recordTransferError(currentDeviceSn)
+        _transferState.value = TransferState.Error(userMessage)
+    }
+
+    /**
+     * 查询数据（带重试）- 优化版本
      */
     private suspend fun queryDataWithRetry(
         query: MonitoringDataQuery,
@@ -108,54 +190,65 @@ class MonitoringDataTransferManager(
         var hasMoreData = true
 
         while (hasMoreData && coroutineContext.isActive) {
-            var retryCount = 0
-            var success = false
-
-            while (retryCount < maxRetryCount && !success && coroutineContext.isActive) {
-                try {
-                    // 使用当前的begin时间构建查询
+            try {
+                // 使用错误处理工具执行查询
+                val response = TransferErrorHandler.executeWithRetry(retryConfig) {
                     val currentQuery = query.copy(beginTime = currentBeginTime)
-                    val response = queryPage(currentQuery)
-
-                    if (response.result) {
-                        // 更新总条数
-                        totalCount += response.currentPageData.size
-
-                        // 保存当前页数据
-                        onPageReceived(response.currentPageData)
-
-                        // 更新传输状态
-                        updateTransferProgress(response)
-
-                        // 检查是否已读取完毕
-                        if (response.readEnd) {
-                            Timber.d("服务器返回 readend=true，数据传输完成")
-                            hasMoreData = false
-                        } else if (response.currentPageData.isNotEmpty()) {
-                            // 更新begin时间为当前批次数据的最大时间戳
-                            updateBeginTime(response.currentPageData)
-                        } else {
-                            // 没有数据且没有readEnd标志，也停止传输
-                            hasMoreData = false
-                        }
-
-                        success = true
-                    } else {
-                        throw Exception(response.reason ?: "查询失败")
-                    }
-
-                } catch (e: Exception) {
-                    retryCount++
-                    if (retryCount >= maxRetryCount) {
-                        throw e
-                    }
-                    Timber.w("查询数据失败，${retryDelayMs}秒后重试...")
-                    delay(retryDelayMs)
+                    queryPage(currentQuery)
                 }
+
+                if (response.result) {
+                    // 更新总条数
+                    totalCount += response.currentPageData.size
+                    totalDataCount += response.currentPageData.size
+
+                    // 计算数据大小
+                    val dataSize = response.currentPageData.sumOf { it.content.length.toLong() }
+                    totalBytesTransferred += dataSize
+
+                    // 记录性能数据
+                    performanceMonitor.recordTransferData(currentDeviceSn, dataSize, response.currentPageData.size)
+                    
+                    // 监控内存使用
+                    performanceMonitor.monitorMemoryUsage()
+
+                    // 保存当前页数据
+                    onPageReceived(response.currentPageData)
+
+                    // 更新传输状态
+                    updateTransferProgress(response)
+
+                    // 检查是否已读取完毕
+                    if (response.readEnd) {
+                        Timber.tag("DataTransfer").i("服务器返回 readEnd=true，数据传输完成")
+                        hasMoreData = false
+                    } else if (response.currentPageData.isNotEmpty()) {
+                        // 更新begin时间为当前批次数据的最大时间戳
+                        updateBeginTime(response.currentPageData)
+                    } else {
+                        // 没有数据且没有readEnd标志，也停止传输
+                        hasMoreData = false
+                    }
+
+                } else {
+                    throw Exception(response.reason ?: "查询失败")
+                }
+
+            } catch (e: Exception) {
+                performanceMonitor.recordTransferError(currentDeviceSn)
+                throw e
             }
         }
 
         // 传输完成
+        val duration = System.currentTimeMillis() - startTime
+        TransferLogger.logTransferComplete(totalCount, currentDeviceSn, duration)
+        
+        // 记录性能指标
+        performanceMonitor.getTransferMetrics(currentDeviceSn)?.let { metrics ->
+            TransferLogger.logPerformanceMetrics(metrics)
+        }
+        
         _transferState.value = TransferState.Success(totalCount)
     }
 
@@ -420,49 +513,28 @@ class MonitoringDataTransferManager(
      */
     private fun updateTransferProgress(response: MonitoringDataResponse) {
         val elapsedTime = System.currentTimeMillis() - startTime
-        val bytesTransferred = response.currentPageData.sumOf { it.content.length.toLong() }
-        totalBytesTransferred += bytesTransferred
 
         // 计算传输速度
         val speed = if (elapsedTime > 0) {
             val bytesPerSecond = totalBytesTransferred * 1000 / elapsedTime
-            formatSpeed(bytesPerSecond)
+            DataFormatUtils.formatTransferSpeed(bytesPerSecond)
         } else "计算中..."
 
         // 格式化已传输数据大小
-        val transferredDataSize = formatDataSize(totalBytesTransferred)
+        val transferredDataSize = DataFormatUtils.formatDataSize(totalBytesTransferred)
 
-        // 计算进度（这里使用一个简单的进度计算，实际可能需要更复杂的逻辑）
-        val progress = if (response.currentPageData.isNotEmpty()) 0.5f else 1.0f
+        // 计算进度（无法确定总量时使用不确定进度）
+        val progress = 0f // 使用不确定进度
 
         _transferState.value = TransferState.Transferring(
             progress = progress,
             speed = speed,
-            transferredDataSize = transferredDataSize
+            transferredDataSize = transferredDataSize,
+            transferredDataCount = totalDataCount
         )
     }
 
-    /**
-     * 格式化数据大小
-     */
-    private fun formatDataSize(bytes: Long): String {
-        return when {
-            bytes < 1024 -> "$bytes B"
-            bytes < 1024 * 1024 -> "${bytes / 1024} KB"
-            else -> "${bytes / 1024 / 1024} MB"
-        }
-    }
 
-    /**
-     * 格式化速度
-     */
-    private fun formatSpeed(bytesPerSecond: Long): String {
-        return when {
-            bytesPerSecond < 1024 -> "$bytesPerSecond B/s"
-            bytesPerSecond < 1024 * 1024 -> "${bytesPerSecond / 1024} KB/s"
-            else -> "${bytesPerSecond / 1024 / 1024} MB/s"
-        }
-    }
 
     /**
      * 停止传输

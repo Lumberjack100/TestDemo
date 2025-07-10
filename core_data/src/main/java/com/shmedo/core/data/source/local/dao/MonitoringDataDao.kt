@@ -29,4 +29,7 @@ interface MonitoringDataDao {
     
     @Query("SELECT COUNT(*) FROM monitoring_data WHERE device_sn = :deviceSn")
     suspend fun getCountByDevice(deviceSn: String): Int
+    
+    @Query("DELETE FROM monitoring_data WHERE device_sn = :deviceSn AND time_str < :cutoffDate")
+    suspend fun deleteOldData(deviceSn: String, cutoffDate: String): Int
 } 

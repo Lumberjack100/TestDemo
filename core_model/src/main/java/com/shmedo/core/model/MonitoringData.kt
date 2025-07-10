@@ -46,7 +46,8 @@ sealed class TransferState {
     data class Transferring(
         val progress: Float,
         val speed: String,                  // 传输速度
-        val transferredDataSize: String     // 已传输数据大小
+        val transferredDataSize: String,    // 已传输数据大小
+        val transferredDataCount: Int       // 已传输数据条数
     ) : TransferState()
 
     data class Success(val totalCount: Int) : TransferState()

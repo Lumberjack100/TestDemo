@@ -13,6 +13,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.utils.AppContants
+import com.shmedo.core.model.TransferState
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -24,8 +25,10 @@ import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.MonitoringDataExportViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.utils.TransferLogger
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import java.io.File
 
 /**
  * @author：gonghe
@@ -183,6 +186,7 @@ class MonitoringDataExportFragment : BaseFragment() {
 
                 is MonitoringDataExportViewModel.UiState.Transferring -> {
                     showLoading("正在传输数据...")
+//                    showTransferGuide()
                 }
 
                 is MonitoringDataExportViewModel.UiState.TransferSuccess -> {
@@ -196,14 +200,7 @@ class MonitoringDataExportFragment : BaseFragment() {
 
                 is MonitoringDataExportViewModel.UiState.ExportSuccess -> {
                     hideLoading()
-                    // 询问用户是否分享文件
-                    showMessage(
-                        "Excel文件已导出成功！\n是否要分享文件？",
-                        "导出成功",
-                        "分享文件",
-                        { shareFile(state.uri) },
-                        "稍后处理"
-                    )
+                    showExportSuccessDialog(state)
                 }
 
                 is MonitoringDataExportViewModel.UiState.Error -> {
@@ -211,6 +208,11 @@ class MonitoringDataExportFragment : BaseFragment() {
                     ToastUtils.showShort(state.message)
                 }
             }
+        }
+        
+        // 观察传输状态，提供实时反馈
+        mStates.transferState.observe(viewLifecycleOwner) { state ->
+            handleTransferStateUpdate(state)
         }
     }
 
@@ -221,8 +223,13 @@ class MonitoringDataExportFragment : BaseFragment() {
 
             // 根据按钮状态决定是开始还是停止传输
             if (mStates.startTransferButtonText.get() == "开始传输") {
+                TransferLogger.logUserAction(
+                    "开始传输",
+                    "时间范围: $startTime ~ $endTime"
+                )
                 mStates.startDataTransfer(startTime, endTime)
             } else {
+                TransferLogger.logUserAction("停止传输", "用户手动停止")
                 mStates.stopTransfer()
             }
         }
@@ -230,6 +237,10 @@ class MonitoringDataExportFragment : BaseFragment() {
         /** 导出Excel按钮 */
         fun onExportExcelClick() {
             if (!validateTime()) return
+            TransferLogger.logUserAction(
+                "导出Excel",
+                "时间范围: $startTime ~ $endTime"
+            )
             mStates.exportToExcel(startTime, endTime)
         }
     }
@@ -294,6 +305,91 @@ class MonitoringDataExportFragment : BaseFragment() {
     private fun hideLoading() {
         //        DialogLoadingUtils.hideLoading()
         mStates.msg.set("")
+    }
+    
+    /** 显示传输引导 */
+    private fun showTransferGuide() {
+        showMessage(
+            "数据传输需要保持蓝牙连接稳定，传输过程中请勿离开此页面或关闭蓝牙。",
+            "传输提示",
+            "知道了"
+        )
+    }
+    
+    /** 显示导出成功对话框 */
+    private fun showExportSuccessDialog(state: MonitoringDataExportViewModel.UiState.ExportSuccess) {
+        showMessage(
+            "Excel文件已导出成功！\n文件路径：${state.filePath}\n\n是否要分享文件？",
+            "导出成功",
+            "分享文件",
+            { shareFile(state.uri) },
+            "查看文件",
+            { openFileLocation(state.filePath) },
+        )
+    }
+    
+    /** 处理传输状态更新 */
+    private fun handleTransferStateUpdate(state: TransferState) {
+        when (state) {
+            is TransferState.Transferring -> {
+                // 可以在这里添加额外的UI反馈
+                Timber.d("传输中: 大小=${state.transferredDataSize}, 条数=${state.transferredDataCount}")
+            }
+            is TransferState.Error -> {
+                // 提供错误恢复建议
+                showErrorRecoveryDialog(state.message)
+            }
+            else -> {
+                // 其他状态
+            }
+        }
+    }
+    
+    /** 显示错误恢复对话框 */
+    private fun showErrorRecoveryDialog(errorMessage: String) {
+        val suggestions = getErrorRecoverySuggestions(errorMessage)
+        showMessage(
+            "传输失败：$errorMessage\n\n建议解决方案：\n$suggestions",
+            "传输失败",
+            "重试",
+            {
+                // 重新尝试传输
+                if (validateTime()) {
+                    mStates.startDataTransfer(startTime, endTime)
+                }
+            },
+            "取消"
+        )
+    }
+    
+    /** 获取错误恢复建议 */
+    private fun getErrorRecoverySuggestions(errorMessage: String): String {
+        return when {
+            errorMessage.contains("蓝牙") -> "• 检查蓝牙连接是否正常\n• 尝试重新连接设备"
+            errorMessage.contains("网络") -> "• 检查网络连接\n• 尝试切换网络环境"
+            errorMessage.contains("存储") -> "• 清理手机存储空间\n• 检查存储权限"
+            errorMessage.contains("超时") -> "• 检查设备距离是否过远\n• 重新连接设备后重试"
+            else -> "• 检查设备连接状态\n• 重启应用后重试\n• 联系技术支持"
+        }
+    }
+    
+    /** 打开文件位置 */
+    private fun openFileLocation(filePath: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                val file = File(filePath)
+                val uri = androidx.core.content.FileProvider.getUriForFile(
+                    requireContext(),
+                    "${requireContext().packageName}.fileprovider",
+                    file.parentFile ?: file
+                )
+                setDataAndType(uri, "resource/folder")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            startActivity(Intent.createChooser(intent, "选择文件管理器"))
+        } catch (e: Exception) {
+            ToastUtils.showShort("无法打开文件位置")
+        }
     }
 
     override fun onResume() {
