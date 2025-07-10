@@ -267,7 +267,7 @@ class MonitoringDataTransferManager(
     }
 
     /**
-     * 解析响应数据
+     * 解析响应数据 TODO 目前使用模拟数据，后期设备支持后需要更改
      */
     private fun parseResponse(response: String): MonitoringDataResponse {
         return try {

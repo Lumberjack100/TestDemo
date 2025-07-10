@@ -37,6 +37,8 @@ class MonitoringDataExportViewModel(
 
     val msg = NonNullObservableField("")
 
+    val periodDate = NonNullObservableField("")
+
     // UI状态 - 使用 ObservableField 实现数据绑定
     val transferStatusText = NonNullObservableField("传输状态：未开始")
     val progressPercentage = NonNullObservableField(0)

@@ -36,10 +36,10 @@
             android:id="@+id/tv_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/dimen_size_16"
             android:text="@{stateVM.msg}"
             android:textColor="@color/orange"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_14"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar"
@@ -51,69 +51,51 @@
             android:id="@+id/card_time_selector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp"
+            android:layout_margin="@dimen/dimen_size_16"
+            app:cardCornerRadius="@dimen/dimen_size_8"
+            app:cardElevation="@dimen/dimen_size_2"
             app:layout_constraintTop_toBottomOf="@+id/tv_msg">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/dimen_size_16">
 
-               <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="选择时间范围"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/text_size_16"
                     android:textStyle="bold" />
 
-                <androidx.appcompat.widget.LinearLayoutCompat
+                <FrameLayout
                     android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_size_30"
+                    android:layout_marginTop="@dimen/dimen_size_12"
+                    app:drawable_radius="@{4}"
+                    app:drawable_solidColor="@{@color/gray_F5F6F8}"
+                    tools:background="@color/gray_F5F6F8">
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:dropDownHorizontalOffset="@dimen/dimen_size_20"
+                        android:dropDownVerticalOffset="32dp" />
+
+                </FrameLayout>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:layout_weight="1"
-                        app:endIconMode="custom">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_start_time"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="true"
-                            android:focusable="false"
-                            android:hint="开始时间"
-                            android:textSize="@dimen/text_size_14" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_weight="1"
-                        app:endIconMode="custom">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_end_time"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="true"
-                            android:focusable="false"
-                            android:hint="结束时间"
-                            android:textSize="@dimen/text_size_14" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/dimen_size_12"
+                    android:text="@{stateVM.periodDate}"
+                    android:textColor="@color/sub_title_text_color_black_60"
+                    android:textSize="@dimen/text_size_11"
+                    tools:text="2025-07-10 ~ 2025-07-10" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </com.google.android.material.card.MaterialCardView>
@@ -123,53 +105,53 @@
             android:id="@+id/card_data_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp"
+            android:layout_margin="@dimen/dimen_size_16"
+            app:cardCornerRadius="@dimen/dimen_size_8"
+            app:cardElevation="@dimen/dimen_size_2"
             app:layout_constraintTop_toBottomOf="@id/card_time_selector">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/dimen_size_16">
 
-               <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="数据信息"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/text_size_16"
                     android:textStyle="bold" />
 
-               <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_local_data_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/dimen_size_8"
                     android:text="@{stateVM.localDataCountText}"
                     android:textColor="@color/title_text_color_black_90"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_size_14"
                     tools:text="本地数据：0 条" />
 
-               <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_transfer_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="@dimen/dimen_size_4"
                     android:text="@{stateVM.transferStatusText}"
                     android:textColor="@color/title_text_color_black_90"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_size_14"
                     tools:text="传输状态：未开始" />
 
-               <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_transferred_data_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="@dimen/dimen_size_4"
                     android:text="@{stateVM.transferredDataSizeText}"
                     android:textColor="@color/title_text_color_black_90"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_size_14"
                     tools:text="已传输数据大小：0 B" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -181,10 +163,10 @@
             android:id="@+id/card_transfer_progress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/dimen_size_16"
             android:visibility="@{stateVM.transferProgressVisibility}"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp"
+            app:cardCornerRadius="@dimen/dimen_size_8"
+            app:cardElevation="@dimen/dimen_size_2"
             app:layout_constraintTop_toBottomOf="@id/card_data_info"
             tools:visibility="visible">
 
@@ -192,36 +174,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/dimen_size_16">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="传输进度"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/text_size_16"
                     android:textStyle="bold" />
 
                 <com.google.android.material.progressindicator.LinearProgressIndicator
                     android:id="@+id/progress_transfer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="@dimen/dimen_size_12"
                     android:progress="@{stateVM.progressPercentage}"
                     app:indicatorColor="@color/colorPrimary" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/dimen_size_8"
                     android:orientation="horizontal">
 
-                   <com.google.android.material.textview.MaterialTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_transfer_speed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{stateVM.transferSpeedText}"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/text_size_12"
                         tools:text="0 KB/s" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -244,7 +226,7 @@
                 onClickWithDebouncing="@{()->click.onStartTransferClick()}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="@dimen/dimen_size_8"
                 android:layout_weight="1"
                 android:enabled="@{stateVM.canStartTransfer}"
                 android:text="@{stateVM.startTransferButtonText}"
@@ -256,7 +238,7 @@
                 onClickWithDebouncing="@{()->click.onExportExcelClick()}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="@dimen/dimen_size_8"
                 android:layout_weight="1"
                 android:enabled="@{stateVM.canExportExcel}"
                 android:text="导出Excel" />

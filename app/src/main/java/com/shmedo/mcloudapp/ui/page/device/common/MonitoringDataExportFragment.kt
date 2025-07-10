@@ -4,6 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
@@ -24,10 +26,6 @@ import com.shmedo.mcloudapp.ui.viewmodel.MonitoringDataExportViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 /**
  * @author：gonghe
@@ -40,9 +38,16 @@ class MonitoringDataExportFragment : BaseFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: MonitoringDataExportViewModel by viewModel()
 
-    private val dateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault())
-    private val displayDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-
+    private val periodDateList: MutableList<String> = arrayListOf(
+        "当天",
+        "两天内",
+        "三天内",
+        "一周内",
+        "一个月内",
+        "三个月内",
+        "半年内",
+        "一年内"
+    )
     private var startTime: String = ""
     private var endTime: String = ""
 
@@ -61,36 +66,90 @@ class MonitoringDataExportFragment : BaseFragment() {
         binding.llToolbar.toolbar.title = "数据导出"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? -> nav().navigateUp() }
         registerOnBackPressedDispatcher { nav().navigateUp() }
-
-        initTimeSelector()
+        initTimeSpinnerAdapter()
     }
 
-    /** 初始化时间选择器 */
-    private fun initTimeSelector() {
-        // 设置默认时间（最近7天）
-        val calendar = Calendar.getInstance()
-        endTime = dateFormat.format(calendar.time)
-        binding.etEndTime.setText(displayDateFormat.format(calendar.time))
+    private fun initTimeSpinnerAdapter() {
+        binding.spinner.adapter = ArrayAdapter(
+            requireContext(), android.R.layout.simple_list_item_1, periodDateList
+        )
+        binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+                handleTimeSelection(position)
+            }
 
-        calendar.add(Calendar.DAY_OF_MONTH, -7)
-        startTime = dateFormat.format(calendar.time)
-        binding.etStartTime.setText(displayDateFormat.format(calendar.time))
+            override fun onNothingSelected(parent: AdapterView<*>) {
 
-        // 开始时间选择
-        binding.etStartTime.setOnClickListener {
-            showDateTimePicker("选择开始时间") { time ->
-                startTime = dateFormat.format(Date(time))
-                binding.etStartTime.setText(displayDateFormat.format(Date(time)))
             }
         }
+        binding.spinner.setSelection(0)
+    }
 
-        // 结束时间选择
-        binding.etEndTime.setOnClickListener {
-            showDateTimePicker("选择结束时间") { time ->
-                endTime = dateFormat.format(Date(time))
-                binding.etEndTime.setText(displayDateFormat.format(Date(time)))
+    // 处理时间选择
+    private fun handleTimeSelection(position: Int) {
+        when (position) {
+            0 -> {//当天
+                startTime = TimeUtils.millis2String(
+                    TimeUtils.getNowMills(),
+                    "yyyy-MM-dd"
+                ) + " 00:00:00"
+            }
+
+            1 -> {//两天内
+                startTime = TimeUtils.millis2String(
+                    TimeUtils.getNowMills() - 2L * 24 * 3600 * 1000,
+                    "yyyy-MM-dd"
+                ) + " 00:00:00"
+            }
+
+            2 -> {//三天内
+                startTime = TimeUtils.millis2String(
+                    TimeUtils.getNowMills() - 3L * 24 * 3600 * 1000,
+                    "yyyy-MM-dd"
+                ) + " 00:00:00"
+            }
+
+            3 -> {//一周内
+                startTime = TimeUtils.millis2String(
+                    TimeUtils.getNowMills() - 7L * 24 * 3600 * 1000,
+                    "yyyy-MM-dd"
+                ) + " 00:00:00"
+            }
+
+            4 -> {//一个月内
+                startTime = TimeUtils.millis2String(
+                    TimeUtils.getNowMills() - 30L * 24 * 3600 * 1000,
+                    "yyyy-MM-dd"
+                ) + " 00:00:00"
+            }
+
+            5 -> {//三个月内
+                startTime = TimeUtils.millis2String(
+                    TimeUtils.getNowMills() - 90L * 24 * 3600 * 1000,
+                    "yyyy-MM-dd"
+                ) + " 00:00:00"
+            }
+
+            6 -> {//半年内
+                startTime = TimeUtils.millis2String(
+                    TimeUtils.getNowMills() - 180L * 24 * 3600 * 1000,
+                    "yyyy-MM-dd"
+                ) + " 00:00:00"
+            }
+
+            7 -> {//一年内
+                startTime = TimeUtils.millis2String(
+                    TimeUtils.getNowMills() - 365L * 24 * 3600 * 1000,
+                    "yyyy-MM-dd"
+                ) + " 00:00:00"
             }
         }
+        mStates.periodDate.set("$startTime ~ $endTime")
     }
 
     override fun initData() {
@@ -103,6 +162,15 @@ class MonitoringDataExportFragment : BaseFragment() {
             val apiKey = it.getString("apiKey", "")
             mStates.setDeviceInfo(productType, deviceSn, apiKey)
         }
+        startTime = TimeUtils.millis2String(
+            TimeUtils.getNowMills(),
+            "yyyy-MM-dd"
+        ) + " 00:00:00"
+        endTime = TimeUtils.millis2String(
+            TimeUtils.getNowMills(),
+            "yyyy-MM-dd"
+        ) + " 23:59:59"
+        mStates.periodDate.set("$startTime ~ $endTime")
     }
 
     override fun createObserver() {
@@ -150,7 +218,7 @@ class MonitoringDataExportFragment : BaseFragment() {
         /** 开始传输按钮 */
         fun onStartTransferClick() {
             if (!validateTime()) return
-            
+
             // 根据按钮状态决定是开始还是停止传输
             if (mStates.startTransferButtonText.get() == "开始传输") {
                 mStates.startDataTransfer(startTime, endTime)
@@ -162,20 +230,7 @@ class MonitoringDataExportFragment : BaseFragment() {
         /** 导出Excel按钮 */
         fun onExportExcelClick() {
             if (!validateTime()) return
-            
-            val testStartTime =
-                TimeUtils.millis2String(
-                    TimeUtils.getNowMills() - 4 * 3600 * 1000,
-                    "yyyy-MM-dd HH:mm:ss"
-                )
-
-            val testEndTime: String =
-                TimeUtils.millis2String(
-                    TimeUtils.getNowMills() + 1L * 24 * 3600 * 1000,
-                    "yyyy-MM-dd HH:mm:ss"
-                )
-            Timber.d("onExportExcelClick: startTime=$testStartTime, endTime=$testEndTime")
-            mStates.exportToExcel(testStartTime, testEndTime) // startTime, endTime
+            mStates.exportToExcel(startTime, endTime)
         }
     }
 
@@ -206,8 +261,6 @@ class MonitoringDataExportFragment : BaseFragment() {
 
         return true
     }
-
-
 
     /**
      * 分享文件
