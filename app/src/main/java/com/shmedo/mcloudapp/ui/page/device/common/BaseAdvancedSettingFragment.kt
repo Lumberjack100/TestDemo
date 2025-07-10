@@ -229,9 +229,12 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
      */
     private fun isMonitoringDataExportEnabled(): Boolean {
         // 支持监测数据导出的设备类型
-        return productType == ProductType.COLLECTOR_R_1
-                || productType == ProductType.DAS
-                || productType == ProductType.GNSS_M_5
+//        return productType == ProductType.COLLECTOR_R_1
+//                || productType == ProductType.DAS
+//                || productType == ProductType.GNSS_M_5
+
+
+        return false
     }
 
     override fun createObserver() {

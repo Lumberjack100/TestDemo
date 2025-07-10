@@ -266,7 +266,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         }
         val command = commandItems.removeFirst()
 
-        //4G远程下发指令模式
+        //4G 通信模式远程下发指令
         if (communicateWay is NetPlatformConnect) {
             addDeviceLogItem(Log.DEBUG, "4G 发送指令: $command")
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
@@ -280,6 +280,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             finishAction()
             return
         }
+
         addDeviceLogItem(Log.DEBUG, "BLE 发送指令: $command")
         //发送物联网指令
         if (command.startsWith(IOTConstants.COMMAND_HEADER)) bleViewModel.sendIOTCommand(

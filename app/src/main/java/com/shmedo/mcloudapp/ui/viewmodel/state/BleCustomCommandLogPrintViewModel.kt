@@ -39,8 +39,9 @@ class BleCustomCommandLogPrintViewModel : ViewModel() {
 
     companion object {
         const val COMMAND_PREFIX_IOT = "\$cmd="
-        const val COMMAND_PREFIX_MD_RAW = "\$cmd=md_raw&content="
-        const val COMMAND_PREFIX_HASH = "##"
+        const val COMMAND_PREFIX_IOT_RAW = "\$cmd=md_raw&content="
+        const val COMMAND_PREFIX_MDM = "##"
+        const val COMMAND_PREFIX_CUSTOM = ""
         
         val DEBUG_MODES = listOf("关", "debug模式", "info模式")
     }
@@ -104,17 +105,9 @@ class BleCustomCommandLogPrintViewModel : ViewModel() {
     fun validateCommand(command: String): Boolean {
         return command.isNotEmpty() && (
                 command.startsWith(COMMAND_PREFIX_IOT) ||
-                command.startsWith(COMMAND_PREFIX_HASH) ||
+                command.startsWith(COMMAND_PREFIX_MDM) ||
                 command.contains("md_raw")
         )
-    }
-
-    fun processCommand(inputCommand: String): String {
-        return if (inputCommand.startsWith(COMMAND_PREFIX_HASH)) {
-            inputCommand.plus(MDConstants.COMMAND_FOOTER)
-        } else {
-            inputCommand
-        }
     }
 
     fun generateDebugModeCommands(mode: DebugMode, isIotCmd: Boolean): List<String> {

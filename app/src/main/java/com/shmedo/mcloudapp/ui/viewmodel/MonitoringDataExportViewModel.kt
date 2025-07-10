@@ -195,7 +195,7 @@ class MonitoringDataExportViewModel(
                 )
 
                 // 导出到Excel
-                val outputDir = File(PathUtils.getExternalDownloadsPath(), "MCloudApp/Export")
+                val outputDir = File(PathUtils.getExternalDownloadsPath(), "米易通/Export")
                 FileUtils.createOrExistsDir(outputDir)
 
                 val file = ExcelExporter.exportToExcel(dataList, currentDeviceSn, outputDir)

@@ -153,9 +153,9 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         cmdTypeList.clear()
 
         if (communicateWay is BleConnect) {
-            cmdTypeList.addAll(listOf("物联网自定义指令", "##指令", "米度透传指令"))
+            cmdTypeList.addAll(listOf("物联网指令","物联网透传指令", "##指令", "自定义指令"))
         } else {
-            cmdTypeList.addAll(listOf("物联网自定义指令", "米度透传指令"))
+            cmdTypeList.addAll(listOf("物联网指令", "物联网透传指令"))
         }
     }
 
@@ -242,10 +242,10 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     private fun handleCommandTypeSelection(commandType: String) {
         try {
             val command = when (commandType) {
-                "米度透传指令" -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_MD_RAW
-                "物联网自定义指令" -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_IOT
-                "##指令" -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_HASH
-                else -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_IOT
+                "物联网指令" -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_IOT
+                "物联网透传指令" -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_IOT_RAW
+                "##指令" -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_MDM
+                else -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_CUSTOM
             }
             mStates.updateCommand(command)
             binding.etCustomCommand.clearFocus()
@@ -280,20 +280,17 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             return false
         }
 
-        if (!mStates.validateCommand(command)) {
-            Toaster.show("指令格式不正确，请以 \$cmd=、## 开头或包含 md_raw")
-            return false
-        }
+//        if (!mStates.validateCommand(command)) {
+//            Toaster.show("指令格式不正确，请以 \$cmd=、## 开头或包含 md_raw")
+//            return false
+//        }
 
         return true
     }
 
     private fun executeCommand(command: String) {
-        val processedCommand = mStates.processCommand(command)
-        commandItems.clear()
-        commandItems.add(processedCommand)
         mStates.addLog(command)
-        sendCommandFromCmdList()
+        sendBleCommand(command)
     }
 
     private fun updateDebugMode(mode: BleCustomCommandLogPrintViewModel.DebugMode) {

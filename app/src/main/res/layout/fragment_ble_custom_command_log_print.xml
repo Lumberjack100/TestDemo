@@ -91,7 +91,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="$cmd= 或 ##开头"
+                android:hint=""
                 android:maxHeight="200dp"
                 android:minHeight="@dimen/dimen_size_40"
                 android:padding="@dimen/dimen_size_4"
