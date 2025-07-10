@@ -14,6 +14,8 @@ import com.shmedo.mcloudapp.R
  */
 abstract class BaseFragment : BaseVmDbFragment() {
 
+    override fun initViewModel() {}
+
     abstract override fun initView(savedInstanceState: Bundle?)
 
     override fun initData() {

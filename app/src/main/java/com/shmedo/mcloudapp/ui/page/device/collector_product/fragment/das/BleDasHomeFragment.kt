@@ -594,7 +594,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             ConfigModule(DataCenterModule(navId = R.id.action_global_to_bleDasDataCenterHomeFragment))
         )
         moduleList.add(
-            ConfigModule(SensorConfigModule(navId = R.id.action_global_to_bleDasSensorHomeFragment))
+            ConfigModule(SensorConfigModule(navId =0))
         )
         binding.rvModule.models = moduleList
     }

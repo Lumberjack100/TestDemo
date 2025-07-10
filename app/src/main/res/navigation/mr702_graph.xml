@@ -6,9 +6,8 @@
     app:startDestination="@id/mR702HomeFragment">
 
     <include app:graph="@navigation/include_time_calibration_graph" />
-    <include app:graph="@navigation/include_firmware_upgrade_graph" />
+    <include app:graph="@navigation/include_advanced_setting_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
-    <include app:graph="@navigation/include_remote_command_debug_graph" />
 
 
     <fragment
@@ -142,12 +141,6 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702ReservoirCapacityFragment"
         android:label="MR702ReservoirCapacityFragment"
         tools:layout="@layout/fragment_mr702_reservoir_capacity" />
-
-    <fragment
-        android:id="@+id/advancedSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.common.BaseAdvancedSettingFragment"
-        android:label="BaseAdvancedSettingFragment"
-        tools:layout="@layout/fragment_advanced_setting" />
 
     <action
         android:id="@+id/action_global_to_mR702BaseInfoFragment"
@@ -327,15 +320,7 @@
 
     <action
         android:id="@+id/action_global_to_advancedSettingFragment"
-        app:destination="@id/advancedSettingFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
-        android:id="@+id/action_global_to_firmwareUpgradeFragment"
-        app:destination="@id/firmware_upgrade_graph"
+        app:destination="@id/advanced_setting_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -349,12 +334,5 @@
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
-    <action
-        android:id="@+id/action_global_to_remoteDebugFragment"
-        app:destination="@id/remote_command_debug_graph"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
 
 </navigation>

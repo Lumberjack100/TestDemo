@@ -31,6 +31,9 @@ data class AdvancedSettingItem(
 
         //待机
         data object STANDBY : Type()
+
+        //监测数据导出
+        data object MONITORING_DATA_EXPORT : Type()
     }
 }
 

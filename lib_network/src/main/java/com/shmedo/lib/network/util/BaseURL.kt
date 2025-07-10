@@ -29,6 +29,11 @@ enum class BaseURL(@JvmField var baseUrl: String) {
     CLOUD_PLATFORM_DATA_ADDRESS("https://queryapi.shmedo.cn/"),
 
     /**
+     * 孙建伟通用服务地址
+     */
+    AMS_CONFIG_ADDRESS("http://ams4.shmedo.com:22000/api/v1/"),
+
+    /**
      * 米易通远程配置服务地址
      */
     MIYITONG_REMOTE_CONFIG_ADDRESS("https://miyitong-remote-config-api.lumberjack2.cn/api/v1/"),

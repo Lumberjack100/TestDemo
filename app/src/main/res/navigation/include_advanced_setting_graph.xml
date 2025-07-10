@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/advanced_setting_graph"
+    app:startDestination="@id/advancedSettingFragment">
+
+    <include app:graph="@navigation/include_firmware_upgrade_graph" />
+    <include app:graph="@navigation/include_remote_command_debug_graph" />
+
+    <fragment
+        android:id="@+id/advancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.BaseAdvancedSettingFragment"
+        android:label="BaseAdvancedSettingFragment"
+        tools:layout="@layout/fragment_advanced_setting" />
+
+    <fragment
+        android:id="@+id/monitoringDataExportFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.MonitoringDataExportFragment"
+        android:label="MonitoringDataExportFragment"
+        tools:layout="@layout/fragment_monitoring_data_export" />
+
+    <action
+        android:id="@+id/action_global_to_monitoringDataExportFragment"
+        app:destination="@id/monitoringDataExportFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_firmwareUpgradeFragment"
+        app:destination="@id/firmware_upgrade_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_remoteDebugFragment"
+        app:destination="@id/remote_command_debug_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+</navigation>
