@@ -137,20 +137,6 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
-                    if (stateInfo.self_check.uppercase().indexOf("RADIO") != -1) {
-                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                            groupList,
-                            name = "电台模块",
-                            value = if (stateInfo.self_check.uppercase()
-                                    .indexOf("RADIO:0") == -1
-                            ) "正常" else "故障",
-                            textColorRes = if (stateInfo.self_check.uppercase()
-                                    .indexOf("RADIO:0") == -1
-                            ) 0 else ColorUtils.getColor(
-                                R.color.error_FF4400
-                            )
-                        )
-                    }
                     if (stateInfo.self_check.uppercase().indexOf("EMMC") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
@@ -188,20 +174,6 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             ) "正常" else "故障",
                             textColorRes = if (stateInfo.self_check.uppercase()
                                     .indexOf("MEMS:0") == -1
-                            ) 0 else ColorUtils.getColor(
-                                R.color.error_FF4400
-                            )
-                        )
-                    }
-                    if (stateInfo.self_check.uppercase().indexOf("SOLAR485") != -1) {
-                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                            groupList,
-                            name = "太阳能控制器模块",
-                            value = if (stateInfo.self_check.uppercase()
-                                    .indexOf("SOLAR485:0") == -1
-                            ) "正常" else "故障",
-                            textColorRes = if (stateInfo.self_check.uppercase()
-                                    .indexOf("SOLAR485:0") == -1
                             ) 0 else ColorUtils.getColor(
                                 R.color.error_FF4400
                             ),

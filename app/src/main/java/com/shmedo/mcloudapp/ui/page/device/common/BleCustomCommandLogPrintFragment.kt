@@ -106,7 +106,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         // 观察日志数据变化
         mStates.logItems.observe(viewLifecycleOwner) { logItems ->
             try {
-                binding.recyclerview.bindingAdapter.addModels(logItems,true)
+                binding.recyclerview.bindingAdapter.addModels(logItems, true)
                 if (logItems.isNotEmpty()) {
                     binding.recyclerview.smoothScrollToPosition(binding.recyclerview.mutable.size - 1)
                 }
@@ -153,7 +153,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         cmdTypeList.clear()
 
         if (communicateWay is BleConnect) {
-            cmdTypeList.addAll(listOf("物联网指令","物联网透传指令", "##指令", "自定义指令"))
+            cmdTypeList.addAll(listOf("物联网指令", "物联网透传指令", "##指令", "自定义指令"))
         } else {
             cmdTypeList.addAll(listOf("物联网指令", "物联网透传指令"))
         }
@@ -331,6 +331,16 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
+                    R.id.action_builtin_cmd -> {
+//                        showBuiltinCmdSelector()
+                        true
+                    }
+
+                    R.id.action_clear_log -> {
+                        clearLog()
+                        true
+                    }
+
                     R.id.action_share -> {
                         shareLogToFile()
                         true
@@ -340,6 +350,19 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
                 }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    /**
+     * 清除日志
+     */
+    private fun clearLog() {
+        try {
+            binding.recyclerview.bindingAdapter.models = emptyList()
+            mStates.clearLogs()
+        } catch (e: Exception) {
+            Timber.e(e, "清除日志失败")
+            Toaster.show("清除日志失败")
+        }
     }
 
     /**

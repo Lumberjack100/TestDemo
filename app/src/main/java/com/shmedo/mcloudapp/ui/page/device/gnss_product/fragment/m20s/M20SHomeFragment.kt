@@ -220,7 +220,7 @@ class M20SHomeFragment : NewUniversalBaseDeviceHomeFragment() {
     override fun queryStatusInfo() {
         commandItems.clear()
 
-        var command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -258,10 +258,16 @@ class M20SHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
+                //检查电台模块是否可用
+                updateRadioModuleStatus(stateInfo.self_check.uppercase().contains("RADIO:1"))
+
                 val deviceAbnormalList =
                     if (stateInfo.self_check.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkDeviceAbnormal(
                         stateInfo.self_check
                     )
+
+                deviceAbnormalList.remove("电台故障")
+                deviceAbnormalList.remove("太阳能控制器故障")
                 val status = if (deviceAbnormalList.isEmpty()) "正常" else "故障"
                 mHeadStates.productLogoResId.set(if (deviceAbnormalList.isEmpty()) mHeadStates.productNormalResId.get() else mHeadStates.productErrorResId.get())
                 mHeadStates.deviceStatusCode.set(if (deviceAbnormalList.isEmpty()) "0" else "-3")
@@ -293,6 +299,22 @@ class M20SHomeFragment : NewUniversalBaseDeviceHomeFragment() {
             } catch (e: Exception) {
                 Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    /**
+     * 更新电台模块状态，false 表示电台模块不可用，true 表示电台模块可用
+     */
+    private fun updateRadioModuleStatus(enable: Boolean) {
+        //刷新模块状态
+        binding.rvModule.models?.forEach { item ->
+            if (item is ConfigModuleTree) {
+                item.configModules.find { configModule ->
+                    configModule.functionModule.name.contains(
+                        "电台配置"
+                    )
+                }?.functionModule?.refreshSupport(enable)
             }
         }
     }

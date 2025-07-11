@@ -405,6 +405,9 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     MoshiUtil.fromJson<M50CurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
+                //检查电台模块是否可用
+                updateRadioModuleStatus(stateInfo.radioEnableStatus == "1")
+
                 val status = when (stateInfo.deviceStatus) {
                     "-2" -> "告警"
                     "-3" -> "故障"
@@ -471,7 +474,7 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
         }
     }
 
-    // 扩展 ClickProxy 以支持 M50 特有的功能
+
     inner class M50ClickProxy {
         /**
          * 跳转到位置信息页面
@@ -510,4 +513,20 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
             )
         }
     }
-} 
+
+    /**
+     * 更新电台模块状态，false 表示电台模块不可用，true 表示电台模块可用
+     */
+    private fun updateRadioModuleStatus(enable: Boolean) {
+        //刷新模块状态
+        binding.rvModule.models?.forEach { item ->
+            if (item is ConfigModuleTree) {
+                item.configModules.find { configModule ->
+                    configModule.functionModule.name.contains(
+                        "电台配置"
+                    )
+                }?.functionModule?.refreshSupport(enable)
+            }
+        }
+    }
+}
