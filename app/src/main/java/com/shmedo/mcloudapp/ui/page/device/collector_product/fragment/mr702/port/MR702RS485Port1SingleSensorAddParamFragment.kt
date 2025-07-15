@@ -380,7 +380,8 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
 
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//采集项名称GBK编码
-            egbk = mStates.modelFieldUnit.get().stringToGBK16UByteString(),//采集项单位GBK编码
+            egbk = if (mStates.modelFieldUnit.get().isEmpty()) IOTConstants.NULL_KEY else
+                mStates.modelFieldUnit.get().stringToGBK16UByteString(),//采集项单位GBK编码
             swtoken = mStates.hydrologicalIdentification.get().hexStringToDecimalString(),
             cmd = mStates.collectionInstructions.get(),
             ratio = mStates.ratio.get(),
@@ -404,10 +405,6 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
     private fun checkModelField(): Boolean {
         if (mStates.modelFieldName.get().isEmpty()) {
             showMessageDialog("请输入采集项名称")
-            return false
-        }
-        if (mStates.modelFieldUnit.get().isEmpty()) {
-            showMessageDialog("请输入采集项单位")
             return false
         }
         if (mStates.hydrologicalIdentification.get().isEmpty()) {
