@@ -170,20 +170,6 @@
         <item name="kswThumbRangeRatio">2.3</item>
     </style>
 
-    <style name="ResetButton_Style" parent="@style/Widget.AppCompat.Button.Borderless">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">48dp</item>
-        <item name="android:layout_marginStart">@dimen/page_content_item_margin_horizontal_12</item>
-        <item name="android:layout_marginEnd">@dimen/page_content_item_margin_horizontal_12</item>
-        <item name="android:layout_marginTop">25dp</item>
-        <item name="android:layout_marginBottom">25dp</item>
-        <item name="android:foreground">?attr/selectableItemBackground</item>
-        <item name="android:background">@drawable/reset_button_with_corner</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
     <!-- 通用提交 Button 样式-->
     <style name="SubmitButton_Style" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">match_parent</item>
@@ -202,10 +188,12 @@
     <style name="ResetButton_Style2" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
-        <item name="backgroundTint">@drawable/reset_param_button_background_tint</item>
-        <item name="rippleColor">@color/ripple_material_light</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
+        <item name="backgroundTint">@drawable/reset_param_button_background_tint</item>
+        <item name="rippleColor">@color/ripple_material_light</item>
         <item name="cornerRadius">4dp</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/reset_param_button_text_color</item>
@@ -216,14 +204,37 @@
     <style name="SubmitButton_Style2" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
-        <item name="backgroundTint">@drawable/submit_button_background_tint</item>
-        <item name="rippleColor">@color/ripple_material_light</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
+        <item name="backgroundTint">@drawable/submit_button_background_tint</item>
+        <item name="rippleColor">@color/ripple_material_light</item>
         <item name="cornerRadius">4dp</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/submit_button_text_color</item>
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TestButton_Style" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="backgroundTint">@color/transparent</item>
+        <item name="rippleColor">@color/ripple_material_light</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">@dimen/page_content_item_text_size_14</item>
+    </style>
+
+    <style name="Common_MaterialButton_Style" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="rippleColor">@color/ripple_material_light</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <style name="MeasureData_Button_Style" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
@@ -232,12 +243,10 @@
         <item name="android:layout_weight">1</item>
         <item name="android:minWidth">0dp</item>
         <item name="android:minHeight">0dp</item>
-        <item name="android:paddingLeft">0dp</item>
-        <item name="android:paddingRight">0dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
-        <item name="android:insetLeft">0dp</item>
-        <item name="android:insetRight">0dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
         <item name="cornerRadius">2dp</item>
         <item name="rippleColor">@color/ripple_material_light</item>
         <item name="strokeColor">@color/transparent</item>
@@ -246,32 +255,6 @@
         <item name="android:gravity">center</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="Common_MaterialButton_Style" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
-        <item name="android:minWidth">0dp</item>
-        <item name="android:minHeight">0dp</item>
-        <item name="android:paddingLeft">0dp</item>
-        <item name="android:paddingRight">0dp</item>
-        <item name="android:insetTop">0dp</item>
-        <item name="android:insetBottom">0dp</item>
-        <item name="android:insetLeft">0dp</item>
-        <item name="android:insetRight">0dp</item>
-        <item name="rippleColor">@color/ripple_material_light</item>
-        <item name="iconPadding">0dp</item>
-        <item name="iconGravity">textStart</item>
-        <item name="android:gravity">center</item>
-    </style>
-
-    <style name="TestButton_Style" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
-        <item name="backgroundTint">@color/transparent</item>
-        <item name="rippleColor">@color/ripple_material_light</item>
-        <item name="android:insetTop">0dp</item>
-        <item name="android:insetBottom">0dp</item>
-        <item name="cornerRadius">4dp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textSize">@dimen/page_content_item_text_size_14</item>
     </style>
 
     <!--设备运行状态单条基本信息样式-->

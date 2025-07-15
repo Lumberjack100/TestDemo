@@ -10,21 +10,18 @@
             type="com.shmedo.core.model.DeviceInfo" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:focusable="true"
-        android:foreground="?android:selectableItemBackground"
         app:cardCornerRadius="6dp"
         app:cardElevation="1dp">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimen_size_10"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/dimen_size_10">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_device_state_flag"
@@ -73,8 +70,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_size_12"
-                android:gravity="start"
                 android:ellipsize="end"
+                android:gravity="start"
                 android:maxLines="2"
                 android:text="@{m.productName}"
                 android:textColor="@{m.onlineStatus?@color/title_text_color_black_90:@color/offline_BABABA}"
@@ -83,5 +80,5 @@
                 tools:textColor="@color/title_text_color" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </layout>
