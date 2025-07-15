@@ -137,6 +137,20 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
+                    if (stateInfo.self_check.uppercase().indexOf("RADIO") != -1) {
+                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                            groupList,
+                            name = "电台模块",
+                            value = if (stateInfo.self_check.uppercase()
+                                    .indexOf("RADIO:0") == -1
+                            ) "有" else "无",
+                            textColorRes = if (stateInfo.self_check.uppercase()
+                                    .indexOf("RADIO:0") == -1
+                            ) 0 else ColorUtils.getColor(
+                                R.color.error_FF4400
+                            )
+                        )
+                    }
                     if (stateInfo.self_check.uppercase().indexOf("EMMC") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
