@@ -469,7 +469,8 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
 
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//采集项名称GBK编码
-            egbk = mStates.modelFieldUnit.get().stringToGBK16UByteString(),//采集项单位GBK编码
+            egbk = if (mStates.modelFieldUnit.get().isEmpty()) IOTConstants.NULL_KEY else
+                mStates.modelFieldUnit.get().stringToGBK16UByteString(),//采集项单位GBK编码
             swtoken = mStates.hydrologicalIdentification.get().hexStringToDecimalString(),
             cmd = mStates.collectionInstructions.get(),
             ratio = mStates.ratio.get(),
@@ -518,7 +519,8 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
 
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName2.get().stringToGBK16UByteString(),//采集项名称GBK编码
-            egbk = mStates.modelFieldUnit2.get().stringToGBK16UByteString(),//采集项单位GBK编码
+            egbk = if (mStates.modelFieldUnit2.get().isEmpty()) IOTConstants.NULL_KEY else
+                mStates.modelFieldUnit2.get().stringToGBK16UByteString(),//采集项单位GBK编码
             swtoken = mStates.hydrologicalIdentification2.get().hexStringToDecimalString(),
             cmd = mStates.collectionInstructions2.get(),
             ratio = mStates.ratio2.get(),
@@ -542,10 +544,6 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
     private fun checkModelField(): Boolean {
         if (mStates.modelFieldName.get().isEmpty()) {
             showMessageDialog("请输入采集项名称")
-            return false
-        }
-        if (mStates.modelFieldUnit.get().isEmpty()) {
-            showMessageDialog("请输入采集项单位")
             return false
         }
         if (mStates.hydrologicalIdentification.get().isEmpty()) {
@@ -587,10 +585,6 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
     private fun checkModelField2(): Boolean {
         if (mStates.modelFieldName2.get().isEmpty()) {
             showMessageDialog("请输入采集项名称")
-            return false
-        }
-        if (mStates.modelFieldUnit2.get().isEmpty()) {
-            showMessageDialog("请输入采集项单位")
             return false
         }
         if (mStates.hydrologicalIdentification2.get().isEmpty()) {

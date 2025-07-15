@@ -37,24 +37,32 @@
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/dimen_size_25">
+                android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                android:paddingTop="@dimen/page_content_container_padding_top_12"
+                android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:text="采集指令"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17"
-                    android:textStyle="bold" />
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="14dp"
+                        android:background="@color/black" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_GroupItem_Title_Style2"
+                        android:layout_marginStart="@dimen/dimen_size_8"
+                        android:text="采集指令" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
@@ -138,7 +146,6 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-
                         android:text="@{stateVM.dataBit}"
                         tools:text="5" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -154,7 +161,6 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-
                         android:text="@{stateVM.checkBit}"
                         tools:text="NONE" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -170,7 +176,6 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-
                         android:text="@{stateVM.stopBit}"
                         tools:text="2" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -186,7 +191,6 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-
                         android:text="@{stateVM.siteType}"
                         tools:text="测点" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -194,7 +198,7 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onIsCalculateChooseClick()}"
-                    android:background="@drawable/layer_common_click_item_with_divider">
+                    android:background='@{stateVM.calculate=="不计算"?@drawable/shape_common_click_item_bottom_corner_4:@drawable/layer_common_click_item_with_divider}'>
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
@@ -202,7 +206,6 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-
                         android:text="@{stateVM.calculate}"
                         tools:text="是" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -316,7 +319,7 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
                     visible='@{stateVM.calculate=="线性方程计算"}'
-                    android:background="@drawable/layer_common_click_item_with_divider">
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
@@ -334,7 +337,7 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
                     visible='@{stateVM.calculate=="传感器联合计算"}'
-                    android:background="@drawable/layer_common_click_item_with_divider">
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
@@ -349,15 +352,22 @@
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:text="采集数据处理"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17"
-                    android:textStyle="bold" />
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                    android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="14dp"
+                        android:background="@color/black" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_GroupItem_Title_Style2"
+                        android:layout_marginStart="@dimen/dimen_size_8"
+                        android:text="采集数据处理" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
@@ -538,7 +548,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
@@ -552,15 +562,22 @@
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:text="采集数据处理"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17"
-                    android:textStyle="bold" />
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                    android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="14dp"
+                        android:background="@color/black" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_GroupItem_Title_Style2"
+                        android:layout_marginStart="@dimen/dimen_size_8"
+                        android:text="采集数据处理" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
@@ -741,7 +758,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
@@ -754,19 +771,14 @@
                         app:lengthFilter="@{5}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/SubmitButton_Style2"
+                    onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                    android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                    android:text="@string/button_save_text" />
+
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_Style2"
-            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
-            android:layout_marginBottom="40dp"
-            android:text="@string/button_save_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/scrollView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
