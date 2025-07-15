@@ -24,20 +24,11 @@
         app:navigationIcon="@drawable/ic_arrow_back_black"
         app:subtitle=""
         app:subtitleTextColor="@color/sub_title_text_color"
-        app:title=""
+        tools:title="配置"
         app:titleTextColor="@color/title_text_color">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@{vm.toolbarTitleText}"
-            android:textColor="@color/black_90"
-            android:textSize="@dimen/text_size_17"
-            android:textStyle="bold"
-            tools:text="配置" />
-
         <FrameLayout
+            visible="@{vm.toolbarIvActionVisible || vm.toolbarTvActionVisible}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|end"

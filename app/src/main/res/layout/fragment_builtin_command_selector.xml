@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.BuiltinCommandSelectorViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.ui.page.device.common.BuiltinCommandSelectorFragment.ClickProxy" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <!-- Toolbar -->
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
+
+        <!-- 主内容区域 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+            android:paddingTop="@dimen/dimen_size_10"
+            android:paddingBottom="@dimen/dimen_size_30"
+            android:splitMotionEvents="false"
+            app:layout_constraintBottom_toTopOf="@id/ll_selection_actions"
+            app:layout_constraintTop_toBottomOf="@id/ll_toolbar"
+            tools:listitem="@layout/item_builtin_command" />
+
+        <!-- 选择模式底部操作栏 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ll_selection_actions"
+            drawable_radiusLT="@{15}"
+            drawable_radiusRT="@{15}"
+            drawable_solidColor="@{@color/white}"
+            visible="@{stateVM.isSelectionMode}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/dimen_size_4"
+            android:paddingHorizontal="@dimen/dimen_size_16"
+            android:paddingVertical="@dimen/dimen_size_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:background="@color/white">
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="@={stateVM.allChecked}"
+                android:onClick="@{() -> click.onSelectAllClick()}"
+                android:text='@{stateVM.allChecked?"全不选":"全选"}'
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_15"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:checked="true" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_delete"
+                style="@style/Common_MaterialButton_Style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dimen_size_30"
+                android:layout_toStartOf="@+id/tv_cancel"
+                android:enabled="@{stateVM.checkedCount > 0}"
+                android:onClick="@{()->click.onDeleteSelectedClick()}"
+                android:paddingHorizontal="@dimen/dimen_size_12"
+                android:text="删除"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_15"
+                app:backgroundTint="@drawable/submit_button_background_tint"
+                app:cornerRadius="@dimen/dimen_size_4"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_cancel"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tv_cancel"
+                style="@style/Common_MaterialButton_Style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->click.onCancelClick()}"
+                android:paddingHorizontal="@dimen/dimen_size_12"
+                android:paddingVertical="@dimen/dimen_size_5"
+                android:text="@string/cancel_button_text"
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/text_size_13"
+                app:backgroundTint="@color/white"
+                app:cornerRadius="@dimen/dimen_size_4"
+                app:strokeColor="@color/black_15"
+                app:strokeWidth="@dimen/dimen_size_1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 添加按钮 -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add"
+            visible="@{!stateVM.isSelectionMode}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_size_32"
+            android:onClick="@{() -> click.onAddClick()}"
+            app:backgroundTint="@color/colorPrimary"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@android:drawable/ic_input_add"
+            app:tint="@color/white" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout> 

@@ -28,6 +28,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.request.RequestSearchViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.TcpViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.MonitoringDataExportViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.BuiltinCommandSelectorViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -43,4 +44,5 @@ val viewModelModule = module {
     viewModelOf(::TcpViewModel)
     viewModelOf(::NetIOTCommandViewModel)
     viewModelOf(::MonitoringDataExportViewModel)
+    viewModelOf(::BuiltinCommandSelectorViewModel)
 }

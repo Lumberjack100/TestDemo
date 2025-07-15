@@ -248,7 +248,7 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Common_MaterialButton_Style" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+    <style name="Common_MaterialButton_Style" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:minWidth">0dp</item>
         <item name="android:minHeight">0dp</item>
         <item name="android:paddingLeft">0dp</item>
@@ -367,8 +367,8 @@
         <item name="android:maxLines">1</item>
         <item name="android:hint">请输入</item>
         <item name="android:textColorHint">@color/text_color_hint</item>
-        <item name="android:textColor">@color/title_text_color</item>
-        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/sub_title_text_color_black_60</item>
+        <item name="android:textSize">@dimen/page_content_item_text_size_14</item>
     </style>
 
     <style name="MaterialAutoCompleteTextView_Style">

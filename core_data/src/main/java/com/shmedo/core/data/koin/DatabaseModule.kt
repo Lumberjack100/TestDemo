@@ -17,11 +17,12 @@ val databaseModule = module {
             AppDatabase::class.java,
             AppDatabase.DATABASE_NAME
         )
-            .addMigrations(AppDatabase.MIGRATION_1_2)
+            .addMigrations(AppDatabase.MIGRATION_1_2, AppDatabase.MIGRATION_2_3)
             .build()
     }
 
     single { get<AppDatabase>().logSessionDao() }
     single { get<AppDatabase>().logItemDao() }
     single { get<AppDatabase>().monitoringDataDao() }
+    single { get<AppDatabase>().builtinCommandDao() }
 }
