@@ -59,6 +59,9 @@ class M20SBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     if (stateInfo.self_check == IOTConstants.NULL_KEY || stateInfo.self_check.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkDeviceAbnormal(
                         stateInfo.self_check
                     )
+
+                deviceAbnormalList.remove("电台故障")
+                deviceAbnormalList.remove("太阳能控制器故障")
                 val deviceStatus = if (deviceAbnormalList.isEmpty()) "正常" else "故障"
 
                 groupList.add(

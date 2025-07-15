@@ -69,6 +69,10 @@ enum class IOTCommandType(val value: String) {
 
     /** 保存配置参数 */
     MD_SAVE_CONFIG_PARAM("md_saveconfig"),
+
+    /** 获取设备历史传感器数据 */
+    MD_GET_DEVICE_SENSOR_HISTORY_DATA("md_getsensordata"),
+
     // </editor-fold>
 
     // <editor-fold desc="DAS 指令">

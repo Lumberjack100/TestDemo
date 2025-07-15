@@ -8,9 +8,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.FileIOUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -34,8 +34,10 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseCommandLogPrintClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentBleCustomCommandLogPrintBinding
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
@@ -44,7 +46,6 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleCustomCommandLogPrintViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
@@ -81,7 +82,6 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentBleCustomCommandLogPrintBinding
         setupToolbar()
         setupRecyclerView()
-        observeLogItems()
     }
 
     private fun setupToolbar() {
@@ -99,29 +99,6 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     private fun setupRecyclerView() {
         binding.recyclerview.setup { rv ->
             addType<DebugCmdLogInfo>(R.layout.item_debug_cmd_log)
-        }
-    }
-
-    private fun observeLogItems() {
-        // 观察日志数据变化
-        mStates.logItems.observe(viewLifecycleOwner) { logItems ->
-            try {
-                binding.recyclerview.bindingAdapter.addModels(logItems,true)
-                if (logItems.isNotEmpty()) {
-                    binding.recyclerview.smoothScrollToPosition(binding.recyclerview.mutable.size - 1)
-                }
-            } catch (e: Exception) {
-                Timber.e(e, "更新日志列表失败")
-            }
-        }
-
-        // 观察需要发送的指令
-        mStates.commandsToSend.observe(viewLifecycleOwner) { commands ->
-            if (commands.isNotEmpty()) {
-                commandItems.clear()
-                commandItems.addAll(commands)
-                sendCommandFromCmdList()
-            }
         }
     }
 
@@ -153,9 +130,9 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         cmdTypeList.clear()
 
         if (communicateWay is BleConnect) {
-            cmdTypeList.addAll(listOf("物联网自定义指令", "##指令", "米度透传指令"))
+            cmdTypeList.addAll(listOf("物联网指令", "物联网透传指令", "##指令", "自定义指令"))
         } else {
-            cmdTypeList.addAll(listOf("物联网自定义指令", "米度透传指令"))
+            cmdTypeList.addAll(listOf("物联网指令", "物联网透传指令"))
         }
     }
 
@@ -164,8 +141,51 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         binding.etCustomCommand.clearFocus()
     }
 
-    inner class ClickProxy : BaseCommandLogPrintClickProxy() {
+    override fun createObserver() {
+        super.createObserver()
+        observeLogItems()
+        setFragmentResultListener(FRAGMENT_BUILTIN_COMMAND_SELECTED_REQUEST_KEY) { _, bundle ->
+            handleFragmentResult(bundle)
+        }
+    }
 
+    private fun observeLogItems() {
+        // 观察日志数据变化
+        mStates.logItems.observe(viewLifecycleOwner) { logItems ->
+            try {
+                binding.recyclerview.bindingAdapter.addModels(logItems, true)
+                if (logItems.isNotEmpty()) {
+                    binding.recyclerview.smoothScrollToPosition(binding.recyclerview.mutable.size - 1)
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "更新日志列表失败")
+            }
+        }
+
+        // 观察需要发送的指令
+        mStates.commandsToSend.observe(viewLifecycleOwner) { commands ->
+            if (commands.isNotEmpty()) {
+                commandItems.clear()
+                commandItems.addAll(commands)
+                sendCommandFromCmdList()
+            }
+        }
+    }
+
+    private fun handleFragmentResult(bundle: Bundle) {
+        val commandContent = bundle.getString("command_content")
+        val commandName = bundle.getString("command_name")
+
+        if (!commandContent.isNullOrEmpty()) {
+            // 设置指令内容到输入框
+            mStates.updateCommand(commandContent)
+
+            // 发送指令
+            executeCommand(commandContent)
+        }
+    }
+
+    inner class ClickProxy : BaseCommandLogPrintClickProxy() {
         override fun onDebugModeChooseClick() {
             showDebugModeSelector()
         }
@@ -242,10 +262,10 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     private fun handleCommandTypeSelection(commandType: String) {
         try {
             val command = when (commandType) {
-                "米度透传指令" -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_MD_RAW
-                "物联网自定义指令" -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_IOT
-                "##指令" -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_HASH
-                else -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_IOT
+                "物联网指令" -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_IOT
+                "物联网透传指令" -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_IOT_RAW
+                "##指令" -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_MDM
+                else -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_CUSTOM
             }
             mStates.updateCommand(command)
             binding.etCustomCommand.clearFocus()
@@ -280,20 +300,17 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             return false
         }
 
-        if (!mStates.validateCommand(command)) {
-            Toaster.show("指令格式不正确，请以 \$cmd=、## 开头或包含 md_raw")
-            return false
-        }
+//        if (!mStates.validateCommand(command)) {
+//            Toaster.show("指令格式不正确，请以 \$cmd=、## 开头或包含 md_raw")
+//            return false
+//        }
 
         return true
     }
 
     private fun executeCommand(command: String) {
-        val processedCommand = mStates.processCommand(command)
-        commandItems.clear()
-        commandItems.add(processedCommand)
         mStates.addLog(command)
-        sendCommandFromCmdList()
+        sendBleCommand(command)
     }
 
     private fun updateDebugMode(mode: BleCustomCommandLogPrintViewModel.DebugMode) {
@@ -334,6 +351,16 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
+                    R.id.action_builtin_cmd -> {
+                        showBuiltinCmdSelector()
+                        true
+                    }
+
+                    R.id.action_clear_log -> {
+                        clearLog()
+                        true
+                    }
+
                     R.id.action_share -> {
                         shareLogToFile()
                         true
@@ -346,10 +373,36 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     }
 
     /**
+     * 显示内置指令选择器
+     */
+    private fun showBuiltinCmdSelector() {
+        try {
+            // 导航到内置指令选择器
+            nav().safeNavigate(R.id.action_to_builtinCommandSelectorFragment)
+        } catch (e: Exception) {
+            Timber.e(e, "显示内置指令选择器失败")
+            Toaster.show("打开内置指令选择器失败")
+        }
+    }
+
+    /**
+     * 清除日志
+     */
+    private fun clearLog() {
+        try {
+            binding.recyclerview.bindingAdapter.models = emptyList()
+            mStates.clearLogs()
+        } catch (e: Exception) {
+            Timber.e(e, "清除日志失败")
+            Toaster.show("清除日志失败")
+        }
+    }
+
+    /**
      * 分享日志到文件
      */
     private fun shareLogToFile() {
-        viewLifecycleOwner.lifecycleScope.launch {
+        launchWithViewLifecycle {
             try {
                 val logContent = withContext(Dispatchers.Default) {
                     mStates.generateLogContent()
@@ -357,7 +410,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 
                 if (logContent.isEmpty()) {
                     Toaster.show("暂无日志内容")
-                    return@launch
+                    return@launchWithViewLifecycle
                 }
 
                 val file = withContext(Dispatchers.IO) {
@@ -376,7 +429,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private suspend fun createLogFile(logContent: String): File? {
+    private fun createLogFile(logContent: String): File? {
         return try {
             val fileName = "${getString(R.string.app_name)}_ble_realtime_log_${
                 SimpleDateFormat(
@@ -444,6 +497,8 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     }
 
     companion object {
+        const val FRAGMENT_BUILTIN_COMMAND_SELECTED_REQUEST_KEY =
+            "builtin_command_selected_request_key"
         private const val IOT_CMD = "com.shmedo.mcloudapp.iot.IOT_CMD"
 
         fun newBundleArguments(

@@ -7,9 +7,8 @@
 
     <include app:graph="@navigation/include_time_calibration_graph" />
     <include app:graph="@navigation/include_lora_graph" />
-    <include app:graph="@navigation/include_firmware_upgrade_graph" />
+    <include app:graph="@navigation/include_advanced_setting_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
-    <include app:graph="@navigation/include_remote_command_debug_graph" />
 
     <fragment
         android:id="@+id/udHomeFragment"
@@ -106,13 +105,6 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDAlarmParamSettingFragment"
         android:label="UDAlarmParamSettingFragment"
         tools:layout="@layout/fragment_ud_alarm_param_setting" />
-
-    <fragment
-        android:id="@+id/advancedSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.common.BaseAdvancedSettingFragment"
-        android:label="BaseAdvancedSettingFragment"
-        tools:layout="@layout/fragment_advanced_setting" />
-
 
     <action
         android:id="@+id/action_global_to_udBaseInfoFragment"
@@ -236,15 +228,7 @@
 
     <action
         android:id="@+id/action_global_to_advancedSettingFragment"
-        app:destination="@id/advancedSettingFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
-        android:id="@+id/action_global_to_firmwareUpgradeFragment"
-        app:destination="@id/firmware_upgrade_graph"
+        app:destination="@id/advanced_setting_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -253,14 +237,6 @@
     <action
         android:id="@+id/action_global_to_commandDebug"
         app:destination="@id/ble_command_debug_graph"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
-        android:id="@+id/action_global_to_remoteDebugFragment"
-        app:destination="@id/remote_command_debug_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

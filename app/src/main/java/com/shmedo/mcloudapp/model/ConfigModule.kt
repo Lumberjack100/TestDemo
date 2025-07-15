@@ -32,6 +32,11 @@ sealed class DeviceFunctionModule(
         notifyChange()
     }
 
+    fun refreshSupport(state: Boolean) {
+        this.isSupport = state
+        notifyChange()
+    }
+
     // 增加一个方法来检查模块的支持状态
     fun isModuleAvailable(): Boolean {
         return isSupport && isConnected

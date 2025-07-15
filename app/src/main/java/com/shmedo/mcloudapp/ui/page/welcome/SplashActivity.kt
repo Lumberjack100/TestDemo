@@ -9,7 +9,6 @@ import com.gyf.immersionbar.ktx.immersionBar
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
-import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -56,11 +55,12 @@ class SplashActivity : BaseActivity() {
 
     override fun initData() {
         logViewModel.insertSystemLogSession()
-        if (!CommonMMKVOwner.isAgreePrivate) {
-            showPrivateDialog()
-        } else {
-            goToLogin()
-        }
+//        if (!CommonMMKVOwner.isAgreePrivate) {
+//            showPrivateDialog()
+//        } else {
+//            goToLogin()
+//        }
+        goToLogin()
     }
 
     override fun createObserver() {
@@ -75,17 +75,17 @@ class SplashActivity : BaseActivity() {
             if (!dataResult.responseStatus.isSuccess) {
                 dismissLoadingDialog()
                 Toaster.show("登录失败: " + dataResult.responseStatus.errorMessage)
-                redirectToLoginActivity(500)
+                redirectToLoginActivity(0)
                 return@observe
             }
             CrashReport.setUserId("${AuthMMKVOwner.account}/${AuthMMKVOwner.realName}") //该用户本次启动后的异常日志用户account
-            redirectToMainActivity(500)
+            redirectToMainActivity(0)
         }
     }
 
     private fun goToLogin() {
         if (!NetworkUtils.isConnected()) {
-            redirectToMainActivity(500)
+            redirectToMainActivity(0)
             return
         }
 
@@ -93,7 +93,7 @@ class SplashActivity : BaseActivity() {
         if (!TextUtils.isEmpty(AuthMMKVOwner.token)) {
             loginRequestViewModel.requestLoginByToken()
         } else {
-            redirectToLoginActivity(500)
+            redirectToLoginActivity(0)
         }
     }
 

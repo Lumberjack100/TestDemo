@@ -27,11 +27,13 @@
             margin: 20px 0;
             font-size: 14px;
             box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+            background-color: white;
         }
         th, td {
             padding: 12px 15px;
             text-align: left;
             border: 1px solid #ddd;
+            word-wrap: break-word;
         }
         th {
             background-color: #4A89DC;
@@ -44,6 +46,13 @@
         tr:hover {
             background-color: #e9f0f9;
         }
+        a {
+            color: #4A89DC;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
         @media (max-width: 768px) {
             table {
                 display: block;
@@ -55,48 +64,51 @@
             }
             th, td {
                 padding: 8px 10px;
+                font-size: 12px;
             }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- <script src="../js/marked.min.js"></script> -->
 </head>
 <body>
-    <div id="content"></div>
+    <h1>第三方信息共享清单</h1>
     
-    <script>
-        // 使用 XMLHttpRequest 代替 Fetch API 加载 Markdown 文件
-        function loadMarkdown() {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'third_party_sharing_list.md', true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        // 成功加载 Markdown 文件
-                        var markdown = xhr.responseText;
-                        // 确保 marked 已加载
-                        if (typeof marked === 'undefined') {
-                            console.error('marked.js library is not loaded.');
-                            document.getElementById('content').innerHTML = '<p>错误: Markdown 渲染库未加载。</p>';
-                            return;
-                        }
-                        document.getElementById('content').innerHTML = marked.parse(markdown);
-                    } else {
-                        // 加载失败
-                        console.error('Failed to load markdown file. Status: ' + xhr.status);
-                        document.getElementById('content').innerHTML = '<p>加载内容失败，请稍后重试。</p>';
-                    }
-                }
-            };
-            xhr.onerror = function() {
-                console.error('Error loading markdown file');
-                document.getElementById('content').innerHTML = '<p>加载内容失败，请稍后重试。</p>';
-            };
-            xhr.send();
-        }
-
-        // 页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', loadMarkdown);
-    </script>
+    <table>
+        <thead>
+            <tr>
+                <th>第三方SDK名称</th>
+                <th>第三方公司名称</th>
+                <th>共享信息</th>
+                <th>使用目的</th>
+                <th>共享方式</th>
+                <th>隐私政策</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Bugly Android SDK</td>
+                <td>深圳市腾讯计算机系统有限公司</td>
+                <td>设备标识信息</td>
+                <td>用于对米易通应用进行崩溃分析</td>
+                <td>SDK 本机采集</td>
+                <td><a href="https://privacy.qq.com/document/preview/fc748b3d96224fdb825ea79e132c1a56" target="_blank">隐私政策链接</a></td>
+            </tr>
+            <tr>
+                <td>百度地图 SDK</td>
+                <td>北京百度网讯科技有限公司</td>
+                <td>设备信息，包括终端设备唯一标识符【包含 IDFV、OAID、IMEI（针对 Android Q 以下版本）、MEID、IMSI 等】、MAC 地址、操作系统版本、设备品牌及型号、设备配置、运营商类型、应用信息（应用名、应用版本号）。位置信息，包括 GNSS 信息、IP 地址、WLAN 热点、基站信息、蓝牙设备以及其他能够用于定位的传感器信息</td>
+                <td>用于在地图图面上展示物联网设备位置</td>
+                <td>SDK 本机采集</td>
+                <td><a href="https://lbs.baidu.com/index.php?title=openprivacy" target="_blank">隐私政策链接</a></td>
+            </tr>
+            <tr>
+                <td>百度定位 SDK</td>
+                <td>北京百度网讯科技有限公司</td>
+                <td>设备信息，包括终端设备唯一标识符【包含 IDFV、OAID、IMEI（针对 Android Q 以下版本）、MEID、IMSI 等】、MAC 地址、操作系统版本、设备品牌及型号、设备配置、运营商类型、应用信息（应用名、应用版本号）。位置信息，包括 GNSS 信息、IP 地址、WLAN 热点、基站信息、蓝牙设备以及其他能够用于定位的传感器信息</td>
+                <td>用于获取用户定位</td>
+                <td>SDK 本机采集</td>
+                <td><a href="https://lbs.baidu.com/index.php?title=openprivacy" target="_blank">隐私政策链接</a></td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html> 

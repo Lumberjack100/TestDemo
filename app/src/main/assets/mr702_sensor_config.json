@@ -29,19 +29,6 @@
     "modelName": "水位",
     "modelFieldList": [
       {
-        "fieldName": "水深",
-        "engUnit": "m",
-        "hydrologicalIdentification": "3B",
-        "collectionInstructions": "03000A0002",
-        "ratio": "0.001",
-        "dataFormat": "浮点型ABCD",
-        "triggerValue": "0",
-        "upperLimit": "10000",
-        "lowerLimit": "0",
-        "correctValue": "0",
-        "ngateval": "3"
-      },
-      {
         "fieldName": "温度",
         "engUnit": "℃",
         "hydrologicalIdentification": "3B",
@@ -51,6 +38,19 @@
         "triggerValue": "0",
         "upperLimit": "10000",
         "lowerLimit": "-10000",
+        "correctValue": "0",
+        "ngateval": "3"
+      },
+      {
+        "fieldName": "水深",
+        "engUnit": "m",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "03000A0002",
+        "ratio": "0.001",
+        "dataFormat": "浮点型ABCD",
+        "triggerValue": "0",
+        "upperLimit": "10000",
+        "lowerLimit": "0",
         "correctValue": "0",
         "ngateval": "3"
       }

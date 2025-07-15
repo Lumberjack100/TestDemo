@@ -6,6 +6,7 @@
     app:startDestination="@id/gWHomeFragment">
 
     <include app:graph="@navigation/include_lora_graph" />
+    <include app:graph="@navigation/include_advanced_setting_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
 
     <fragment
@@ -25,12 +26,6 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.common.ChongQingRadioSettingsFragment"
         android:label="RadioSettingsFragment"
         tools:layout="@layout/fragment_chongqing_radio_settings" />
-
-    <fragment
-        android:id="@+id/advancedSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.common.BaseAdvancedSettingFragment"
-        android:label="BaseAdvancedSettingFragment"
-        tools:layout="@layout/fragment_advanced_setting" />
 
     <action
         android:id="@+id/action_global_to_gWBaseInfoFragment"
@@ -58,7 +53,7 @@
 
     <action
         android:id="@+id/action_global_to_advancedSettingFragment"
-        app:destination="@id/advancedSettingFragment"
+        app:destination="@id/advanced_setting_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

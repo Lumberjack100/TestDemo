@@ -73,8 +73,8 @@ class WebviewActivity : BaseActivity() {
 
         // 确保对本地文件的访问权限，尤其是 file:///android_asset/ 路径下的 JS 通过 fetch/XHR 访问其他本地文件
         mAgentWeb.agentWebSettings.webSettings.apply {
-            allowFileAccess = false//允许加载本地文件html  file协议
-            allowContentAccess = false // 允许 WebView 使用 File协议
+            allowFileAccess = true//允许加载本地文件html  file协议
+            allowContentAccess = true // 允许 WebView 使用 File协议
         }
     }
 

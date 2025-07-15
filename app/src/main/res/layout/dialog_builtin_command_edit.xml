@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="cmdName"
+            type="androidx.databinding.ObservableField&lt;String&gt;" />
+
+        <variable
+            name="cmdContent"
+            type="androidx.databinding.ObservableField&lt;String&gt;" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/popup_head"
+            layout="@layout/cmd_response_dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginBottom="@dimen/dimen_size_25" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_15"
+                android:text="指令名称"
+                android:textColor="@color/text_color_666666"
+                android:textSize="@dimen/text_size_14" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dimen_size_15"
+                android:layout_marginTop="@dimen/dimen_size_8"
+                android:padding="@dimen/dimen_size_10"
+                app:drawable_radius="@{4}"
+                app:drawable_solidColor="@{@color/gray_F5F6F8}"
+                tools:background="@color/gray_F5F6F8">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_command_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:gravity="start"
+                    android:hint="请输入"
+                    android:maxLines="1"
+                    android:text="@={cmdName}"
+                    android:textColor="@color/sub_title_text_color_black_60"
+                    android:textColorHint="@color/text_color_hint"
+                    android:textSize="@dimen/page_content_item_text_size_14" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_15"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                android:text="指令内容"
+                android:textColor="@color/text_color_666666"
+                android:textSize="@dimen/text_size_14" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dimen_size_15"
+                android:layout_marginTop="@dimen/dimen_size_8"
+                android:minHeight="@dimen/dimen_size_130"
+                android:padding="@dimen/dimen_size_10"
+                app:drawable_radius="@{4}"
+                app:drawable_solidColor="@{@color/gray_F5F6F8}"
+                tools:background="@color/gray_F5F6F8">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_command_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:gravity="start"
+                    android:hint="请输入"
+                    android:text="@={cmdContent}"
+                    android:textColor="@color/sub_title_text_color_black_60"
+                    android:textColorHint="@color/text_color_hint"
+                    android:textSize="@dimen/page_content_item_text_size_14" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                android:background="@color/divider_line_bg" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/xpopup_cancel"
+                    android:textColor="@color/text_color_666666"
+                    android:textSize="@dimen/text_size_16"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/divider_line_bg" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_confirm"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/xpopup_ok"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/text_size_16"
+                    android:textStyle="bold" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

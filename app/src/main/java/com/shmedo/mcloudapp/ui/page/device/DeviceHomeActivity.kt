@@ -20,7 +20,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
 import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
-import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
@@ -130,8 +129,6 @@ class DeviceHomeActivity : BaseActivity() {
             }
 
             ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
-                val graphId =
-                    if (communicateWay == BleConnect) R.navigation.ble_das_graph else R.navigation.das_graph
                 navController.setGraph(
                     R.navigation.das_graph, bundle2
                 )

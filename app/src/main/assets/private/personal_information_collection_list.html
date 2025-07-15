@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第三方信息共享清单</title>
+    <title>个人信息收集清单</title>
     <style>
         body {
             font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
@@ -27,6 +27,7 @@
             margin: 20px 0;
             font-size: 14px;
             box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+            background-color: white;
         }
         th, td {
             padding: 12px 15px;
@@ -58,45 +59,35 @@
             }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- <script src="../js/marked.min.js"></script> -->
 </head>
 <body>
-    <div id="content"></div>
+    <h1>个人信息收集清单</h1>
     
-    <script>
-        // 使用 XMLHttpRequest 代替 Fetch API 加载 Markdown 文件
-        function loadMarkdown() {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'personal_information_collection_list.md', true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        // 成功加载 Markdown 文件
-                        var markdown = xhr.responseText;
-                        // 确保 marked 已加载
-                        if (typeof marked === 'undefined') {
-                            console.error('marked.js library is not loaded.');
-                            document.getElementById('content').innerHTML = '<p>错误: Markdown 渲染库未加载。</p>';
-                            return;
-                        }
-                        document.getElementById('content').innerHTML = marked.parse(markdown);
-                    } else {
-                        // 加载失败
-                        console.error('Failed to load markdown file. Status: ' + xhr.status);
-                        document.getElementById('content').innerHTML = '<p>加载内容失败，请稍后重试。</p>';
-                    }
-                }
-            };
-            xhr.onerror = function() {
-                console.error('Error loading markdown file');
-                document.getElementById('content').innerHTML = '<p>加载内容失败，请稍后重试。</p>';
-            };
-            xhr.send();
-        }
-
-        // 页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', loadMarkdown);
-    </script>
+    <table>
+        <thead>
+            <tr>
+                <th>信息名称</th>
+                <th>使用目的</th>
+                <th>使用场景</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>手机号码</td>
+                <td>创建账号、登录</td>
+                <td>首次创建账号时、通过手机号码登录时</td>
+            </tr>
+            <tr>
+                <td>用户基本信息</td>
+                <td>创建账号、对外展示</td>
+                <td>首次创建账号时、用户自行编辑资料时</td>
+            </tr>
+            <tr>
+                <td>设备参数及系统信息</td>
+                <td>App安全运行、App功能兼容性分析</td>
+                <td>用户冷启动 App 时</td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html> 

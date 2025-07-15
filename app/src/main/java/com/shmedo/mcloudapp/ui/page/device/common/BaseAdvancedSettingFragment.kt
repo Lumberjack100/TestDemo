@@ -122,6 +122,16 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
 
     private fun initAdapterData() {
         val moduleList: MutableList<AdvancedSettingItem> = mutableListOf()
+        
+        // 添加监测数据导出功能
+        if (communicateWay is BleConnect && isMonitoringDataExportEnabled()) {
+            moduleList.add(
+                AdvancedSettingItem(
+                    "监测数据导出",
+                    AdvancedSettingItem.Type.MONITORING_DATA_EXPORT,
+                )
+            )
+        }
 
         if (isNeedSyncLocation()) {
             moduleList.add(
@@ -212,6 +222,19 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         return productType == ProductType.M20
                 || productType == ProductType.GNSS_M_1
                 || productType == ProductType.GNSS_M_2
+    }
+
+    /**
+     * 是否支持监测数据导出
+     */
+    private fun isMonitoringDataExportEnabled(): Boolean {
+        // 支持监测数据导出的设备类型
+//        return productType == ProductType.COLLECTOR_R_1
+//                || productType == ProductType.DAS
+//                || productType == ProductType.GNSS_M_5
+
+
+        return false
     }
 
     override fun createObserver() {
@@ -310,6 +333,20 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
                 showMessage("确定进入仓储模式吗？", "温馨提示", "确定", {
                     setStandByMode()
                 }, "取消")
+            }
+
+            AdvancedSettingItem.Type.MONITORING_DATA_EXPORT -> {
+                // 跳转到监测数据导出页面
+                val bundle = newBundleArguments(
+                    productType,
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                ).apply {
+                    putString("deviceSn", deviceInfo.deviceToken)
+                    putString("apiKey", deviceInfo.apikey) // 实际使用时需要从配置中获取
+                }
+                nav().safeNavigate(R.id.action_global_to_monitoringDataExportFragment, bundle)
             }
 
             else -> {}

@@ -10,7 +10,6 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
  * 描述：     TODO
  */
 class ToolbarViewModel : ViewModel() {
-    val toolbarTitleText = NonNullObservableField("")
     val toolbarIvActionResId = NonNullObservableField(R.drawable.ic_query_device_data)
     val toolbarIvActionVisible = NonNullObservableField(false)
     val toolbarTvActionText = NonNullObservableField("取消")

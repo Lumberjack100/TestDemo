@@ -109,13 +109,14 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
 
         mStates.siteType.set(siteTypeList[0])//站点类型 默认无
         mStates.calculate.set(calculateList[0])//计算方式 默认不计算
-        mStates.sensitivityK.set("1")
-        mStates.temperatureCorrectionCoefficientB.set("0")
-        mStates.powValue.set("0")
-        mStates.initialFrequencyF0.set("0")
-        mStates.initialTemperatureT0.set("0")
-        mStates.initialWaterLevel.set("0")
-        mStates.initialMeasureValue.set("0")
+        mStates.sensitivityK.set("1")//灵敏度K
+        mStates.temperatureCorrectionCoefficientB.set("0")//温度修正系数 b
+        mStates.powValue.set("1")//指数
+        mStates.initialFrequencyF0.set("0")//初始频率 F0
+        mStates.initialTemperatureT0.set("0")//初始温度 T0
+        mStates.initialWaterLevel.set("0")//初始水位
+        mStates.initialMeasureValue.set("0")//初始测量值
+        mStates.initialValue.set("0")//初始测量值
 
         resetDefaultModelField1()
         resetDefaultModelField2()
@@ -447,6 +448,9 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
                 IOTConstants.NULL_KEY,
             lvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialMeasureValue.get() else
                 IOTConstants.NULL_KEY,
+            initvalue = if (calculateList.indexOf(mStates.calculate.get()) == 2) mStates.initialValue.get() else
+                IOTConstants.NULL_KEY,
+
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//采集项名称GBK编码
             egbk = mStates.modelFieldUnit.get().stringToGBK16UByteString(),//采集项单位GBK编码
@@ -475,6 +479,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
+
             baseflag = if (siteTypeList.indexOf(mStates.siteType.get()) == 0) IOTConstants.NULL_KEY else (siteTypeList.indexOf(
                 mStates.siteType.get()
             ) - 1).toString(),
@@ -492,6 +497,8 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
             l0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialWaterLevel.get() else
                 IOTConstants.NULL_KEY,
             lvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialMeasureValue.get() else
+                IOTConstants.NULL_KEY,
+            initvalue = if (calculateList.indexOf(mStates.calculate.get()) == 2) mStates.initialValue.get() else
                 IOTConstants.NULL_KEY,
 
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
