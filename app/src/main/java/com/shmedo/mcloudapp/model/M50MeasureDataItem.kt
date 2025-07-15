@@ -9,21 +9,18 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
  * 描述：M50 测量数据项
  */
 data class M50MeasureDataItem(
-    val resultantDisplacement: NonNullObservableField<String> = NonNullObservableField(AppContants.PLACE_HOLDER_VALUE), // 合位移量
-    val xDisplacement: NonNullObservableField<String> = NonNullObservableField(AppContants.PLACE_HOLDER_VALUE), // X轴位移量
-    val yDisplacement: NonNullObservableField<String> = NonNullObservableField(AppContants.PLACE_HOLDER_VALUE), // Y轴位移量
-    val zDisplacement: NonNullObservableField<String> = NonNullObservableField(AppContants.PLACE_HOLDER_VALUE)  // Z轴位移量
+    val xDisplacement: NonNullObservableField<String> = NonNullObservableField(AppContants.PLACE_HOLDER_VALUE), // 东向位移量
+    val yDisplacement: NonNullObservableField<String> = NonNullObservableField(AppContants.PLACE_HOLDER_VALUE), // 北向位移量
+    val zDisplacement: NonNullObservableField<String> = NonNullObservableField(AppContants.PLACE_HOLDER_VALUE)  // 垂直位移量
 ) {
     /**
      * 刷新测量数据状态
      */
     fun refreshStatus(
-        newResultantDisplacement: String,
         newXDisplacement: String,
         newYDisplacement: String,
         newZDisplacement: String
     ) {
-        resultantDisplacement.set(newResultantDisplacement)
         xDisplacement.set(newXDisplacement)
         yDisplacement.set(newYDisplacement)
         zDisplacement.set(newZDisplacement)

@@ -438,16 +438,12 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
      */
     private fun processSampleResponse(content: String) {
         try {
-            // {"sum_value":2,"x_value":"22","y_value":"22","z_value":"22"}
+            // {"x_value":"22","y_value":"22","z_value":"22"}
             val resultMap = MoshiUtil.fromJson<Map<String, String>>(content) ?: return
-            if (resultMap.containsKey("sum_value")
-                && resultMap.containsKey("x_value")
+            if (resultMap.containsKey("x_value")
                 && resultMap.containsKey("y_value")
                 && resultMap.containsKey("z_value")
             ) {
-                val resultantDisplacement =
-                    resultMap["sum_value"]?.let { "$it mm" }
-                        ?: AppContants.PLACE_HOLDER_VALUE
                 val xDisplacement =
                     resultMap["x_value"]?.let { "$it mm" }
                         ?: AppContants.PLACE_HOLDER_VALUE
@@ -461,7 +457,6 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 // 刷新测量数据项
                 binding.rvModule.bindingAdapter.getModel<M50MeasureDataItem>(0)
                     .refreshStatus(
-                        resultantDisplacement,
                         xDisplacement,
                         yDisplacement,
                         zDisplacement

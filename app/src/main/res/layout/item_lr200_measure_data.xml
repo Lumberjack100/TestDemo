@@ -150,7 +150,7 @@
                 android:textSize="@dimen/page_content_item_text_size_14"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/vertical_divider_line3"
-                tools:text="Y轴位移量：5.38m" />
+                tools:text="累计变化量：5.38m" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

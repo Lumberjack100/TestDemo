@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.permissions.OnPermissionCallback
@@ -91,7 +90,7 @@ class BleScannerListFragment : BaseFragment() {
                 discoveredBluetoothDevice = getModel<DiscoveredBluetoothDevice>()
                 discoveredBluetoothDevice?.name?.replaceFirst(Regex("^MD-?"), "")
                     ?.let { deviceToken ->
-                        showLoadingDialog(StringUtils.getString(R.string.processing))
+//                        showLoadingDialog(StringUtils.getString(R.string.processing))
                         deviceRequestViewModel.getDeviceDetailInfo(deviceToken)
                     }
             }
@@ -162,7 +161,7 @@ class BleScannerListFragment : BaseFragment() {
             startScanningSearchDeviceTimeoutJob()
         }
         deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceInfo> ->
-            dismissLoadingDialog()
+//            dismissLoadingDialog()
             if (!dataResult.responseStatus.isSuccess) {
                 discoveredBluetoothDevice?.name?.let { deviceToken ->
                     DeviceHomeActivity.start(

@@ -48,7 +48,6 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
 
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_das_digital_osmometer,
@@ -490,6 +489,35 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    private fun initBleParamData(digitalPiezometerInfo: MDDasDigitalPiezometerInfo) {
+        try {
+            MDOsmometerStatus.Companion.value(digitalPiezometerInfo.osmometerStatus).let {
+                mStates.isOpened.set(it == MDOsmometerStatus.OSMOMETER_OPEN)
+            }
+            mStates.address.set(digitalPiezometerInfo.osmometerAddress)
+            mStates.triggerValue.set(digitalPiezometerInfo.depthTrigger.formatDoubleValue("100", 1))
+            mStates.correctValue.set(digitalPiezometerInfo.depthCorrect.formatDoubleValue("0", 1))
+            mStates.wireRopeLength.set(
+                digitalPiezometerInfo.wireRopeLength.formatDoubleValue(
+                    "0",
+                    1
+                )
+            )
+            mStates.installElevation.set(
+                digitalPiezometerInfo.installElevation.formatDoubleValue(
+                    "0",
+                    1
+                )
+            )
+
+            // 保存初始状态
+            mStates.saveInitialState()
+        } catch (e: Exception) {
+            Timber.Forest.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
     /**
      * 处理4G通讯指令结果
      */
@@ -537,35 +565,6 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
             else -> {
                 cancelNearbyCommunicationTimeoutJob()
             }
-        }
-    }
-
-    private fun initBleParamData(digitalPiezometerInfo: MDDasDigitalPiezometerInfo) {
-        try {
-            MDOsmometerStatus.Companion.value(digitalPiezometerInfo.osmometerStatus).let {
-                mStates.isOpened.set(it == MDOsmometerStatus.OSMOMETER_OPEN)
-            }
-            mStates.address.set(digitalPiezometerInfo.osmometerAddress)
-            mStates.triggerValue.set(digitalPiezometerInfo.depthTrigger.formatDoubleValue("100", 1))
-            mStates.correctValue.set(digitalPiezometerInfo.depthCorrect.formatDoubleValue("0", 1))
-            mStates.wireRopeLength.set(
-                digitalPiezometerInfo.wireRopeLength.formatDoubleValue(
-                    "0",
-                    1
-                )
-            )
-            mStates.installElevation.set(
-                digitalPiezometerInfo.installElevation.formatDoubleValue(
-                    "0",
-                    1
-                )
-            )
-
-            // 保存初始状态
-            mStates.saveInitialState()
-        } catch (e: Exception) {
-            Timber.Forest.e(e)
-            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

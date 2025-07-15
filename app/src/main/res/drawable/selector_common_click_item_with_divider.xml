@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/abc_list_selector_background_transition_holo_light" android:state_pressed="true" />
+    <item>
+        <layer-list>
+            <item>
+                <color android:color="@color/white" />
+            </item>
+            <item android:left="16dp" android:right="16dp">
+                <color android:color="@color/divider_line_bg" />
+            </item>
+            <item android:bottom="0.6dp">
+                <color android:color="@color/white" />
+            </item>
+        </layer-list>
+    </item>
+
+</selector>
