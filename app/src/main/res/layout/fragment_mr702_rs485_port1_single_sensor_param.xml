@@ -151,7 +151,6 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             android:text="@{stateVM.dataBit}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -167,7 +166,6 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             android:text="@{stateVM.checkBit}"
                             tools:text="NONE" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -183,7 +181,6 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             android:text="@{stateVM.stopBit}"
                             tools:text="2" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -215,7 +212,6 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             android:text="@{stateVM.siteType}"
                             tools:text="测点" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -223,7 +219,7 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onIsCalculateChooseClick()}"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        android:background='@{stateVM.calculate=="不计算"?@drawable/shape_common_click_item_bottom_corner_4:@drawable/layer_common_click_item_with_divider}'>
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
@@ -231,7 +227,6 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             android:text="@{stateVM.calculate}"
                             tools:text="是" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

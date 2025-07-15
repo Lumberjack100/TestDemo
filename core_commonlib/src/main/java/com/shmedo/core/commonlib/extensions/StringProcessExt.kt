@@ -26,6 +26,8 @@ fun String.stringToGBKByteArray(): ByteArray {
 }
 
 fun String.gbkHexToString(): String {
+    if (this.isEmpty()) return ""
+
     // 将十六进制字符串转换为字节数组
     val gbkBytes = this.hexStringToByteArray()
     // 将字节数组按照 GBK 编码解码为字符串
