@@ -90,7 +90,7 @@ object IOTDeviceBindingAdapter {
             val disabledColor = if (disabledColorRes != 0) {
                 disabledColorRes
             } else {
-                ColorUtils.getColor(R.color.title_text_color_black_25)
+                ColorUtils.getColor(R.color.disabled_text_color_black_25)
             }
             textView.setTextColor(disabledColor)
         }

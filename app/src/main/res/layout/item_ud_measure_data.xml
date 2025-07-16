@@ -42,24 +42,22 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_8">
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_size_10"
                 android:text="液位海拔："
                 android:textColor="@color/title_text_color_black_90"
-                android:textSize="@dimen/page_content_item_text_size_14" />
+                android:textSize="@dimen/measure_data_item_text_size_12" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_size_10"
                 android:text='@{m.waterSurfaceElevation}'
                 android:textColor="@color/title_text_color_black_90"
-                android:textSize="@dimen/text_size_18"
-                android:textStyle="bold"
+                android:textSize="@dimen/measure_data_item_text_size_12"
                 tools:text="5.333 m" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -67,8 +65,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ll_air_distance"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_size_20"
-            android:layout_marginTop="@dimen/dimen_size_10">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_8">
 
             <View
                 android:id="@+id/vertical_divider_line"
@@ -84,10 +82,10 @@
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_air_distance"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen_size_20"
+                android:layout_height="wrap_content"
                 android:text='@{"空高距离："+m.airDistance}'
                 android:textColor="@color/title_text_color_black_90"
-                android:textSize="@dimen/page_content_item_text_size_14"
+                android:textSize="@dimen/measure_data_item_text_size_12"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:text="空高距离：5.38 m" />
@@ -95,11 +93,11 @@
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_today_rain_fall"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen_size_20"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_size_16"
                 android:text='@{"今日雨量："+m.todayRainfall}'
                 android:textColor="@color/title_text_color_black_90"
-                android:textSize="@dimen/page_content_item_text_size_14"
+                android:textSize="@dimen/measure_data_item_text_size_12"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/vertical_divider_line"
                 tools:text="今日雨量：20.5 mm" />
@@ -108,20 +106,20 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_installation_angle"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dimen_size_20"
-            android:layout_marginTop="@dimen/dimen_size_10"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_8"
             android:text='@{"安装角度："+m.installationAngle}'
             android:textColor="@color/title_text_color_black_90"
-            android:textSize="@dimen/page_content_item_text_size_14"
+            android:textSize="@dimen/measure_data_item_text_size_12"
             tools:text="安装角度：89.3 °" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dimen_size_20"
-            android:layout_marginTop="@dimen/dimen_size_10"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_8"
             android:text='@{"测量时间："+m.measurementTime}'
             android:textColor="@color/title_text_color_black_90"
-            android:textSize="@dimen/page_content_item_text_size_14"
+            android:textSize="@dimen/measure_data_item_text_size_12"
             tools:text="测量时间：2023-08-07 12:36:00" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -134,11 +132,7 @@
                 style="@style/MeasureData_Button_Style"
                 android:onClick="@{()->click.onMeasureDataClick()}"
                 android:text='@{m.isMeasuring() ? "测量中" : "测量"}'
-                android:textColor="@color/measure_data_button_text_color"
-                app:backgroundTint="@drawable/measure_data_button_background_tint"
                 app:icon="@drawable/ic_device_measure_data"
-                app:iconSize="@dimen/dimen_size_18"
-                app:iconTint="@color/measure_data_button_icon_tint_color"
                 tools:text="测量中" />
 
             <com.google.android.material.button.MaterialButton
@@ -146,22 +140,14 @@
                 android:layout_marginStart="@dimen/dimen_size_10"
                 android:onClick="@{()->click.onTakePhotoClick()}"
                 android:text='拍照'
-                android:textColor="@color/measure_data_button_text_color"
-                app:backgroundTint="@drawable/measure_data_button_background_tint"
-                app:icon="@drawable/ic_device_take_photo"
-                app:iconSize="@dimen/dimen_size_18"
-                app:iconTint="@color/measure_data_button_icon_tint_color" />
+                app:icon="@drawable/ic_device_take_photo" />
 
             <com.google.android.material.button.MaterialButton
                 style="@style/MeasureData_Button_Style"
                 android:layout_marginStart="@dimen/dimen_size_10"
                 android:onClick="@{()->click.onGoToSensorDataHistoryClick()}"
                 android:text='历史'
-                android:textColor="@color/measure_data_button_text_color"
-                app:backgroundTint="@drawable/measure_data_button_background_tint"
-                app:icon="@drawable/ic_device_sensor_data_history"
-                app:iconSize="@dimen/dimen_size_18"
-                app:iconTint="@color/measure_data_button_icon_tint_color" />
+                app:icon="@drawable/ic_device_sensor_data_history" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>

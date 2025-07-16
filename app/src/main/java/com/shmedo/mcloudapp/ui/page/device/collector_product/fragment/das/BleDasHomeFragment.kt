@@ -128,8 +128,8 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        mStates.productNormalResId.set(R.drawable.device_logo_qingxieyi)
-        mStates.productOfflineResId.set(R.drawable.device_logo_qingxieyi_gray)
+        mStates.productNormalResId.set(R.drawable.device_logo_das)
+        mStates.productOfflineResId.set(R.drawable.device_logo_das_offline)
         mStates.productLogoResId.set(mStates.productNormalResId.get())
         mStates.productName.set(deviceInfo.productName)
         mStates.deviceToken.set(deviceInfo.deviceToken)

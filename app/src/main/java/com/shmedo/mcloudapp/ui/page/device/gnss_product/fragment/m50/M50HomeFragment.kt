@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
+import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.BindingAdapter.BindingViewHolder
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
@@ -438,7 +439,9 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
      */
     private fun processSampleResponse(content: String) {
         try {
+            // 可能的响应格式：
             // {"x_value":"22","y_value":"22","z_value":"22"}
+            // 或包含时间信息：{"x_value":"22","y_value":"22","z_value":"22","init_completion_time":"2025-06-10 15:00:00","latest_data_time":"2025-06-10 17:00:00"}
             val resultMap = MoshiUtil.fromJson<Map<String, String>>(content) ?: return
             if (resultMap.containsKey("x_value")
                 && resultMap.containsKey("y_value")
@@ -454,13 +457,34 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     resultMap["z_value"]?.let { "$it mm" }
                         ?: AppContants.PLACE_HOLDER_VALUE
 
-                // 刷新测量数据项
-                binding.rvModule.bindingAdapter.getModel<M50MeasureDataItem>(0)
-                    .refreshStatus(
+                val measureDataItem =
+                    binding.rvModule.bindingAdapter.getModel<M50MeasureDataItem>(0)
+
+                // 检查是否包含时间信息
+                if (resultMap.containsKey("init_completion_time") && resultMap.containsKey("latest_data_time")) {
+                    val initCompletionTime =
+                        resultMap["init_completion_time"] ?: AppContants.PLACE_HOLDER_VALUE
+                    val latestDataTime =
+                        resultMap["latest_data_time"] ?: AppContants.PLACE_HOLDER_VALUE
+
+                    // 使用包含时间信息的刷新方法
+                    measureDataItem.refreshStatusWithTime(
                         xDisplacement,
                         yDisplacement,
-                        zDisplacement
+                        zDisplacement,
+                        initCompletionTime,
+                        latestDataTime
                     )
+                }
+
+                // 使用包含时间信息的刷新方法
+                measureDataItem.refreshStatusWithTime(
+                    xDisplacement,
+                    yDisplacement,
+                    zDisplacement,
+                    TimeUtils.getNowString(),
+                    TimeUtils.getNowString()
+                )
                 return
             }
         } catch (e: Exception) {

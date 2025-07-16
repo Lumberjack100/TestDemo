@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <dimen name="item_height">60dp</dimen>
-    <dimen name="item_margin">10dp</dimen>
-    <dimen name="nav_bar_height">50dp</dimen>
-    <dimen name="divider_height">5dp</dimen>
-
     <!-- 通用 -->
     <dimen name="text_size_5">5sp</dimen>
     <dimen name="text_size_6">6sp</dimen>
@@ -94,12 +89,14 @@
     <dimen name="page_content_container_padding_horizontal_12">12dp</dimen>
     <dimen name="page_content_container_padding_top_12">12dp</dimen>
     <dimen name="page_content_container_padding_bottom_100">100dp</dimen>
-    <dimen name="page_content_item_margin_top_12">12dp</dimen>
     <dimen name="page_content_item_margin_horizontal_12">12dp</dimen>
     <dimen name="page_content_item_padding_horizontal_16">16dp</dimen>
+    <dimen name="page_content_item_margin_top_12">12dp</dimen>
     <dimen name="page_content_item_text_size_14">14sp</dimen>
     <dimen name="reset_button_margin_top_50">50dp</dimen>
     <dimen name="summit_button_margin_top_20">20dp</dimen>
+
+    <dimen name="measure_data_item_text_size_12">12sp</dimen>
 
 
     <!--圆角矩形-->
