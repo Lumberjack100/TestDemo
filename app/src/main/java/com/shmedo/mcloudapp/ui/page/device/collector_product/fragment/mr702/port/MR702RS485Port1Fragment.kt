@@ -37,7 +37,6 @@ import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.model.MRRS485Port1
 import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.RVEmptyFooter
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -152,10 +151,9 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
 
     override fun createObserver() {
         super.createObserver()
-        mMessenger.mr702Rs485PortSensorRefresh.observe(viewLifecycleOwner) { port ->
-            if (port is MRRS485Port1) {
-                refreshSensorList()
-            }
+        portHomeViewModel.port1SensorUpdateEvent.observe(viewLifecycleOwner) { sensorItem ->
+            Timber.e("接收到传感器更新事件: ${sensorItem.sensorName}")
+            updateSensorInList(sensorItem)
         }
     }
 
@@ -287,18 +285,35 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    private fun refreshSensorList() {
-        initEmptySensor()
-        commandItems.clear()
 
-        commandItems.add(
-            IOTCommandUtil.getCommand(
-                IOTCommandType.MR_MD_GET_RS485_PORT1_SENSOR,
-                "index=0"
-            )
-        )
-        showLoadingDialog(StringUtils.getString(R.string.loading))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+    /**
+     * 添加传感器到列表（增量更新）
+     */
+    private fun addSensorToList(sensor: MRSensorItem) {
+        binding.rv.bindingAdapter.apply {
+            mutable.add(sensor)
+            notifyItemInserted(itemCount)
+        }
+        updateFooter()
+    }
+
+    /**
+     * 更新列表中的传感器（增量更新）
+     */
+    private fun updateSensorInList(sensor: MRSensorItem) {
+        val currentList = binding.rv.mutable.filterIsInstance<MRSensorItem>().toMutableList()
+        val index =
+            currentList.indexOfFirst { "${it.modelToken}_${it.addr}" == "${sensor.modelToken}_${sensor.addr}" }
+        if (index >= 0) {
+//            currentList[index] = sensor
+//            binding.rv.models = currentList
+//            binding.rv.bindingAdapter.notifyItemChanged(index)
+
+            currentList[index].refreshStatus(sensor.isPlugin, sensor.addr, sensor.addrDesc)
+        } else {
+            // 如果没找到，直接添加
+            addSensorToList(sensor)
+        }
     }
 
     /**
@@ -563,9 +578,10 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                         ?: "自定义传感器",
                     modelToken = modelToken,
                 )
-                binding.rv.mutable.add(item)
-                binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.modelCount)
-
+                binding.rv.bindingAdapter.apply {
+                    mutable.add(item)
+                    notifyItemInserted(itemCount)
+                }
             } catch (e: Exception) {
                 Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)

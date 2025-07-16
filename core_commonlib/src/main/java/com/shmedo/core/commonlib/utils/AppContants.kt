@@ -38,6 +38,9 @@ interface AppContants {
 
             const val SENSOR_ADDR = "sensor_addr"
 
+            const val FRAGMENT_COMMON_RESULT_REQUEST_KEY =
+                "fragment_common_result_request_key"
+
             const val FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY =
                 "fragment_data_center_home_result_request_key"
 

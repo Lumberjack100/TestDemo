@@ -65,4 +65,5 @@ class PageMessenger : ViewModel(){
     fun requestMR702Rs485PortSensorRefresh(port: MRPortSensorRefreshResult) {
         _mr702Rs485PortSensorRefresh.postValue(port)
     }
+
 }
