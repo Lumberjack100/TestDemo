@@ -39,6 +39,7 @@ object DeviceStatusInfoProcessor {
      * @param value 值
      * @param unit 单位
      * @param textColorRes 字体颜色
+     * @param isClickable 是否支持点击
      * @param isClipboard 是否支持复制
      * @param isBottomItem 是否是底部项
      */
@@ -48,6 +49,7 @@ object DeviceStatusInfoProcessor {
         value: String,
         unit: String = "",
         textColorRes: Int = 0,
+        isClickable: Boolean = false,
         isClipboard: Boolean = false,
         isBottomItem: Boolean = false,
     ) {
@@ -57,6 +59,7 @@ object DeviceStatusInfoProcessor {
                     name = name,
                     value = if (it == AppContants.PLACE_HOLDER_VALUE || it.contains("异常")) it else "$it $unit",
                     textColorRes = textColorRes,
+                    isClickable = isClickable,
                     isClipboard = isClipboard,
                     isBottomItem = isBottomItem
                 )
@@ -71,6 +74,7 @@ object DeviceStatusInfoProcessor {
      * @param defaultValue 默认值
      * @param digit 小数点位数
      * @param unit 单位
+     * @param isClickable 是否支持点击
      * @param isClipboard 是否支持复制
      * @param isBottomItem 是否是底部项
      */
@@ -81,6 +85,7 @@ object DeviceStatusInfoProcessor {
         defaultValue: String = "0",
         digit: Int = 2,
         unit: String = "",
+        isClickable: Boolean = false,
         isClipboard: Boolean = false,
         isBottomItem: Boolean = false,
     ) {
@@ -89,6 +94,7 @@ object DeviceStatusInfoProcessor {
                 DeviceStatusInfoBasicItem(
                     name = name,
                     value = "${formatDoubleValue(it, defaultValue, digit)} $unit",
+                    isClickable = isClickable,
                     isClipboard = isClipboard,
                     isBottomItem = isBottomItem
                 )
@@ -104,6 +110,7 @@ object DeviceStatusInfoProcessor {
      * @param downLimitValue 低于此值时字体颜色变红
      * @param digit 小数点位数
      * @param unit 单位
+     * @param isClickable 是否支持点击
      * @param isClipboard 是否支持复制
      * @param isBottomItem 是否是底部项
      */
@@ -115,6 +122,7 @@ object DeviceStatusInfoProcessor {
         downLimitValue: Double = 5.0,
         digit: Int = 2,
         unit: String = "",
+        isClickable: Boolean = false,
         isClipboard: Boolean = false,
         isBottomItem: Boolean = false,
     ) {
@@ -132,6 +140,7 @@ object DeviceStatusInfoProcessor {
                         ColorUtils.getColor(R.color.error_FF4400)
                     else
                         ColorUtils.getColor(R.color.online_colorPrimary),
+                    isClickable = isClickable,
                     isClipboard = isClipboard,
                     isBottomItem = isBottomItem,
                 )
@@ -139,47 +148,6 @@ object DeviceStatusInfoProcessor {
         }
     }
 
-    /**
-     * 添加设备状态信息基本项，适用于MR702系列串口状态信息，需要特殊处理字体颜色
-     * @param name 名称
-     * @param value 值
-     * @param defaultValue 默认值
-     * @param downLimitValue 低于此值时字体颜色变红
-     * @param upLimitValue 高于此值时字体颜色变红
-     * @param digit 小数点位数
-     * @param unit 单位
-     * @param isBottomItem 是否是底部项
-     */
-    fun addMR702SerialPortStatusInfoItem(
-        groupList: MutableList<Any>,
-        name: String,
-        value: String,
-        defaultValue: String = "0",
-        downLimitValue: Double = 4.0,
-        upLimitValue: Double = 20.0,
-        digit: Int = 2,
-        unit: String = "",
-        isBottomItem: Boolean = false,
-    ) {
-        value.notNullKey {
-            val tempValue = formatDoubleValue(
-                it,
-                defaultValue,
-                digit,
-            )
-            groupList.add(
-                DeviceStatusInfoBasicItem(
-                    name = name,
-                    value = "$tempValue $unit",
-                    textColorRes = if (tempValue.toDouble() < downLimitValue || tempValue.toDouble() > upLimitValue)
-                        ColorUtils.getColor(R.color.error_FF4400)
-                    else
-                        0,
-                    isBottomItem = isBottomItem
-                )
-            )
-        }
-    }
 
     /**
      * 将毫秒转换为合适的时间格式

@@ -25,6 +25,4 @@
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
-
-
 </navigation>
