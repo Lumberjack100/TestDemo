@@ -40,7 +40,6 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CommunicateWay
-import com.shmedo.mcloudapp.model.MRRS485Port1
 import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -512,7 +511,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
             }
             delay(1000)
             //需要给上一级浏览页面传递最新的事件信息
-            mMessenger.requestMR702Rs485PortSensorRefresh(MRRS485Port1)
+//            mMessenger.requestMR702Rs485PortSensorRefresh(MRRS485Port1)
             nav().navigateUp()
         }
     }

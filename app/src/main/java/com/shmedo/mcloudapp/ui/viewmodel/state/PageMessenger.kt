@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
 import com.shmedo.mcloudapp.model.CustomActivityResult
-import com.shmedo.mcloudapp.model.MRPortSensorRefreshResult
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 /**
@@ -20,10 +19,6 @@ class PageMessenger : ViewModel(){
     //状态栏颜色
     private val _statusBarColor = MutableResult<Int>()
     val statusBarColor: Result<Int> = _statusBarColor
-
-    //状态栏颜色
-    private val _mr702Rs485PortSensorRefresh = MutableResult<MRPortSensorRefreshResult>()
-    val mr702Rs485PortSensorRefresh: Result<MRPortSensorRefreshResult> = _mr702Rs485PortSensorRefresh
 
     //是否同意隐私政策
     private val _isAgreePolicy = MutableResult<Boolean>()
@@ -60,10 +55,6 @@ class PageMessenger : ViewModel(){
 
     fun requestRefreshDeviceList() {
         _isRefreshDeviceList.postValue(Unit)
-    }
-
-    fun requestMR702Rs485PortSensorRefresh(port: MRPortSensorRefreshResult) {
-        _mr702Rs485PortSensorRefresh.postValue(port)
     }
 
 }

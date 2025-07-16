@@ -43,6 +43,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+import java.util.UUID
 
 class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port1TwoSensorAddParamBinding
@@ -701,7 +702,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
                 return@launchWithViewLifecycle
             }
             delay(1000)
-            
+
             // 使用优化的事件机制通知传感器添加
             val newSensor = MRSensorItem(
                 sensorID = sensorItem.sensorID,
@@ -709,7 +710,8 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
                 modelToken = mStates.modelToken.get(),
                 addr = mStates.address.get(),
                 addrDesc = "地址-${mStates.address.get()}",
-                isPlugin = true // 新添加的传感器默认在线
+                isPlugin = true,// 新添加的传感器默认在线
+                uuid = UUID.randomUUID().toString()
             )
 
             // 通过共享的 ViewModel 通知传感器更新

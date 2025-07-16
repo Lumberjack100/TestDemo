@@ -48,6 +48,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+import java.util.UUID
 
 class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port1Binding
@@ -289,9 +290,9 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     /**
      * 添加传感器到列表（增量更新）
      */
-    private fun addSensorToList(sensor: MRSensorItem) {
+    private fun addSensorToList(sensorItem: MRSensorItem) {
         binding.rv.bindingAdapter.apply {
-            mutable.add(sensor)
+            mutable.add(sensorItem)
             notifyItemInserted(itemCount)
         }
         updateFooter()
@@ -300,19 +301,19 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     /**
      * 更新列表中的传感器（增量更新）
      */
-    private fun updateSensorInList(sensor: MRSensorItem) {
+    private fun updateSensorInList(sensorItem: MRSensorItem) {
         val currentList = binding.rv.mutable.filterIsInstance<MRSensorItem>().toMutableList()
         val index =
-            currentList.indexOfFirst { "${it.modelToken}_${it.addr}" == "${sensor.modelToken}_${sensor.addr}" }
+            currentList.indexOfFirst { it.uuid == sensorItem.uuid }
         if (index >= 0) {
-//            currentList[index] = sensor
-//            binding.rv.models = currentList
-//            binding.rv.bindingAdapter.notifyItemChanged(index)
-
-            currentList[index].refreshStatus(sensor.isPlugin, sensor.addr, sensor.addrDesc)
+            currentList[index].refreshStatus(
+                sensorItem.isPlugin,
+                sensorItem.addr,
+                sensorItem.addrDesc
+            )
         } else {
             // 如果没找到，直接添加
-            addSensorToList(sensor)
+            addSensorToList(sensorItem)
         }
     }
 
@@ -577,6 +578,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                     sensorName = portHomeViewModel.configPort4851SensorIDToSensorModelMap[sensorParam.sensorId]?.sensorName
                         ?: "自定义传感器",
                     modelToken = modelToken,
+                    uuid = UUID.randomUUID().toString()
                 )
                 binding.rv.bindingAdapter.apply {
                     mutable.add(item)

@@ -858,7 +858,8 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
                 modelToken = mStates.modelToken.get(),
                 addr = mStates.address.get(),
                 addrDesc = "地址-${mStates.address.get()}",
-                isPlugin = sensorItem.isPlugin // 保持原有在线状态
+                isPlugin = sensorItem.isPlugin, // 保持原有在线状态
+                uuid = sensorItem.uuid
             )
 
             // 通过共享的 ViewModel 通知传感器更新

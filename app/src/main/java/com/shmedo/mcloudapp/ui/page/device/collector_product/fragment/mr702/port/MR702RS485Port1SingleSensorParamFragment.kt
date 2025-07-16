@@ -63,7 +63,6 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
     private val calculateList = mutableListOf("不计算", "线性方程计算", "传感器联合计算")
 
 
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_mr702_rs485_port1_single_sensor_param,
@@ -675,7 +674,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
                 return@launchWithViewLifecycle
             }
             delay(1000)
-            
+
             // 使用优化的事件机制通知传感器更新
             val updatedSensor = MRSensorItem(
                 sensorID = sensorItem.sensorID,
@@ -683,7 +682,8 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
                 modelToken = mStates.modelToken.get(),
                 addr = mStates.address.get(),
                 addrDesc = "地址-${mStates.address.get()}",
-                isPlugin = sensorItem.isPlugin // 保持原有在线状态
+                isPlugin = sensorItem.isPlugin, // 保持原有在线状态
+                uuid = sensorItem.uuid
             )
 
             // 通过共享的 ViewModel 通知传感器更新

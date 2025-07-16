@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.por
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -34,19 +35,21 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CommunicateWay
-import com.shmedo.mcloudapp.model.MRRS485Port2
 import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port2SensorParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+import java.util.UUID
 
 class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port2SensorParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val portHomeViewModel: MR702PortHomeViewModel by activityViewModels()
     private val mStates: MR702RS485Port2SensorParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
@@ -429,9 +432,25 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
                 nav().navigateUp()
                 return@launchWithViewLifecycle
             }
-            //需要给上一级浏览页面传递最新的事件信息
-            mMessenger.requestMR702Rs485PortSensorRefresh(MRRS485Port2)
+
             delay(1000)
+
+            // 使用优化的事件机制通知传感器添加
+            val newSensor = MRSensorItem(
+                sensorID = sensorItem.sensorID,
+                sensorName = sensorItem.sensorName,
+                modelToken = mStates.modelToken.get(),
+                chl = mStates.channelNumber.get(),
+                addrDesc = "通道-${mStates.channelNumber.get()}",
+                isPlugin = if (isAdd) true else sensorItem.isPlugin, // 新添加的传感器默认在线
+                uuid = if (isAdd) UUID.randomUUID().toString() else sensorItem.uuid
+            )
+
+            // 通过共享的 ViewModel 通知传感器更新
+            portHomeViewModel.notifyPort2SensorUpdate(newSensor)
+
+            Timber.d("通过 ViewModel 发送传感器更新事件: ${newSensor.sensorName}")
+
             nav().navigateUp()
         }
     }

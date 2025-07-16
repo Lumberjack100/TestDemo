@@ -19,6 +19,7 @@ data class MRSensorItem(
     val sensorName: String = "",//传感器名称
     val modelToken: String = "",//物模型
     var isShowDel: Boolean = true,//是否显示删除按钮
+    val uuid: String = ""
 ) : Parcelable, BaseObservable() {
 
     fun refreshStatus(isPlugin: Boolean, addr: String, addrDesc: String) {
