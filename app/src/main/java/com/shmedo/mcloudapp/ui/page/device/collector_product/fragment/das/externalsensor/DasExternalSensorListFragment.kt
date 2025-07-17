@@ -209,6 +209,12 @@ class DasExternalSensorListFragment : BaseDasExternalSensorListFragment() {
                             initval = sensorInfo.initval
                         }
 
+                        IOTSensorType.WEATHER_STATION //气象仪
+                            -> {
+                            threshold = "99999"
+                            corrval = "0"
+                        }
+
                         IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
                             -> {
                             initvalx = sensorInfo.initvalx

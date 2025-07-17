@@ -7,7 +7,6 @@ import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
-import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -48,7 +47,6 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
 
     protected var deleteItemIndex = 0
 
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_das_external_sensor_list,
@@ -85,7 +83,7 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
         }
         mStates.collectorType.set(processedModel)
         mStates.isVibratingWireSensor.set(processedModel == IOTSensorType.VIBRATING_SENSOR.code)
-        iotSensorType = IOTSensorType.Companion.value(processedModel)
+        iotSensorType = IOTSensorType.value(processedModel)
     }
 
     private fun initRefresh() {
@@ -152,7 +150,6 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
         if (!mStates.isVibratingWireSensor.get()) {
             // 编辑数字式传感器
             val bundle = BaseDasExternalDigitalSensorFragment.newBundleArguments(
-                sensorEditMode = true,
                 index = position,
                 sensorAddress = item.addr,
                 productType,
@@ -187,7 +184,6 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
         if (!mStates.isVibratingWireSensor.get()) {
             // 新增数字式传感器
             val bundle = BaseDasExternalDigitalSensorFragment.newBundleArguments(
-                sensorEditMode = false,
                 index = -1,
                 type = productType,
                 communicateWay = communicateWay,
@@ -239,6 +235,7 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
         super.createObserver()
         mStates.isRefreshSensorList.observe(viewLifecycleOwner) { flag ->
             if (flag) {
+                binding.rv.models = arrayListOf()
                 mStates.sensorModelMap.keys.sortedBy { addr -> addr.toInt() }.forEach { key ->
                     val sensorInfo = mStates.sensorModelMap[key]!!
                     val item = DASSensorItem(
@@ -247,13 +244,19 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                         addrDesc = if (mStates.isVibratingWireSensor.get()) {
                             "通道-${sensorInfo.addr.toInt() + 1}"
                         } else {
-                            "地址-${sensorInfo.addr}"
+                            if (IOTSensorType.value(sensorInfo.type) == IOTSensorType.WEATHER_STATION) {
+                                "监测要素-${mStates.monitorElements[sensorInfo.addr] ?: sensorInfo.addr}"
+                            } else {
+                                "地址-${sensorInfo.addr}"
+                            }
                         },
                         sensorType = sensorInfo.type,
-                        sensorName = IOTSensorType.Companion.value(sensorInfo.type).description,
+                        sensorName = IOTSensorType.value(sensorInfo.type).description,
                     )
-                    binding.rv.models = arrayListOf()
-                    binding.rv.mutable.add(item)
+                    binding.rv.bindingAdapter.apply {
+                        mutable.add(item)
+                        notifyItemInserted(itemCount)
+                    }
                 }
                 updateFooter()
             }
@@ -275,10 +278,14 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             addrDesc = if (mStates.isVibratingWireSensor.get()) {
                 "通道-${sensorInfo.addr.toInt() + 1}"
             } else {
-                "地址-${sensorInfo.addr}"
+                if (IOTSensorType.value(sensorInfo.type) == IOTSensorType.WEATHER_STATION) {
+                    "监测要素-${mStates.monitorElements[sensorInfo.addr] ?: sensorInfo.addr}"
+                } else {
+                    "地址-${sensorInfo.addr}"
+                }
             },
             sensorType = sensorInfo.type,
-            sensorName = IOTSensorType.Companion.value(sensorInfo.type).description,
+            sensorName = IOTSensorType.value(sensorInfo.type).description,
         )
 
         if (binding.rv.models.isNullOrEmpty()) {

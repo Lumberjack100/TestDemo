@@ -56,12 +56,12 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     private val sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo> by activityViewModels()
 
     protected val iotSensorType: IOTSensorType by lazy {
-        IOTSensorType.Companion.getSensorTypeByCollectorCode(sensorListViewModel.collectorType.get())
+        IOTSensorType.getSensorTypeByCollectorCode(sensorListViewModel.collectorType.get())
     }
     private val usedAddressList = ArrayList<String>()
     private var sensorAddress = ""
     protected var sensorIndex: Int = -1
-    private var sensorEditMode: Boolean = false
+    private var sensorEditMode: Boolean = false//是否是编辑既有传感器模式
 
 
     //阵列测斜仪物模型
@@ -69,6 +69,9 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
     //子雷达类型
     private val childRadarTypeList = arrayOf("雷达物位计", "精波雷达")
+
+    //可选择的监测元素列表
+    private val availableMonitorElementList = arrayListOf<String>()
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -95,15 +98,28 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         super.initData()
         binding.llToolbar.toolbar.title = iotSensorType.description
         arguments?.let {
-            sensorEditMode = it.getBoolean(SENSOR_EDIT_MODE, false)
             sensorIndex = it.getInt(AppContants.Extras.SENSOR_INDEX, -1)
             sensorAddress = it.getString(AppContants.Extras.SENSOR_ADDR, "")
         }
+
+        sensorEditMode = sensorListViewModel.sensorModelMap.containsKey(sensorAddress)
+
         usedAddressList.clear()
-        sensorListViewModel.sensorModelMap.keys.filterNot { it == sensorAddress }
+        sensorListViewModel.sensorModelMap.keys
+            .filterNot { it == sensorAddress }// 编辑模式下不排除自己
             .forEach { usedAddressList.add(it) }
 
-        val externalSensorInfo = if (sensorListViewModel.sensorModelMap.containsKey(sensorAddress))
+        //得到可选的监测元素列表
+        availableMonitorElementList.clear()
+        if (iotSensorType == IOTSensorType.WEATHER_STATION) {
+            sensorListViewModel.monitorElements.forEach { (addr, name) ->
+                if (!usedAddressList.contains(addr)) {
+                    availableMonitorElementList.add(name)
+                }
+            }
+        }
+
+        val sensorInfo = if (sensorListViewModel.sensorModelMap.containsKey(sensorAddress))
             sensorListViewModel.sensorModelMap[sensorAddress]!!
         else //新建传感器 采用第一个传感器的信息，没有则使用默认信息
             DasExternalSensorInfo(
@@ -113,7 +129,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 corrval = ""
             )
 
-        initSensorInfo(externalSensorInfo)
+        initSensorInfo(sensorInfo)
         initRefresh()
     }
 
@@ -147,6 +163,10 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
                             "雷达类型" -> {
                                 onChildSensorTypeSwitchClick(item)
+                            }
+
+                            "监测要素" -> {
+                                onMonitorElementSwitchClick(item)
                             }
                         }
                     }
@@ -463,24 +483,32 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
                 IOTSensorType.WEATHER_STATION //气象仪
                     -> {
-//                    groupList.clear()
-//                    groupList.add(
-//                        ExternalDigitalSensorParamChooseItem(
-//                            name = "监测要素",
-//                            value = if (typeIndex in modelTypeList.indices) modelTypeList[typeIndex] else modelTypeList[0]
-//                        )
-//                    )
+                    // 检查是否有可用的监测要素
+                    if (availableMonitorElementList.isEmpty() && !sensorEditMode) {
+                        // 新建传感器时，如果没有可用要素
+                        showMessage(
+                            "暂无可选择的监测要素，可能所有要素都已被添加!",
+                            "温馨提示",
+                            "确定",
+                            {
+                                nav().navigateUp()
+                            })
+                        return
+                    }
+
+                    // 确定当前选中的监测要素
+                    val currentElement = if (sensorInfo.addr.isNotEmpty()) {
+                        sensorListViewModel.monitorElements[sensorInfo.addr]
+                            ?: availableMonitorElementList.firstOrNull() ?: ""
+                    } else {
+                        availableMonitorElementList.firstOrNull() ?: ""
+                    }
+                    groupList.clear()
                     groupList.add(
-                        ExternalDigitalSensorParamEditItem(
-                            name = "触发值（米/秒）",
-                            value = sensorInfo.threshold.formatDoubleValue("", 3),
-                        )
-                    )
-                    groupList.add(
-                        ExternalDigitalSensorParamEditItem(
-                            name = "修正值（米/秒）",
-                            value = sensorInfo.corrval.formatDoubleValue("", 3),
-                            bgResId = R.drawable.shape_common_click_item_bottom_corner_4
+                        ExternalDigitalSensorParamChooseItem(
+                            name = "监测要素",
+                            value = currentElement,
+                            bgResId = R.drawable.bg_white_corner_4dp
                         )
                     )
                 }
@@ -609,33 +637,104 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             .show()
     }
 
+    /**
+     * 气象站监测要素选择
+     */
+    private fun onMonitorElementSwitchClick(item: ExternalDigitalSensorParamChooseItem) {
+        if (availableMonitorElementList.isEmpty()) {
+            showMessageDialog("暂无可选择的监测要素，可能所有要素都已被添加!")
+            return
+        }
+
+        val selectedIndex = availableMonitorElementList.indexOf(item.value)
+        XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+        XPopup.Builder(context)
+            .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+            .enableDrag(false)
+            .asBottomList(
+                "请选择监测要素",
+                availableMonitorElementList.toTypedArray(),
+                null,
+                selectedIndex,
+                { position, text ->
+                    item.refreshValue(text)
+                },
+                0,
+                R.layout.custom_xpopup_adapter_text_center
+            )
+            .show()
+    }
+
     private fun checkValueIsValidAndUpdateSensor() {
         val sensorInfo = DasExternalSensorInfo()
         sensorInfo.type = iotSensorType.code
 
-        binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
-            ?.findLast { it.name.contains("传感器地址") }?.let { item ->
-                if (item.value.isEmpty()) {
-                    showMessageDialog("请输入传感器地址!")
-                    return
-                }
-                try {
-                    val value = item.value.toInt()
-                    if (value < 0) {
+        // 对于气象站类型，使用监测要素选择项来确定传感器地址
+        if (iotSensorType == IOTSensorType.WEATHER_STATION) {
+            binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamChooseItem>()
+                ?.findLast { it.name.contains("监测要素") }?.let { item ->
+                    if (item.value.isEmpty()) {
+                        showMessageDialog("请选择监测要素!")
+                        return
+                    }
+
+                    // 根据监测要素名称找到对应的地址
+                    val elementAddr = sensorListViewModel.monitorElements.entries
+                        .find { it.value == item.value }?.key
+
+                    if (elementAddr == null) {
+                        showMessageDialog("未找到对应的监测要素地址!")
+                        return
+                    }
+
+                    //传感器地址不能重复,进行检查
+                    if (usedAddressList.contains(elementAddr)) {
+                        showMessageDialog("该监测要素已被添加!")
+                        return
+                    }
+
+                    sensorInfo.addr = elementAddr
+                } ?: run {
+                showMessageDialog("请选择监测要素!")
+                return
+            }
+        } else {
+            // 非气象站类型，使用传统的传感器地址输入
+            binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
+                ?.findLast { it.name.contains("传感器地址") }?.let { item ->
+                    if (item.value.isEmpty()) {
+                        showMessageDialog("请输入传感器地址!")
+                        return
+                    }
+                    try {
+                        val value = item.value.toInt()
+                        if (value < 0) {
+                            showMessageDialog("请输入正确的传感器地址!")
+                            return
+                        }
+                    } catch (ex: Exception) {
                         showMessageDialog("请输入正确的传感器地址!")
                         return
                     }
-                } catch (ex: Exception) {
-                    showMessageDialog("请输入正确的传感器地址!")
-                    return
+                    //传感器地址不能重复,进行检查
+                    if (usedAddressList.contains(item.value)) {
+                        showMessageDialog("传感器地址已被占用!")
+                        return
+                    }
+                    sensorInfo.addr = item.value
                 }
-                //传感器地址不能重复,进行检查
-                if (usedAddressList.contains(item.value)) {
-                    showMessageDialog("传感器地址已被占用!")
-                    return
-                }
-                sensorInfo.addr = item.value
+        }
+
+        // 验证传感器地址是否已正确设置
+        if (sensorInfo.addr.isEmpty()) {
+            if (iotSensorType == IOTSensorType.WEATHER_STATION) {
+                showMessageDialog("请选择监测要素!")
+            } else {
+                showMessageDialog("请输入传感器地址!")
             }
+            return
+        }
 
         //触发值
         binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
@@ -926,8 +1025,8 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         }
 
         //更新或者添加传感器
-        if (sensorListViewModel.sensorModelMap.containsKey(sensorInfo.addr)) {
-            sensorListViewModel.sensorModelMap.remove(sensorInfo.addr)
+        if (sensorListViewModel.sensorModelMap.containsKey(sensorAddress)) {
+            sensorListViewModel.sensorModelMap.remove(sensorAddress)
         }
         sensorListViewModel.sensorModelMap[sensorInfo.addr] = sensorInfo
         sensorListViewModel.updateIsRefreshSensorList(true)
@@ -969,10 +1068,8 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     }
 
     companion object {
-        private const val SENSOR_EDIT_MODE = "sensor_edit_mode"
 
         fun newBundleArguments(
-            sensorEditMode: Boolean = false,
             index: Int,
             sensorAddress: String = "",
             type: ProductType = ProductType.UnKnown,
@@ -981,7 +1078,6 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putBoolean(SENSOR_EDIT_MODE, sensorEditMode)
             putInt(AppContants.Extras.SENSOR_INDEX, index)
             putString(AppContants.Extras.SENSOR_ADDR, sensorAddress)
             putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
