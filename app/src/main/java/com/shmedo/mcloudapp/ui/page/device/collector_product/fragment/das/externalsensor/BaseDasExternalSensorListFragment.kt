@@ -46,7 +46,7 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
     protected val mStates: DasExternalSensorListViewModel<DasExternalSensorInfo> by activityViewModels()
     protected lateinit var iotSensorType: IOTSensorType
 
-    private var deleteItemIndex = 0
+    protected var deleteItemIndex = 0
 
 
     override fun getDataBindingConfig(): DataBindingConfig {

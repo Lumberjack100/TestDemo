@@ -75,9 +75,9 @@ enum class IOTSensorType(val code: String, val description: String) {
     STATIC_LEVEL("24", "静力水准"),
 
     /**
-     * 气象站
+     * 气象仪
      */
-    WEATHER_STATION("25", "气象计"),
+    WEATHER_STATION("25", "气象仪"),
 
     /**
      * 浊度仪传感器

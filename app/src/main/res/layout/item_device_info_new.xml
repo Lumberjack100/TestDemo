@@ -81,7 +81,7 @@
                     android:layout_width="120dp"
                     android:layout_height="80dp"
                     android:scaleType="fitCenter"
-                    tools:src="@drawable/device_logo_ud" />
+                    tools:src="@drawable/device_logo_das" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_device_name"
