@@ -22,7 +22,7 @@ import timber.log.Timber
  * 创建时间：2024/4/18
  * 描述：物联网采集器(DAS)振弦式扩展传感器列表页面 - 支持蓝牙通讯方式
  */
-class BleDasExternalVibratingSensorListFragment : BaseDasExternalSensorListFragment() {
+class BleDasVibratingSensorListFragment : BaseDasSensorListFragment() {
 
     private val mdParseManager: MDParserManager by inject()
 
@@ -53,7 +53,7 @@ class BleDasExternalVibratingSensorListFragment : BaseDasExternalSensorListFragm
             commandItems.add(command)
             Timber.Forest.d(
                 "获取 %s 采集器 %s 通道的传感器参数===%s",
-                IOTSensorType.Companion.value(mStates.collectorType.get()),
+                IOTSensorType.value(mStates.collectorType.get()),
                 address,
                 command
             )
@@ -519,8 +519,8 @@ class BleDasExternalVibratingSensorListFragment : BaseDasExternalSensorListFragm
     }
 
     companion object {
-        fun newInstance(): BleDasExternalVibratingSensorListFragment {
-            return BleDasExternalVibratingSensorListFragment()
+        fun newInstance(): BleDasVibratingSensorListFragment {
+            return BleDasVibratingSensorListFragment()
         }
     }
 }

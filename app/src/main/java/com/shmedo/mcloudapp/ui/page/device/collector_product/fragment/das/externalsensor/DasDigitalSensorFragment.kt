@@ -28,7 +28,7 @@ import org.koin.android.ext.android.inject
  * 创建时间：2024/6/7
  * 描述： 物联网采集器(DAS)数字式传感器参数配置页面 - 支持4G和蓝牙两种通讯方式
  */
-class DasExternalDigitalSensorFragment : BaseDasExternalDigitalSensorFragment() {
+class DasDigitalSensorFragment : BaseDasDigitalSensorFragment() {
     private val iotParseManager: IOTParserManager by inject()
     private val mdParseManager: MDParserManager by inject()
 

@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,10 +27,10 @@ import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.adapter.PageAdapter
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.DasExternalSensorListFragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.BaseDasExternalSensorListFragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.BleDasExternalDigitalSensorListFragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.BleDasExternalVibratingSensorListFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.BaseDasSensorListFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.BleDasDigitalSensorListFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.BleDasVibratingSensorListFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.DasSensorListFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 
 /**
@@ -101,37 +100,35 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
         if (communicateWay == BleConnect) {
             // 蓝牙模式使用蓝牙相关的Fragment
-            val bundle = BaseIOTDeviceFragment.Companion.newBundleArguments(
+            val bundle = BaseIOTDeviceFragment.newBundleArguments(
                 productType,
                 communicateWay,
                 deviceInfo,
                 bleDevice
             )
 
-            fragmentList.add(DasIOSensorFragment.Companion.newInstance().apply {
+            fragmentList.add(DasIOSensorFragment.newInstance().apply {
                 arguments = bundle
             })
-            fragmentList.add(DasDigitalOsmometerFragment.Companion.newInstance().apply {
+            fragmentList.add(DasDigitalOsmometerFragment.newInstance().apply {
                 arguments = bundle
             })
 
             // 根据collectorModel决定使用哪种扩展传感器Fragment
             val externalSensorFragment =
                 if (collectorModel == "0${IOTSensorType.VIBRATING_SENSOR.code}")
-                    BleDasExternalVibratingSensorListFragment.Companion.newInstance().apply {
+                    BleDasVibratingSensorListFragment.newInstance().apply {
                         arguments =
-                            BaseDasExternalSensorListFragment.Companion.newBundleArguments(
-                                collectorModel,
+                            BaseDasSensorListFragment.newBundleArguments(
                                 productType,
                                 communicateWay,
                                 deviceInfo,
                                 bleDevice,
                             )
                     } else
-                    BleDasExternalDigitalSensorListFragment.Companion.newInstance().apply {
+                    BleDasDigitalSensorListFragment.newInstance().apply {
                         arguments =
-                            BaseDasExternalSensorListFragment.Companion.newBundleArguments(
-                                collectorModel,
+                            BaseDasSensorListFragment.newBundleArguments(
                                 productType,
                                 communicateWay,
                                 deviceInfo,
@@ -141,25 +138,25 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             fragmentList.add(externalSensorFragment)
         } else {
             // 4G模式使用原有的Fragment
-            val bundle = BaseIOTDeviceFragment.Companion.newBundleArguments(
+            val bundle = BaseIOTDeviceFragment.newBundleArguments(
                 productType,
                 communicateWay,
                 deviceInfo,
                 bleDevice
             )
 
-            fragmentList.add(DasIOSensorFragment.Companion.newInstance().apply {
+            fragmentList.add(DasIOSensorFragment.newInstance().apply {
                 arguments = bundle
             })
-            fragmentList.add(DasDigitalOsmometerFragment.Companion.newInstance().apply {
+            fragmentList.add(DasDigitalOsmometerFragment.newInstance().apply {
                 arguments = bundle
             })
             if (deviceInfo.productName.contains("MR701")) {
-                fragmentList.add(DasMCUAddressFragment.Companion.newInstance().apply {
+                fragmentList.add(DasMCUAddressFragment.newInstance().apply {
                     arguments = bundle
                 })
             }
-            fragmentList.add(DasExternalSensorListFragment.Companion.newInstance().apply {
+            fragmentList.add(DasSensorListFragment.newInstance().apply {
                 arguments = bundle
             })
         }
@@ -228,7 +225,7 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         private val activeBg: Int = R.drawable.bg_mr702_port_tab_checked
         private val normalBg: Int = R.drawable.bg_mr702_port_tab_normal
         private val activeColor: Int = ColorUtils.getColor(R.color.white)
-        private val normalColor: Int = Color.parseColor("#65A2CD")
+        private val normalColor: Int =  ColorUtils.getColor(R.color.colorPrimary)
         private val activeSize: Float = 15f
         private val normalSize: Float = 15f
 

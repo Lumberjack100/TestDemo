@@ -14,7 +14,9 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import org.koin.android.ext.android.inject
 
@@ -23,7 +25,7 @@ import org.koin.android.ext.android.inject
  * 创建时间：2024/6/7
  * 描述：物联网采集器(DAS)扩展传感器列表页面 - 支持4G通讯方式
  */
-class DasExternalSensorListFragment : BaseDasExternalSensorListFragment() {
+class DasSensorListFragment : BaseDasSensorListFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     /**
@@ -91,6 +93,14 @@ class DasExternalSensorListFragment : BaseDasExternalSensorListFragment() {
     override fun initSaveCommand() {
         commandItems.clear()
 
+        if (IOTSensorType.value(mStates.collectorType.get()) == IOTSensorType.WEATHER_STATION) {   //气象仪
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.MD_RAW,
+                "content=##1404"
+            )
+            commandItems.add(command)
+        }
+
         //设置采集器参数
         val entity = DasCollectorEntity(
             type = mStates.collectorType.get(),
@@ -104,6 +114,17 @@ class DasExternalSensorListFragment : BaseDasExternalSensorListFragment() {
 
         //设置采集器接入的传感器配置信息
         initExtendSensorConfigInfoCommand()
+
+        if (IOTSensorType.value(mStates.collectorType.get()) == IOTSensorType.WEATHER_STATION) {   //气象仪
+            var command = IOTCommandUtil.getCommand(
+                IOTCommandType.MD_RAW,
+                "content=##0191"
+            )
+            commandItems.add(command)
+
+            command = IOTCommandUtil.getCommand(IOTCommandType.REBOOT)
+            commandItems.add(command)
+        }
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
@@ -126,7 +147,7 @@ class DasExternalSensorListFragment : BaseDasExternalSensorListFragment() {
                     threshold = sensorInfo.threshold
                     corrval = sensorInfo.corrval
 
-                    when (IOTSensorType.Companion.value(sensorInfo.type)) {
+                    when (IOTSensorType.value(sensorInfo.type)) {
                         IOTSensorType.KANG_PERCOLATE -> {//基康渗压计
                             poly_a = sensorInfo.poly_a
                             poly_b = sensorInfo.poly_b
@@ -284,6 +305,20 @@ class DasExternalSensorListFragment : BaseDasExternalSensorListFragment() {
                 }
             }
 
+            IOTCommandType.MD_RAW -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "保存出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {}
+                    }
+                }
+            }
+
             IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
@@ -335,6 +370,28 @@ class DasExternalSensorListFragment : BaseDasExternalSensorListFragment() {
                 }
             }
 
+            IOTCommandType.REBOOT -> {//重启设备
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = StringUtils.getString(R.string.reboot_failed) + result.message
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            showMessage(
+                                "设备已重启，请退出重新连接",
+                                "温馨提示",
+                                "确定",
+                                {
+                                    nav().navigateUp()
+                                })
+                        }
+                    }
+                }
+            }
+
             else -> {
                 cancelNearbyCommunicationTimeoutJob()
             }
@@ -343,6 +400,6 @@ class DasExternalSensorListFragment : BaseDasExternalSensorListFragment() {
 
 
     companion object {
-        fun newInstance() = DasExternalSensorListFragment()
+        fun newInstance() = DasSensorListFragment()
     }
 }

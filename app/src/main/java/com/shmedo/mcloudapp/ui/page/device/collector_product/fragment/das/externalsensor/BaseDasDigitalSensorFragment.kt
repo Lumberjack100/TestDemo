@@ -50,7 +50,7 @@ import timber.log.Timber
  * 创建时间：2024/6/7
  * 描述： 物联网采集器(DAS)数字式传感器参数配置页面基类 - 支持4G和蓝牙两种通讯方式
  */
-abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
+abstract class BaseDasDigitalSensorFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentBaseExternalDigitalSensorBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo> by activityViewModels()
@@ -638,7 +638,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 气象站监测要素选择
+     * 气象计监测要素选择
      */
     private fun onMonitorElementSwitchClick(item: ExternalDigitalSensorParamChooseItem) {
         if (availableMonitorElementList.isEmpty()) {
@@ -670,7 +670,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         val sensorInfo = DasExternalSensorInfo()
         sensorInfo.type = iotSensorType.code
 
-        // 对于气象站类型，使用监测要素选择项来确定传感器地址
+        // 对于气象计类型，使用监测要素选择项来确定传感器地址
         if (iotSensorType == IOTSensorType.WEATHER_STATION) {
             binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamChooseItem>()
                 ?.findLast { it.name.contains("监测要素") }?.let { item ->
@@ -700,7 +700,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 return
             }
         } else {
-            // 非气象站类型，使用传统的传感器地址输入
+            // 非气象计类型，使用传统的传感器地址输入
             binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
                 ?.findLast { it.name.contains("传感器地址") }?.let { item ->
                     if (item.value.isEmpty()) {

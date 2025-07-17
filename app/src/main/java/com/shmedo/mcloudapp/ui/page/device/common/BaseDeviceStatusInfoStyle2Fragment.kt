@@ -397,7 +397,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTSensorType.WEATHER_STATION //气象站
+            IOTSensorType.WEATHER_STATION //气象计
             -> {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
