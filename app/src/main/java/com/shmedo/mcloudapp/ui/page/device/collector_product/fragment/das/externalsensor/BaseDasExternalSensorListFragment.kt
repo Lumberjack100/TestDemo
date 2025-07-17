@@ -45,7 +45,8 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasExternalSensorListBinding
     protected val mStates: DasExternalSensorListViewModel<DasExternalSensorInfo> by activityViewModels()
     protected lateinit var iotSensorType: IOTSensorType
-    protected var deleteItemIndex = 0
+
+    private var deleteItemIndex = 0
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -69,6 +70,7 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             // 处理采集器模型
             processCollectorModel(model)
         }
+        resetDefaultData()
     }
 
     /**
@@ -237,7 +239,6 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
         super.createObserver()
         mStates.isRefreshSensorList.observe(viewLifecycleOwner) { flag ->
             if (flag) {
-                binding.rv.models = arrayListOf()
                 mStates.sensorModelMap.keys.sortedBy { addr -> addr.toInt() }.forEach { key ->
                     val sensorInfo = mStates.sensorModelMap[key]!!
                     val item = DASSensorItem(
@@ -251,6 +252,7 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                         sensorType = sensorInfo.type,
                         sensorName = IOTSensorType.Companion.value(sensorInfo.type).description,
                     )
+                    binding.rv.models = arrayListOf()
                     binding.rv.mutable.add(item)
                 }
                 updateFooter()
@@ -282,8 +284,10 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
         if (binding.rv.models.isNullOrEmpty()) {
             binding.rv.models = arrayListOf()
         }
-        binding.rv.mutable.add(item)
-        binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.modelCount)
+        binding.rv.bindingAdapter.apply {
+            mutable.add(item)
+            notifyItemInserted(itemCount)
+        }
     }
 
     /**
@@ -327,6 +331,13 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
         updateFooter()
     }
 
+    private fun resetDefaultData() {
+        deleteItemIndex = 0
+        mStates.sensorModelMap.clear()
+        mStates.isSubmitBtnVisible.set(false)
+        initEmptySensor()
+    }
+
     protected fun initEmptySensor() {
         binding.rv.models = arrayListOf<DASSensorItem>()
         updateFooter()
@@ -341,14 +352,6 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             binding.rv.bindingAdapter.clearFooter()
         }
         mStates.isSubmitBtnVisible.set(mStates.sensorModelMap.isNotEmpty())
-    }
-
-    private fun resetDefaultData() {
-        deleteItemIndex = 0
-        mStates.sensorModelMap.clear()
-        binding.rv.bindingAdapter.clearFooter()
-        binding.rv.models = arrayListOf<DASSensorItem>()
-        mStates.isSubmitBtnVisible.set(false)
     }
 
     // ========================== 抽象方法，子类必须实现 ==========================

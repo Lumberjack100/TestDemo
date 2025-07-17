@@ -88,6 +88,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         resetDefaultParams()
+        initEmptySensor()
         // 保存初始状态
         mStates.saveInitialState()
     }
