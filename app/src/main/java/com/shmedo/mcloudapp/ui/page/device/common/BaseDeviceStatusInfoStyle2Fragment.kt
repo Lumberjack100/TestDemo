@@ -125,9 +125,9 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                         //必须要在事件发生之前就watch，如果你写在onLongClickListener中的话，就拿不到触摸点了，触摸事件被长按消费了
                         val builder = XPopup.Builder(context)
                             .hasShadowBg(false)
-                            .watchView(itemBinding.tvValue)
+                            .watchView(itemBinding.tvClipboardValue)
                             .setPopupCallback(object : SimpleCallback() {})
-                        itemBinding.tvValue.setOnLongClickListener {
+                        itemBinding.tvClipboardValue.setOnLongClickListener {
                             VibrateUtils.vibrate(300)
                             builder.asAttachList(arrayListOf("复制").toTypedArray(), null)
                             { _, text ->
@@ -397,7 +397,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTSensorType.WEATHER_STATION //气象站
+            IOTSensorType.WEATHER_STATION //气象计
             -> {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(

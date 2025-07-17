@@ -111,6 +111,11 @@ enum class MDCommandType(private val commandCode: String) {
     SETTING_RAIN_PRECISION("121"),
 
     /**
+     * MR701H-多要素气象计选择传感器厂家
+     */
+    CHOOSE_SENSOR_MANUFACTURER("140"),
+
+    /**
      * 设置数据上报间隔
      */
     DATA_REPORT_INTERVAL("143"),

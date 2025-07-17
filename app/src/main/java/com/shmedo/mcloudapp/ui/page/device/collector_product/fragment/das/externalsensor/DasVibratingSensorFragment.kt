@@ -39,7 +39,7 @@ import timber.log.Timber
  * @desc: 物联网采集器(DAS)振弦传传感器参数配置页面 - 支持4G和蓝牙两种通讯方式
  *
  */
-class DasExternalVibratingSensorFragment : BaseFragment() {
+class DasVibratingSensorFragment : BaseFragment() {
     private lateinit var binding: FragmentDasExternalVibratingSensorBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: DasExternalVibratingSensorViewModel

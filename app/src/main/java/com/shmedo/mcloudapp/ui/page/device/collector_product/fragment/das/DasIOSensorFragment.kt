@@ -351,6 +351,84 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    /** 处理4G模式的结果 */
+    private fun handle4GResult(cmdStr: String) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO -> { // 查询开关量传感器参数
+                val result =
+                    iotParseManager.parse<DasIOSensorInfo>(
+                        cmdStr,
+                        IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO
+                    )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询开关量传感器参数出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList { binding.refreshLayout.finish() }
+                        init4GIOStatus(result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.DAS_MD_SET_IO_SENSOR_INFO -> { // 设置开关量传感器
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "数据保存出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("数据保存成功")
+                            mStates.saveInitialState()
+                        }
+                    }
+                }
+            }
+
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
+        }
+    }
+
+    /** 4G模式：初始化参数数据 */
+    private fun init4GIOStatus(ioSensorInfo: DasIOSensorInfo) {
+        try {
+            when (IOTRainStation.value(ioSensorInfo.type)) {
+                IOTRainStation.CLOSE -> { // 0：关闭开关量功能
+                    mStates.mode.set(modeList[0])
+                }
+
+                IOTRainStation.RAIN_OPEN -> { // 1：雨量站模式
+                    mStates.mode.set(modeList[1])
+                    mStates.rainResolution.set(ioSensorInfo.value.formatDoubleValue("0.1", 1))
+                    if (ioSensorInfo.min_time != IOTConstants.NULL_KEY) {
+                        mStates.supportDumpMInTime.set(true)
+                        mStates.dumpMinTime.set(ioSensorInfo.min_time)
+                    } else mStates.supportDumpMInTime.set(false)
+                }
+
+                IOTRainStation.ALARM_OPEN -> { // 2：断线报警器模式
+                    mStates.mode.set(modeList[2])
+                    if (IOTBreakAlarmStatus.value(ioSensorInfo.value) == IOTBreakAlarmStatus.OPEN)
+                        mStates.breakAlarmMode.set(breakAlarmModeList[0])
+                    else mStates.breakAlarmMode.set(breakAlarmModeList[1])
+                }
+            }
+
+            mStates.saveInitialState()
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
     /** 处理蓝牙模式的结果 */
     private fun handleBleResult(cmdStr: String) {
         when (MDCommandUtil.extractCommandType(cmdStr)) {
@@ -448,52 +526,6 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /** 处理4G模式的结果 */
-    private fun handle4GResult(cmdStr: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO -> { // 查询开关量传感器参数
-                val result =
-                    iotParseManager.parse<DasIOSensorInfo>(
-                        cmdStr,
-                        IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO
-                    )
-                when (result) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "查询开关量传感器参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList { binding.refreshLayout.finish() }
-                        init4GIOStatus(result.data)
-                    }
-                }
-            }
-
-            IOTCommandType.DAS_MD_SET_IO_SENSOR_INFO -> { // 设置开关量传感器
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "数据保存出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
-                            mStates.saveInitialState()
-                        }
-                    }
-                }
-            }
-
-            else -> {
-                cancelNearbyCommunicationTimeoutJob()
-            }
-        }
-    }
-
     /** 蓝牙模式：初始化IO状态 */
     private fun initBleIOStatus(info: DasBaseConfigInfo) {
         try {
@@ -532,38 +564,6 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
         else mStates.breakAlarmMode.set(breakAlarmModeList[1])
 
         mStates.saveInitialState()
-    }
-
-    /** 4G模式：初始化参数数据 */
-    private fun init4GIOStatus(ioSensorInfo: DasIOSensorInfo) {
-        try {
-            when (IOTRainStation.value(ioSensorInfo.type)) {
-                IOTRainStation.CLOSE -> { // 0：关闭开关量功能
-                    mStates.mode.set(modeList[0])
-                }
-
-                IOTRainStation.RAIN_OPEN -> { // 1：雨量站模式
-                    mStates.mode.set(modeList[1])
-                    mStates.rainResolution.set(ioSensorInfo.value.formatDoubleValue("0.1", 1))
-                    if (ioSensorInfo.min_time != IOTConstants.NULL_KEY) {
-                        mStates.supportDumpMInTime.set(true)
-                        mStates.dumpMinTime.set(ioSensorInfo.min_time)
-                    } else mStates.supportDumpMInTime.set(false)
-                }
-
-                IOTRainStation.ALARM_OPEN -> { // 2：断线报警器模式
-                    mStates.mode.set(modeList[2])
-                    if (IOTBreakAlarmStatus.value(ioSensorInfo.value) == IOTBreakAlarmStatus.OPEN)
-                        mStates.breakAlarmMode.set(breakAlarmModeList[0])
-                    else mStates.breakAlarmMode.set(breakAlarmModeList[1])
-                }
-            }
-
-            mStates.saveInitialState()
-        } catch (e: Exception) {
-            Timber.e(e)
-            addDeviceLogItem(Log.ERROR, e.errorMsg)
-        }
     }
 
     companion object {

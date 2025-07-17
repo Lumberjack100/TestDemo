@@ -14,11 +14,16 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNullKey
+import com.shmedo.mcloudapp.extensions.safeNavigate
+import com.shmedo.mcloudapp.model.DataCenterStatusItem
+import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
+import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -117,14 +122,6 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.bt_connected.compareAndReturn("1", "已连接", "未连接"),
                     textColorRes = if (stateInfo.bt_connected == "1") ColorUtils.getColor(
                         R.color.online_colorPrimary
-                    ) else 0
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "CORS",
-                    value = stateInfo.corsEnableStatus.compareAndReturn("1", "已启用", "未启用"),
-                    textColorRes = if (stateInfo.corsEnableStatus == "1") ColorUtils.getColor(
-                        R.color.online_colorPrimary
                     ) else 0,
                     isBottomItem = true
                 )
@@ -159,6 +156,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             textColorRes = if (status == "0" || statusText == "未连接") 0 else ColorUtils.getColor(
                                 R.color.online_colorPrimary
                             ),
+                            isClickable = true,
                             isBottomItem = index == onlineStatusList.size - 1
                         )
                     }
@@ -169,6 +167,33 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
+        }
+    }
+
+    override fun processItemClick(infoBasicItem: DeviceStatusInfoBasicItem) {
+        if (infoBasicItem.name.startsWith("数据链路")) {
+            val index = infoBasicItem.name.substringAfter("数据链路").toIntOrNull() ?: 0
+            val item = DataCenterStatusItem(
+                centerid = index,
+                name = "数据链路$index",
+                status = infoBasicItem.value.substringBefore("(").compareAndReturn(
+                    "未启用",
+                    "0",
+                    infoBasicItem.value.substringBefore("(").compareAndReturn("已连接", "1", "2")
+                )
+            )
+
+            val bundle = UniversalDataCenterParamFragment.newBundleArguments(
+                item,
+                productType,
+                communicateWay,
+                deviceInfo,
+                bleDevice
+            )
+            nav().safeNavigate(
+                R.id.action_global_dataCenterParamFragment,
+                bundle
+            )
         }
     }
 }

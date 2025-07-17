@@ -185,59 +185,6 @@ class DasNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         }
     }
 
-    /**
-     * 处理蓝牙通讯指令结果
-     */
-    private fun handleBleCommandResult(cmdStr: String) {
-        when (MDCommandUtil.extractCommandType(cmdStr)) {
-            MDCommandType.QUERY_DAS_STATUS_1 -> {//##041\r\n：查询设备状态1
-                val result = mdParseManager.parse<DeviceStatusInfoOne>(
-                    cmdStr,
-                    MDCommandType.QUERY_DAS_STATUS_1
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "查询基本信息出错"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        initBleDeviceStatusOne(result.data)
-                    }
-                }
-            }
-
-            MDCommandType.QUERY_NETWORK_STATUS -> {
-                val result = mdParseManager.parse<DeviceNetStatus>(
-                    cmdStr,
-                    MDCommandType.QUERY_NETWORK_STATUS
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "查询数据链路状态错"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        initBleCommunicationInfo(result.data)
-                    }
-                }
-            }
-
-            else -> {
-
-            }
-        }
-    }
-
     private fun init4GBaseInfo(baseInfo: DasBaseInfo) {
         try {
             val groupList = mutableListOf<Any>()
@@ -327,6 +274,60 @@ class DasNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             }
         }
     }
+
+    /**
+     * 处理蓝牙通讯指令结果
+     */
+    private fun handleBleCommandResult(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.QUERY_DAS_STATUS_1 -> {//##041\r\n：查询设备状态1
+                val result = mdParseManager.parse<DeviceStatusInfoOne>(
+                    cmdStr,
+                    MDCommandType.QUERY_DAS_STATUS_1
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询基本信息出错"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is MDCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initBleDeviceStatusOne(result.data)
+                    }
+                }
+            }
+
+            MDCommandType.QUERY_NETWORK_STATUS -> {
+                val result = mdParseManager.parse<DeviceNetStatus>(
+                    cmdStr,
+                    MDCommandType.QUERY_NETWORK_STATUS
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询数据链路状态错"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is MDCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initBleCommunicationInfo(result.data)
+                    }
+                }
+            }
+
+            else -> {
+
+            }
+        }
+    }
+
 
     private fun initBleDeviceStatusOne(info: DeviceStatusInfoOne) {
         try {

@@ -103,7 +103,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                 collectorModel = it.getString(COLLECTOR_MODEL, "-1")
             }
         }
-        
+
         resetDefaultParams()
         // 保存初始状态
         mStates.saveInitialState()
@@ -388,7 +388,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        initParamData(result.data)
+                        init4GParamData(result.data)
                     }
                 }
             }
@@ -412,6 +412,29 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
             else -> {
                 cancelNearbyCommunicationTimeoutJob()
             }
+        }
+    }
+
+    /**
+     * 初始化4G通讯模式下的参数数据
+     */
+    private fun init4GParamData(collectorInfo: DasCollectorInfo) {
+        try {
+            mStates.type.set(collectorInfo.type)
+            mStates.collectorAddress.set(collectorInfo.addr)
+            mStates.solvingInterval.set(collectorInfo.calcgap)
+            mStates.standbyTime.set(collectorInfo.standbygap)
+            mStates.collectionInterval.set(collectorInfo.collgap)
+
+            mStates.isShowSensitivity.set(collectorInfo.sensitivity != IOTConstants.NULL_KEY)
+            collectorInfo.sensitivity.notNullKey {
+                mStates.sensitivity.set(it.formatDoubleValue("", 1))
+            }
+            // 保存初始状态
+            mStates.saveInitialState()
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -530,29 +553,6 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
             else -> {
                 cancelNearbyCommunicationTimeoutJob()
             }
-        }
-    }
-
-    /**
-     * 初始化4G通讯模式下的参数数据
-     */
-    private fun initParamData(collectorInfo: DasCollectorInfo) {
-        try {
-            mStates.type.set(collectorInfo.type)
-            mStates.collectorAddress.set(collectorInfo.addr)
-            mStates.solvingInterval.set(collectorInfo.calcgap)
-            mStates.standbyTime.set(collectorInfo.standbygap)
-            mStates.collectionInterval.set(collectorInfo.collgap)
-
-            mStates.isShowSensitivity.set(collectorInfo.sensitivity != IOTConstants.NULL_KEY)
-            collectorInfo.sensitivity.notNullKey {
-                mStates.sensitivity.set(it.formatDoubleValue("", 1))
-            }
-            // 保存初始状态
-            mStates.saveInitialState()
-        } catch (e: Exception) {
-            Timber.e(e)
-            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

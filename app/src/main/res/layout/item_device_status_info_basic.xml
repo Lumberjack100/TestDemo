@@ -13,7 +13,7 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item"
-        style="@style/DeviceCurrentState_Item_Layout_Style"
+        style="@style/DeviceCurrentState_Item_Layout_Style2"
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <com.google.android.material.textview.MaterialTextView

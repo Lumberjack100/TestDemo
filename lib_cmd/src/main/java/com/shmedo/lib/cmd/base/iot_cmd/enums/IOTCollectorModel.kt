@@ -85,9 +85,9 @@ enum class IOTCollectorModel(val code: String, val description: String) {
     JLSZ("24", "静力水准"),
 
     /**
-     * 气象站
+     * 气象仪
      */
-    QXZ("25", "气象计"),
+    QXZ("25", "气象仪"),
 
     /**
      * 浊度仪传感器

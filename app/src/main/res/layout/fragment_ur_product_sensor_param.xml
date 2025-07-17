@@ -64,7 +64,6 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             android:text="@{stateVM.rainResolution}"
                             tools:text="0.1" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

@@ -12,7 +12,9 @@ import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -22,7 +24,7 @@ import timber.log.Timber
  * 创建时间：2024/4/18
  * 描述：物联网采集器(DAS)数字式扩展传感器列表页面 - 支持蓝牙通讯方式
  */
-class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragment() {
+class BleDasDigitalSensorListFragment : BaseDasSensorListFragment() {
 
     private val mdParseManager: MDParserManager by inject()
 
@@ -90,15 +92,29 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
         commandDescItems.clear()
         commandItems.clear()
 
+        if (IOTSensorType.value(mStates.collectorType.get()) == IOTSensorType.WEATHER_STATION) {   //气象仪
+            val command = MDCommandUtil.getCommand(MDCommandType.CHOOSE_SENSOR_MANUFACTURER, "4")
+            Timber.d("多要素气象计选择传感器厂家===%s", command)
+            commandItems.add(command)
+        }
+
         //##150zzxxXXXX\r\n：设置采集器接入的传感器
         initCollectorSensor()
         initOtherValue()
 
-        val command = MDCommandUtil.getCommand(
-            MDCommandType.SAVE_CONFIG_INFO,
-            SaveConfigMode.SAVE_NO_REBOOT.toString()
-        )
-        commandItems.add(command)
+        if (IOTSensorType.value(mStates.collectorType.get()) == IOTSensorType.WEATHER_STATION) {   //气象仪
+            val command = MDCommandUtil.getCommand(
+                MDCommandType.SAVE_CONFIG_INFO,
+                SaveConfigMode.SAVE_REBOOT.toString()
+            )
+            commandItems.add(command)
+        } else {
+            val command = MDCommandUtil.getCommand(
+                MDCommandType.SAVE_CONFIG_INFO,
+                SaveConfigMode.SAVE_NO_REBOOT.toString()
+            )
+            commandItems.add(command)
+        }
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
@@ -122,6 +138,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                         handleFailureResult("查询采集器参数出错")
                         return
                     }
+
                     is MDCommandResult.Success -> {
                         handleCollectorInfo(result.data)
                     }
@@ -139,6 +156,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                         initEmptySensor()
                         return
                     }
+
                     is MDCommandResult.Success -> {
                         processSensorParamsInfo(result.data)
                         sendCommandFromCmdList {
@@ -149,12 +167,27 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                 }
             }
 
+            MDCommandType.CHOOSE_SENSOR_MANUFACTURER -> {//MR701H-多要素气象计选择传感器厂家
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "保存出错!"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
             MDCommandType.SET_COLLECTOR_ADDRESS -> {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         handleFailureResult("采集器地址配置出错!")
                         return
                     }
+
                     else -> {
                         sendCommandFromCmdList()
                     }
@@ -167,6 +200,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                         handleFailureResult("传感器配置出错")
                         return
                     }
+
                     else -> {
                         val commandDesc = if (commandDescItems.isEmpty()) "触发值" else {
                             commandDescItems.first
@@ -183,12 +217,21 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                         handleFailureResult("保存出错!")
                         return
                     }
+
                     else -> {
                         sendCommandFromCmdList {
                             if (mStates.sensorModelMap.isEmpty()) {
                                 showMessageDialog("采集器地址已修改为0,如继续配置扩展传感器,请先修改采集器地址!")
                             } else {
-                                Toaster.show("数据保存成功")
+                                if (cmdStr.contains("0191")) {
+                                    showMessage(
+                                        "设备已重启，请退出重新连接",
+                                        "温馨提示",
+                                        "确定",
+                                        {
+                                            nav().navigateUp()
+                                        })
+                                } else Toaster.show("数据保存成功")
                             }
                         }
                     }
@@ -196,8 +239,14 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
             }
 
             // 处理其他具体的传感器配置指令
-            MDCommandType.COLLECTOR_SENSOR_THRESHOLD_MULTI -> handleTriggerThresholdMultiResult(cmdStr)
-            MDCommandType.COLLECTOR_SENSOR_THRESHOLD_SINGLE -> handleTriggerThresholdSingleResult(cmdStr)
+            MDCommandType.COLLECTOR_SENSOR_THRESHOLD_MULTI -> handleTriggerThresholdMultiResult(
+                cmdStr
+            )
+
+            MDCommandType.COLLECTOR_SENSOR_THRESHOLD_SINGLE -> handleTriggerThresholdSingleResult(
+                cmdStr
+            )
+
             MDCommandType.COLLECTOR_SENSOR_REVISED -> handleCorrectionValueResult(cmdStr)
             MDCommandType.SENSOR_INITIAL_READING -> handleInitialReadingResult(cmdStr)
             MDCommandType.SENSOR_WEIR_HEAD -> handleWeirHeadResult(cmdStr)
@@ -243,14 +292,20 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
             MDCommandType.SET_COLLECTOR_SENSOR,
             builderFirst.toString()
         )
-        Timber.Forest.d("设置 %s 接入的传感器===%s", iotSensorType.description, command)
+
+
+        Timber.d(
+            "设置 %s 接入的传感器===%s",
+            IOTSensorType.value(mStates.collectorType.get()).description,
+            command
+        )
         commandItems.add(command)
     }
 
     private fun initOtherValue() {
-        when (iotSensorType) {
+        when (IOTSensorType.value(mStates.collectorType.get())) {
             IOTSensorType.ULTRASONIC_LEVEL_GAUGE //超声波物位计
-            -> {
+                -> {
                 //触发值
                 initMultiTriggerThreshold()
                 mStates.sensorModelMap.keys.sortedBy { addr -> addr.toInt() }
@@ -265,9 +320,9 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                 mStates.sensorModelMap.keys.sortedBy { addr -> addr.toInt() }
                     .forEach { sensorAddress ->
                         val sensorInfo = mStates.sensorModelMap[sensorAddress]!!
-                        when (iotSensorType) {
+                        when (IOTSensorType.value(mStates.collectorType.get())) {
                             IOTSensorType.WEIR //量水堰计
-                            -> {
+                                -> {
                                 //触发值
                                 initSingleTriggerThreshold(sensorInfo)
                                 //修正值
@@ -280,7 +335,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
 
                             IOTSensorType.STATIC_LEVEL,//静力水准
                             IOTSensorType.SEDIMENTATION_METER,//沉降仪
-                            -> {
+                                -> {
                                 //触发值
                                 initSingleTriggerThreshold(sensorInfo)
                                 //修正值
@@ -290,7 +345,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                             }
 
                             IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
-                            -> {
+                                -> {
                                 //触发值
                                 initSingleTriggerThreshold(sensorInfo)
                                 //X轴初始值、Y轴初始值
@@ -311,7 +366,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                     }
 
                 //测斜仪需要额外设置测段长
-                if (iotSensorType == IOTSensorType.INCLINOMETER) {
+                if (IOTSensorType.value(mStates.collectorType.get()) == IOTSensorType.INCLINOMETER) {
                     initMeasureLongValue()
                 }
             }
@@ -407,7 +462,11 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
     ) {
         val command = MDCommandUtil.getCommand(
             MDCommandType.COLLECTOR_SENSOR_REVISED,
-            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${MDCommandUtil.formatStringTwo(address)}${initvalx},${initvaly}"
+            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${
+                MDCommandUtil.formatStringTwo(
+                    address
+                )
+            }${initvalx},${initvaly}"
         )
         commandDescItems.add("地址${MDCommandUtil.formatStringTwo(address)} 初始值")
         commandItems.add(command)
@@ -458,6 +517,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                 handleFailureResult(errMsg)
                 return
             }
+
             else -> {
                 val commandDesc = if (commandDescItems.isEmpty()) "修正值" else {
                     commandDescItems.first
@@ -480,6 +540,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                 handleFailureResult(errMsg)
                 return
             }
+
             else -> {
                 commandDesc = if (commandDescItems.isEmpty()) "" else {
                     commandDescItems.first
@@ -502,6 +563,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                 handleFailureResult(errMsg)
                 return
             }
+
             else -> {
                 commandDesc = if (commandDescItems.isEmpty()) "" else {
                     commandDescItems.first
@@ -524,6 +586,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                 handleFailureResult(errMsg)
                 return
             }
+
             else -> {
                 commandDesc = if (commandDescItems.isEmpty()) "" else {
                     commandDescItems.first
@@ -546,6 +609,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                 handleFailureResult(errMsg)
                 return
             }
+
             else -> {
                 commandDesc = if (commandDescItems.isEmpty()) "" else {
                     commandDescItems.first
@@ -563,6 +627,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                 handleFailureResult(errMsg)
                 return
             }
+
             else -> {
                 sendCommandFromCmdList()
             }
@@ -570,8 +635,8 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
     }
 
     companion object {
-        fun newInstance(): BleDasExternalDigitalSensorListFragment {
-            return BleDasExternalDigitalSensorListFragment()
+        fun newInstance(): BleDasDigitalSensorListFragment {
+            return BleDasDigitalSensorListFragment()
         }
     }
 }

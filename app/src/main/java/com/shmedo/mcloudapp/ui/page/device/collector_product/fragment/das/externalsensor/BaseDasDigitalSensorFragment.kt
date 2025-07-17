@@ -50,18 +50,18 @@ import timber.log.Timber
  * 创建时间：2024/6/7
  * 描述： 物联网采集器(DAS)数字式传感器参数配置页面基类 - 支持4G和蓝牙两种通讯方式
  */
-abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
+abstract class BaseDasDigitalSensorFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentBaseExternalDigitalSensorBinding
-    private val toolbarViewModel: ToolbarViewModel  by viewModels()
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo> by activityViewModels()
 
     protected val iotSensorType: IOTSensorType by lazy {
-        IOTSensorType.Companion.getSensorTypeByCollectorCode(sensorListViewModel.collectorType.get())
+        IOTSensorType.getSensorTypeByCollectorCode(sensorListViewModel.collectorType.get())
     }
     private val usedAddressList = ArrayList<String>()
     private var sensorAddress = ""
     protected var sensorIndex: Int = -1
-    private var sensorEditMode: Boolean = false
+    private var sensorEditMode: Boolean = false//是否是编辑既有传感器模式
 
 
     //阵列测斜仪物模型
@@ -69,6 +69,9 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
     //子雷达类型
     private val childRadarTypeList = arrayOf("雷达物位计", "精波雷达")
+
+    //可选择的监测元素列表
+    private val availableMonitorElementList = arrayListOf<String>()
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -95,15 +98,28 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         super.initData()
         binding.llToolbar.toolbar.title = iotSensorType.description
         arguments?.let {
-            sensorEditMode = it.getBoolean(SENSOR_EDIT_MODE, false)
             sensorIndex = it.getInt(AppContants.Extras.SENSOR_INDEX, -1)
             sensorAddress = it.getString(AppContants.Extras.SENSOR_ADDR, "")
         }
+
+        sensorEditMode = sensorListViewModel.sensorModelMap.containsKey(sensorAddress)
+
         usedAddressList.clear()
-        sensorListViewModel.sensorModelMap.keys.filterNot { it == sensorAddress }
+        sensorListViewModel.sensorModelMap.keys
+            .filterNot { it == sensorAddress }// 编辑模式下不排除自己
             .forEach { usedAddressList.add(it) }
 
-        val externalSensorInfo = if (sensorListViewModel.sensorModelMap.containsKey(sensorAddress))
+        //得到可选的监测元素列表
+        availableMonitorElementList.clear()
+        if (iotSensorType == IOTSensorType.WEATHER_STATION) {
+            sensorListViewModel.monitorElements.forEach { (addr, name) ->
+                if (!usedAddressList.contains(addr)) {
+                    availableMonitorElementList.add(name)
+                }
+            }
+        }
+
+        val sensorInfo = if (sensorListViewModel.sensorModelMap.containsKey(sensorAddress))
             sensorListViewModel.sensorModelMap[sensorAddress]!!
         else //新建传感器 采用第一个传感器的信息，没有则使用默认信息
             DasExternalSensorInfo(
@@ -113,7 +129,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 corrval = ""
             )
 
-        initSensorInfo(externalSensorInfo)
+        initSensorInfo(sensorInfo)
         initRefresh()
     }
 
@@ -148,6 +164,10 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                             "雷达类型" -> {
                                 onChildSensorTypeSwitchClick(item)
                             }
+
+                            "监测要素" -> {
+                                onMonitorElementSwitchClick(item)
+                            }
                         }
                     }
 
@@ -158,7 +178,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             }
             R.id.btn_desc.onClick {
                 val item = getModel<ExternalDigitalSensorParamEditItem>()
-                showMessageDialog(item.desc)
+                showMessageDialog(item.tipDesc)
             }
             R.id.btn_extension.onClick {
                 if (iotSensorType == IOTSensorType.STATIC_LEVEL
@@ -184,34 +204,38 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     fun initSensorInfo(sensorInfo: DasExternalSensorInfo) {
         val groupList = mutableListOf<Any>()
         try {
+
+            //传感器地址
             groupList.add(
                 ExternalDigitalSensorParamEditItem(
                     name = "传感器地址",
                     value = if (sensorInfo.addr == "-1") "" else sensorInfo.addr,
                     inputTypeFilter = "number",
                     inputLengthFilter = 3,
+                    bgResId = R.drawable.layer_common_click_item_top_corner_4_with_divider
                 )
             )
             when (iotSensorType) {
                 IOTSensorType.RAIN_GAUGE,//压电式雨量计
                 IOTSensorType.WIRE_SHIFT //拉线位移计
-                -> {
+                    -> {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值（毫米）",
-                            value = sensorInfo.threshold.formatDoubleValue("", 1),
+                            value = sensorInfo.threshold.formatDoubleValue("", 1)
                         )
                     )
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "修正值（米）",
-                            value = sensorInfo.corrval.formatDoubleValue("", 3)
+                            value = sensorInfo.corrval.formatDoubleValue("", 3),
+                            bgResId = R.drawable.shape_common_click_item_bottom_corner_4
                         )
                     )
                 }
 
                 IOTSensorType.SOIL_MOISTURE //土壤含水率
-                -> {
+                    -> {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值(%rh)",
@@ -221,13 +245,14 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "修正值(%rh)",
-                            value = sensorInfo.corrval.formatDoubleValue("", 3)
+                            value = sensorInfo.corrval.formatDoubleValue("", 3),
+                            bgResId = R.drawable.shape_common_click_item_bottom_corner_4
                         )
                     )
                 }
 
                 IOTSensorType.INCLINOMETER //测斜仪
-                -> {
+                    -> {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值（毫米）",
@@ -267,7 +292,8 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                             ExternalDigitalSensorParamEditItem(
                                 name = "测量间隔（毫秒）",
                                 value = sensorInfo.measinval.formatDoubleValue("", 1),
-                                inputEnable = false
+                                inputEnable = false,
+                                bgResId = R.drawable.shape_common_click_item_bottom_corner_4
                             )
                         )
                     }
@@ -275,7 +301,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
                 IOTSensorType.ULTRASONIC_LEVEL_GAUGE, //超声波物位计
                 IOTSensorType.RADAR_LEVEL_GAUGE //雷达物位计
-                -> {
+                    -> {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值（毫米）",
@@ -294,7 +320,8 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                                 0,
                                 ExternalDigitalSensorParamChooseItem(
                                     name = "雷达类型",
-                                    value = if (typeIndex in childRadarTypeList.indices) childRadarTypeList[typeIndex] else childRadarTypeList[0]
+                                    value = if (typeIndex in childRadarTypeList.indices) childRadarTypeList[typeIndex] else childRadarTypeList[0],
+                                    bgResId = R.drawable.shape_common_click_item_bottom_corner_4
                                 )
                             )
                         }
@@ -302,7 +329,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 }
 
                 IOTSensorType.LUYAN_INCLINOMETER //倾角仪
-                -> {
+                    -> {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值（度）",
@@ -313,27 +340,28 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                         ExternalDigitalSensorParamEditItem(
                             name = "X轴初始角度（度）",
                             value = sensorInfo.initvalx.formatDoubleValue("", 2),
-                            desc = "初始值大于 360，设备将自动计算!"
+                            tipDesc = "初始值大于 360，设备将自动计算!"
                         )
                     )
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "Y轴初始角度（度）",
                             value = sensorInfo.initvaly.formatDoubleValue("", 2),
-                            desc = "初始值大于 360，设备将自动计算!"
+                            tipDesc = "初始值大于 360，设备将自动计算!"
                         )
                     )
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "Z轴初始角度（度）",
                             value = sensorInfo.initvalz.formatDoubleValue("", 2),
-                            desc = "初始值大于 360，设备将自动计算!"
+                            tipDesc = "初始值大于 360，设备将自动计算!",
+                            bgResId = R.drawable.shape_common_click_item_bottom_corner_4
                         )
                     )
                 }
 
                 IOTSensorType.INFRASOUND //次声
-                -> {
+                    -> {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值（赫兹）",
@@ -343,13 +371,14 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "修正值（赫兹）",
-                            value = sensorInfo.corrval.formatDoubleValue("", 2)
+                            value = sensorInfo.corrval.formatDoubleValue("", 2),
+                            bgResId = R.drawable.shape_common_click_item_bottom_corner_4
                         )
                     )
                 }
 
                 IOTSensorType.WEIR //量水堰计
-                -> {
+                    -> {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值（立方米/秒）",
@@ -360,7 +389,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                         ExternalDigitalSensorParamEditItem(
                             name = "修正值（毫米）",
                             value = sensorInfo.corrval.formatDoubleValue("", 1),
-                            desc = "修正浮子高度"
+                            tipDesc = "修正浮子高度"
                         )
                     )
                     sensorInfo.lsycsds.notNullKeyEmpty {
@@ -368,7 +397,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                             ExternalDigitalSensorParamEditItem(
                                 name = "初始读数（毫米）",
                                 value = it.formatDoubleValue("", 1),
-                                desc = "当初始读数设置值小于 0  时，设备将自动计算初始值!"
+                                tipDesc = "当初始读数设置值小于 0  时，设备将自动计算初始值!"
                             )
                         )
                     }
@@ -377,7 +406,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                             ExternalDigitalSensorParamEditItem(
                                 name = "初始堰上水头（毫米）",
                                 value = it.formatDoubleValue("", 1),
-                                desc = "当水经堰顶点流出时，设置值为堰顶点到水面的距离；否则，设置值为堰顶点到浮子距离的负值"
+                                tipDesc = "当水经堰顶点流出时，设置值为堰顶点到水面的距离；否则，设置值为堰顶点到浮子距离的负值"
                             )
                         )
                     }
@@ -386,6 +415,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                             ExternalDigitalSensorParamEditItem(
                                 name = "测站编码",
                                 value = it.formatDoubleValue("", 0),
+                                bgResId = R.drawable.shape_common_click_item_bottom_corner_4
                             )
                         )
                     }
@@ -393,7 +423,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
                 IOTSensorType.STATIC_LEVEL,//静力水准
                 IOTSensorType.SEDIMENTATION_METER,//沉降仪
-                -> {
+                    -> {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值（毫米）",
@@ -410,13 +440,14 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                         ExternalDigitalSensorParamEditItem(
                             name = "初始值（毫米）",
                             value = sensorInfo.initval.formatDoubleValue("", 3),
-                            btnVisible = sensorEditMode //只有在编辑传感器下才显示重置按钮，新建传感器不显示
+                            btnVisible = sensorEditMode,//只有在编辑传感器下才显示重置按钮，新建传感器不显示
+                            bgResId = R.drawable.shape_common_click_item_bottom_corner_4
                         )
                     )
                 }
 
                 IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
-                -> {
+                    -> {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值（毫米）",
@@ -433,6 +464,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                         ExternalDigitalSensorParamEditItem(
                             name = "Y轴初始值（毫米）",
                             value = sensorInfo.initvaly.formatDoubleValue("", 3),
+                            bgResId = R.drawable.shape_common_click_item_bottom_corner_4
                         )
                     )
                     if (sensorEditMode) {
@@ -449,9 +481,40 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     }
                 }
 
-                IOTSensorType.WEATHER_STATION, //气象计
+                IOTSensorType.WEATHER_STATION //气象仪
+                    -> {
+                    // 检查是否有可用的监测要素
+                    if (availableMonitorElementList.isEmpty() && !sensorEditMode) {
+                        // 新建传感器时，如果没有可用要素
+                        showMessage(
+                            "暂无可选择的监测要素，可能所有要素都已被添加!",
+                            "温馨提示",
+                            "确定",
+                            {
+                                nav().navigateUp()
+                            })
+                        return
+                    }
+
+                    // 确定当前选中的监测要素
+                    val currentElement = if (sensorInfo.addr.isNotEmpty()) {
+                        sensorListViewModel.monitorElements[sensorInfo.addr]
+                            ?: availableMonitorElementList.firstOrNull() ?: ""
+                    } else {
+                        availableMonitorElementList.firstOrNull() ?: ""
+                    }
+                    groupList.clear()
+                    groupList.add(
+                        ExternalDigitalSensorParamChooseItem(
+                            name = "监测要素",
+                            value = currentElement,
+                            bgResId = R.drawable.bg_white_corner_4dp
+                        )
+                    )
+                }
+
                 IOTSensorType.TURBIDITY_METER //浊度仪
-                -> {
+                    -> {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值（米/秒）",
@@ -462,12 +525,13 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                         ExternalDigitalSensorParamEditItem(
                             name = "修正值（米/秒）",
                             value = sensorInfo.corrval.formatDoubleValue("", 3),
+                            bgResId = R.drawable.shape_common_click_item_bottom_corner_4
                         )
                     )
                 }
 
                 IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE //数字式水位计
-                -> {
+                    -> {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值（毫米）",
@@ -489,7 +553,8 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "绳长（米）",
-                            value = sensorInfo.ropelen.formatDoubleValue("", 3)
+                            value = sensorInfo.ropelen.formatDoubleValue("", 3),
+                            bgResId = R.drawable.shape_common_click_item_bottom_corner_4
                         )
                     )
                 }
@@ -504,7 +569,8 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "修正值",
-                            value = sensorInfo.corrval.formatDoubleValue("", 3)
+                            value = sensorInfo.corrval.formatDoubleValue("", 3),
+                            bgResId = R.drawable.shape_common_click_item_bottom_corner_4
                         )
                     )
                 }
@@ -571,33 +637,104 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             .show()
     }
 
+    /**
+     * 气象计监测要素选择
+     */
+    private fun onMonitorElementSwitchClick(item: ExternalDigitalSensorParamChooseItem) {
+        if (availableMonitorElementList.isEmpty()) {
+            showMessageDialog("暂无可选择的监测要素，可能所有要素都已被添加!")
+            return
+        }
+
+        val selectedIndex = availableMonitorElementList.indexOf(item.value)
+        XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+        XPopup.Builder(context)
+            .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+            .enableDrag(false)
+            .asBottomList(
+                "请选择监测要素",
+                availableMonitorElementList.toTypedArray(),
+                null,
+                selectedIndex,
+                { position, text ->
+                    item.refreshValue(text)
+                },
+                0,
+                R.layout.custom_xpopup_adapter_text_center
+            )
+            .show()
+    }
+
     private fun checkValueIsValidAndUpdateSensor() {
         val sensorInfo = DasExternalSensorInfo()
         sensorInfo.type = iotSensorType.code
 
-        binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
-            ?.findLast { it.name.contains("传感器地址") }?.let { item ->
-                if (item.value.isEmpty()) {
-                    showMessageDialog("请输入传感器地址!")
-                    return
-                }
-                try {
-                    val value = item.value.toInt()
-                    if (value < 0) {
+        // 对于气象计类型，使用监测要素选择项来确定传感器地址
+        if (iotSensorType == IOTSensorType.WEATHER_STATION) {
+            binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamChooseItem>()
+                ?.findLast { it.name.contains("监测要素") }?.let { item ->
+                    if (item.value.isEmpty()) {
+                        showMessageDialog("请选择监测要素!")
+                        return
+                    }
+
+                    // 根据监测要素名称找到对应的地址
+                    val elementAddr = sensorListViewModel.monitorElements.entries
+                        .find { it.value == item.value }?.key
+
+                    if (elementAddr == null) {
+                        showMessageDialog("未找到对应的监测要素地址!")
+                        return
+                    }
+
+                    //传感器地址不能重复,进行检查
+                    if (usedAddressList.contains(elementAddr)) {
+                        showMessageDialog("该监测要素已被添加!")
+                        return
+                    }
+
+                    sensorInfo.addr = elementAddr
+                } ?: run {
+                showMessageDialog("请选择监测要素!")
+                return
+            }
+        } else {
+            // 非气象计类型，使用传统的传感器地址输入
+            binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
+                ?.findLast { it.name.contains("传感器地址") }?.let { item ->
+                    if (item.value.isEmpty()) {
+                        showMessageDialog("请输入传感器地址!")
+                        return
+                    }
+                    try {
+                        val value = item.value.toInt()
+                        if (value < 0) {
+                            showMessageDialog("请输入正确的传感器地址!")
+                            return
+                        }
+                    } catch (ex: Exception) {
                         showMessageDialog("请输入正确的传感器地址!")
                         return
                     }
-                } catch (ex: Exception) {
-                    showMessageDialog("请输入正确的传感器地址!")
-                    return
+                    //传感器地址不能重复,进行检查
+                    if (usedAddressList.contains(item.value)) {
+                        showMessageDialog("传感器地址已被占用!")
+                        return
+                    }
+                    sensorInfo.addr = item.value
                 }
-                //传感器地址不能重复,进行检查
-                if (usedAddressList.contains(item.value)) {
-                    showMessageDialog("传感器地址已被占用!")
-                    return
-                }
-                sensorInfo.addr = item.value
+        }
+
+        // 验证传感器地址是否已正确设置
+        if (sensorInfo.addr.isEmpty()) {
+            if (iotSensorType == IOTSensorType.WEATHER_STATION) {
+                showMessageDialog("请选择监测要素!")
+            } else {
+                showMessageDialog("请输入传感器地址!")
             }
+            return
+        }
 
         //触发值
         binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
@@ -634,7 +771,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
         when (iotSensorType) {
             IOTSensorType.INCLINOMETER //测斜仪
-            -> {
+                -> {
                 //测段长
                 sensorInfo.spacing = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
@@ -661,7 +798,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             }
 
             IOTSensorType.RADAR_LEVEL_GAUGE //雷达液(物)位计 设置子雷达传感器型号
-            -> {
+                -> {
                 //安装高程
                 sensorInfo.corrval = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
@@ -688,7 +825,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             }
 
             IOTSensorType.LUYAN_INCLINOMETER //倾角仪
-            -> {
+                -> {
                 //X轴初始角度
                 sensorInfo.initvalx = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
@@ -742,7 +879,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             }
 
             IOTSensorType.WEIR //量水堰计
-            -> {
+                -> {
                 //初始读数
                 sensorInfo.lsycsds = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
@@ -791,7 +928,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.STATIC_LEVEL,//静力水准
             IOTSensorType.SEDIMENTATION_METER,//沉降仪
-            -> {
+                -> {
                 //初始值
                 sensorInfo.initval = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
@@ -811,7 +948,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             }
 
             IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
-            -> {
+                -> {
                 //X轴初始值
                 sensorInfo.initvalx = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
@@ -848,7 +985,7 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             }
 
             IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE //数字式水位计
-            -> {
+                -> {
                 //安装高程
                 sensorInfo.tubealti = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
@@ -888,8 +1025,8 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         }
 
         //更新或者添加传感器
-        if (sensorListViewModel.sensorModelMap.containsKey(sensorInfo.addr)) {
-            sensorListViewModel.sensorModelMap.remove(sensorInfo.addr)
+        if (sensorListViewModel.sensorModelMap.containsKey(sensorAddress)) {
+            sensorListViewModel.sensorModelMap.remove(sensorAddress)
         }
         sensorListViewModel.sensorModelMap[sensorInfo.addr] = sensorInfo
         sensorListViewModel.updateIsRefreshSensorList(true)
@@ -931,10 +1068,8 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     }
 
     companion object {
-        private const val SENSOR_EDIT_MODE = "sensor_edit_mode"
 
         fun newBundleArguments(
-            sensorEditMode: Boolean = false,
             index: Int,
             sensorAddress: String = "",
             type: ProductType = ProductType.UnKnown,
@@ -943,7 +1078,6 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putBoolean(SENSOR_EDIT_MODE, sensorEditMode)
             putInt(AppContants.Extras.SENSOR_INDEX, index)
             putString(AppContants.Extras.SENSOR_ADDR, sensorAddress)
             putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
