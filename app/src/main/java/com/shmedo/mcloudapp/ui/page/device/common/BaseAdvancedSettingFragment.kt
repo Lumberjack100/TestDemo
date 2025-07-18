@@ -151,15 +151,13 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
             )
         }
 
-        if (communicateWay is NetPlatformConnect) {
-            if (productType != ProductType.COLLECTOR_G_0) {
-                moduleList.add(
-                    AdvancedSettingItem(
-                        "固件升级",
-                        AdvancedSettingItem.Type.FIRMWARE,
-                    )
+        if ((communicateWay is NetPlatformConnect) && productType != ProductType.COLLECTOR_G_0) {
+            moduleList.add(
+                AdvancedSettingItem(
+                    "固件升级",
+                    AdvancedSettingItem.Type.FIRMWARE,
                 )
-            }
+            )
         }
 
         moduleList.add(
@@ -559,6 +557,22 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.MD_FORMAT_DATA_STORAGE -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "格式化数据出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("格式化数据成功")
+                        }
+                    }
+                }
+            }
+
             else -> {
                 when (MDCommandUtil.extractCommandType(cmdStr)) {
                     MDCommandType.LOW_ENERGY -> {//
@@ -681,13 +695,15 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 打开/关闭设备低功耗模式
+     * 格式化数据存储
      */
     private fun formatDataStorage() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_FORMAT_DATA_STORAGE)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_FORMAT_DATA_STORAGE, "type=1")
         commandItems.add(command)
-        Timber.d("打开设备低功耗模式指令===%s", command)
+
+        Timber.d("格式化数据存储指令===%s", command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 

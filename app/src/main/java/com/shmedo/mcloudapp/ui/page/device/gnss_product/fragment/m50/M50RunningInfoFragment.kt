@@ -12,13 +12,10 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
@@ -37,11 +34,8 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     override fun queryStatusInfo() {
         commandItems.clear()
 
-        var command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
         commandItems.add(command)
-
-//        command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=1")
-//        commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -65,14 +59,24 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initRunningData1(result.data)
+                        if (result.data.contains("\"work_mode\":1")) {
+                            sendCommandFromCmdList()
+                            binding.refreshLayout.finish()
+
+                        } else {
+//                            var command =
+//                                IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=1")
+//                            commandItems.add(command)
+//
+//                            sendCommandFromCmdList(isStartTimeoutJob = true)
+
+                            initRunningData2("{\"sum_value\":0.000,\"x_value\":0.000,\"y_value\":0.000,\"z_value\":0.000}")
+                            initRunningData3("{\"sum_value\":0.000,\"x_value\":0.000,\"y_value\":0.000,\"z_value\":0.000}")
+                        }
                     }
                 }
             }
-
 
             IOTCommandType.SAMPLE -> { // 召测
                 val result = iotParseManager.parse<String>(
@@ -104,64 +108,57 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     }
 
     private fun initRunningData1(content: String) {
-        launchWithViewLifecycle {
-            try {
-                val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<M50CurrentStateInfo>(content)
-                }
-                if (stateInfo == null) {
-                    binding.refreshLayout.showEmpty()
-                    return@launchWithViewLifecycle
-                }
-                binding.refreshLayout.showContent()
-                val groupList = mutableListOf<Any>()
-
-                groupList.add(DeviceStatusInfoGroupItem("工作信息"))
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "工作模式",
-                    value = when (stateInfo.workMode) {
-                        "1" -> "基站"
-                        "2" -> "测站"
-                        else -> AppContants.PLACE_HOLDER_VALUE
-                    },
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "上报模式",
-                    value = when (stateInfo.reportMode) {
-                        "0" -> "常在线"
-                        "1" -> "低功耗"
-                        "2" -> "自适应"
-                        else -> AppContants.PLACE_HOLDER_VALUE
-                    },
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "网络模式",
-                    value = when (stateInfo.netMode) {
-                        "0" -> "4G传输"
-                        "1" -> "电台传输"
-                        "2" -> "自动"
-                        else -> AppContants.PLACE_HOLDER_VALUE
-                    }
-                )
-
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "卫星数量",
-                    value = stateInfo.starNum,
-                    isBottomItem = true
-                )
-
-                binding.recyclerview.models = groupList
-
-                initRunningData2("{\"sum_value\":0.000,\"x_value\":0.000,\"y_value\":0.000,\"z_value\":0.000}")
-                initRunningData3("{\"sum_value\":0.000,\"x_value\":0.000,\"y_value\":0.000,\"z_value\":0.000}")
-            } catch (e: Exception) {
-                Timber.e(e)
-                addDeviceLogItem(Log.ERROR, e.errorMsg)
+        try {
+            val stateInfo = MoshiUtil.fromJson<M50CurrentStateInfo>(content)
+            if (stateInfo == null) {
+                binding.refreshLayout.showEmpty()
+                return
             }
+            binding.refreshLayout.showContent()
+            val groupList = mutableListOf<Any>()
+
+            groupList.add(DeviceStatusInfoGroupItem("工作信息"))
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "工作模式",
+                value = when (stateInfo.workMode) {
+                    "1" -> "基站"
+                    "2" -> "测站"
+                    else -> AppContants.PLACE_HOLDER_VALUE
+                },
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "上报模式",
+                value = when (stateInfo.reportMode) {
+                    "0" -> "常在线"
+                    "1" -> "低功耗"
+                    "2" -> "自适应"
+                    else -> AppContants.PLACE_HOLDER_VALUE
+                },
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "网络模式",
+                value = when (stateInfo.netMode) {
+                    "0" -> "4G传输"
+                    "1" -> "电台传输"
+                    "2" -> "自动"
+                    else -> AppContants.PLACE_HOLDER_VALUE
+                }
+            )
+
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "卫星数量",
+                value = stateInfo.starNum,
+                isBottomItem = true
+            )
+
+            binding.recyclerview.models = groupList
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

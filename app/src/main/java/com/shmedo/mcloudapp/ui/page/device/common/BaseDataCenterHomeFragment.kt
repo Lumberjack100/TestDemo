@@ -132,7 +132,7 @@ abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
         binding.refreshLayout.autoRefresh()
     }
 
-    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+    protected open fun isTargetCommandType(commandType: IOTCommandType): Boolean =
         (commandType == IOTCommandType.MD_GET_DEVICE_STATUS)
                 || (commandType == IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS)
                 || (commandType == IOTCommandType.MD_GET_DATA_CENTER_STATUS)
