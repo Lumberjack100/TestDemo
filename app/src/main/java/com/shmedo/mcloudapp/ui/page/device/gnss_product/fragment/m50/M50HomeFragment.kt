@@ -23,7 +23,6 @@ import com.shmedo.mcloudapp.databinding.ItemM50MeasureDataBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
@@ -117,11 +116,10 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     ),
                     ConfigModule(
                         CommonModule(
-                            name = "卫星信息",
+                            name = "运行信息",
                             resID = R.drawable.ic_module_satellite_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = 0, // 暂未实现
-                            isSupport = false
+                            navId = R.id.action_global_to_m50RunningInfoFragment
                         )
                     )
                 )
@@ -162,21 +160,22 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 ),
                 ConfigModule(
                     CommonModule(
-                        name = "传感配置",
+                        name = "倾斜触发",
                         resID = R.drawable.ic_module_sensor_setting_new,
                         navId = R.id.action_global_to_m50SensorConfigFragment
                     )
                 ),
                 ConfigModule(
                     CommonModule(
-                        name = "端口配置",
+                        name = "串口配置",
                         resID = R.drawable.ic_module_serial_port,
-                        navId = R.id.action_global_to_m50SerialPortParamFragment
+                        navId = R.id.action_global_to_m50SerialPortParamFragment,
+                        isSupport = false
                     )
                 ),
                 ConfigModule(
                     CommonModule(
-                        name = "CORS接入",
+                        name = "GNSS配置",
                         resID = R.drawable.ic_module_cors,
                         navId = 0,
                         isSupport = false
@@ -253,108 +252,6 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    /**
-     * 拍照
-     */
-    private fun takePhoto() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=1")
-        commandItems.add(command)
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.SAMPLE -> {
-                if (cmdStr.contains("method=1")) {
-                    super.doCmdResponseResultError(
-                        cmdStr = cmdStr,
-                        errMsg = "拍照指令下发出错: $errMsg",
-                        isShowErrMsg = true,
-                        isMessageDialog = true
-                    )
-                }
-            }
-
-            else -> {
-                super.doCmdResponseResultError(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
-                    isMessageDialog = isMessageDialog
-                )
-            }
-        }
-    }
-
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.SAMPLE -> {
-                if (cmdStr.contains("method=1")) {
-                    super.doCmdResponseResultTimeOut(
-                        cmdStr = cmdStr,
-                        errMsg = errMsg,
-                        isShowErrMsg = true,
-                        isMessageDialog = true
-                    )
-                }
-            }
-
-            else -> {
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
-                    isMessageDialog = isMessageDialog
-                )
-            }
-        }
-    }
-
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.SAMPLE -> {
-                if (cmdStr.contains("method=1")) {
-                    super.showNearbyCommunicationTimeoutAlert(
-                        cmdStr = cmdStr,
-                        isDismissLoadingDialog = isDismissLoadingDialog,
-                        isShowErrMsg = true,
-                        isMessageDialog = true,
-                        errMsg = errMsg
-                    )
-                }
-            }
-
-            else -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = isShowErrMsg,
-                    isMessageDialog = isMessageDialog,
-                    errMsg = errMsg
-                )
-            }
-        }
-    }
-
     override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
@@ -381,7 +278,7 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "拍照出错: ${result.message}"
+                        val errMsg = "召测出错: ${result.message}"
                         handleFailureResult(errMsg, isShowErrMsg = false)
                         return
                     }
@@ -519,7 +416,6 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            takePhoto()
         }
 
         fun onGoToSensorDataHistoryClick() {

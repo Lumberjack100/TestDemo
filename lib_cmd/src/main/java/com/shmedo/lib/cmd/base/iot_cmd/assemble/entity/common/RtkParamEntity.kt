@@ -11,10 +11,10 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class RtkParamEntity(
-    val method: String = "1",//0：获取当前参数信息  1：设置参数
+    val method: String = "1",//0：获取当前参数信息  1：设置参数  默认1
     val mode: String = "", //当前gnss模式 1:基准站  2:移动站  默认2
     val sw: String = IOTConstants.NULL_KEY, //解算盒子使用配置开关 0:停止使用解算盒子  1:开始使用解算盒子  默认0
-    val frontCalc: String = IOTConstants.NULL_KEY, //前端解算开关 0:关闭前端解算  1:打开前端解算  默认0
+    val frontCalc: String = IOTConstants.NULL_KEY, //前端解算开关 0：关闭前端解算 1：常开前端解算 2：根据网络状态开启前端解算  默认0
     val baseStationMode: String = IOTConstants.NULL_KEY, //基站坐标模式 0:以精确坐标设置基站模式  1:以自主优化方式设置基准站模式  默认0
     val latitude: String = IOTConstants.NULL_KEY, //纬度 基站纬度  （-90~90） 单位 度
     val longitude: String = IOTConstants.NULL_KEY, //经度 基站经度  （-180~180）单位 度
@@ -33,7 +33,7 @@ data class RtkParamEntity(
     val gateDevVal4: String = IOTConstants.NULL_KEY, //位移报警四级阈值
     val rtkMode: String = IOTConstants.NULL_KEY, //解算模式源 1:静态解算  2:动态结算  默认1
     val obs: String = IOTConstants.NULL_KEY, //观测数据上报频率 取值为[0-60]
-    val reportMode: String = IOTConstants.NULL_KEY, //上报模式 0:低功耗  1:正常
+    val reportMode: String = IOTConstants.NULL_KEY, //上报模式 0:常在线  1:低功耗 2:自适应
     val networkMode: String = IOTConstants.NULL_KEY, //网络模式 0:4G传输 1:电台传输 2:自动
 ) {
     fun toCommandString(): String {

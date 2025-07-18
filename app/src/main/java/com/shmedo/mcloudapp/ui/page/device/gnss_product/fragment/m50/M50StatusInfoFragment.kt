@@ -23,7 +23,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/9/19
- * 描述： 基本信息
+ * 描述：  一体式自供电 GNSS 接收机(M50)状态信息
  */
 class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
@@ -46,10 +46,15 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 val groupList = mutableListOf<Any>()
 
                 groupList.add(DeviceStatusInfoGroupItem("供电信息"))
+
+                val solarVoltage = stateInfo.solarVoltage.toDoubleOrNull() ?: Double.MAX_VALUE
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "光伏板电压",
-                    value = stateInfo.solarVoltage.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
+                    value = if (solarVoltage == 0.0) "0" else stateInfo.solarVoltage.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
+                    textColorRes = if (solarVoltage >= 9) 0 else ColorUtils.getColor(
+                        R.color.warn_FF9D00
+                    ),
                     unit = "V"
                 )
 
@@ -59,19 +64,20 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "外部电压",
                     value = if (externalVoltage == 0.0) "0" else stateInfo.externalVoltage.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     unit = "V",
-                    textColorRes = if ((externalVoltage >= 9 && externalVoltage < 28) || externalVoltage == Double.MAX_VALUE) 0 else ColorUtils.getColor(
+                    textColorRes = if (solarVoltage >= 12) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00
                     ),
                     isBottomItem = true
                 )
 
-                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                groupList.add(DeviceStatusInfoGroupItem("电池信息"))
                 val batteryInfoList = stateInfo.battery ?: emptyList()
                 batteryInfoList.onEachIndexed { index, batteryInfo ->
+                    groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                    groupList.add(DeviceStatusInfoGroupItem(if (index == 0) "内部电池" else "备用电池"))
+
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
-                        name = "电池${index + 1}状态",
+                        name = "状态" ,
                         value = when (batteryInfo.batteryStatus) {
                             "0" -> "放电中"
                             "1" -> "充电中"
@@ -88,7 +94,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         batteryInfo.batteryVoltage.toDoubleOrNull() ?: Double.MAX_VALUE
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
-                        name = "电池${index + 1}电压",
+                        name = "电压",
                         value = if (batteryVoltage == 0.0) "0" else batteryInfo.batteryVoltage.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                         unit = "V",
                     )
@@ -97,10 +103,10 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         batteryInfo.batteryCapacity.toDoubleOrNull() ?: Double.MAX_VALUE
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
-                        name = "电池${index + 1}电量",
+                        name = "电量",
                         value = batteryInfo.batteryCapacity.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                         unit = "%",
-                        textColorRes = if (batteryCapacity > 25) 0 else ColorUtils.getColor(
+                        textColorRes = if (batteryCapacity > 20) 0 else ColorUtils.getColor(
                             R.color.warn_FF9D00
                         ),
                     )
@@ -108,7 +114,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     val batteryTemp = batteryInfo.batteryTemp.toDoubleOrNull() ?: Double.MAX_VALUE
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
-                        name = "电池${index + 1}温度",
+                        name = "温度",
                         value = batteryInfo.batteryTemp.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                         textColorRes = if ((batteryTemp > -20 && batteryTemp < 80) || batteryTemp == Double.MAX_VALUE) 0 else ColorUtils.getColor(
                             R.color.warn_FF9D00
@@ -120,7 +126,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         batteryInfo.batteryHealth.toDoubleOrNull() ?: Double.MAX_VALUE
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
-                        name = "电池${index + 1}最大容量",
+                        name = "健康度",
                         value = batteryInfo.batteryHealth.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                         textColorRes = if (batteryHealth > 70) 0 else ColorUtils.getColor(
                             R.color.warn_FF9D00
@@ -163,7 +169,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
-                    name = "加速度计",
+                    name = "倾角加速度模块",
                     value = stateInfo.scl.uppercase().compareAndReturn("OK", "正常", "故障"),
                     textColorRes = if (stateInfo.scl.uppercase() == "OK") 0 else ColorUtils.getColor(
                         R.color.error_FF4400
@@ -177,14 +183,14 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         R.color.error_FF4400
                     )
                 )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "SIM卡",
-                    value = stateInfo.simStatus.uppercase().compareAndReturn("OK", "正常", "故障"),
-                    textColorRes = if (stateInfo.simStatus.uppercase() == "OK") 0 else ColorUtils.getColor(
-                        R.color.error_FF4400
-                    )
-                )
+//                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+//                    groupList,
+//                    name = "SIM卡",
+//                    value = stateInfo.simStatus.uppercase().compareAndReturn("OK", "正常", "故障"),
+//                    textColorRes = if (stateInfo.simStatus.uppercase() == "OK") 0 else ColorUtils.getColor(
+//                        R.color.error_FF4400
+//                    )
+//                )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "蓝牙模块",

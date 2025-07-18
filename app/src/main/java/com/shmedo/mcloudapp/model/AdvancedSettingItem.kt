@@ -34,6 +34,9 @@ data class AdvancedSettingItem(
 
         //监测数据导出
         data object MONITORING_DATA_EXPORT : Type()
+
+        //格式化数据存储
+        data object FORMAT_DATA_STORAGE : Type()
     }
 }
 

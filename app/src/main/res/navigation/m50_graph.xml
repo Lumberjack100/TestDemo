@@ -46,6 +46,12 @@
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
+        android:id="@+id/m50RunningInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50RunningInfoFragment"
+        android:label="M50RunningInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
         android:id="@+id/m50SatelliteInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50SatelliteInfoFragment"
         android:label="M50SatelliteInfoFragment"
@@ -128,6 +134,14 @@
     <action
         android:id="@+id/action_global_to_m50StatusInfoFragment"
         app:destination="@id/m50StatusInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_m50RunningInfoFragment"
+        app:destination="@id/m50RunningInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

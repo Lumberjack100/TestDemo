@@ -25,9 +25,6 @@ object IOTConstants {
     /** 空键值 */
     const val NULL_KEY = "NullKey"
 
-    /** 占位值 */
-    const val HOLD_VALUE = "--"
-
     /**
      * 错误原因相关常量
      */

@@ -102,16 +102,16 @@ class BleDasDigitalSensorListFragment : BaseDasSensorListFragment() {
         initCollectorSensor()
         initOtherValue()
 
+        var command = MDCommandUtil.getCommand(
+            MDCommandType.SAVE_CONFIG_INFO,
+            SaveConfigMode.SAVE_NO_REBOOT.toString()
+        )
+        commandItems.add(command)
+
         if (IOTSensorType.value(mStates.collectorType.get()) == IOTSensorType.WEATHER_STATION) {   //气象仪
             val command = MDCommandUtil.getCommand(
-                MDCommandType.SAVE_CONFIG_INFO,
-                SaveConfigMode.SAVE_REBOOT.toString()
-            )
-            commandItems.add(command)
-        } else {
-            val command = MDCommandUtil.getCommand(
-                MDCommandType.SAVE_CONFIG_INFO,
-                SaveConfigMode.SAVE_NO_REBOOT.toString()
+                MDCommandType.REBOOT_DEVICE,
+                "1"
             )
             commandItems.add(command)
         }
@@ -167,11 +167,10 @@ class BleDasDigitalSensorListFragment : BaseDasSensorListFragment() {
                 }
             }
 
-            MDCommandType.CHOOSE_SENSOR_MANUFACTURER -> {//MR701H-多要素气象计选择传感器厂家
+            MDCommandType.SET_COLLECTOR_ADDRESS -> {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        val errMsg = "保存出错!"
-                        handleFailureResult(errMsg)
+                        handleFailureResult("采集器地址配置出错!")
                         return
                     }
 
@@ -181,10 +180,11 @@ class BleDasDigitalSensorListFragment : BaseDasSensorListFragment() {
                 }
             }
 
-            MDCommandType.SET_COLLECTOR_ADDRESS -> {
+            MDCommandType.CHOOSE_SENSOR_MANUFACTURER -> {//MR701H-多要素气象计选择传感器厂家
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        handleFailureResult("采集器地址配置出错!")
+                        val errMsg = "保存出错!"
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -211,6 +211,19 @@ class BleDasDigitalSensorListFragment : BaseDasSensorListFragment() {
                 }
             }
 
+            // 处理其他具体的传感器配置指令
+            MDCommandType.COLLECTOR_SENSOR_THRESHOLD_MULTI -> handleTriggerThresholdMultiResult(cmdStr)
+
+            MDCommandType.COLLECTOR_SENSOR_THRESHOLD_SINGLE -> handleTriggerThresholdSingleResult(cmdStr)
+
+            MDCommandType.COLLECTOR_SENSOR_REVISED -> handleCorrectionValueResult(cmdStr)
+
+            MDCommandType.SENSOR_INITIAL_READING -> handleInitialReadingResult(cmdStr)
+
+            MDCommandType.SENSOR_WEIR_HEAD -> handleWeirHeadResult(cmdStr)
+
+            MDCommandType.SET_INCLINOMETER_LONG -> handleInclinometerLongResult(cmdStr)
+
             MDCommandType.SAVE_CONFIG_INFO -> {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
@@ -223,34 +236,33 @@ class BleDasDigitalSensorListFragment : BaseDasSensorListFragment() {
                             if (mStates.sensorModelMap.isEmpty()) {
                                 showMessageDialog("采集器地址已修改为0,如继续配置扩展传感器,请先修改采集器地址!")
                             } else {
-                                if (cmdStr.contains("0191")) {
-                                    showMessage(
-                                        "设备已重启，请退出重新连接",
-                                        "温馨提示",
-                                        "确定",
-                                        {
-                                            nav().navigateUp()
-                                        })
-                                } else Toaster.show("数据保存成功")
+                                Toaster.show("数据保存成功")
                             }
                         }
                     }
                 }
             }
 
-            // 处理其他具体的传感器配置指令
-            MDCommandType.COLLECTOR_SENSOR_THRESHOLD_MULTI -> handleTriggerThresholdMultiResult(
-                cmdStr
-            )
+            MDCommandType.REBOOT_DEVICE -> {//
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        handleFailureResult("保存出错!")
+                        return
+                    }
 
-            MDCommandType.COLLECTOR_SENSOR_THRESHOLD_SINGLE -> handleTriggerThresholdSingleResult(
-                cmdStr
-            )
-
-            MDCommandType.COLLECTOR_SENSOR_REVISED -> handleCorrectionValueResult(cmdStr)
-            MDCommandType.SENSOR_INITIAL_READING -> handleInitialReadingResult(cmdStr)
-            MDCommandType.SENSOR_WEIR_HEAD -> handleWeirHeadResult(cmdStr)
-            MDCommandType.SET_INCLINOMETER_LONG -> handleInclinometerLongResult(cmdStr)
+                    else -> {
+                        sendCommandFromCmdList {
+                            showMessage(
+                                "设备已重启，请退出重新连接",
+                                "温馨提示",
+                                "确定",
+                                {
+                                    nav().navigateUp()
+                                })
+                        }
+                    }
+                }
+            }
 
             else -> {
                 // 不处理的指令类型

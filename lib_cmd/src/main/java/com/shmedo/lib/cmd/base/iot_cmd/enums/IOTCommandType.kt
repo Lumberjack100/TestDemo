@@ -21,6 +21,9 @@ enum class IOTCommandType(val value: String) {
     /** 恢复出厂设置 */
     RESET("md_reset"),
 
+    /** 格式化数据存储 */
+    MD_FORMAT_DATA_STORAGE("md_cleaninfo"),
+
     /** 参数导出(上传) */
     MD_BACKUP_CONFIG("md_backupconfig"),
 
