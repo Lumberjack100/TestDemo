@@ -34,7 +34,10 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     override fun queryStatusInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+        var command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+        commandItems.add(command)
+
+        command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=2")
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -60,19 +63,15 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
                     is IOTCommandResult.Success -> {
                         initRunningData1(result.data)
+                        //基站仅获取工作信息
                         if (result.data.contains("\"work_mode\":1")) {
-                            sendCommandFromCmdList()
-                            binding.refreshLayout.finish()
+                            cancelNearbyCommunicationTimeoutJob()
 
                         } else {
-//                            var command =
-//                                IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=1")
-//                            commandItems.add(command)
-//
-//                            sendCommandFromCmdList(isStartTimeoutJob = true)
-
-                            initRunningData2("{\"sum_value\":0.000,\"x_value\":0.000,\"y_value\":0.000,\"z_value\":0.000}")
-                            initRunningData3("{\"sum_value\":0.000,\"x_value\":0.000,\"y_value\":0.000,\"z_value\":0.000}")
+                            //测站：除了获取工作信息即可，还需要获取数据解算和初始坐标信息
+                            sendCommandFromCmdList {
+                                binding.refreshLayout.finish()
+                            }
                         }
                     }
                 }
@@ -94,7 +93,7 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        if (cmdStr.contains("method=1")) {
+                        if (cmdStr.contains("method=2")) {
                             initRunningData2(result.data)
                         }
                     }
@@ -243,49 +242,41 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 isBottomItem = true
             )
 
-            binding.recyclerview.bindingAdapter.apply {
-                mutable.addAll(groupList)
-                notifyItemRangeInserted(itemCount, groupList.size)
-            }
-        } catch (e: Exception) {
-            Timber.e(e)
-            addDeviceLogItem(Log.ERROR, e.errorMsg)
-        }
-    }
-
-    private fun initRunningData3(content: String) {
-        try {
-            // {"sw":1,"mode":8,"initENU":"0.000000,0.000000,0.000000","baseLine":0.000000,"fixRate":0.0,"gap_fixRate":0.0,"result":"0.000,0.000,0.000","status":"not-fix","dataSource":"mqtt"}
-            val resultMap = MoshiUtil.fromJson<Map<String, String>>(content) ?: return
-            if (resultMap.isEmpty()) return
-            val groupList = mutableListOf<Any>()
-
             groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
             groupList.add(DeviceStatusInfoGroupItem("初始坐标"))
+            val initCompletionTime =
+                resultMap["initdate"] ?: AppContants.PLACE_HOLDER_VALUE
             DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                 groupList,
-                name = "初始化完成时间",
-                value = resultMap["time"] ?: AppContants.PLACE_HOLDER_VALUE,
+                name = "初始完成时间",
+                value = initCompletionTime
             )
 
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                groupList,
-                name = "东（E）",
-                value = resultMap["time"] ?: AppContants.PLACE_HOLDER_VALUE,
-            )
+            val initENU = resultMap["initENU"] ?: AppContants.PLACE_HOLDER_VALUE
+            initENU.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                .let {
+                    if (it.size == 3) {
+                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                            groupList,
+                            name = "东（E）",
+                            value = it[0],
+                        )
 
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                groupList,
-                name = "北（N）",
-                value = resultMap["time"] ?: AppContants.PLACE_HOLDER_VALUE,
-            )
+                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                            groupList,
+                            name = "北（N）",
+                            value = it[1],
+                        )
 
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                groupList,
-                name = "天（U）",
-                value = resultMap["dataSource"] ?: AppContants.PLACE_HOLDER_VALUE,
-                isBottomItem = true
-            )
+                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                            groupList,
+                            name = "天（U）",
+                            value = it[2],
+                            isBottomItem = true
+                        )
+                    }
+                }
+
 
             binding.recyclerview.bindingAdapter.apply {
                 mutable.addAll(groupList)

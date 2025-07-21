@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/udHomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.NewUDHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDHomeFragment"
         android:label="NewUDHomeFragment"
         tools:layout="@layout/fragment_universal_device_home_new" />
 

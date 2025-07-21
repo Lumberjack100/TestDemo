@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.BindingAdapter.BindingViewHolder
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
@@ -249,6 +248,9 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
         command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=0")
         commandItems.add(command)
 
+        command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=2")
+        commandItems.add(command)
+
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -285,7 +287,7 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
-                        processSampleResponse(result.data)
+                        processSampleResponse(cmdStr, result.data)
                     }
                 }
             }
@@ -334,13 +336,11 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
     /**
      * 处理召测响应
      */
-    private fun processSampleResponse(content: String) {
+    private fun processSampleResponse(cmdStr: String, content: String) {
         try {
-            // 可能的响应格式：
-            // {"x_value":"22","y_value":"22","z_value":"22"}
-            // 或包含时间信息：{"x_value":"22","y_value":"22","z_value":"22","init_completion_time":"2025-06-10 15:00:00","latest_data_time":"2025-06-10 17:00:00"}
+            // $cmd=sample&method=0&datastreams={"date":"2025-07-18 17:12:22","sum_value":6013.101,"x_value":-1429.354,"y_value":-0.006,"z_value":-5840.747}
             val resultMap = MoshiUtil.fromJson<Map<String, String>>(content) ?: return
-            if (resultMap.containsKey("x_value")
+            if (cmdStr.contains("method=0") && resultMap.containsKey("x_value")
                 && resultMap.containsKey("y_value")
                 && resultMap.containsKey("z_value")
             ) {
@@ -358,31 +358,27 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     binding.rvModule.bindingAdapter.getModel<M50MeasureDataItem>(0)
 
                 // 检查是否包含时间信息
-                if (resultMap.containsKey("init_completion_time") && resultMap.containsKey("latest_data_time")) {
-                    val initCompletionTime =
-                        resultMap["init_completion_time"] ?: AppContants.PLACE_HOLDER_VALUE
+                if (resultMap.containsKey("date")) {
                     val latestDataTime =
-                        resultMap["latest_data_time"] ?: AppContants.PLACE_HOLDER_VALUE
+                        resultMap["date"] ?: AppContants.PLACE_HOLDER_VALUE
 
                     // 使用包含时间信息的刷新方法
                     measureDataItem.refreshStatusWithTime(
                         xDisplacement,
                         yDisplacement,
                         zDisplacement,
-                        initCompletionTime,
                         latestDataTime
                     )
                 }
-
-                // 使用包含时间信息的刷新方法
-                measureDataItem.refreshStatusWithTime(
-                    xDisplacement,
-                    yDisplacement,
-                    zDisplacement,
-                    TimeUtils.getNowString(),
-                    TimeUtils.getNowString()
-                )
                 return
+            }
+
+            //$cmd=sample&method=2&datastreams={"sw":1,"mode":8,"initdate":"2025-07-18 18:12:26","initENU":""0.000000,0.000000,0.000000","baseLine":0.000000","fixRate":34.4,"gap_fixRate":0.0,"result":"-1429.354,-0.006,-5840.747","status":"not-fix","dataSource":"mqtt"}
+            if (cmdStr.contains("method=2") && resultMap.containsKey("initdate")) {
+                val initCompletionTime =
+                    resultMap["initdate"] ?: AppContants.PLACE_HOLDER_VALUE
+
+                measureDataItem.refreshInitCompletionTime(initCompletionTime)
             }
         } catch (e: Exception) {
             Timber.Forest.e(e)
