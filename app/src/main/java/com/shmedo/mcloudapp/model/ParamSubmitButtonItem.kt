@@ -5,6 +5,6 @@ package com.shmedo.mcloudapp.model
  * 创建时间：2024/6/6
  * 描述： TODO
  */
-data class ExternalDigitalSensorParamButtonItem(
+data class ParamSubmitButtonItem(
     val btnText: String = "",
 )

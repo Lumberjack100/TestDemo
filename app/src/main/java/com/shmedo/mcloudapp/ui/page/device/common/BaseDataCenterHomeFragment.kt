@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
+import com.drake.brv.BindingAdapter.BindingViewHolder
 import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -25,10 +28,12 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
+import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.model.ParamSubmitButtonItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.UniversalDataCenterHomeViewModel
 import org.koin.android.ext.android.inject
 
 /**
@@ -39,7 +44,6 @@ import org.koin.android.ext.android.inject
 abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentUniversalDataCenterHomeBinding
     protected val toolbarViewModel: ToolbarViewModel by viewModels()
-    protected val mStates: UniversalDataCenterHomeViewModel by viewModels()
     protected val iotParseManager: IOTParserManager by inject()
     protected var centerNum = 0 // 数据链路数量
 
@@ -47,10 +51,9 @@ abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_universal_data_center_home,
-            BR.stateVM,
-            mStates
+            BR.toolbarVM,
+            toolbarViewModel
         )
-            .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, getClickProxy())
     }
 
@@ -58,10 +61,10 @@ abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUniversalDataCenterHomeBinding
         binding.llToolbar.toolbar.title = "数据链路"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            handleBackByCheckDataModified()
+            nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-            handleBackByCheckDataModified()
+            nav().navigateUp()
         }
         initRefresh()
         initAdapter()
@@ -79,46 +82,76 @@ abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
+
+    private fun initAdapter() {
+        binding.recyclerView.linear().setup { rv ->
+            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group2)
+            addType<DataCenterStatusItem>(R.layout.data_center_status_item)
+            addType<GapItem>(R.layout.item_device_status_info_gap)
+            addType<ParamSubmitButtonItem>(R.layout.item_param_summit_button)
+            onBind {
+                processOtherItemViewBind(itemViewType)
+            }
+
+            R.id.item.onClick {
+                when (itemViewType) {
+                    R.layout.data_center_status_item -> {
+                        val item = getModel<DataCenterStatusItem>()
+                        val bundle = UniversalDataCenterParamFragment.newBundleArguments(
+                            item,
+                            productType,
+                            communicateWay,
+                            deviceInfo,
+                            bleDevice
+                        )
+                        nav().safeNavigate(
+                            getNavigationActionId(),
+                            bundle
+                        )
+                    }
+
+                    else -> {
+                        processOtherItemViewClick(itemViewType)
+                    }
+                }
+            }
+
+            R.id.btn_submit.onClick {
+                KeyboardUtils.hideSoftInput(binding.root)
+                if (isBleDisconnected()) {
+                    Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                    return@onClick
+                }
+                initSaveCommand()
+            }
+        }
+    }
+
     override fun initData() {
         super.initData()
         arguments?.let {
             centerNum = it.getInt(CENTER_NUM, 1)
         }
-        resetDefaultParams()
-        // 保存初始状态
-        mStates.saveInitialState()
+        initRecyclerViewAdapterData()
     }
 
-    protected open fun resetDefaultParams() {
-        mStates.isSupportedReportInterval.set(
-            productType == ProductType.GNSS_M_1
-                    || productType == ProductType.GNSS_M_2
-                    || productType == ProductType.GNSS_M_5
-                    || productType == ProductType.U_I_1
-                    || productType == ProductType.U_R_1
-        )
-        mStates.reportInterval.set("")
+    protected open fun initRecyclerViewAdapterData() {
         binding.recyclerView.bindingAdapter.models = getAdapterData()
     }
 
-    private fun initAdapter() {
-        binding.recyclerView.setup { rv ->
-            addType<DataCenterStatusItem>(R.layout.data_center_status_item)
-            R.id.item.onClick {
-                val item = getModel<DataCenterStatusItem>()
-                val bundle = UniversalDataCenterParamFragment.newBundleArguments(
-                    item,
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().safeNavigate(
-                    getNavigationActionId(),
-                    bundle
-                )
-            }
-        }
+    /**
+     * 处理其他类型Item的视图绑定，子类可重写以处理扩展适配器
+     */
+    protected open fun BindingViewHolder.processOtherItemViewBind(itemViewType: Int) {
+        // 基类默认不处理，子类可重写
+    }
+
+    protected open fun BindingViewHolder.processOtherItemViewClick(itemViewType: Int) {
+        // 基类默认不处理，子类可重写
+    }
+
+    protected open fun initSaveCommand() {
+
     }
 
     override fun createObserver() {
@@ -136,8 +169,6 @@ abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
         (commandType == IOTCommandType.MD_GET_DEVICE_STATUS)
                 || (commandType == IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS)
                 || (commandType == IOTCommandType.MD_GET_DATA_CENTER_STATUS)
-                || (commandType == IOTCommandType.MD_GET_DATA_REPORT_TIME)
-                || (commandType == IOTCommandType.MD_SET_DATA_REPORT_TIME)
 
     /**
      * 4G 下发指令响应失败
@@ -195,23 +226,23 @@ abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
         )
     }
 
-    protected fun getAdapterData(): MutableList<DataCenterStatusItem> {
-        val list = mutableListOf<DataCenterStatusItem>()
+    protected fun getAdapterData(): MutableList<Any> {
+        val groupList = mutableListOf<Any>()
+        groupList.add(DeviceStatusInfoGroupItem("数据链路"))
         for (i in 1..centerNum) {
-            list.add(
+            groupList.add(
                 DataCenterStatusItem(
                     centerid = i,
                     name = "数据链路$i",
                     status = "0",
                     bgResId = when (i) {
-                        1 -> R.drawable.layer_common_click_item_top_corner_4_with_divider
                         centerNum -> R.drawable.shape_common_click_item_bottom_corner_4
                         else -> R.drawable.layer_common_click_item_with_divider
                     }
                 )
             )
         }
-        return list
+        return groupList
     }
 
     override fun onResume() {
@@ -233,7 +264,7 @@ abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
     /**
      * 处理从编辑页面返回的结果
      */
-    protected open fun handleFragmentResult(bundle: Bundle){
+    protected open fun handleFragmentResult(bundle: Bundle) {
         binding.refreshLayout.autoRefresh()
     }
 
@@ -245,16 +276,6 @@ abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
         return BaseClickProxy()
     }
 
-    /**
-     * 处理返回导航
-     */
-    override fun handleBackByCheckDataModified() {
-        if (mStates.isDataModified.value == true) {
-            showExitConfirmationDialog()
-            return
-        }
-        nav().navigateUp()
-    }
 
     companion object {
         const val CENTER_NUM = "center_num"

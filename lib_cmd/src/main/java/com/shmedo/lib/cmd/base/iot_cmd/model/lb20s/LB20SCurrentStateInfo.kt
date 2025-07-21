@@ -1,6 +1,6 @@
 package com.shmedo.lib.cmd.base.iot_cmd.model.lb20s
 
-import com.shmedo.lib.cmd.base.iot_cmd.model.m20.SensorErrnoBean
+import com.shmedo.lib.cmd.base.iot_cmd.model.SensorErrnoBean
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

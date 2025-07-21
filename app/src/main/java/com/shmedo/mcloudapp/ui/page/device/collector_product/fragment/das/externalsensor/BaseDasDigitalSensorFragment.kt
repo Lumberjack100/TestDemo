@@ -35,11 +35,11 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CommunicateWay
-import com.shmedo.mcloudapp.model.ExternalDigitalSensorParamButtonItem
 import com.shmedo.mcloudapp.model.ExternalDigitalSensorParamChooseItem
 import com.shmedo.mcloudapp.model.ExternalDigitalSensorParamEditItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.model.ParamSubmitButtonItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -151,7 +151,7 @@ abstract class BaseDasDigitalSensorFragment : BaseIOTDeviceFragment() {
             addType<ExternalDigitalSensorParamChooseItem>(R.layout.item_das_external_digital_sensor_param_choose)
             addType<ExternalDigitalSensorParamEditItem>(R.layout.item_das_external_digital_sensor_param_edit)
             addType<GapItem>(R.layout.item_device_status_info_gap)
-            addType<ExternalDigitalSensorParamButtonItem>(R.layout.item_das_external_digital_sensor_param_summit_button)
+            addType<ParamSubmitButtonItem>(R.layout.item_param_summit_button)
             R.id.item.onClick {
                 when (itemViewType) {
                     R.layout.item_das_external_digital_sensor_param_choose -> {
@@ -188,7 +188,7 @@ abstract class BaseDasDigitalSensorFragment : BaseIOTDeviceFragment() {
                 }
             }
             R.id.btn_submit.onClick {
-                val item = getModel<ExternalDigitalSensorParamButtonItem>()
+                val item = getModel<ParamSubmitButtonItem>()
                 KeyboardUtils.hideSoftInput(binding.root)
 
                 if (item.btnText == "确定") {
@@ -474,7 +474,7 @@ abstract class BaseDasDigitalSensorFragment : BaseIOTDeviceFragment() {
                             )
                         )
                         groupList.add(
-                            ExternalDigitalSensorParamButtonItem(
+                            ParamSubmitButtonItem(
                                 btnText = "重置初始值",
                             )
                         )
@@ -582,7 +582,7 @@ abstract class BaseDasDigitalSensorFragment : BaseIOTDeviceFragment() {
                 )
             )
             groupList.add(
-                ExternalDigitalSensorParamButtonItem(
+                ParamSubmitButtonItem(
                     btnText = "确定",
                 )
             )

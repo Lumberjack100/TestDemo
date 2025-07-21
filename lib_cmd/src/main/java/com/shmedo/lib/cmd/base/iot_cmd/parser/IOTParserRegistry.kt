@@ -66,12 +66,14 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.hac.HacWarningValueParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.lr200.LR200ZeroValueParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.m20.M20BaseInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.m50.M50CorsParamParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.m50.M50DataReportTypeParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.m50.M50SerialPortParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRAlarmModuleParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDIPortParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDOPortParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDataCenterParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDataCenterStatusParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDataReportTypeParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDeviceInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRPulsePortParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS232Port1ParamParser
@@ -87,7 +89,6 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port3CameraParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port3SensorParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port3SensorStatusParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRainGaugeParamParser
-import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRReportMethodParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRReservoirCapacityParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRScreenParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRWiredNetParser
@@ -162,12 +163,13 @@ object IOTParserRegistry {
         M20BaseInfoParser(),
         M50SerialPortParamParser(),
         M50CorsParamParser(),
+        M50DataReportTypeParser(),
         GNSSSateliteInfoParser(),
         DeviceCurrentStateParser(),
         DeviceCurrentStateParser2(),
         MRWirelessNetParser(),
         MRWiredNetParser(),
-        MRReportMethodParser(),
+        MRDataReportTypeParser(),
         MRScreenParamParser(),
         MRDataCenterStatusParser(),
         MRDataCenterParser(),

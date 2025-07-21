@@ -10,10 +10,6 @@
             type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
-            name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.UniversalDataCenterHomeViewModel" />
-
-        <variable
             name="click"
             type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
 
@@ -38,102 +34,20 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
-            <androidx.core.widget.NestedScrollView
-                android:id="@+id/scrollView"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                android:paddingTop="@dimen/page_content_container_padding_top_12"
+                android:paddingBottom="@dimen/page_content_container_padding_bottom_100"
+                android:splitMotionEvents="false"
+                tools:itemCount="4"
+                tools:listitem="@layout/data_center_status_item" />
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
-                    android:paddingTop="@dimen/page_content_container_padding_top_12"
-                    android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        visible="@{stateVM.isSupportedReportInterval() }"
-                        android:background="@drawable/shape_common_click_item_top_corner_4">
-
-                        <View
-                            android:layout_width="3dp"
-                            android:layout_height="14dp"
-                            android:background="@color/black" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_GroupItem_Title_Style2"
-                            android:layout_marginStart="@dimen/dimen_size_8"
-                            android:text="北斗数传" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        visible="@{stateVM.isSupportedReportInterval() }"
-                        android:background="@drawable/layer_common_click_item_with_divider">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            android:text="上报间隔（分钟）"
-                            tools:textColor="@color/title_text_color" />
-
-                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            style="@style/Common_EditItem_EditText_Style"
-                            android:hint="请输入"
-                            android:inputType="number"
-                            android:text="@={stateVM.reportInterval}"
-                            app:lengthFilter="@{4}" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        visible="@{stateVM.isSupportedReportInterval() }"
-                        android:layout_marginBottom="@dimen/dimen_size_10"
-                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text='*'
-                            android:textColor="@color/red_FF4400"
-                            android:textSize="@dimen/text_size_12" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/dimen_size_5"
-                            android:text='通过外接的北斗数传终端，传输采集的传感器数据'
-                            android:textColor="@color/title_text_color_black_90"
-                            android:textSize="@dimen/text_size_12" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clipToPadding="false"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:itemCount="4"
-                        tools:listitem="@layout/data_center_status_item" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_confirm"
-                        style="@style/SubmitButton_Style2"
-                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-                        visible="@{stateVM.isSupportedReportInterval() }"
-                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
-                        android:enabled="@{stateVM.isDataModified}"
-                        android:text="@string/button_save_text" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-            </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

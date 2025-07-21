@@ -10,7 +10,7 @@ import com.squareup.moshi.JsonClass
  * 描述：     TODO
  */
 @JsonClass(generateAdapter = true)
-data class MRReportMethodEntity (
+data class MRDataReportTypeEntity (
     val type: String = "1",//上报方式 1 定时定点上报  2 固定间隔上报
     val interval: String = "",//上报间隔  秒,数字
     val basis: String = "",//上报起始时间(基准时间)   数字,   0-23点（小时）  固定间隔上报下需不需要一个起始时间

@@ -59,38 +59,20 @@ class MR702DataCenterHomeFragment : BaseDataCenterHomeFragment() {
     }
 
     private fun initDataCenterStatus(dataCenterStatus: MRDataCenterStatus) {
-        binding.recyclerView.models = mutableListOf(
-            DataCenterStatusItem(
-                centerid = 1,
-                name = "数据链路1",
-                status = dataCenterStatus.status1,
-                bgResId = R.drawable.layer_common_click_item_top_corner_4_with_divider
-            ),
-            DataCenterStatusItem(
-                centerid = 2,
-                name = "数据链路2",
-                status = dataCenterStatus.status2,
-                bgResId = R.drawable.layer_common_click_item_with_divider
-            ),
-            DataCenterStatusItem(
-                centerid = 3,
-                name = "数据链路3",
-                status = dataCenterStatus.status3,
-                bgResId = R.drawable.layer_common_click_item_with_divider
-            ),
-            DataCenterStatusItem(
-                centerid = 4,
-                name = "数据链路4",
-                status = dataCenterStatus.status4,
-                bgResId = R.drawable.layer_common_click_item_with_divider
-            ),
-            DataCenterStatusItem(
-                centerid = 5,
-                name = "数据链路5",
-                status = dataCenterStatus.status5,
-                bgResId = R.drawable.shape_common_click_item_bottom_corner_4
-            )
-        )
+        binding.recyclerView.models?.filterIsInstance<DataCenterStatusItem>()
+            ?.findLast { it.name.contains("数据链路1") }?.refreshStatus(dataCenterStatus.status1)
+
+        binding.recyclerView.models?.filterIsInstance<DataCenterStatusItem>()
+            ?.findLast { it.name.contains("数据链路2") }?.refreshStatus(dataCenterStatus.status2)
+
+        binding.recyclerView.models?.filterIsInstance<DataCenterStatusItem>()
+            ?.findLast { it.name.contains("数据链路3") }?.refreshStatus(dataCenterStatus.status3)
+
+        binding.recyclerView.models?.filterIsInstance<DataCenterStatusItem>()
+            ?.findLast { it.name.contains("数据链路4") }?.refreshStatus(dataCenterStatus.status4)
+
+        binding.recyclerView.models?.filterIsInstance<DataCenterStatusItem>()
+            ?.findLast { it.name.contains("数据链路5") }?.refreshStatus(dataCenterStatus.status5)
     }
 
     companion object {

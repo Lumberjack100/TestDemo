@@ -1,4 +1,4 @@
-package com.shmedo.lib.cmd.base.iot_cmd.model.m20
+package com.shmedo.lib.cmd.base.iot_cmd.model
 
 import com.squareup.moshi.JsonClass
 

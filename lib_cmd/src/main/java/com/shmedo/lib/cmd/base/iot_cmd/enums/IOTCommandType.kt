@@ -453,8 +453,8 @@ enum class IOTCommandType(val value: String) {
     MR_MD_SET_WIRED_NETWORK("md_mrsetwirednetwork"),
 
     /** 终端参数-上报方式 */
-    MR_MD_GET_REPORT_METHOD("md_mrgetreporttype"),
-    MR_MD_SET_REPORT_METHOD("md_mrsetreporttype"),
+    MR_MD_GET_REPORT_TYPE("md_mrgetreporttype"),
+    MR_MD_SET_REPORT_TYPE("md_mrsetreporttype"),
 
     /** 终端参数-本机屏幕 */
     MR_MD_GET_SCREEN_PARAM("md_mrgetscreen"),
@@ -642,6 +642,10 @@ enum class IOTCommandType(val value: String) {
 
     /** 获取设备卫星状态 */
     M50_MD_GET_SATELITE_INFO("md_getskyinfo"),
+
+    /** 上报周期 */
+    M50_MD_GET_DATA_REPORT_TYPE("md_getdatareporttype"),
+    M50_MD_SET_DATA_REPORT_TYPE("md_setdatareporttype"),
 
     /** 指令透传 */
     MD_RAW("md_raw"),
