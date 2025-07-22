@@ -155,53 +155,6 @@ enum class IOTCommandType(val value: String) {
     DAS_MD_SET_AUDIBLE_ALARM("md_setalarm"),
     // </editor-fold>
 
-    // <editor-fold desc="VMS-LoRa 指令">
-    /** 获取网关的基本信息 */
-    VMS_MD_GET_GATEWAY_BASE("md_getgatewaybase"),
-
-    /** 获取网关相关的控制参数 */
-    VMS_MD_GET_GATEWAY_PARAM("md_getgatewayparam"),
-
-    /** 设置网关相关的控制参数 */
-    VMS_MD_SET_GATEWAY_PARAM("md_setgatewayparam"),
-
-    /** 获取网关不同通道下，挂载终端的运行情况 */
-    VMS_MD_GET_TERMINAL_STATUS("md_getterminalstatus"),
-
-    /** 扫描添加新的终端 */
-    VMS_MD_SCAN_ADD_TERMINAL("md_addterminal"),
-
-    /** 获取扫码添加的终端添列表 */
-    VMS_MD_GET_TERMINAL_SN("md_getterminalsn"),
-
-    /** 删除Vms终端 */
-    VMS_MD_DELETE_TERMINAL("md_delterminal"),
-
-    /** 重启Vms终端 */
-    VMS_MD_REBOOT_TERMINAL("md_rebootterminal"),
-
-    /** 获取Vms终端传感器参数 */
-    VMS_MD_GET_TERMINAL_CHL("md_getterminalchl"),
-
-    /** 设置Vms终端传感器参数 */
-    VMS_MD_SET_TERMINAL_CHL("md_setterminalchl"),
-
-    /** 获取Vms终端采集参数 */
-    VMS_MD_GET_TERMINAL_COLLECTOR("md_getterminalcoll"),
-
-    /** 设置Vms终端采集参数 */
-    VMS_MD_SET_TERMINAL_COLLECTOR("md_setterminalcoll"),
-
-    /** 获取Vms终端通信参数 */
-    VMS_MD_GET_TERMINAL_COMMUNICATE("md_getterminalcom"),
-
-    /** 设置Vms终端通信参数 */
-    VMS_MD_SET_TERMINAL_COMMUNICATE("md_setterminalcom"),
-
-    /** Vms终端遥测 */
-    VMS_TERMINAL_SAMPLE("md_sampleterminal"),
-    // </editor-fold>
-
     // <editor-fold desc="RN20 指令">
     /** 获取终端基本信息 */
     RN20_MD_GET_TERMINAL_BASE("md_getterminalbase"),
@@ -440,7 +393,7 @@ enum class IOTCommandType(val value: String) {
     E40_MD_SET_NMEA_TIME("md_setnmeatime"),
     // </editor-fold>
 
-    // <editor-fold desc="MR702水利终端机通用指令">
+    // <editor-fold desc="MR702 水利终端机通用指令">
     /** 基本信息 */
     MR_MD_GET_DEVICE_BASE_INFO("md_mrgetdevicebase"),
 
@@ -634,14 +587,20 @@ enum class IOTCommandType(val value: String) {
     /** M50 串口参数 */
     M50_MD_SET_SERIAL_PORT("md_gm_setportparam"),
 
-    /** 获取 M50 的 CORS 服务参数 */
+    /** 获取/设置 M50 的 CORS 服务参数 */
     M50_MD_GET_CORS("md_getcors"),
-
-    /** 设置 M50 的 CORS 服务参数 */
     M50_MD_SET_CORS("md_setcors"),
 
     /** 获取设备卫星状态 */
     M50_MD_GET_SATELITE_INFO("md_getskyinfo"),
+
+    /** 查询/设置采样率 */
+    MD_GET_SAMPLING_RATE("md_getgnssraw"),
+    MD_SET_SAMPLING_RATE("md_setgnssraw"),
+
+    /** 查询/设置截止高度角 */
+    MD_GET_ELEVATION_ANGLE("md_getmoduleparam"),
+    MD_SET_ELEVATION_ANGLE("md_setmoduleparam"),
 
     /** 指令透传 */
     MD_RAW("md_raw"),

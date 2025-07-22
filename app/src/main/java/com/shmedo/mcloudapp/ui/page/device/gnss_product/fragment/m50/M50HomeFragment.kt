@@ -161,8 +161,7 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     CommonModule(
                         name = "GNSS配置",
                         resID = R.drawable.ic_module_cors,
-                        navId = 0,
-                        isSupport = false
+                        navId = R.id.action_global_to_m50GNSSConfigFragment,
                     )
                 ),
                 ConfigModule(

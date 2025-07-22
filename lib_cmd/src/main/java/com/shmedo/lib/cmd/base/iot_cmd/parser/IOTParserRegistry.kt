@@ -29,6 +29,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.common.AlarmTriggerValueInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.CommonSettingParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DataCenterInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DataCenterStatusParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DataReportTypeParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DeviceCurrentStateParser2
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DeviceHistorySensorDataParser
@@ -56,6 +57,8 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.das.DasSensorStatusParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.DasSolarStatusInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.DasTemperatureAndHumidityStatusInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.McuAddressInfoParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.gnss_m.GNSSRawDataParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.gnss_m.ModuleParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.hac.AdmeHacExecutiveAgencyInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.hac.HacMeasuringDataInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.hac.HacMeasuringHoleDepthInfoParser
@@ -65,7 +68,6 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.hac.HacWarningValueParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.lr200.LR200ZeroValueParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.m20.M20BaseInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.m50.M50CorsParamParser
-import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DataReportTypeParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.m50.M50SerialPortParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRAlarmModuleParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDIPortParamParser
@@ -203,5 +205,7 @@ object IOTParserRegistry {
         UDRainGaugeSerialPortInfoParser(),
         SensorInitialParser(),
         LR200ZeroValueParser(),
+        GNSSRawDataParser(),
+        ModuleParamParser(),
     )
 }
