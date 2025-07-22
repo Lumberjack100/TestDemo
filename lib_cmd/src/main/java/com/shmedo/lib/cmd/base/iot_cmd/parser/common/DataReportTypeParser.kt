@@ -1,8 +1,8 @@
-package com.shmedo.lib.cmd.base.iot_cmd.parser.m50
+package com.shmedo.lib.cmd.base.iot_cmd.parser.common
 
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
-import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50DataReportType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.DataReportType
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
@@ -11,15 +11,16 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
  * 描述： TODO
  */
 @IOTParser
-class M50DataReportTypeParser: IOTCommandParser<M50DataReportType>  {
-    override fun parseKeyValueMap(keyValueMap: Map<String, String>): M50DataReportType {
-        return M50DataReportType().apply {
+class DataReportTypeParser: IOTCommandParser<DataReportType> {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): DataReportType {
+        return DataReportType().apply {
             type = keyValueMap.getOrDefault("type", type)
+            timepoint= keyValueMap.getOrDefault("timepoint", timepoint)
             timehour = keyValueMap.getOrDefault("timehour", timehour)
             timemin = keyValueMap.getOrDefault("timemin", timemin)
             timegap = keyValueMap.getOrDefault("timegap", timegap)
         }
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.M50_MD_GET_DATA_REPORT_TYPE
+    override val commandType: IOTCommandType = IOTCommandType.MD_GET_DATA_REPORT_TYPE
 }

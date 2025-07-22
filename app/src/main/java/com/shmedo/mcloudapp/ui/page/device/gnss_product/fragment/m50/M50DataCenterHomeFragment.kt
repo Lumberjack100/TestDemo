@@ -13,7 +13,7 @@ import com.drake.brv.utils.models
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.CenterNumberEntity
-import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.m50.M50DataReportTypeEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.DataReportTypeEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerFive
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerFour
@@ -22,7 +22,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerThree
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerTwo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.DataCenterStatus
-import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50DataReportType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.DataReportType
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
@@ -96,8 +96,8 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
 
     override fun isTargetCommandType(commandType: IOTCommandType): Boolean =
         super.isTargetCommandType(commandType)
-                || (commandType == IOTCommandType.M50_MD_GET_DATA_REPORT_TYPE)
-                || (commandType == IOTCommandType.M50_MD_SET_DATA_REPORT_TYPE)
+                || (commandType == IOTCommandType.MD_GET_DATA_REPORT_TYPE)
+                || (commandType == IOTCommandType.MD_SET_DATA_REPORT_TYPE)
 
 
     override fun getNavigationActionId(): Int {
@@ -108,7 +108,7 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
         commandItems.clear()
 
         //获取上报周期信息
-        val command = IOTCommandUtil.getCommand(IOTCommandType.M50_MD_GET_DATA_REPORT_TYPE)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TYPE)
         commandItems.add(command)
 
         for (i in 1..centerNum) {
@@ -209,15 +209,16 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
                 showMessageDialog("请输入正确的起始时间（分钟）!")
                 return
             }
+
         } else {
             if (dataReportingPeriodItem.getReportIntervalStr().isEmpty()) {
                 showMessageDialog("请输入时间间隔（分钟）!")
                 return
             }
             try {
-                val value = dataReportingPeriodItem.getReportStartTimeMinuteStr().toDouble()
+                val value = dataReportingPeriodItem.getReportIntervalStr().toDouble()
                 if (value < 5 || value > 1440) {
-                    showMessageDialog("时间间隔（分钟）数值范围[5,60]!")
+                    showMessageDialog("时间间隔（分钟）数值范围[5,1440]!")
                     return
                 }
             } catch (ex: Exception) {
@@ -228,13 +229,25 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
 
         commandItems.clear()
 
-        val entity = M50DataReportTypeEntity(
+        // 优化 timehour 参数：从时间字符串中提取小时数值，而不是使用索引
+        val timehourValue = if (dataReportingPeriodItem.getReportMethodStr().contains("定时定点")) {
+            try {
+                // 从时间字符串（如 "08:00"）中提取小时数值（如 8）
+                val timeStr = dataReportingPeriodItem.getReportStartTimeHourStr()
+                val hourStr = timeStr.split(":")[0]
+                hourStr.toInt().toString()
+            } catch (ex: Exception) {
+                Timber.e(ex, "解析起始时间小时失败")
+                IOTConstants.NULL_KEY
+            }
+        } else {
+            IOTConstants.NULL_KEY
+        }
+
+        val entity = DataReportTypeEntity(
             type = reportMethodList.indexOf(dataReportingPeriodItem.getReportMethodStr())
                 .toString(),
-            timehour = if (dataReportingPeriodItem.getReportMethodStr()
-                    .contains("定时定点")
-            ) reportStartTimeList.indexOf(dataReportingPeriodItem.getReportStartTimeHourStr())
-                .toString() else IOTConstants.NULL_KEY,
+            timehour = timehourValue,
             timemin = if (dataReportingPeriodItem.getReportMethodStr()
                     .contains("定时定点")
             ) dataReportingPeriodItem.getReportStartTimeMinuteStr() else IOTConstants.NULL_KEY,
@@ -243,7 +256,7 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
             ) IOTConstants.NULL_KEY else dataReportingPeriodItem.getReportIntervalStr()
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.M50_MD_SET_DATA_REPORT_TYPE,
+            IOTCommandType.MD_SET_DATA_REPORT_TYPE,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -254,10 +267,10 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.M50_MD_GET_DATA_REPORT_TYPE -> {
-                val result = iotParseManager.parse<M50DataReportType>(
+            IOTCommandType.MD_GET_DATA_REPORT_TYPE -> {
+                val result = iotParseManager.parse<DataReportType>(
                     cmdStr,
-                    IOTCommandType.M50_MD_GET_DATA_REPORT_TYPE
+                    IOTCommandType.MD_GET_DATA_REPORT_TYPE
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -296,7 +309,7 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
                 }
             }
 
-            IOTCommandType.M50_MD_SET_DATA_REPORT_TYPE -> {
+            IOTCommandType.MD_SET_DATA_REPORT_TYPE -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"
@@ -318,16 +331,18 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
         }
     }
 
-    private fun initDataReportInfo(dataReportType: M50DataReportType) {
+    private fun initDataReportInfo(dataReportType: DataReportType) {
         try {
             dataReportType.type.toIntOrNull()?.let {
                 if (it in reportMethodList.indices) {
                     dataReportingPeriodItem.setReportMethod(reportMethodList[it])
                 }
             }
-            dataReportType.timehour.toIntOrNull()?.let {
-                if (it in reportStartTimeList.indices) {
-                    dataReportingPeriodItem.setReportStartTimeHour(reportMethodList[it])
+            dataReportType.timehour.toIntOrNull()?.let { hourValue ->
+                // 根据小时数值查找对应的时间字符串（如 8 -> "08:00"）
+                val timeStr = String.format("%02d:00", hourValue)
+                if (timeStr in reportStartTimeList) {
+                    dataReportingPeriodItem.setReportStartTimeHour(timeStr)
                 }
             }
             dataReportingPeriodItem.setReportStartTimeMinute(dataReportType.timemin)

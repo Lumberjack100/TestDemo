@@ -76,6 +76,12 @@ enum class IOTCommandType(val value: String) {
     /** 获取设备历史传感器数据 */
     MD_GET_DEVICE_SENSOR_HISTORY_DATA("md_getsensordata"),
 
+    /** 上报周期 */
+    MD_GET_DATA_REPORT_TYPE("md_getdatareporttype"),
+
+    /** 设置上报周期 */
+    MD_SET_DATA_REPORT_TYPE("md_setdatareporttype"),
+
     // </editor-fold>
 
     // <editor-fold desc="DAS 指令">
@@ -147,12 +153,6 @@ enum class IOTCommandType(val value: String) {
 
     /** 设置声光报警器信息 */
     DAS_MD_SET_AUDIBLE_ALARM("md_setalarm"),
-
-    /** 查询定时上报参数 */
-    DAS_MD_GET_DATA_REPORT_TYPE("md_getdatareporttype"),
-
-    /** 设置定时上报参数 */
-    DAS_MD_SET_DATA_REPORT_TYPE("md_setdatareporttype"),
     // </editor-fold>
 
     // <editor-fold desc="VMS-LoRa 指令">
@@ -642,10 +642,6 @@ enum class IOTCommandType(val value: String) {
 
     /** 获取设备卫星状态 */
     M50_MD_GET_SATELITE_INFO("md_getskyinfo"),
-
-    /** 上报周期 */
-    M50_MD_GET_DATA_REPORT_TYPE("md_getdatareporttype"),
-    M50_MD_SET_DATA_REPORT_TYPE("md_setdatareporttype"),
 
     /** 指令透传 */
     MD_RAW("md_raw"),
