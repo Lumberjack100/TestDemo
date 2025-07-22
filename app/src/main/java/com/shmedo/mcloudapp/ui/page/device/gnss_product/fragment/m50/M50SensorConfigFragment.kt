@@ -54,6 +54,8 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
     private val mStates: M50SensorConfigViewModel by activityViewModels()
     private val iotParseManager: IOTParserManager by inject()
 
+    private var isOnRefresh = false//是否刷新状态
+
     private var queryMeasureResultTimeoutJob: Job? = null
     private var repeatPollNum = 0 //重复轮询次数
     private var measureInitialValueLoadingDialogId = ""
@@ -194,6 +196,7 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryData() {
+        isOnRefresh = true
         commandItems.clear()
 
         //获取当前角度值，通过遥测获取，物模型103_1
@@ -509,9 +512,16 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
                         "zAxis"
                     )
                 ) {
-                    dismissLoadingDialog(measureInitialValueLoadingDialogId)
-                    cancelNearbyCommunicationTimeoutJob()
-                    showMessageDialog("初始值更新成功")
+                    if (!isOnRefresh) {
+                        dismissLoadingDialog(measureInitialValueLoadingDialogId)
+                        cancelNearbyCommunicationTimeoutJob()
+                        showMessageDialog("初始值更新成功")
+                    } else {
+                        isOnRefresh = false
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                    }
 
                     val xAxis = resultMap["xAxis"] ?: ""
                     val yAxis = resultMap["yAxis"] ?: ""
@@ -526,13 +536,22 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
                     return
                 }
 
-                cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog = false)
-                startQueryMeasureResultJob(type)
+                if (!isOnRefresh) {
+                    //更新倾角初始值模式下，轮询测得的初始值
+                    cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog = false)
+                    startQueryMeasureResultJob(type)
+                } else {
+                    //刷新模式
+                    isOnRefresh = false
+                    sendCommandFromCmdList {
+                        binding.refreshLayout.finish()
+                    }
+                }
+
             } else {//更新初始值指令
                 clearQueryMeasureResultTimeoutJob()
                 startQueryMeasureResultJob(type)
             }
-
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
@@ -591,7 +610,7 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
      * 处理角度触发值
      */
     private fun initAngleTrigger(info: AlarmTriggerValueInfo) {
-        mStates.angleTrigger.set(info.devlevel1.formatDoubleValue("", 3))
+        mStates.angleTrigger.set(info.level1.formatDoubleValue("", 3))
 
         //添加这行来保存初始状态
         mStates.saveInitialState()
@@ -604,8 +623,7 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
             if (repeatPollNum >= REPEAT_POLL_NUM) {
                 dismissLoadingDialog(measureInitialValueLoadingDialogId)
                 cancelNearbyCommunicationTimeoutJob()
-                val errorMessage = "更新倾角初始值失败，请稍后重试"
-                showMessageDialog(errorMessage)
+                showMessageDialog("更新倾角初始值失败，请稍后重试")
                 return@launchWithViewLifecycle
             }
             delay(AppContants.Communication.DELAY_5000_MILLIS) //延迟 timeMillis 秒

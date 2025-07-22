@@ -159,6 +159,14 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 ),
                 ConfigModule(
                     CommonModule(
+                        name = "GNSS配置",
+                        resID = R.drawable.ic_module_cors,
+                        navId = 0,
+                        isSupport = false
+                    )
+                ),
+                ConfigModule(
+                    CommonModule(
                         name = "倾斜触发",
                         resID = R.drawable.ic_module_sensor_setting_new,
                         navId = R.id.action_global_to_m50SensorConfigFragment
@@ -169,14 +177,6 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                         name = "串口配置",
                         resID = R.drawable.ic_module_serial_port,
                         navId = R.id.action_global_to_m50SerialPortParamFragment,
-                        isSupport = false
-                    )
-                ),
-                ConfigModule(
-                    CommonModule(
-                        name = "GNSS配置",
-                        resID = R.drawable.ic_module_cors,
-                        navId = 0,
                         isSupport = false
                     )
                 ),

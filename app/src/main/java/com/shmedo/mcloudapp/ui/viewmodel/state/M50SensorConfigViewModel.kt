@@ -48,18 +48,20 @@ class M50SensorConfigViewModel : BaseStateViewModel() {
         ).forEach {
             it.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
                 override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-                    if (!isInitializing) {
-                        isDataModified.value = true
-                    }
+                    updateModificationStatus()
                 }
             })
         }
     }
 
     override fun updateModificationStatus() {
-        isDataModified.value = initialState != mapOf(
-            "isTriggerEnable" to isTriggerEnable.get(),
-            "angleTrigger" to angleTrigger.get()
-        )
+        if (isInitializing) return
+        isDataModified.value = initialState.any { (key, value) ->
+            when (key) {
+                "isTriggerEnable" -> isTriggerEnable.get() != value
+                "angleTrigger" -> angleTrigger.get() != value
+                else -> false
+            }
+        }
     }
 } 
