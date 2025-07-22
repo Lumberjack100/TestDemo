@@ -11,7 +11,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class AlarmTriggerValueEntity(
-    val level1: String = IOTConstants.NULL_KEY,//一级报警倾角阈值  默认40
+    val level1: String = IOTConstants.NULL_KEY,//一级报警倾角阈值  默认40   m50 产品：level1 也可以作为角度触发值
     val level2: String = IOTConstants.NULL_KEY,//二级报警倾角阈值  默认20
     val level3: String = IOTConstants.NULL_KEY,//三级报警倾角阈值  默认10
     val level4: String = IOTConstants.NULL_KEY,//四级报警倾角阈值  默认5

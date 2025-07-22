@@ -5,17 +5,25 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseStateViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class M50SensorConfigViewModel : BaseStateViewModel() {
-    val isEditable = NonNullObservableField(true)
+    // 当前角度值
+    val xCurrentAngle = NonNullObservableField("") //x 轴当前角度
+    val yCurrentAngle = NonNullObservableField("") //y 轴当前角度
+    val zCurrentAngle = NonNullObservableField("") //z 轴当前角度
 
-    // GNSS配置
-    val longitude = NonNullObservableField("") // 经度
-    val latitude = NonNullObservableField("") // 纬度
-    val altitude = NonNullObservableField("") // 高度
+    // 初始角度值
+    val xInitialAngle = NonNullObservableField("") //x 轴初始角度
+    val yInitialAngle = NonNullObservableField("") //y 轴初始角度
+    val zInitialAngle = NonNullObservableField("") //z 轴初始角度
 
-    // 倾角配置
-    val xAxis = NonNullObservableField("") // X轴倾角值
-    val yAxis = NonNullObservableField("") // Y轴倾角值
-    val zAxis = NonNullObservableField("") // Z轴倾角值
+    // 偏移角度值
+    val xOffsetAngle = NonNullObservableField("") //x 轴偏移角度
+    val yOffsetAngle = NonNullObservableField("") //y 轴偏移角度
+    val zOffsetAngle = NonNullObservableField("") //z 轴偏移角度
+
+    val isTriggerEnable = NonNullObservableField(false) //
+
+    //角度触发值
+    val angleTrigger = NonNullObservableField("") //角度触发值
 
     init {
         // 在所有字段初始化后调用 registerField()
@@ -26,12 +34,8 @@ class M50SensorConfigViewModel : BaseStateViewModel() {
     override fun saveInitialState() {
         isInitializing = true
         initialState = mapOf(
-            "longitude" to longitude.get(),
-            "latitude" to latitude.get(),
-            "altitude" to altitude.get(),
-            "xAxis" to xAxis.get(),
-            "yAxis" to yAxis.get(),
-            "zAxis" to zAxis.get()
+            "isTriggerEnable" to isTriggerEnable.get(),
+            "angleTrigger" to angleTrigger.get()
         )
         isDataModified.value = false
         isInitializing = false
@@ -39,33 +43,23 @@ class M50SensorConfigViewModel : BaseStateViewModel() {
 
     override fun registerField() {
         listOf(
-            longitude,
-            latitude,
-            altitude,
-            xAxis,
-            yAxis,
-            zAxis
-        ).forEach { field ->
-            field.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
+            isTriggerEnable,
+            angleTrigger
+        ).forEach {
+            it.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
                 override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-                    updateModificationStatus()
+                    if (!isInitializing) {
+                        isDataModified.value = true
+                    }
                 }
             })
         }
     }
 
     override fun updateModificationStatus() {
-        if (isInitializing) return
-        isDataModified.value = initialState.any { (key, value) ->
-            when (key) {
-                "longitude" -> longitude.get() != value
-                "latitude" -> latitude.get() != value
-                "altitude" -> altitude.get() != value
-                "xAxis" -> xAxis.get() != value
-                "yAxis" -> yAxis.get() != value
-                "zAxis" -> zAxis.get() != value
-                else -> false
-            }
-        }
+        isDataModified.value = initialState != mapOf(
+            "isTriggerEnable" to isTriggerEnable.get(),
+            "angleTrigger" to angleTrigger.get()
+        )
     }
 } 
