@@ -357,7 +357,9 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         communicateWay is NetPlatformConnect && !deviceInfo.onlineStatus
 
     protected fun handleFailureResult(
-        errMsg: String, isShowErrMsg: Boolean = true, isMessageDialog: Boolean = false
+        errMsg: String,
+        isShowErrMsg: Boolean = true,
+        isMessageDialog: Boolean = false
     ) {
         cancelNearbyCommunicationTimeoutJob()
         Timber.e(errMsg)

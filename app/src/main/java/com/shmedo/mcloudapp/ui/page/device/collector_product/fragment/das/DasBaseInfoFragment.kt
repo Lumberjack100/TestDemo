@@ -172,7 +172,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询基本信息出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -193,7 +193,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询温湿度状态出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -342,7 +342,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 when (result) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "查询基本信息出错"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -363,7 +363,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 when (result) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "查询版本信息出错"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -384,7 +384,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 when (result) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "查询运行状态出错"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -405,7 +405,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 when (result) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "查询信息出错"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
