@@ -62,9 +62,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
  * 指令发送配置
  */
 data class SendConfig(
-    val useResponseBasedFlow: Boolean = true,  // 是否使用基于响应的流控
     val responseTimeoutMs: Long = 5000,        // 响应超时时间（毫秒）
-    val fallbackDelayMs: Long = 1000,           // 备用延时（毫秒）
 )
 
 /**
@@ -99,7 +97,7 @@ class MedoBleManager(
 
     // 使用 stateAsFlow() 获取连接状态
     val connectionState = stateAsFlow()
-    
+
     // 只发送数据响应
     private val _commandData = MutableSharedFlow<CommandData>(
         replay = 1,
@@ -175,14 +173,32 @@ class MedoBleManager(
             Timber.w("收到空响应内容")
             return
         }
-        
+
         // 只发送数据响应
         _commandData.emit(CommandData(response = commandResponse.latestResponse))
 
-        // 如果启用了响应驱动的流控，触发下一个指令发送
-        if (sendConfig.useResponseBasedFlow) {
-            lastResponseTime = System.currentTimeMillis()
-            processNextCommand()
+        // 启用了响应驱动的流控，触发下一个指令发送
+        lastResponseTime = System.currentTimeMillis()
+        processNextCommand()
+    }
+
+    /**
+     * 处理下一个指令（由响应触发）
+     */
+    private fun processNextCommand() {
+        if (commandQueue.isNotEmpty() && !isProcessingQueue) {
+            scope.launch {
+                processCommandQueue()
+            }
+        }
+    }
+
+    /**
+     * 立即发送数据（不使用队列，用于紧急指令）
+     */
+    fun sendDataImmediate(command: String) {
+        scope.launch {
+            sendDataInternal(command)
         }
     }
 
@@ -202,26 +218,6 @@ class MedoBleManager(
 
         // 如果当前没有正在处理队列，则开始处理
         if (!isProcessingQueue) {
-            scope.launch {
-                processCommandQueue()
-            }
-        }
-    }
-
-    /**
-     * 立即发送数据（不使用队列，用于紧急指令）
-     */
-    fun sendDataImmediate(command: String) {
-        scope.launch {
-            sendDataInternal(command)
-        }
-    }
-
-    /**
-     * 处理下一个指令（由响应触发）
-     */
-    private fun processNextCommand() {
-        if (commandQueue.isNotEmpty() && !isProcessingQueue) {
             scope.launch {
                 processCommandQueue()
             }
@@ -252,36 +248,12 @@ class MedoBleManager(
 
                 sendDataInternal(pendingCommand.command)
 
-                // 使用正常的流控机制
-                if (sendConfig.useResponseBasedFlow) {
-                    waitForResponseOrTimeout()
-                } else {
-                    delay(sendConfig.fallbackDelayMs)
-                }
+                //流控机制
+                waitForResponseOrTimeout()
             }
         } finally {
             isProcessingQueue = false
         }
-    }
-
-    /**
-     * 等待响应或超时
-     */
-    private suspend fun waitForResponseOrTimeout() {
-        val startTime = System.currentTimeMillis()
-        val initialResponseTime = lastResponseTime
-
-        while (System.currentTimeMillis() - startTime < sendConfig.responseTimeoutMs) {
-            if (lastResponseTime > initialResponseTime) {
-                // 收到新的响应
-                Timber.v("收到响应，继续处理下一个指令")
-                return
-            }
-            delay(50) // 短暂等待
-        }
-
-        Timber.w("等待响应超时，使用备用延时继续")
-        delay(sendConfig.fallbackDelayMs)
     }
 
     /**
@@ -315,6 +287,25 @@ class MedoBleManager(
                 false
             }
         }
+    }
+
+    /**
+     * 等待响应或超时
+     */
+    private suspend fun waitForResponseOrTimeout() {
+        val startTime = System.currentTimeMillis()
+        val initialResponseTime = lastResponseTime
+
+        while (System.currentTimeMillis() - startTime < sendConfig.responseTimeoutMs) {
+            if (lastResponseTime > initialResponseTime) {
+                // 收到新的响应
+                Timber.v("收到响应，继续处理下一个指令")
+                return
+            }
+            delay(50) // 短暂等待
+        }
+
+        Timber.w("等待响应超时")
     }
 
     /**
