@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="toolbarVM"
             type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
@@ -99,6 +100,21 @@
                             android:text="@{stateVM.elevationAngle}"
                             tools:text="5度" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimen_size_180"
+                        android:layout_marginTop="@dimen/dimen_size_30"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@color/white">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dimen_size_150"
+                            android:layout_gravity="center"
+                            android:src="@drawable/gnss" />
+                    </FrameLayout>
+
 
                     <!-- 恢复默认配置按钮 -->
                     <com.google.android.material.button.MaterialButton
