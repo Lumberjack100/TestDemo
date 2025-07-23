@@ -183,7 +183,7 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     CommonModule(
                         name = "报警配置",
                         resID = R.drawable.ic_module_alarm_new,
-                        navId = R.id.action_global_to_alarmSettingFragment
+                        navId = R.id.action_global_to_m50AlarmParamSettingFragment
                     )
                 ),
                 ConfigModule(
@@ -305,7 +305,7 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 } ?: return@launchWithViewLifecycle
 
                 //检查电台模块是否可用
-                updateRadioModuleStatus(stateInfo.radioEnableStatus == "1")
+                updateRadioModuleStatus(stateInfo.lora.uppercase() == "OK")
 
                 val status = when (stateInfo.deviceStatus) {
                     "-2" -> "告警"

@@ -100,10 +100,10 @@
         tools:layout="@layout/fragment_m50_cors_config" />
 
     <fragment
-        android:id="@+id/udAlarmParamSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDAlarmParamSettingFragment"
-        android:label="UDAlarmParamSettingFragment"
-        tools:layout="@layout/fragment_ud_alarm_param_setting" />
+        android:id="@+id/m50AlarmParamSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50AlarmParamSettingFragment"
+        android:label="M50AlarmParamSettingFragment"
+        tools:layout="@layout/fragment_m50_alarm_param_setting" />
 
     <action
         android:id="@+id/action_global_to_commonLocationInfoFragment"
@@ -218,8 +218,8 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_alarmSettingFragment"
-        app:destination="@id/udAlarmParamSettingFragment"
+        android:id="@+id/action_global_to_m50AlarmParamSettingFragment"
+        app:destination="@id/m50AlarmParamSettingFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
