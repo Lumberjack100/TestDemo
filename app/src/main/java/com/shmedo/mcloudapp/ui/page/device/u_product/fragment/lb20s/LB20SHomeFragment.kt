@@ -286,7 +286,7 @@ class LB20SHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "关闭语音播报失败:" + result.message
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 

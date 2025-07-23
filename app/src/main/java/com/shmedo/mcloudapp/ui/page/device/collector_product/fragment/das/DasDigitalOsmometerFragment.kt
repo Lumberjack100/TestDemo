@@ -360,7 +360,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "查询参数出错"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -379,7 +379,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                         val errMsg =
                             if (cmdStr.contains("4011")) "开启数字水位计出错"
                             else "关闭数字水位计出错" //4012
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -397,7 +397,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "地址配置出错!"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -415,7 +415,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "水位报警值配置出错!"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -433,7 +433,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "水深修正值配置出错!"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -451,7 +451,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "绳长配置出错!"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -469,7 +469,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "安装高程配置出错!"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -548,7 +548,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "配置参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
