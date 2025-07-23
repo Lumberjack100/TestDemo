@@ -172,13 +172,13 @@ class BuiltinCommandSelectorFragment : BaseFragment() {
 
     private fun observeViewModel() {
         // 监听指令列表变化
-        mStates.commandList.observe(this) { commands ->
+        mStates.commandList.observe(viewLifecycleOwner) { commands ->
             binding.recyclerView.models = commands
 //            handleEmptyState(commands.isEmpty())
         }
 
         // 监听导入结果
-        mStates.importResult.observe(this) { result ->
+        mStates.importResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is BuiltinCommandSelectorViewModel.ImportResult.Success -> {
                     showMessage("导入成功，共导入 ${result.count} 条指令")
@@ -346,6 +346,6 @@ class BuiltinCommandSelectorFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
+        initImmersionBar(binding.llToolbar.toolbar, isKeyboardEnable = true)
     }
 } 

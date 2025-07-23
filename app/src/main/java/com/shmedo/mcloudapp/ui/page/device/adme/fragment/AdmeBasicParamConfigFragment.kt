@@ -164,6 +164,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
         mStates.measurementIntervalPerRound.set(measIntervalPerRoundList[0])
         mStates.decentralizationWaitingTime.set("180")//下放等待时间
     }
+
     private fun setEditable(editable: Boolean) {
         toolbarViewModel.toolbarIvActionVisible.set(!editable)
         toolbarViewModel.toolbarTvActionVisible.set(editable)
@@ -519,7 +520,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询基础配置参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         //设备版本不支持，隐藏编辑按钮
                         toolbarViewModel.toolbarIvActionVisible.set(!errMsg.contains("设备版本不支持"))
                         return
@@ -542,7 +543,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询执行机构参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         //设备版本不支持，隐藏编辑按钮
                         toolbarViewModel.toolbarIvActionVisible.set(!errMsg.contains("设备版本不支持"))
                         return
@@ -565,7 +566,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询堵转参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         //设备版本不支持，隐藏编辑按钮
                         toolbarViewModel.toolbarIvActionVisible.set(!errMsg.contains("设备版本不支持"))
                         return
@@ -589,7 +590,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询步进电机参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -606,7 +607,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置基础配置参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -639,7 +640,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置堵转参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -653,7 +654,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置步进电机参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -667,7 +668,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "保存出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -709,7 +710,8 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             }
             mStates.waitingIntervalPerRound.set(info.roundwaitetime)
             mStates.measurementIntervalPerRound.set(info.roundmeasinval)
-            mStates.modifiedDate.set(info.updatedate.toLongOrNull()
+            mStates.modifiedDate.set(
+                info.updatedate.toLongOrNull()
                 ?.let {
                     TimeUtils.date2String(
                         Date(it * 1000),
