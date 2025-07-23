@@ -380,7 +380,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -397,7 +397,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "配置参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -451,7 +451,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "查询采集器参数出错：${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -468,7 +468,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "采集器地址配置错误!"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -482,7 +482,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "采集器解算间隔配置错误!"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -496,7 +496,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "采集器待机时长配置错误!"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -510,7 +510,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "采集器采集间隔配置错误!"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -524,7 +524,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "采集器灵敏度配置错误!"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -538,7 +538,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "保存出错!"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 

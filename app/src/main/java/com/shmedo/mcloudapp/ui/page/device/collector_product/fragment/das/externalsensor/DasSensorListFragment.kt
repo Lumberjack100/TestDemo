@@ -118,11 +118,14 @@ class DasSensorListFragment : BaseDasSensorListFragment() {
         if (IOTSensorType.value(mStates.collectorType.get()) == IOTSensorType.WEATHER_STATION) {   //气象仪
             var command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_RAW,
-                "content=##0191"
+                "content=##0192"
             )
             commandItems.add(command)
 
-            command = IOTCommandUtil.getCommand(IOTCommandType.REBOOT)
+            command = IOTCommandUtil.getCommand(
+                IOTCommandType.MD_RAW,
+                "content=##0081"
+            )
             commandItems.add(command)
         }
 
@@ -314,7 +317,15 @@ class DasSensorListFragment : BaseDasSensorListFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {}
+                        sendCommandFromCmdList {
+                            showMessage(
+                                "设备已重启，请退出重新连接",
+                                "温馨提示",
+                                "确定",
+                                {
+                                    nav().navigateUp()
+                                })
+                        }
                     }
                 }
             }
@@ -365,28 +376,6 @@ class DasSensorListFragment : BaseDasSensorListFragment() {
                         sendCommandFromCmdList {
                             Toaster.show("移除成功")
                             updateAdapterRemoveSensorItem()
-                        }
-                    }
-                }
-            }
-
-            IOTCommandType.REBOOT -> {//重启设备
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = StringUtils.getString(R.string.reboot_failed) + result.message
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            showMessage(
-                                "设备已重启，请退出重新连接",
-                                "温馨提示",
-                                "确定",
-                                {
-                                    nav().navigateUp()
-                                })
                         }
                     }
                 }

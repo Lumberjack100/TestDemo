@@ -46,6 +46,12 @@
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
+        android:id="@+id/m50RunningInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50RunningInfoFragment"
+        android:label="M50RunningInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
         android:id="@+id/m50SatelliteInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50SatelliteInfoFragment"
         android:label="M50SatelliteInfoFragment"
@@ -70,6 +76,12 @@
         tools:layout="@layout/fragment_m50_radio_setting" />
 
     <fragment
+        android:id="@+id/m50GNSSConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50GNSSConfigFragment"
+        android:label="M50GNSSConfigFragment"
+        tools:layout="@layout/fragment_m50_gnss_config" />
+
+    <fragment
         android:id="@+id/m50SensorConfigFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50SensorConfigFragment"
         android:label="M50SensorConfigFragment"
@@ -88,10 +100,10 @@
         tools:layout="@layout/fragment_m50_cors_config" />
 
     <fragment
-        android:id="@+id/udAlarmParamSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDAlarmParamSettingFragment"
-        android:label="UDAlarmParamSettingFragment"
-        tools:layout="@layout/fragment_ud_alarm_param_setting" />
+        android:id="@+id/m50AlarmParamSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50AlarmParamSettingFragment"
+        android:label="M50AlarmParamSettingFragment"
+        tools:layout="@layout/fragment_m50_alarm_param_setting" />
 
     <action
         android:id="@+id/action_global_to_commonLocationInfoFragment"
@@ -134,6 +146,14 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
+        android:id="@+id/action_global_to_m50RunningInfoFragment"
+        app:destination="@id/m50RunningInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
         android:id="@+id/action_global_to_m50SatelliteInfoFragment"
         app:destination="@id/m50SatelliteInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
@@ -166,6 +186,14 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
+        android:id="@+id/action_global_to_m50GNSSConfigFragment"
+        app:destination="@id/m50GNSSConfigFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
         android:id="@+id/action_global_to_m50SensorConfigFragment"
         app:destination="@id/m50SensorConfigFragment"
         app:enterAnim="@anim/activity_open_enter"
@@ -190,8 +218,8 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_alarmSettingFragment"
-        app:destination="@id/udAlarmParamSettingFragment"
+        android:id="@+id/action_global_to_m50AlarmParamSettingFragment"
+        app:destination="@id/m50AlarmParamSettingFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -223,8 +251,8 @@
 
     <fragment
         android:id="@+id/dataCenterHomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment"
-        android:label="UniversalDataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50DataCenterHomeFragment"
+        android:label="M50DataCenterHomeFragment"
         tools:layout="@layout/fragment_universal_data_center_home" />
 
     <fragment

@@ -1,6 +1,6 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
-import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
@@ -88,8 +88,10 @@ class UDDataCenterHomeFragment : BaseDataCenterHomeFragment() {
                     for (i in 0 until lastIndex) {
                         val status =
                             if (enableStatusList[i] == "0") "0" else if (onlineStatusList[i] == "1") "1" else "2"
-                        binding.recyclerView.bindingAdapter.getModel<DataCenterStatusItem>(i)
-                            .refreshStatus(status)
+
+                        binding.recyclerView.models?.filterIsInstance<DataCenterStatusItem>()
+                            ?.findLast { it.name.contains("数据链路${i + 1}") }
+                            ?.refreshStatus(status)
                     }
                 }
             } catch (e: Exception) {

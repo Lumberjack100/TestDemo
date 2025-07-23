@@ -14,7 +14,6 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasBaseInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasNetStatusInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.cmd.base.md_cmd.model.common.DeviceNetStatus
 import com.shmedo.lib.cmd.base.md_cmd.model.das.DeviceStatusInfoOne
@@ -216,14 +215,14 @@ class DasNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = "IMEI",
-                    value = baseInfo.imei.ifEmpty { IOTConstants.HOLD_VALUE },
+                    value = baseInfo.imei.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                     isClipboard = true
                 )
             )
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = "ICCID",
-                    value = baseInfo.iccid.ifEmpty { IOTConstants.HOLD_VALUE },
+                    value = baseInfo.iccid.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                     isClipboard = true,
                     isBottomItem = true
                 )
@@ -349,14 +348,14 @@ class DasNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = "IMEI",
-                    value = info.imeiNumber.ifEmpty { IOTConstants.HOLD_VALUE },
+                    value = info.imeiNumber.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                     isClipboard = true
                 )
             )
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = "ICCID",
-                    value = info.simNumber.ifEmpty { IOTConstants.HOLD_VALUE },
+                    value = info.simNumber.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                     isClipboard = true,
                     isBottomItem = true
                 )

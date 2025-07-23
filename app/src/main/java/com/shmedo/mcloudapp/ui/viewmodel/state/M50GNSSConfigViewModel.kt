@@ -5,14 +5,13 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseStateViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 /**
- * 创建者：gonghe
- * 创建时间：2024/4/28
- * 描述： TODO
+ * @author：gonghe
+ * @time: 2025/1/22
+ * @desc: M50 GNSS配置页面 ViewModel
  */
-class UniversalDataCenterHomeViewModel : BaseStateViewModel() {
-    val isSupportedReportInterval = NonNullObservableField(false)
-    val reportInterval = NonNullObservableField("")
-
+class M50GNSSConfigViewModel : BaseStateViewModel() {
+    val samplingRate = NonNullObservableField("") // 采样率
+    val elevationAngle = NonNullObservableField("") // 截至高度角
 
     init {
         // 在所有字段初始化后调用 registerField()
@@ -23,7 +22,8 @@ class UniversalDataCenterHomeViewModel : BaseStateViewModel() {
     override fun saveInitialState() {
         isInitializing = true
         initialState = mapOf(
-            "reportInterval" to reportInterval.get()
+            "samplingRate" to samplingRate.get(),
+            "elevationAngle" to elevationAngle.get()
         )
         isDataModified.value = false
         isInitializing = false
@@ -31,7 +31,8 @@ class UniversalDataCenterHomeViewModel : BaseStateViewModel() {
 
     override fun registerField() {
         listOf(
-            reportInterval
+            samplingRate,
+            elevationAngle
         ).forEach { field ->
             field.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
                 override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
@@ -45,7 +46,8 @@ class UniversalDataCenterHomeViewModel : BaseStateViewModel() {
         if (isInitializing) return
         isDataModified.value = initialState.any { (key, value) ->
             when (key) {
-                "reportInterval" -> reportInterval.get() != value
+                "samplingRate" -> samplingRate.get() != value
+                "elevationAngle" -> elevationAngle.get() != value
                 else -> false
             }
         }

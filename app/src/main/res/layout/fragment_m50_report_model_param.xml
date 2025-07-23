@@ -56,22 +56,6 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_top_corner_4_with_divider"
-                        android:onClick="@{()->click.onWorkModelChooseClick()}">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            android:text="工作模式" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Value_Style"
-
-                            android:text="@{stateVM.workModel}"
-                            tools:text="自动" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider"
                         android:onClick="@{()->click.onReportModelChooseClick()}">
 
                         <com.google.android.material.textview.MaterialTextView
@@ -80,9 +64,8 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             android:text="@{stateVM.reportModel}"
-                            tools:text="自动" />
+                            tools:text="自适应" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -96,127 +79,166 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             android:text="@{stateVM.networkModel}"
                             tools:text="自动" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:onClick="@{()->click.onWorkModelChooseClick()}">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="角度触发阈值（度）" />
+                            android:text="工作模式" />
 
-                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            style="@style/Common_EditItem_EditText_Style"
-                            android:hint="请输入"
-                            android:inputType="numberDecimal"
-                            android:maxLength="10"
-                            android:text="@={stateVM.memsThreshold}" />
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.workModel}"
+                            tools:text="测站" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
+                    <!-- 坐标初始化选择项 -->
                     <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@{stateVM.coordinateInitialization.equals(`是`)?@drawable/layer_common_click_item_with_divider:@drawable/shape_common_click_item_bottom_corner_4}"
+                        android:onClick="@{()->click.onCoordinateInitializationChooseClick()}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="坐标初始化" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.coordinateInitialization}"
+                            tools:text="否" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- 坐标初始化相关配置项容器 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        visible="@{stateVM.coordinateInitialization.equals(`是`)}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <RelativeLayout
-                            style="@style/SwitchButton_Item_Layout_Style"
-                            android:background="@drawable/layer_common_click_item_with_divider">
-
-                            <com.google.android.material.textview.MaterialTextView
-                                style="@style/SwitchButton_Item_Title_Style"
-                                android:text="四级报警启用" />
-
-                            <com.kyleduo.switchbutton.SwitchButton
-                                style="@style/SwitchButton_Item_Button_Style"
-                                android:checked="@={stateVM.alarmEnable}"
-                                app:kswAnimationDuration="100"
-                                app:kswBackDrawable="@drawable/sl_switchbutton_back"
-                                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
-
-                        </RelativeLayout>
-
+                        <!-- 基站模式下的配置项 -->
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_Layout_Style"
-                            android:background="@drawable/layer_common_click_item_with_divider">
+                            visible="@{stateVM.workModel.equals(`基站`)}"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
-                            <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.alarmEnable}"
-                                android:text="@{stateVM.firstAlarmThresholdTitle}"
-                                tools:text="一级报警阈值（毫米）" />
+                            <!-- 初始化模式选择项 -->
+                            <androidx.appcompat.widget.LinearLayoutCompat
+                                style="@style/Common_ClickableItem_Layout_Style"
+                                android:background="@drawable/layer_common_click_item_with_divider"
+                                android:onClick="@{()->click.onInitializationModeChooseClick()}">
 
-                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                                style="@style/Common_EditItem_EditText_Style"
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/Common_ClickableItem_Title_Style"
+                                    android:text="初始化模式" />
 
-                                textViewEnabled="@{stateVM.alarmEnable }"
-                                android:hint="请输入"
-                                android:inputType="numberDecimal"
-                                 android:maxLength="10"
-                                android:text="@={stateVM.firstAlarmThreshold}" />
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/Common_ClickableItem_Value_Style"
+                                    android:text="@{stateVM.initializationMode}"
+                                    tools:text="自动" />
+                            </androidx.appcompat.widget.LinearLayoutCompat>
+
+                            <!-- 手动模式下的坐标输入框 -->
+                            <androidx.appcompat.widget.LinearLayoutCompat
+                                visible="@{stateVM.initializationMode.equals(`手动`)}"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <androidx.appcompat.widget.LinearLayoutCompat
+                                    style="@style/Common_EditItem_Layout_Style"
+                                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                                    <com.google.android.material.textview.MaterialTextView
+                                        style="@style/Common_ClickableItem_Title_Style"
+                                        android:text="经度（度）" />
+
+                                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                        style="@style/Common_EditItem_EditText_Style"
+                                        android:hint="请输入"
+                                        android:inputType="numberDecimal"
+                                        android:maxLength="20"
+                                        android:text="@={stateVM.longitude}" />
+                                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                                <androidx.appcompat.widget.LinearLayoutCompat
+                                    style="@style/Common_EditItem_Layout_Style"
+                                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                                    <com.google.android.material.textview.MaterialTextView
+                                        style="@style/Common_ClickableItem_Title_Style"
+                                        android:text="纬度（度）" />
+
+                                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                        style="@style/Common_EditItem_EditText_Style"
+                                        android:hint="请输入"
+                                        android:inputType="numberDecimal"
+                                        android:maxLength="20"
+                                        android:text="@={stateVM.latitude}" />
+                                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                                <androidx.appcompat.widget.LinearLayoutCompat
+                                    style="@style/Common_EditItem_Layout_Style"
+                                    android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                                    <com.google.android.material.textview.MaterialTextView
+                                        style="@style/Common_ClickableItem_Title_Style"
+                                        android:text="高度（米）" />
+
+                                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                        style="@style/Common_EditItem_EditText_Style"
+                                        android:hint="请输入"
+                                        android:inputType="numberDecimal"
+                                        android:maxLength="20"
+                                        android:text="@={stateVM.altitude}" />
+                                </androidx.appcompat.widget.LinearLayoutCompat>
+                            </androidx.appcompat.widget.LinearLayoutCompat>
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
+                        <!-- 测站模式下的配置项 -->
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_Layout_Style"
-                            android:background="@drawable/layer_common_click_item_with_divider">
+                            visible="@{stateVM.workModel.equals(`测站`)}"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
-                            <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.alarmEnable}"
-                                android:text="@{stateVM.secondAlarmThresholdTitle}"
-                                tools:text="二级报警阈值（毫米）" />
+                            <!-- 初始化时间选择项 -->
+                            <androidx.appcompat.widget.LinearLayoutCompat
+                                style="@style/Common_ClickableItem_Layout_Style"
+                                android:background="@drawable/layer_common_click_item_with_divider"
+                                android:onClick="@{()->click.onInitializationTimeChooseClick()}">
 
-                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                                style="@style/Common_EditItem_EditText_Style"
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/Common_ClickableItem_Title_Style"
+                                    android:text="初始化时间" />
 
-                                textViewEnabled="@{stateVM.alarmEnable }"
-                                android:hint="请输入"
-                                android:inputType="numberDecimal"
-                                 android:maxLength="10"
-                                android:text="@={stateVM.secondAlarmThreshold}" />
-                        </androidx.appcompat.widget.LinearLayoutCompat>
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/Common_ClickableItem_Value_Style"
+                                    android:text="@{stateVM.initializationTime}"
+                                    tools:text="15分钟" />
+                            </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_Layout_Style"
-                            android:background="@drawable/layer_common_click_item_with_divider">
+                            <!-- 解算间隔时间选择项 -->
+                            <androidx.appcompat.widget.LinearLayoutCompat
+                                style="@style/Common_ClickableItem_Layout_Style"
+                                android:background="@drawable/shape_common_click_item_bottom_corner_4"
+                                android:onClick="@{()->click.onCalculationIntervalTimeChooseClick()}">
 
-                            <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.alarmEnable}"
-                                android:text="@{stateVM.thirdAlarmThresholdTitle}"
-                                tools:text="三级报警阈值（毫米）" />
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/Common_ClickableItem_Title_Style"
+                                    android:text="解算间隔时间" />
 
-                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                                style="@style/Common_EditItem_EditText_Style"
-
-                                textViewEnabled="@{stateVM.alarmEnable }"
-                                android:hint="请输入"
-                                android:inputType="numberDecimal"
-                                 android:maxLength="10"
-                                android:text="@={stateVM.thirdAlarmThreshold}" />
-                        </androidx.appcompat.widget.LinearLayoutCompat>
-
-                        <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_Layout_Style"
-                            android:background="@drawable/shape_common_click_item_bottom_corner_4">
-
-                            <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.alarmEnable}"
-                                android:text="@{stateVM.fourthAlarmThresholdTitle}"
-                                tools:text="四级报警阈值（毫米）" />
-
-                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                                style="@style/Common_EditItem_EditText_Style"
-
-                                textViewEnabled="@{stateVM.alarmEnable }"
-                                android:hint="请输入"
-                                android:inputType="numberDecimal"
-                                 android:maxLength="10"
-                                android:text="@={stateVM.fourthAlarmThreshold}" />
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/Common_ClickableItem_Value_Style"
+                                    android:text="@{stateVM.calculationIntervalTime}"
+                                    tools:text="5分钟" />
+                            </androidx.appcompat.widget.LinearLayoutCompat>
                         </androidx.appcompat.widget.LinearLayoutCompat>
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

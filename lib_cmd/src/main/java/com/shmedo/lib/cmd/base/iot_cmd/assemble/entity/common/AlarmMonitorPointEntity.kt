@@ -21,6 +21,7 @@ data class AlarmMonitorPointEntity(
     val level2: String = IOTConstants.NULL_KEY,//二级报警语音编号  [1~255] 默认 3
     val level3: String = IOTConstants.NULL_KEY,//三级报警语音编号  [1~255] 默认 2
     val level4: String = IOTConstants.NULL_KEY,//四级报警语音编号  [1~255] 默认 1
+    val memsAlarmSw: String = IOTConstants.NULL_KEY, //倾斜触发功能开关  0 关闭 1 开启 默认 0   仅仅 m50 设备支持这个字段
 ) {
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

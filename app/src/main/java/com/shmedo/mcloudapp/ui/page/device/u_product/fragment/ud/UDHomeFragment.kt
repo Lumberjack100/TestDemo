@@ -52,7 +52,7 @@ import timber.log.Timber
  * 创建时间：2025/1/24
  * 描述：一体式雷达水位计(DR030)设备主页 - 支持4G和蓝牙两种通讯方式（重构版本）
  */
-class NewUDHomeFragment : NewUniversalBaseDeviceHomeFragment() {
+class UDHomeFragment : NewUniversalBaseDeviceHomeFragment() {
     private var measureDataItem: UDMeasureDataItem = UDMeasureDataItem()
     private var measureDataLoadingDialogId = ""
     

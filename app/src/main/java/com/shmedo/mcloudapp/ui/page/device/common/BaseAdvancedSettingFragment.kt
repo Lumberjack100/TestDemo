@@ -122,7 +122,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
 
     private fun initAdapterData() {
         val moduleList: MutableList<AdvancedSettingItem> = mutableListOf()
-        
+
         // 添加监测数据导出功能
         if (communicateWay is BleConnect && isMonitoringDataExportEnabled()) {
             moduleList.add(
@@ -151,15 +151,13 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
             )
         }
 
-        if (communicateWay is NetPlatformConnect) {
-            if (productType != ProductType.COLLECTOR_G_0) {
-                moduleList.add(
-                    AdvancedSettingItem(
-                        "固件升级",
-                        AdvancedSettingItem.Type.FIRMWARE,
-                    )
+        if ((communicateWay is NetPlatformConnect) && productType != ProductType.COLLECTOR_G_0) {
+            moduleList.add(
+                AdvancedSettingItem(
+                    "固件升级",
+                    AdvancedSettingItem.Type.FIRMWARE,
                 )
-            }
+            )
         }
 
         moduleList.add(
@@ -174,6 +172,15 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
                 AdvancedSettingItem(
                     "恢复出厂设置",
                     AdvancedSettingItem.Type.RESET,
+                )
+            )
+        }
+
+        if (isSupportFormatDataStorage()) {
+            moduleList.add(
+                AdvancedSettingItem(
+                    "格式化数据存储",
+                    AdvancedSettingItem.Type.FORMAT_DATA_STORAGE,
                 )
             )
         }
@@ -235,6 +242,13 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
 
 
         return false
+    }
+
+    /**
+     * 是否支持格式化数据存储
+     */
+    private fun isSupportFormatDataStorage(): Boolean {
+        return productType == ProductType.GNSS_M_5
     }
 
     override fun createObserver() {
@@ -349,6 +363,12 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
                 nav().safeNavigate(R.id.action_global_to_monitoringDataExportFragment, bundle)
             }
 
+            AdvancedSettingItem.Type.FORMAT_DATA_STORAGE -> {//格式化数据存储功能
+                showMessage("确定格式化数据吗？", "温馨提示", "确定", {
+                    formatDataStorage()
+                }, "取消")
+            }
+
             else -> {}
         }
     }
@@ -419,7 +439,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
             MDCommandType.REBOOT_DEVICE -> {//
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        val errMsg =  StringUtils.getString(R.string.reboot_failed)
+                        val errMsg = StringUtils.getString(R.string.reboot_failed)
                         handleFailureResult(errMsg)
                         return
                     }
@@ -532,6 +552,22 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show(StringUtils.getString(R.string.device_reset_tip))
+                        }
+                    }
+                }
+            }
+
+            IOTCommandType.MD_FORMAT_DATA_STORAGE -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "格式化数据出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("格式化数据成功")
                         }
                     }
                 }
@@ -655,6 +691,19 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         )
         commandItems.add(command)
         Timber.d("打开设备低功耗模式指令===%s", command)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 格式化数据存储
+     */
+    private fun formatDataStorage() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_FORMAT_DATA_STORAGE, "type=1")
+        commandItems.add(command)
+
+        Timber.d("格式化数据存储指令===%s", command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 

@@ -6,7 +6,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.model.ExternalDigitalSensorParamButtonItem" />
+            type="com.shmedo.mcloudapp.model.ParamSubmitButtonItem" />
 
     </data>
 

@@ -2,7 +2,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.m20
 
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
-import com.shmedo.lib.cmd.base.iot_cmd.model.m20.M20BaseInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M20BaseInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**

@@ -23,13 +23,18 @@ data class M50MeasureDataItem(
         newXDisplacement: String,
         newYDisplacement: String,
         newZDisplacement: String,
-        newInitCompletionTime: String = AppContants.PLACE_HOLDER_VALUE,
         newLatestDataTime: String = AppContants.PLACE_HOLDER_VALUE
     ) {
         xDisplacement.set(newXDisplacement)
         yDisplacement.set(newYDisplacement)
         zDisplacement.set(newZDisplacement)
-        initCompletionTime.set(newInitCompletionTime)
         latestDataTime.set(newLatestDataTime)
+    }
+
+    /**
+     * 刷新初始化完成时间
+     */
+    fun refreshInitCompletionTime(newInitCompletionTime: String = AppContants.PLACE_HOLDER_VALUE) {
+        initCompletionTime.set(newInitCompletionTime)
     }
 } 

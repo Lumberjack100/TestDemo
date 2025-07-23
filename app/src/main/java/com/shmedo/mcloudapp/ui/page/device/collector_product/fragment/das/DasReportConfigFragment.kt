@@ -12,10 +12,10 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasReportEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.DataReportTypeEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasReportInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.DataReportType
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -157,13 +157,13 @@ class DasReportConfigFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请输入上报时间间隔!")
             return
         }
-        val entity = DasReportEntity(
+        val entity = DataReportTypeEntity(
             type = (reportMethodList.indexOf(mStates.reportMethod.get())).toString(),
             timepoint = mStates.startTime.get(),
             timegap = mStates.interval.get(),
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.DAS_MD_SET_DATA_REPORT_TYPE,
+            IOTCommandType.MD_SET_DATA_REPORT_TYPE,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -179,7 +179,7 @@ class DasReportConfigFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_DATA_REPORT_TYPE)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TYPE)
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -240,10 +240,10 @@ class DasReportConfigFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.DAS_MD_GET_DATA_REPORT_TYPE -> {
-                val result = iotParseManager.parse<DasReportInfo>(
+            IOTCommandType.MD_GET_DATA_REPORT_TYPE -> {
+                val result = iotParseManager.parse<DataReportType>(
                     cmdStr,
-                    IOTCommandType.DAS_MD_GET_DATA_REPORT_TYPE
+                    IOTCommandType.MD_GET_DATA_REPORT_TYPE
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -261,7 +261,7 @@ class DasReportConfigFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.DAS_MD_SET_DATA_REPORT_TYPE -> {
+            IOTCommandType.MD_SET_DATA_REPORT_TYPE -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"
@@ -283,7 +283,7 @@ class DasReportConfigFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initReportMethod(info: DasReportInfo) {
+    private fun initReportMethod(info: DataReportType) {
         try {
             info.type.toInt().let {
                 if (it in 0..reportMethodList.size - 1) {
