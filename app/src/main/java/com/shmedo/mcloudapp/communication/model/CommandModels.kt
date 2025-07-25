@@ -8,12 +8,12 @@ import com.shmedo.core.commonlib.utils.AppContants
 sealed class CommandResult {
     /**
      * 指令执行成功
-     * @param data 响应数据
+     * @param responseData 响应数据
      * @param command 原始指令
      * @param timestamp 执行时间戳
      */
     data class Success(
-        val data: String,
+        val responseData: String,
         val command: String,
         val timestamp: Long = System.currentTimeMillis()
     ) : CommandResult()
@@ -136,7 +136,30 @@ data class CommandSequenceConfig(
     val stopOnFirstError: Boolean = true,
     val showLoadingDialog: Boolean = true,
     val loadingMessage: String = "处理中...",
-    val errorHandling: ErrorConfig = ErrorConfig.toast()
+    val errorHandling: ErrorConfig = ErrorConfig.toast(),
+    // 新增：是否启用实时回调
+    val enableRealTimeCallback: Boolean = false
+)
+
+/**
+ * 指令执行进度回调
+ */
+data class CommandProgress(
+    val currentIndex: Int,
+    val totalCount: Int,
+    val currentCommand: String,
+    val result: CommandResult,
+    val isLast: Boolean
+)
+
+
+/**
+ * 指令序列执行回调
+ */
+data class CommandSequenceCallbacks(
+    val onProgress: ((CommandProgress) -> Unit)? = null,
+    val onComplete: (List<CommandResult>) -> Unit = {},
+    val onError: (DeviceError, String) -> Unit = { _, _ -> }
 )
 
 /**

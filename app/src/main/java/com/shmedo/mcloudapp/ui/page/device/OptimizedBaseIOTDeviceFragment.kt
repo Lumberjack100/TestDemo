@@ -16,8 +16,18 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.communication.manager.DeviceCommunicationManager
-import com.shmedo.mcloudapp.communication.model.*
-import com.shmedo.mcloudapp.extensions.*
+import com.shmedo.mcloudapp.communication.model.CommandProgress
+import com.shmedo.mcloudapp.communication.model.CommandResult
+import com.shmedo.mcloudapp.communication.model.CommandSequenceCallbacks
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.CommunicationState
+import com.shmedo.mcloudapp.communication.model.DeviceConnectionState
+import com.shmedo.mcloudapp.communication.model.DeviceError
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.extensions.getAppViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
@@ -29,7 +39,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 /**
  * 优化后的IOT设备基础Fragment
@@ -85,7 +94,6 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
             communicateWay = communicateWay,
             netViewModel = netIotCommandViewModel,
             bleViewModel = bleViewModel,
-            bleDevice = bleDevice
         )
     }
 
@@ -131,35 +139,36 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     // ==================== 新的API方法 ====================
 
     /**
-     * 发送指令序列
+     * 发送指令序列 (支持实时回调)
      * @param commands 指令列表
      * @param config 执行配置
+     * @param onProgress 进度回调 (每条指令处理完就调用)
      * @param onComplete 完成回调
      */
     protected fun sendCommandSequence(
         commands: List<String>,
         config: CommandSequenceConfig = CommandSequenceConfig(),
+        onProgress: ((CommandProgress) -> Unit)? = null,
         onComplete: (List<CommandResult>) -> Unit = { finishRefresh() }
     ) {
         addDeviceLogItem(Log.DEBUG, "发送指令序列: ${commands.size}条指令")
-        
+
         communicationManager.executeCommandSequence(
             commands = commands,
-            config = config,
-            onComplete = { results ->
-                updateLastCommunicationTime()
-                onComplete(results)
-                
-                // 处理每个指令的响应
-                results.forEach { result ->
-                    if (result is CommandResult.Success) {
-                        handleCommandResponse(result.data)
-                    }
+            config = config.copy(enableRealTimeCallback = true),
+            callbacks = CommandSequenceCallbacks(
+                onProgress = { progress ->
+                    updateLastCommunicationTime()
+                    onProgress?.invoke(progress)
+                },
+                onComplete = { results ->
+                    updateLastCommunicationTime()
+                    onComplete(results)
+                },
+                onError = { error, command ->
+                    addDeviceLogItem(Log.ERROR, "指令执行失败: $command, 错误: ${error.message}")
                 }
-            },
-            onError = { error, command ->
-                addDeviceLogItem(Log.ERROR, "指令执行失败: $command, 错误: ${error.message}")
-            }
+            )
         )
     }
 
@@ -175,7 +184,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
         onSuccess: (String) -> Unit = {}
     ) {
         addDeviceLogItem(Log.DEBUG, "发送单条指令: $command")
-        
+
         communicationManager.sendSingleCommand(
             command = command,
             config = config,
@@ -189,7 +198,6 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
             }
         )
     }
-
     // ==================== 便捷方法 ====================
 
     /**

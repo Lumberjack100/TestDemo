@@ -37,7 +37,7 @@ class BleCommunicationStrategy(
                 return@flow
             }
 
-            Timber.d("BLE发送指令: $command")
+            Timber.i("BLE发送指令: $command")
             
             // 延迟发送（如果配置了延迟）
             if (config.delayBeforeSend > 0) {
@@ -52,14 +52,14 @@ class BleCommunicationStrategy(
                 bleViewModel.commandData.collect { data ->
                     Timber.i("BLE响应内容: ${data.response}")
                     emit(CommandResult.Success(
-                        data = data.response,
+                        responseData = data.response,
                         command = command
                     ))
                     return@collect
                 }
             }
             
-            // 如果超时（result为null表示超时）
+            // 如果超时
             emit(CommandResult.Timeout(
                 command = command,
                 timeoutMs = config.timeout

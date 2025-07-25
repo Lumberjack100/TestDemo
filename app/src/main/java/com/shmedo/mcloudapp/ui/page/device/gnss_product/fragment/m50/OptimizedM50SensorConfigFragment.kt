@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
@@ -24,6 +23,7 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandResult
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
@@ -58,7 +58,7 @@ import timber.log.Timber
 class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM50SensorConfigBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: M50SensorConfigViewModel by activityViewModels()
+    private val mStates: M50SensorConfigViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     // 状态管理
@@ -120,22 +120,22 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 查询数据 - 使用新架构的简化API
+     * 查询数据 - 使用实时回调
      */
     private fun queryData() {
         isOnRefresh = true
 
         val commands = listOf(
-            // 获取当前角度值，通过遥测获取，物模型103_1
+            //获取当前角度值，通过遥测获取，物模型103_1
             IOTCommandUtil.getCommand(IOTCommandType.SAMPLE),
-            // 获取初始角度值
+            //获取初始角度值
             IOTCommandUtil.getCommand(
                 IOTCommandType.MD_SET_SENSOR_INITIAL,
                 UDInitialValueEntity(method = "0", type = "2").toCommandString()
             ),
-            // 获取倾斜触发功能开关状态
+            //获取倾斜触发功能开关状态
             IOTCommandUtil.getCommand(IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL),
-            // 获取角度触发值
+            //获取角度触发值
             IOTCommandUtil.getCommand(IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE)
         )
 
@@ -143,11 +143,87 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
             commands = commands,
             config = CommandSequenceConfig(
                 timeout = AppContants.Communication.DELAY_15000_MILLIS,
-                showLoadingDialog = false, // 使用刷新动画
+                showLoadingDialog = false, // 不使用加载动画弹窗
                 errorHandling = ErrorConfig(
                     strategy = ErrorHandlingStrategy.Dialog,
                     shouldDismissLoading = false
                 )
+            ),
+            onProgress = { progress ->
+                // 每条指令处理完就回调
+                when (progress.result) {
+                    is CommandResult.Success -> {
+                        handleCommandResponse(progress.result.responseData)
+                    }
+
+                    is CommandResult.Error -> {
+                        Timber.e("指令${progress.currentIndex + 1}执行失败: ${progress.result.error.message}")
+                        // 可以在这里显示错误信息
+                        showCommandError(progress.currentIndex + 1, progress.result.error.message)
+                    }
+
+                    is CommandResult.Timeout -> {
+                        Timber.e("指令${progress.currentIndex + 1}执行超时")
+                        // 可以在这里显示超时信息
+                        showCommandTimeout(progress.currentIndex + 1)
+                    }
+                }
+            },
+            onComplete = { results ->
+                // 所有指令执行完成
+                Timber.i("所有指令执行完成，成功${results.count { it is CommandResult.Success }}条")
+                finishRefresh()
+            }
+        )
+    }
+
+
+    /**
+     * 显示指令错误
+     */
+    private fun showCommandError(index: Int, errorMsg: String) {
+        Toaster.show("指令$index 执行失败: $errorMsg")
+    }
+
+    /**
+     * 显示指令超时
+     */
+    private fun showCommandTimeout(index: Int) {
+        Toaster.show("指令$index 执行超时")
+    }
+
+    /**
+     * 更新倾角初始值 - 使用单条指令发送
+     */
+    private fun measureInitialValue(method: String, type: String) {
+        val entity = UDInitialValueEntity(method = method, type = type)
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_SENSOR_INITIAL,
+            entity.toCommandString()
+        )
+
+        // 显示特殊的加载对话框（用于更新初始值）
+        if (method == "1") {
+            measureInitialValueLoadingDialogId =
+                showLoadingWithUUID(StringUtils.getString(R.string.processing))
+        } else {
+            Timber.d("查询更新初始值结果轮询次数：$repeatPollNum")
+        }
+
+        sendSingleCommand(
+            command = command,
+            config = CommandSequenceConfig(
+                timeout = AppContants.Communication.DELAY_15000_MILLIS,
+                showLoadingDialog = false, // 已经手动显示了
+                errorHandling = ErrorConfig.custom { errorMsg ->
+                    dismissLoadingDialog(measureInitialValueLoadingDialogId)
+                    if (command.contains("method=0")) {
+                        showMessageDialog("查询测量信息出错: $errorMsg")
+                    } else {
+                        showMessageDialog("更新倾角初始值指令下发出错: $errorMsg")
+                    }
+                }
+
             )
         )
     }
@@ -194,68 +270,120 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 更新倾角初始值 - 使用单条指令发送
-     */
-    private fun measureInitialValue(method: String, type: String) {
-        val entity = UDInitialValueEntity(method = method, type = type)
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_SENSOR_INITIAL,
-            entity.toCommandString()
-        )
-
-        // 显示特殊的加载对话框（用于更新初始值）
-        if (method == "1") {
-            measureInitialValueLoadingDialogId =
-                showLoadingWithUUID(StringUtils.getString(R.string.processing))
-        } else {
-            Timber.d("查询更新初始值结果轮询次数：$repeatPollNum")
-        }
-
-        sendSingleCommand(
-            command = command,
-            config = CommandSequenceConfig(
-                timeout = AppContants.Communication.DELAY_15000_MILLIS,
-                showLoadingDialog = false, // 已经手动显示了
-                errorHandling = ErrorConfig.custom { errorMsg ->
-                    dismissLoadingDialog(measureInitialValueLoadingDialogId)
-                    if (command.contains("method=0")) {
-                        showMessageDialog("查询测量信息出错: $errorMsg")
-                    } else {
-                        showMessageDialog("更新倾角初始值指令下发出错: $errorMsg")
-                    }
-                }
-
-            )
-        )
-    }
-
-    /**
      * 处理指令响应 - 这是唯一需要实现的方法
      */
     override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.SAMPLE -> {
-                handleSampleResponse(cmdStr)
+            IOTCommandType.SAMPLE -> {//处理遥测响应（当前角度值）
+                val result = iotParseManager.parse<String>(
+                    cmdStr,
+                    IOTCommandType.SAMPLE
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        Timber.e("查询当前角度失败: ${result.message}")
+                        addDeviceLogItem(Log.ERROR, "查询当前角度失败: ${result.message}")
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        initCurrentAngle(result.data)
+                    }
+                }
             }
 
             IOTCommandType.MD_SET_SENSOR_INITIAL -> {
-                handleSensorInitialResponse(cmdStr)
+                val result =
+                    iotParseManager.parse<Map<String, String>>(
+                        cmdStr,
+                        IOTCommandType.MD_SET_SENSOR_INITIAL
+                    )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        dismissLoadingDialog(measureInitialValueLoadingDialogId)
+                        val errMsg = if (cmdStr.contains("method=0")) {
+                            "查询测量信息出错: ${result.message}"
+                        } else {
+                            "更新倾角初始值出错: ${result.message}"
+                        }
+                        showMessageDialog(errMsg)
+                        addDeviceLogItem(Log.ERROR, errMsg)
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        processInitialAngle(result.data)
+                    }
+                }
             }
 
             IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL -> {
-                handleAlarmControlResponse(cmdStr)
+                val result = iotParseManager.parse<AlarmMonitorPointInfo>(
+                    cmdStr,
+                    IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        Timber.e("查询触发开关状态失败: ${result.message}")
+                        addDeviceLogItem(Log.ERROR, "查询触发开关状态失败: ${result.message}")
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        initTriggerEnableData(result.data)
+                        if (isOnRefresh) {
+                            finishRefresh()
+                            isOnRefresh = false
+                        }
+                    }
+                }
             }
 
             IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE -> {
-                handleAlarmTriggerValueResponse(cmdStr)
+                val result = iotParseManager.parse<AlarmTriggerValueInfo>(
+                    cmdStr,
+                    IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        Timber.e("查询角度触发值失败: ${result.message}")
+                        addDeviceLogItem(Log.ERROR, "查询角度触发值失败: ${result.message}")
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        initAngleTrigger(result.data)
+                        if (isOnRefresh) {
+                            finishRefresh()
+                            isOnRefresh = false
+                        }
+                    }
+                }
             }
 
             IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL -> {
-                handleAlarmControlSaveResponse(cmdStr)
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        Timber.e("保存触发开关设置失败: ${result.message}")
+                        addDeviceLogItem(Log.ERROR, "保存触发开关设置失败: ${result.message}")
+                    }
+
+                    else -> {
+                        Timber.d("触发开关设置保存成功")
+                    }
+                }
             }
 
             IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE -> {
-                handleAlarmTriggerValueSaveResponse(cmdStr)
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        Timber.e("保存角度触发值失败: ${result.message}")
+                        addDeviceLogItem(Log.ERROR, "保存角度触发值失败: ${result.message}")
+                    }
+
+                    else -> {
+                        Timber.d("角度触发值保存成功")
+                    }
+                }
             }
 
             else -> {
@@ -264,128 +392,6 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
         }
     }
 
-    /**
-     * 处理遥测响应（当前角度值）
-     */
-    private fun handleSampleResponse(cmdStr: String) {
-        val result = iotParseManager.parse<String>(cmdStr, IOTCommandType.SAMPLE)
-        when (result) {
-            is IOTCommandResult.Success -> {
-                initCurrentAngle(result.data)
-            }
-
-            is IOTCommandResult.Failure -> {
-                Timber.e("查询当前角度失败: ${result.message}")
-                addDeviceLogItem(Log.ERROR, "查询当前角度失败: ${result.message}")
-            }
-        }
-    }
-
-    /**
-     * 处理传感器初始值响应
-     */
-    private fun handleSensorInitialResponse(cmdStr: String) {
-        val result =
-            iotParseManager.parse<Map<String, String>>(cmdStr, IOTCommandType.MD_SET_SENSOR_INITIAL)
-        when (result) {
-            is IOTCommandResult.Success -> {
-                processInitialAngle(result.data)
-            }
-
-            is IOTCommandResult.Failure -> {
-                dismissLoadingDialog(measureInitialValueLoadingDialogId)
-                val errMsg = if (cmdStr.contains("method=0")) {
-                    "查询测量信息出错: ${result.message}"
-                } else {
-                    "更新倾角初始值出错: ${result.message}"
-                }
-                showMessageDialog(errMsg)
-                addDeviceLogItem(Log.ERROR, errMsg)
-            }
-        }
-    }
-
-    /**
-     * 处理警报控制响应
-     */
-    private fun handleAlarmControlResponse(cmdStr: String) {
-        val result = iotParseManager.parse<AlarmMonitorPointInfo>(
-            cmdStr,
-            IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL
-        )
-        when (result) {
-            is IOTCommandResult.Success -> {
-                initTriggerEnableData(result.data)
-                if (isOnRefresh) {
-                    finishRefresh()
-                    isOnRefresh = false
-                }
-            }
-
-            is IOTCommandResult.Failure -> {
-                Timber.e("查询触发开关状态失败: ${result.message}")
-                addDeviceLogItem(Log.ERROR, "查询触发开关状态失败: ${result.message}")
-            }
-        }
-    }
-
-    /**
-     * 处理警报触发值响应
-     */
-    private fun handleAlarmTriggerValueResponse(cmdStr: String) {
-        val result = iotParseManager.parse<AlarmTriggerValueInfo>(
-            cmdStr,
-            IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE
-        )
-        when (result) {
-            is IOTCommandResult.Success -> {
-                initAngleTrigger(result.data)
-                if (isOnRefresh) {
-                    finishRefresh()
-                    isOnRefresh = false
-                }
-            }
-
-            is IOTCommandResult.Failure -> {
-                Timber.e("查询角度触发值失败: ${result.message}")
-                addDeviceLogItem(Log.ERROR, "查询角度触发值失败: ${result.message}")
-            }
-        }
-    }
-
-    /**
-     * 处理警报控制保存响应
-     */
-    private fun handleAlarmControlSaveResponse(cmdStr: String) {
-        val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
-        when (result) {
-            is IOTCommandResult.Failure -> {
-                Timber.e("保存触发开关设置失败: ${result.message}")
-                addDeviceLogItem(Log.ERROR, "保存触发开关设置失败: ${result.message}")
-            }
-
-            else -> {
-                Timber.d("触发开关设置保存成功")
-            }
-        }
-    }
-
-    /**
-     * 处理警报触发值保存响应
-     */
-    private fun handleAlarmTriggerValueSaveResponse(cmdStr: String) {
-        val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
-        when (result) {
-            is IOTCommandResult.Failure -> {
-                Timber.e("保存角度触发值失败: ${result.message}")
-                addDeviceLogItem(Log.ERROR, "保存角度触发值失败: ${result.message}")
-            }
-
-            else -> {
-                Timber.d("角度触发值保存成功")
-            }
-        }
-    }
 
     /**
      * 处理当前角度值显示

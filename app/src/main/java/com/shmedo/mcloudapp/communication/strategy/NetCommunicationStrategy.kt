@@ -8,8 +8,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withTimeoutOrNull
 import timber.log.Timber
 
 /**
@@ -67,7 +65,7 @@ class NetCommunicationStrategy(
                     is CmdResponseResultSuccess -> {
                         Timber.i("4G响应成功: ${response.cmdResult.responseContent}")
                         emit(CommandResult.Success(
-                            data = response.cmdResult.responseContent,
+                            responseData = response.cmdResult.responseContent,
                             command = command
                         ))
                         return@collect
