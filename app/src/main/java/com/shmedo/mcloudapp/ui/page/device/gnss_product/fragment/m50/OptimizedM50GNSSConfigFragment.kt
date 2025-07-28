@@ -11,7 +11,6 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gnss_m.GNSSRawConfigEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gnss_m.ModuleParamConfigEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -25,8 +24,6 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.communication.model.CommandResult
-import com.shmedo.mcloudapp.communication.model.CommandSequenceCallbacks
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
@@ -41,8 +38,8 @@ import timber.log.Timber
 
 /**
  * @author：gonghe
- * @time: 2025/1/22
- * @desc: 使用优化架构的M50 GNSS配置页面
+ * @time: 2025/7/26
+ * @desc: 一体式自供电 GNSS 接收机(M50)GNSS配置页面
  *
  * 优化特点：
  * 1. 使用新的通信架构，代码更简洁
@@ -61,7 +58,7 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
     private val samplingRateValueList = arrayListOf("1", "5")
 
     // 截至高度角选项列表
-    private val elevationAngleList = arrayListOf("5度", "10度", "15度", "20度", "25度", "30度")
+    private val elevationAngleList = arrayListOf("5°", "10°", "15°", "20°", "25°", "30°")
     private val elevationAngleValueList = arrayListOf("5", "10", "15", "20", "25", "30")
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -96,12 +93,13 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         resetDefaultParams()
+        // 保存初始状态
         mStates.saveInitialState()
     }
 
     private fun resetDefaultParams() {
-        mStates.samplingRate.set(samplingRateList[0])
-        mStates.elevationAngle.set(elevationAngleList[0])
+        mStates.samplingRate.set(samplingRateList[0]) // 默认"1秒"
+        mStates.elevationAngle.set(elevationAngleList[0]) // 默认"5°"
     }
 
     override fun lazyLoadData() {
@@ -109,11 +107,13 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 查询数据 - 使用新架构的简化API
+     * 查询数据
      */
     private fun queryData() {
         val commands = listOf(
+            // 查询采样率
             IOTCommandUtil.getCommand(IOTCommandType.MD_GET_SAMPLING_RATE),
+            // 查询截至高度角
             IOTCommandUtil.getCommand(IOTCommandType.MD_GET_ELEVATION_ANGLE, "type=gnss")
         )
 
@@ -121,7 +121,6 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
         sendCommandSequence(
             commands = commands,
             config = CommandSequenceConfig(
-                timeout = AppContants.Communication.DELAY_15000_MILLIS,
                 showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
                 errorConfig = ErrorConfig(
                     strategy = ErrorHandlingStrategy.Dialog,
@@ -132,7 +131,7 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 保存配置 - 使用新架构的简化API
+     * 保存配置
      */
     private fun saveConfiguration() {
         // 构建保存指令序列
@@ -141,15 +140,8 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
         sendCommandSequence(
             commands = commands,
             config = CommandSequenceConfig(
-                timeout = AppContants.Communication.DELAY_15000_MILLIS,
                 loadingMessage = StringUtils.getString(R.string.processing),
                 errorConfig = ErrorConfig.dialogConfig()
-            ),
-            callbacks = CommandSequenceCallbacks(
-                onComplete = { results ->
-                    // 所有指令执行完成后导航返回
-                    processNavigateUp("配置保存成功")
-                }
             )
         )
     }
@@ -220,13 +212,13 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
     private fun handleSamplingRateQuery(cmdStr: String) {
         val result = iotParseManager.parse<GNSSRawData>(cmdStr, IOTCommandType.MD_GET_SAMPLING_RATE)
         when (result) {
-            is IOTCommandResult.Success -> {
-                initSamplingRateData(result.data)
+            is IOTCommandResult.Failure -> {
+                val errMsg = "查询采样率出错: ${result.message}"
+                handleFailureResult(errMsg, isMessageDialog = true)
             }
 
-            is IOTCommandResult.Failure -> {
-                Timber.e("查询采样率失败: ${result.message}")
-                addDeviceLogItem(Log.ERROR, "查询采样率失败: ${result.message}")
+            is IOTCommandResult.Success -> {
+                initSamplingRateData(result.data)
             }
         }
     }
@@ -238,16 +230,13 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
         val result =
             iotParseManager.parse<ModuleParam>(cmdStr, IOTCommandType.MD_GET_ELEVATION_ANGLE)
         when (result) {
-            is IOTCommandResult.Success -> {
-                initElevationAngleData(result.data)
-                // 数据查询完成后，保存初始状态并结束刷新
-                mStates.saveInitialState()
-                finishRefresh()
+            is IOTCommandResult.Failure -> {
+                val errMsg = "查询截至高度角出错: ${result.message}"
+                handleFailureResult(errMsg, isMessageDialog = true)
             }
 
-            is IOTCommandResult.Failure -> {
-                Timber.e("查询截至高度角失败: ${result.message}")
-                addDeviceLogItem(Log.ERROR, "查询截至高度角失败: ${result.message}")
+            is IOTCommandResult.Success -> {
+                initElevationAngleData(result.data)
             }
         }
     }
@@ -291,13 +280,18 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun initSamplingRateData(rawData: GNSSRawData) {
         try {
+            // 根据返回的 obs 值设置采样率显示
             val obsValue = rawData.obs
             val index = samplingRateValueList.indexOf(obsValue)
             if (index >= 0) {
                 mStates.samplingRate.set(samplingRateList[index])
             } else {
+                // 如果返回的值不在预定义列表中，使用默认值
                 mStates.samplingRate.set(samplingRateList[0])
             }
+
+            // 保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
@@ -309,30 +303,22 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun initElevationAngleData(moduleParam: ModuleParam) {
         try {
+            // 根据返回的 altitude_angle 值设置截至高度角显示
             val altitudeAngleValue = moduleParam.altitude_angle.split(".")[0]
             val index = elevationAngleValueList.indexOf(altitudeAngleValue)
             if (index >= 0) {
                 mStates.elevationAngle.set(elevationAngleList[index])
             } else {
+                // 如果返回的值不在预定义列表中，使用默认值
                 mStates.elevationAngle.set(elevationAngleList[0])
             }
+
+            // 保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
-    }
-
-    override fun handleBackByCheckDataModified() {
-        if (mStates.isDataModified.value == true) {
-            showExitConfirmationDialog()
-            return
-        }
-        nav().navigateUp()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
     }
 
     /**
@@ -393,4 +379,18 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
             saveConfiguration()
         }
     }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
+    }
+
 } 

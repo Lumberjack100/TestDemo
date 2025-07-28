@@ -77,7 +77,7 @@
 
     <fragment
         android:id="@+id/m50GNSSConfigFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50GNSSConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.OptimizedM50GNSSConfigFragment"
         android:label="M50GNSSConfigFragment"
         tools:layout="@layout/fragment_m50_gnss_config" />
 

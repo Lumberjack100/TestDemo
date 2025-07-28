@@ -33,6 +33,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.baseclickproxy.DoubleClickListener
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.DeviceError
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentUniversalDeviceHomeNewBinding
 import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
@@ -43,6 +44,7 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
@@ -156,6 +158,10 @@ abstract class OptimizedBaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment(
         initModuleData()
     }
 
+    override fun onDeviceConnecting() {
+        showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
+    }
+
     /**
      * 设备连接状态回调
      */
@@ -176,6 +182,7 @@ abstract class OptimizedBaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment(
     }
 
     override fun onDeviceDisconnected() {
+        dismissLoadingDialog()
         mHeadStates.isConnected.set(false)
         mHeadStates.productLogoResId.set(mHeadStates.productOfflineResId.get())
 
@@ -188,6 +195,10 @@ abstract class OptimizedBaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment(
 
         mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         refreshModuleStatus(false)
+    }
+
+    override fun onDeviceConnectionError(error: DeviceError) {
+        dismissLoadingDialog()
     }
 
     /**

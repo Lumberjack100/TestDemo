@@ -358,7 +358,7 @@ class OptimizedM50HomeFragment : OptimizedBaseDeviceHomeFragment() {
     private fun processSampleResponse(cmdStr: String, content: String) {
         try {
             // $cmd=sample&method=0&datastreams={"date":"2025-07-18 17:12:22","sum_value":6013.101,"x_value":-1429.354,"y_value":-0.006,"z_value":-5840.747}
-            val resultMap = MoshiUtil.fromJson<Map<String, String>>(content) ?: return
+            val resultMap = MoshiUtil.fromJson<Map<String, Any>>(content) ?: return
             if (cmdStr.contains("method=0") && resultMap.containsKey("x_value")
                 && resultMap.containsKey("y_value")
                 && resultMap.containsKey("z_value")
@@ -379,16 +379,16 @@ class OptimizedM50HomeFragment : OptimizedBaseDeviceHomeFragment() {
                         xDisplacement,
                         yDisplacement,
                         zDisplacement,
-                        latestDataTime
+                        latestDataTime.toString()
                     )
                 }
                 return
             }
 
-            //$cmd=sample&method=2&datastreams={"sw":1,"mode":8,"initdate":"2025-07-18 18:12:26","initENU":""0.000000,0.000000,0.000000","baseLine":0.000000","fixRate":34.4,"gap_fixRate":0.0,"result":"-1429.354,-0.006,-5840.747","status":"not-fix","dataSource":"mqtt"}
+            //$cmd=sample&method=2&datastreams={"sw":1,"mode":8,"initdate":"0000-00-00 00:00:00","initENU":"0.000000,0.000000,0.000000","baseLine":0.000000,"fixRate":100.0,"gap_fixRate":100.0,"result":"0.000,0.000,0.000","status":"base-not-ready","dataSource":"ntrip","ntrip":{"status":"recv_rtcm","onlineRate":100.0,"connectCnt":1}}
             if (cmdStr.contains("method=2") && resultMap.containsKey("initdate")) {
                 val initCompletionTime = resultMap["initdate"] ?: AppContants.PLACE_HOLDER_VALUE
-                measureDataItem.refreshInitCompletionTime(initCompletionTime)
+                measureDataItem.refreshInitCompletionTime(initCompletionTime.toString())
             }
             
         } catch (e: Exception) {

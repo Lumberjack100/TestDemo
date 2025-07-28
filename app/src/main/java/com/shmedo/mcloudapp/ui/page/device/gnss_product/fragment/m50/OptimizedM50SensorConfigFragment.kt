@@ -75,7 +75,7 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentM50SensorConfigBinding
-        binding.llToolbar.toolbar.title = "倾角触发配置优化方案"
+        binding.llToolbar.toolbar.title = "倾角触发配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }
@@ -148,9 +148,6 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
             ),
             callbacks = CommandSequenceCallbacks(
                 onComplete = { results ->
-                    // 所有指令执行完成
-                    Timber.i("所有指令执行完成，成功${results.count { it is CommandResult.Success }}条")
-                    finishRefresh()
                 },
                 onError = { error, command ->
 
