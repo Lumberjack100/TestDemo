@@ -5,11 +5,8 @@ import androidx.lifecycle.lifecycleScope
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.mcloudapp.communication.error.DeviceErrorHandler
 import com.shmedo.mcloudapp.communication.executor.ResponseDrivenCommandExecutor
-import com.shmedo.mcloudapp.communication.model.CommandResult
 import com.shmedo.mcloudapp.communication.model.CommandSequenceCallbacks
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
-import com.shmedo.mcloudapp.communication.model.CommunicationState
-import com.shmedo.mcloudapp.communication.model.DeviceError
 import com.shmedo.mcloudapp.communication.strategy.BleCommunicationStrategy
 import com.shmedo.mcloudapp.communication.strategy.CommunicationStrategy
 import com.shmedo.mcloudapp.communication.strategy.NetCommunicationStrategy
@@ -20,7 +17,6 @@ import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.NetIOTCommandViewModel
-import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 
 /**
@@ -35,7 +31,6 @@ class DeviceCommunicationManager(
     private val netViewModel: NetIOTCommandViewModel,
     private val bleViewModel: BleViewModel,
 ) {
-
     // 通信策略
     private val strategy: CommunicationStrategy = createCommunicationStrategy()
 
@@ -46,11 +41,8 @@ class DeviceCommunicationManager(
     private val executor = ResponseDrivenCommandExecutor(
         strategy = strategy,
         errorHandler = errorHandler,
-        scope = fragment.lifecycleScope
+        scope = fragment.viewLifecycleOwner.lifecycleScope
     )
-
-    // 执行状态
-    val executionState: StateFlow<CommunicationState> = executor.executionState
 
     /**
      * 创建通信策略
@@ -61,10 +53,12 @@ class DeviceCommunicationManager(
                 Timber.i("使用4G网络通信策略")
                 NetCommunicationStrategy(netViewModel, deviceInfo)
             }
+
             is BleConnect -> {
                 Timber.i("使用蓝牙通信策略")
                 BleCommunicationStrategy(bleViewModel, deviceInfo)
             }
+
             else -> {
                 Timber.w("未知通信方式，默认使用4G网络通信策略")
                 NetCommunicationStrategy(netViewModel, deviceInfo)
@@ -95,25 +89,20 @@ class DeviceCommunicationManager(
             commands = commands,
             config = config,
             callbacks = CommandSequenceCallbacks(
-                onProgress = { progress ->
+                onSuccess = { successResult ->
                     // 实时回调处理
-                    callbacks.onProgress?.invoke(progress)
-
-                    // 如果是最后一条指令，隐藏加载对话框
-                    if (progress.isLast && config.showLoadingDialog && config.errorHandling.shouldDismissLoading) {
-                        fragment.dismissLoadingDialog()
-                    }
+                    callbacks.onSuccess?.invoke(successResult)
                 },
                 onComplete = { results ->
                     // 隐藏加载对话框
-                    if (config.showLoadingDialog && config.errorHandling.shouldDismissLoading) {
+                    if (config.showLoadingDialog && config.errorConfig.shouldDismissLoading) {
                         fragment.dismissLoadingDialog()
                     }
                     callbacks.onComplete(results)
                 },
                 onError = { error, command ->
                     // 隐藏加载对话框
-                    if (config.showLoadingDialog && config.errorHandling.shouldDismissLoading) {
+                    if (config.showLoadingDialog && config.errorConfig.shouldDismissLoading) {
                         fragment.dismissLoadingDialog()
                     }
                     callbacks.onError(error, command)
@@ -122,44 +111,6 @@ class DeviceCommunicationManager(
         )
     }
 
-    /**
-     * 发送单条指令 (便捷方法)
-     * @param command 指令内容
-     * @param config 执行配置
-     * @param onSuccess 成功回调
-     * @param onError 错误回调
-     */
-    fun sendSingleCommand(
-        command: String,
-        config: CommandSequenceConfig = CommandSequenceConfig(),
-        onSuccess: (String) -> Unit = {},
-        onError: (DeviceError, String) -> Unit = { _, _ -> }
-    ) {
-        executeCommandSequence(
-            commands = listOf(command),
-            config = config,
-            callbacks = CommandSequenceCallbacks(
-                onProgress = { progress ->
-                    if (progress.result is CommandResult.Success) {
-                        onSuccess(progress.result.responseData)
-                    }
-                },
-                onComplete = { results ->
-                    val firstResult = results.firstOrNull()
-                    when (firstResult) {
-                        is CommandResult.Success -> onSuccess(firstResult.responseData)
-                        is CommandResult.Error -> onError(firstResult.error, firstResult.command)
-                        is CommandResult.Timeout -> onError(
-                            DeviceError.Timeout(firstResult.command, firstResult.timeoutMs),
-                            firstResult.command
-                        )
-                        null -> onError(DeviceError.Unknown("未收到响应结果"), command)
-                    }
-                },
-                onError = onError
-            )
-        )
-    }
 
     /**
      * 取消当前执行

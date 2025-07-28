@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/m20SHomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.OptimizedM20SHomeFragment"
         android:label="M20SHomeFragment"
         tools:layout="@layout/fragment_universal_device_home_new" />
 
@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/m20SBaseInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SBaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.OptimizedM20SBaseInfoFragment"
         android:label="M20SBaseInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 

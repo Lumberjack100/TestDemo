@@ -16,18 +16,18 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.communication.manager.DeviceCommunicationManager
-import com.shmedo.mcloudapp.communication.model.CommandProgress
-import com.shmedo.mcloudapp.communication.model.CommandResult
 import com.shmedo.mcloudapp.communication.model.CommandSequenceCallbacks
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
-import com.shmedo.mcloudapp.communication.model.CommunicationState
 import com.shmedo.mcloudapp.communication.model.DeviceConnectionState
 import com.shmedo.mcloudapp.communication.model.DeviceError
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
+import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
@@ -39,11 +39,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 /**
- * 优化后的IOT设备基础Fragment
- * 使用新的通信架构，提供更简洁、更可维护的API
- * 
+ * @author：gonghe
+ * @time: 2025/7/25
+ * @desc: 优化后的IOT设备基础Fragment，使用新的通信架构，提供更简洁、更可维护的API
+ *
  * 主要优化：
  * 1. 职责分离：通信逻辑由DeviceCommunicationManager管理
  * 2. 统一错误处理：支持多种错误处理策略
@@ -51,7 +53,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  * 4. 配置驱动：通过配置对象控制行为
  */
 abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
-    
+
     protected lateinit var mMessenger: PageMessenger
     protected val netIotCommandViewModel: NetIOTCommandViewModel by viewModel()
     protected val bleViewModel: BleViewModel by activityViewModel()
@@ -99,36 +101,12 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
 
     @CallSuper
     override fun createObserver() {
-        // 监听通信执行状态
-        launchWithViewLifecycle {
-            communicationManager.executionState.collect { state ->
-                when (state) {
-                    is CommunicationState.Idle -> {
-                        // 空闲状态
-                        onCommunicationIdle()
-                    }
-                    is CommunicationState.Executing -> {
-                        // 执行中状态
-                        onCommunicationExecuting(state.currentCommand, state.remainingCount)
-                    }
-                    is CommunicationState.Completed -> {
-                        // 执行完成
-                        onCommunicationCompleted(state.results)
-                    }
-                    is CommunicationState.Failed -> {
-                        // 执行失败
-                        onCommunicationFailed(state.error, state.partialResults)
-                    }
-                }
-            }
-        }
-
         // 监听连接状态
         launchWithViewLifecycle {
             communicationManager.getConnectionState().collect { state ->
                 when (state) {
-                    is DeviceConnectionState.Connected -> onDeviceConnected()
                     is DeviceConnectionState.Connecting -> onDeviceConnecting()
+                    is DeviceConnectionState.Connected -> onDeviceConnected()
                     is DeviceConnectionState.Disconnected -> onDeviceDisconnected()
                     is DeviceConnectionState.Error -> onDeviceConnectionError(state.error)
                 }
@@ -137,36 +115,35 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     }
 
     // ==================== 新的API方法 ====================
-
     /**
      * 发送指令序列 (支持实时回调)
      * @param commands 指令列表
      * @param config 执行配置
-     * @param onProgress 进度回调 (每条指令处理完就调用)
-     * @param onComplete 完成回调
+     * @param callbacks 回调配置
      */
     protected fun sendCommandSequence(
         commands: List<String>,
         config: CommandSequenceConfig = CommandSequenceConfig(),
-        onProgress: ((CommandProgress) -> Unit)? = null,
-        onComplete: (List<CommandResult>) -> Unit = { finishRefresh() }
+        callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks(
+            onComplete = { results -> finishRefresh() },
+            onError = { error, command -> finishRefresh() }),
     ) {
         addDeviceLogItem(Log.DEBUG, "发送指令序列: ${commands.size}条指令")
 
         communicationManager.executeCommandSequence(
             commands = commands,
-            config = config.copy(enableRealTimeCallback = true),
+            config = config,
             callbacks = CommandSequenceCallbacks(
-                onProgress = { progress ->
-                    updateLastCommunicationTime()
-                    onProgress?.invoke(progress)
+                onSuccess = { successResult ->
+                    handleCommandResponse(successResult.responseData)
+                    callbacks.onSuccess?.invoke(successResult)
                 },
                 onComplete = { results ->
-                    updateLastCommunicationTime()
-                    onComplete(results)
+                    callbacks.onComplete(results)
                 },
                 onError = { error, command ->
                     addDeviceLogItem(Log.ERROR, "指令执行失败: $command, 错误: ${error.message}")
+                    callbacks.onError(error, command)
                 }
             )
         )
@@ -176,26 +153,36 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
      * 发送单条指令 (便捷方法)
      * @param command 指令内容
      * @param config 执行配置
-     * @param onSuccess 成功回调
+     * @param callbacks 回调配置
      */
     protected fun sendSingleCommand(
         command: String,
         config: CommandSequenceConfig = CommandSequenceConfig(),
-        onSuccess: (String) -> Unit = {}
+        callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks(
+            onComplete = { results -> finishRefresh() },
+            onError = { error, command -> finishRefresh() }),
     ) {
         addDeviceLogItem(Log.DEBUG, "发送单条指令: $command")
 
-        communicationManager.sendSingleCommand(
-            command = command,
+        communicationManager.executeCommandSequence(
+            commands = listOf(command),
             config = config,
-            onSuccess = { response ->
-                updateLastCommunicationTime()
-                handleCommandResponse(response)
-                onSuccess(response)
-            },
-            onError = { error, cmd ->
-                addDeviceLogItem(Log.ERROR, "单条指令执行失败: $cmd, 错误: ${error.message}")
-            }
+            callbacks = CommandSequenceCallbacks(
+                onSuccess = { successResult ->
+                    handleCommandResponse(successResult.responseData)
+                    callbacks.onSuccess?.invoke(successResult)
+                },
+                onComplete = { results ->
+                    callbacks.onComplete(results)
+                },
+                onError = { error, command ->
+                    addDeviceLogItem(
+                        Log.ERROR,
+                        "单条指令执行失败: $command, 错误: ${error.message}"
+                    )
+                    callbacks.onError(error, command)
+                }
+            )
         )
     }
     // ==================== 便捷方法 ====================
@@ -205,7 +192,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
      */
     protected fun queryDeviceStatus(
         config: CommandSequenceConfig = CommandSequenceConfig(
-            errorHandling = ErrorConfig.toast()
+            errorConfig = ErrorConfig.toastConfig()
         )
     ) {
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
@@ -218,28 +205,26 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     protected fun rebootDevice(
         config: CommandSequenceConfig = CommandSequenceConfig(
             timeout = 15_000L,
-            errorHandling = ErrorConfig.dialog()
-        )
+            errorConfig = ErrorConfig.dialogConfig()
+        ),
+        callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks()
     ) {
         val command = IOTCommandUtil.getCommand(IOTCommandType.REBOOT)
-        sendSingleCommand(command, config) {
-            processNavigateUp("设备重启指令已发送")
-        }
-    }
-
-    /**
-     * 恢复出厂设置 (便捷方法)
-     */
-    protected fun restoreFactory(
-        config: CommandSequenceConfig = CommandSequenceConfig(
-            timeout = 15_000L,
-            errorHandling = ErrorConfig.dialog()
-        )
-    ) {
-        val command = IOTCommandUtil.getCommand(IOTCommandType.RESET)
-        sendSingleCommand(command, config) {
-            processNavigateUp("恢复出厂设置指令已发送")
-        }
+        sendSingleCommand(
+            command = command,
+            config = config,
+            callbacks = CommandSequenceCallbacks(
+                onComplete = { results ->
+                    processNavigateUp("设备重启指令已发送")
+                },
+                onError = { error, command ->
+                    addDeviceLogItem(
+                        Log.ERROR,
+                        "单条指令执行失败: $command, 错误: ${error.message}"
+                    )
+                    callbacks.onError(error, command)
+                }
+            ))
     }
 
     /**
@@ -248,8 +233,9 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     protected fun searchDevice(
         config: CommandSequenceConfig = CommandSequenceConfig(
             loadingMessage = StringUtils.getString(R.string.device_searching),
-            errorHandling = ErrorConfig.toast()
-        )
+            errorConfig = ErrorConfig.toastConfig()
+        ),
+        callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks(),
     ) {
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_SEARCH_DEVICE, "switch=1")
         sendSingleCommand(command, config)
@@ -266,24 +252,11 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     // ==================== 状态回调方法 (可重写) ====================
 
     /**
-     * 通信空闲时回调
+     * 设备连接中回调
      */
-    protected open fun onCommunicationIdle() {}
-
-    /**
-     * 通信执行中回调
-     */
-    protected open fun onCommunicationExecuting(currentCommand: String, remainingCount: Int) {}
-
-    /**
-     * 通信完成回调
-     */
-    protected open fun onCommunicationCompleted(results: List<CommandResult>) {}
-
-    /**
-     * 通信失败回调
-     */
-    protected open fun onCommunicationFailed(error: DeviceError, partialResults: List<CommandResult>) {}
+    protected open fun onDeviceConnecting() {
+        showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
+    }
 
     /**
      * 设备已连接回调
@@ -291,14 +264,11 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     protected open fun onDeviceConnected() {}
 
     /**
-     * 设备连接中回调
-     */
-    protected open fun onDeviceConnecting() {}
-
-    /**
      * 设备已断开回调
      */
-    protected open fun onDeviceDisconnected() {}
+    protected open fun onDeviceDisconnected() {
+        dismissLoadingDialog()
+    }
 
     /**
      * 设备连接错误回调
@@ -349,6 +319,18 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
         communicationManager.cancelExecution()
     }
 
+    protected fun handleFailureResult(
+        errMsg: String,
+        isShowErrMsg: Boolean = true,
+        isMessageDialog: Boolean = false
+    ) {
+        Timber.e(errMsg)
+        if (isShowErrMsg) {
+            if (isMessageDialog) showMessageDialog(errMsg)
+            else Toaster.show(errMsg)
+        }
+    }
+
     // ==================== 导航和UI工具方法 ====================
 
     protected open fun processNavigateUp(toastMsg: String = "", isShowToast: Boolean = true) {
@@ -384,10 +366,10 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
      */
     protected fun isBleDas(): Boolean {
         return communicateWay == BleConnect && (
-            productType == ProductType.DAS || 
-            productType == ProductType.BHY || 
-            productType == ProductType.COLLECTOR_R_1
-        )
+                productType == ProductType.DAS ||
+                        productType == ProductType.BHY ||
+                        productType == ProductType.COLLECTOR_R_1
+                )
     }
 
     override fun isRestrictHiddenMode(): Boolean = true

@@ -57,7 +57,7 @@ sealed class DeviceError(open val message: String, open val cause: Throwable? = 
      * 指令超时错误
      */
     data class Timeout(val command: String, val timeoutMs: Long) :
-        DeviceError("指令超时: $command (${timeoutMs}ms)")
+        DeviceError("响应超时: $command (${timeoutMs}ms)")
 
     /**
      * 设备解析错误
@@ -109,10 +109,10 @@ data class ErrorConfig(
     val customHandler: ((String) -> Unit)? = null
 ) {
     companion object {
-        fun silent() = ErrorConfig(strategy = ErrorHandlingStrategy.Silent)
-        fun toast() = ErrorConfig(strategy = ErrorHandlingStrategy.Toast)
-        fun dialog() = ErrorConfig(strategy = ErrorHandlingStrategy.Dialog)
-        fun custom(handler: (String) -> Unit) = ErrorConfig(
+        fun silentConfig() = ErrorConfig(strategy = ErrorHandlingStrategy.Silent)
+        fun toastConfig() = ErrorConfig(strategy = ErrorHandlingStrategy.Toast)
+        fun dialogConfig() = ErrorConfig(strategy = ErrorHandlingStrategy.Dialog)
+        fun customConfig(handler: (String) -> Unit) = ErrorConfig(
             strategy = ErrorHandlingStrategy.Custom,
             customHandler = handler
         )
@@ -123,7 +123,7 @@ data class ErrorConfig(
  * 指令执行配置
  */
 data class CommandConfig(
-    val timeout: Long = 10_000L,
+    val timeout: Long = AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
     val delayBeforeSend: Long = 0L
 )
 
@@ -136,20 +136,7 @@ data class CommandSequenceConfig(
     val stopOnFirstError: Boolean = true,
     val showLoadingDialog: Boolean = true,
     val loadingMessage: String = "处理中...",
-    val errorHandling: ErrorConfig = ErrorConfig.toast(),
-    // 新增：是否启用实时回调
-    val enableRealTimeCallback: Boolean = false
-)
-
-/**
- * 指令执行进度回调
- */
-data class CommandProgress(
-    val currentIndex: Int,
-    val totalCount: Int,
-    val currentCommand: String,
-    val result: CommandResult,
-    val isLast: Boolean
+    val errorConfig: ErrorConfig = ErrorConfig.toastConfig()
 )
 
 
@@ -157,7 +144,7 @@ data class CommandProgress(
  * 指令序列执行回调
  */
 data class CommandSequenceCallbacks(
-    val onProgress: ((CommandProgress) -> Unit)? = null,
+    val onSuccess: ((CommandResult.Success) -> Unit)? = null,
     val onComplete: (List<CommandResult>) -> Unit = {},
     val onError: (DeviceError, String) -> Unit = { _, _ -> }
 )
@@ -171,26 +158,3 @@ sealed class DeviceConnectionState {
     object Connected : DeviceConnectionState()
     data class Error(val error: DeviceError) : DeviceConnectionState()
 }
-
-/**
- * 通信执行状态
- */
-sealed class CommunicationState {
-    object Idle : CommunicationState()
-    data class Executing(val currentCommand: String, val remainingCount: Int) : CommunicationState()
-    data class Completed(val results: List<CommandResult>) : CommunicationState()
-    data class Failed(val error: DeviceError, val partialResults: List<CommandResult>) :
-        CommunicationState()
-}
-
-/**
- * 指令队列项
- */
-internal data class CommandItem(
-    val command: String,
-    val config: CommandConfig,
-    val timestamp: Long = System.currentTimeMillis()
-) {
-    val isExpired: Boolean
-        get() = System.currentTimeMillis() - timestamp > config.timeout
-} 

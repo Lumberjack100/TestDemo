@@ -11,6 +11,7 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gnss_m.GNSSRawConfigEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gnss_m.ModuleParamConfigEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -24,6 +25,8 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandResult
+import com.shmedo.mcloudapp.communication.model.CommandSequenceCallbacks
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
@@ -40,7 +43,7 @@ import timber.log.Timber
  * @author：gonghe
  * @time: 2025/1/22
  * @desc: 使用优化架构的M50 GNSS配置页面
- * 
+ *
  * 优化特点：
  * 1. 使用新的通信架构，代码更简洁
  * 2. 统一的错误处理策略
@@ -52,11 +55,11 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: M50GNSSConfigViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
-    
+
     // 采样率选项列表
     private val samplingRateList = arrayListOf("1秒", "5秒")
     private val samplingRateValueList = arrayListOf("1", "5")
-    
+
     // 截至高度角选项列表
     private val elevationAngleList = arrayListOf("5度", "10度", "15度", "20度", "25度", "30度")
     private val elevationAngleValueList = arrayListOf("5", "10", "15", "20", "25", "30")
@@ -113,14 +116,14 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
             IOTCommandUtil.getCommand(IOTCommandType.MD_GET_SAMPLING_RATE),
             IOTCommandUtil.getCommand(IOTCommandType.MD_GET_ELEVATION_ANGLE, "type=gnss")
         )
-        
+
         // 使用新架构的指令序列发送
         sendCommandSequence(
             commands = commands,
             config = CommandSequenceConfig(
-                timeout = 15_000L,
-                showLoadingDialog = false, // 使用刷新动画而不是对话框
-                errorHandling = ErrorConfig(
+                timeout = AppContants.Communication.DELAY_15000_MILLIS,
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig(
                     strategy = ErrorHandlingStrategy.Dialog,
                     shouldDismissLoading = false
                 )
@@ -134,18 +137,20 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
     private fun saveConfiguration() {
         // 构建保存指令序列
         val commands = buildSaveCommands()
-        
+
         sendCommandSequence(
             commands = commands,
             config = CommandSequenceConfig(
-                timeout = 15_000L,
+                timeout = AppContants.Communication.DELAY_15000_MILLIS,
                 loadingMessage = StringUtils.getString(R.string.processing),
-                errorHandling = ErrorConfig.dialog()
+                errorConfig = ErrorConfig.dialogConfig()
             ),
-            onComplete = { results ->
-                // 所有指令执行完成后导航返回
-                processNavigateUp("配置保存成功")
-            }
+            callbacks = CommandSequenceCallbacks(
+                onComplete = { results ->
+                    // 所有指令执行完成后导航返回
+                    processNavigateUp("配置保存成功")
+                }
+            )
         )
     }
 
@@ -154,25 +159,31 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun buildSaveCommands(): List<String> {
         val commands = mutableListOf<String>()
-        
+
         // 设置采样率指令
         val samplingRateIndex = samplingRateList.indexOf(mStates.samplingRate.get())
-        val samplingRateValue = if (samplingRateIndex >= 0) samplingRateValueList[samplingRateIndex] else "1"
+        val samplingRateValue =
+            if (samplingRateIndex >= 0) samplingRateValueList[samplingRateIndex] else "1"
         val samplingRateEntity = GNSSRawConfigEntity(obs = samplingRateValue)
-        commands.add(IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_SAMPLING_RATE,
-            samplingRateEntity.toCommandString()
-        ))
-        
+        commands.add(
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_SAMPLING_RATE,
+                samplingRateEntity.toCommandString()
+            )
+        )
+
         // 设置截至高度角指令
         val elevationAngleIndex = elevationAngleList.indexOf(mStates.elevationAngle.get())
-        val elevationAngleValue = if (elevationAngleIndex >= 0) elevationAngleValueList[elevationAngleIndex] else "5"
+        val elevationAngleValue =
+            if (elevationAngleIndex >= 0) elevationAngleValueList[elevationAngleIndex] else "5"
         val elevationAngleEntity = ModuleParamConfigEntity(altitude_angle = elevationAngleValue)
-        commands.add(IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_ELEVATION_ANGLE,
-            elevationAngleEntity.toCommandString()
-        ))
-        
+        commands.add(
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_ELEVATION_ANGLE,
+                elevationAngleEntity.toCommandString()
+            )
+        )
+
         return commands
     }
 
@@ -184,19 +195,19 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
             IOTCommandType.MD_GET_SAMPLING_RATE -> {
                 handleSamplingRateQuery(cmdStr)
             }
-            
+
             IOTCommandType.MD_GET_ELEVATION_ANGLE -> {
                 handleElevationAngleQuery(cmdStr)
             }
-            
+
             IOTCommandType.MD_SET_SAMPLING_RATE -> {
                 handleSamplingRateSave(cmdStr)
             }
-            
+
             IOTCommandType.MD_SET_ELEVATION_ANGLE -> {
                 handleElevationAngleSave(cmdStr)
             }
-            
+
             else -> {
                 Timber.d("未处理的指令类型: ${IOTCommandUtil.extractCommandType(cmdStr)}")
             }
@@ -212,6 +223,7 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
             is IOTCommandResult.Success -> {
                 initSamplingRateData(result.data)
             }
+
             is IOTCommandResult.Failure -> {
                 Timber.e("查询采样率失败: ${result.message}")
                 addDeviceLogItem(Log.ERROR, "查询采样率失败: ${result.message}")
@@ -223,7 +235,8 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
      * 处理截至高度角查询响应
      */
     private fun handleElevationAngleQuery(cmdStr: String) {
-        val result = iotParseManager.parse<ModuleParam>(cmdStr, IOTCommandType.MD_GET_ELEVATION_ANGLE)
+        val result =
+            iotParseManager.parse<ModuleParam>(cmdStr, IOTCommandType.MD_GET_ELEVATION_ANGLE)
         when (result) {
             is IOTCommandResult.Success -> {
                 initElevationAngleData(result.data)
@@ -231,6 +244,7 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 mStates.saveInitialState()
                 finishRefresh()
             }
+
             is IOTCommandResult.Failure -> {
                 Timber.e("查询截至高度角失败: ${result.message}")
                 addDeviceLogItem(Log.ERROR, "查询截至高度角失败: ${result.message}")
@@ -248,6 +262,7 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 Timber.e("保存采样率失败: ${result.message}")
                 addDeviceLogItem(Log.ERROR, "保存采样率失败: ${result.message}")
             }
+
             else -> {
                 Timber.d("采样率保存成功")
             }
@@ -264,6 +279,7 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 Timber.e("保存截至高度角失败: ${result.message}")
                 addDeviceLogItem(Log.ERROR, "保存截至高度角失败: ${result.message}")
             }
+
             else -> {
                 Timber.d("截至高度角保存成功")
             }

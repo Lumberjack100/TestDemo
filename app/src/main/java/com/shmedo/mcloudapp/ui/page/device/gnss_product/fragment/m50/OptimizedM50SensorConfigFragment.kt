@@ -24,9 +24,9 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandResult
+import com.shmedo.mcloudapp.communication.model.CommandSequenceCallbacks
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
-import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.databinding.FragmentM50SensorConfigBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.formatDoubleValue
@@ -142,54 +142,21 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
         sendCommandSequence(
             commands = commands,
             config = CommandSequenceConfig(
-                timeout = AppContants.Communication.DELAY_15000_MILLIS,
-                showLoadingDialog = false, // 不使用加载动画弹窗
-                errorHandling = ErrorConfig(
-                    strategy = ErrorHandlingStrategy.Dialog,
-                    shouldDismissLoading = false
-                )
+                timeout = AppContants.Communication.DELAY_10000_MILLIS,
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig() // 状态查询失败显示Dialog
             ),
-            onProgress = { progress ->
-                // 每条指令处理完就回调
-                when (progress.result) {
-                    is CommandResult.Success -> {
-                        handleCommandResponse(progress.result.responseData)
-                    }
+            callbacks = CommandSequenceCallbacks(
+                onComplete = { results ->
+                    // 所有指令执行完成
+                    Timber.i("所有指令执行完成，成功${results.count { it is CommandResult.Success }}条")
+                    finishRefresh()
+                },
+                onError = { error, command ->
 
-                    is CommandResult.Error -> {
-                        Timber.e("指令${progress.currentIndex + 1}执行失败: ${progress.result.error.message}")
-                        // 可以在这里显示错误信息
-                        showCommandError(progress.currentIndex + 1, progress.result.error.message)
-                    }
-
-                    is CommandResult.Timeout -> {
-                        Timber.e("指令${progress.currentIndex + 1}执行超时")
-                        // 可以在这里显示超时信息
-                        showCommandTimeout(progress.currentIndex + 1)
-                    }
                 }
-            },
-            onComplete = { results ->
-                // 所有指令执行完成
-                Timber.i("所有指令执行完成，成功${results.count { it is CommandResult.Success }}条")
-                finishRefresh()
-            }
+            )
         )
-    }
-
-
-    /**
-     * 显示指令错误
-     */
-    private fun showCommandError(index: Int, errorMsg: String) {
-        Toaster.show("指令$index 执行失败: $errorMsg")
-    }
-
-    /**
-     * 显示指令超时
-     */
-    private fun showCommandTimeout(index: Int) {
-        Toaster.show("指令$index 执行超时")
     }
 
     /**
@@ -213,17 +180,16 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
         sendSingleCommand(
             command = command,
             config = CommandSequenceConfig(
-                timeout = AppContants.Communication.DELAY_15000_MILLIS,
-                showLoadingDialog = false, // 已经手动显示了
-                errorHandling = ErrorConfig.custom { errorMsg ->
+                timeout = AppContants.Communication.DELAY_10000_MILLIS,
+                showLoadingDialog = false, // 已经显示特殊的加载对话框了
+                errorConfig = ErrorConfig.customConfig { errorMsg ->
                     dismissLoadingDialog(measureInitialValueLoadingDialogId)
                     if (command.contains("method=0")) {
                         showMessageDialog("查询测量信息出错: $errorMsg")
                     } else {
-                        showMessageDialog("更新倾角初始值指令下发出错: $errorMsg")
+                        showMessageDialog("更新倾角初始值出错: $errorMsg")
                     }
                 }
-
             )
         )
     }
@@ -259,13 +225,10 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
         sendCommandSequence(
             commands = commands,
             config = CommandSequenceConfig(
-                timeout = AppContants.Communication.DELAY_15000_MILLIS,
+                timeout = AppContants.Communication.DELAY_10000_MILLIS,
                 loadingMessage = StringUtils.getString(R.string.processing),
-                errorHandling = ErrorConfig.dialog()
-            ),
-            onComplete = { results ->
-                processNavigateUp("配置保存成功")
-            }
+                errorConfig = ErrorConfig.dialogConfig()
+            )
         )
     }
 
@@ -281,8 +244,8 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        Timber.e("查询当前角度失败: ${result.message}")
-                        addDeviceLogItem(Log.ERROR, "查询当前角度失败: ${result.message}")
+                        val errMsg = "查询参数出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -306,8 +269,7 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                         } else {
                             "更新倾角初始值出错: ${result.message}"
                         }
-                        showMessageDialog(errMsg)
-                        addDeviceLogItem(Log.ERROR, errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     is IOTCommandResult.Success -> {
@@ -323,16 +285,12 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        Timber.e("查询触发开关状态失败: ${result.message}")
-                        addDeviceLogItem(Log.ERROR, "查询触发开关状态失败: ${result.message}")
+                        val errMsg = "查询参数出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     is IOTCommandResult.Success -> {
                         initTriggerEnableData(result.data)
-                        if (isOnRefresh) {
-                            finishRefresh()
-                            isOnRefresh = false
-                        }
                     }
                 }
             }
@@ -344,16 +302,12 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        Timber.e("查询角度触发值失败: ${result.message}")
-                        addDeviceLogItem(Log.ERROR, "查询角度触发值失败: ${result.message}")
+                        val errMsg = "查询参数出错: ${result.message}"
+                        handleFailureResult(errMsg)
                     }
 
                     is IOTCommandResult.Success -> {
                         initAngleTrigger(result.data)
-                        if (isOnRefresh) {
-                            finishRefresh()
-                            isOnRefresh = false
-                        }
                     }
                 }
             }
@@ -362,12 +316,12 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        Timber.e("保存触发开关设置失败: ${result.message}")
-                        addDeviceLogItem(Log.ERROR, "保存触发开关设置失败: ${result.message}")
+                        val errMsg = "数据保存出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        Timber.d("触发开关设置保存成功")
+                        processNavigateUp()
                     }
                 }
             }
@@ -376,12 +330,12 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        Timber.e("保存角度触发值失败: ${result.message}")
-                        addDeviceLogItem(Log.ERROR, "保存角度触发值失败: ${result.message}")
+                        val errMsg = "数据保存出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        Timber.d("角度触发值保存成功")
+                        processNavigateUp()
                     }
                 }
             }
@@ -391,7 +345,6 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
             }
         }
     }
-
 
     /**
      * 处理当前角度值显示
@@ -418,6 +371,7 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                         }
                     }
                 }
+
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
@@ -518,6 +472,8 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
             info.memsAlarmSw.notNullKey {
                 mStates.isTriggerEnable.set(it == "1")
             }
+
+            //添加这行来保存初始状态
             mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
@@ -529,8 +485,11 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun initAngleTrigger(info: AlarmTriggerValueInfo) {
         mStates.angleTrigger.set(info.level1.formatDoubleValue("", 3))
+
+        //添加这行来保存初始状态
         mStates.saveInitialState()
     }
+
 
     /**
      * 启动查询测量结果轮询任务
@@ -581,7 +540,6 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
      * 点击事件处理
      */
     inner class ClickProxy : BaseClickProxy() {
-
         /**
          * 更新倾角初始值
          */

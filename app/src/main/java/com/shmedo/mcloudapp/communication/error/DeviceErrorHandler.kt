@@ -91,26 +91,4 @@ class DeviceErrorHandler(private val fragment: Fragment) {
             }
         }
     }
-
-    companion object {
-        /**
-         * 静默错误配置
-         */
-        fun silentConfig(): ErrorConfig = ErrorConfig.silent()
-
-        /**
-         * Toast错误配置
-         */
-        fun toastConfig(): ErrorConfig = ErrorConfig.toast()
-
-        /**
-         * Dialog错误配置
-         */
-        fun dialogConfig(): ErrorConfig = ErrorConfig.dialog()
-
-        /**
-         * 自定义错误配置
-         */
-        fun customConfig(handler: (String) -> Unit): ErrorConfig = ErrorConfig.custom(handler)
-    }
 } 

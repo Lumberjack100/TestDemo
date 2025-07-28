@@ -62,7 +62,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
  * 指令发送配置
  */
 data class SendConfig(
-    val responseTimeoutMs: Long = 5000,        // 响应超时时间（毫秒）
+    val responseTimeoutMs: Long = 5000,        // 等待指令响应超时时间（毫秒）
 )
 
 /**
@@ -330,7 +330,7 @@ class MedoBleManager(
                 // Automatic retries are supported, in case of 133 error.
                 .retry(3, 300)
                 // A connection timeout can be set. This is additional to the Android's connection timeout which is 30 seconds.
-                .timeout(15_000)
+                .timeout(10_000)
                 // To suspend until the connection AND initialization is complete, call suspend().
                 .suspend()
         } catch (e: Exception) {
