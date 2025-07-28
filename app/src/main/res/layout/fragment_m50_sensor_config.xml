@@ -65,7 +65,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_GroupItem_Title_Style2"
                             android:layout_marginStart="@dimen/dimen_size_8"
-                            android:text="GNSS配置" />
+                            android:text="当前角度值" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -75,14 +75,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="经度（度）" />
+                            android:text="X轴（度）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             android:drawableEnd="@null"
-                            android:text="@{stateVM.longitude}"
-                            tools:text="114.058503" />
+                            android:text="@{stateVM.xCurrentAngle}"
+                            tools:text="1.5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -91,45 +90,28 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="纬度（度）" />
+                            android:text="Y轴（度）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             android:drawableEnd="@null"
-                            android:text="@{stateVM.latitude}"
-                            tools:text="22.544604" />
+                            android:text="@{stateVM.yCurrentAngle}"
+                            tools:text="2.3" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="高度（米）" />
+                            android:text="Z轴（度）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             android:drawableEnd="@null"
-                            android:text="@{stateVM.altitude}"
-                            tools:text="10.5" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/shape_common_click_item_bottom_corner_4"
-                        android:paddingStart="0dp"
-                        android:paddingEnd="0dp">
-
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/TestButton_Style"
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/dimen_size_30"
-                            android:onClick="@{()->click.onUpdateLocationInitialValueClick()}"
-                            android:text="更新位置初始值"
-                            android:textStyle="bold" />
+                            android:text="@{stateVM.zCurrentAngle}"
+                            tools:text="0.8" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -146,7 +128,8 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_GroupItem_Title_Style2"
                             android:layout_marginStart="@dimen/dimen_size_8"
-                            android:text="倾角配置" />
+                            android:text="初始角度值" />
+
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -155,13 +138,12 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="X轴倾角值（度）" />
+                            android:text="X轴（度）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             android:drawableEnd="@null"
-                            android:text="@{stateVM.XAxis}"
+                            android:text="@{stateVM.XInitialAngle}"
                             tools:text="1.5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -171,14 +153,47 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="Y轴倾角值（度）" />
+                            android:text="Y轴（度）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             android:drawableEnd="@null"
-                            android:text="@{stateVM.YAxis}"
+                            android:text="@{stateVM.YInitialAngle}"
                             tools:text="2.3" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="Z轴（度）" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:drawableEnd="@null"
+                            android:text="@{stateVM.ZInitialAngle}"
+                            tools:text="0.8" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style2"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="偏移角度值" />
+
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -187,14 +202,97 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="Z轴倾角值（度）" />
+                            android:text="X轴（度）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             android:drawableEnd="@null"
-                            android:text="@{stateVM.ZAxis}"
+                            android:text="@{stateVM.xOffsetAngle}"
+                            tools:text="1.5" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="Y轴（度）" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:drawableEnd="@null"
+                            android:text="@{stateVM.yOffsetAngle}"
+                            tools:text="2.3" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="Z轴（度）" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:drawableEnd="@null"
+                            android:text="@{stateVM.zOffsetAngle}"
                             tools:text="0.8" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style2"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="触发配置" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <RelativeLayout
+                        style="@style/SwitchButton_Item_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/SwitchButton_Item_Title_Style"
+                            android:text="功能" />
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            style="@style/SwitchButton_Item_Button_Style"
+                            android:checked="@={stateVM.isTriggerEnable}"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+
+                    </RelativeLayout>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isTriggerEnable}"
+                            android:text="角度触发值（度）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isTriggerEnable}"
+                            android:inputType="numberDecimal|numberSigned"
+                            android:text="@={stateVM.angleTrigger}"
+                            app:lengthFilter="@{8}" />
+
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -218,7 +316,9 @@
                         style="@style/SubmitButton_Style2"
                         onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
                         android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:enabled="@{stateVM.isDataModified}"
                         android:text="@string/button_save_text" />
+
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>

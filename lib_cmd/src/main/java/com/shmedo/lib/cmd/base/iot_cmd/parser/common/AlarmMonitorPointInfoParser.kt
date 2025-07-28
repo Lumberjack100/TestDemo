@@ -24,6 +24,7 @@ class AlarmMonitorPointInfoParser: IOTCommandParser<AlarmMonitorPointInfo> {
             level2 = keyValueMap.getOrDefault("level2", level2)
             level3 = keyValueMap.getOrDefault("level3", level3)
             level4 = keyValueMap.getOrDefault("level4", level4)
+            memsAlarmSw = keyValueMap.getOrDefault("memsAlarmSw", memsAlarmSw)
         }
     }
 

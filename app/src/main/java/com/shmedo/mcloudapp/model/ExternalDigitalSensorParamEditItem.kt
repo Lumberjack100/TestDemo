@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.model
 
 import androidx.databinding.BaseObservable
+import com.shmedo.mcloudapp.R
 
 /**
  * 创建者：gonghe
@@ -10,13 +11,14 @@ import androidx.databinding.BaseObservable
 data class ExternalDigitalSensorParamEditItem(
     val name: String = "",
     var value: String = "",
-    val desc: String = "",
+    val tipDesc: String = "",
     val inputHint: String = "请输入",
     val inputTypeFilter: String = "numberDecimal",
     val inputLengthFilter: Int = 10,
     val inputEnable: Boolean = true,
     val btnVisible: Boolean = false,
     val btnText: String = "重置",
+    val bgResId: Int = R.drawable.layer_common_click_item_with_divider,
 ) : BaseObservable() {
 
     fun refreshValue(value: String) {

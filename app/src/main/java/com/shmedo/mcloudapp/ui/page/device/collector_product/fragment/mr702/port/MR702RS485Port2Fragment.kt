@@ -12,6 +12,7 @@ import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
+import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -39,7 +40,6 @@ import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.model.MRRS485Port2
 import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.RVEmptyFooter
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -51,6 +51,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+import java.util.UUID
 
 class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port2Binding
@@ -192,10 +193,9 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
 
     override fun createObserver() {
         super.createObserver()
-        mMessenger.mr702Rs485PortSensorRefresh.observe(viewLifecycleOwner) { port ->
-            if (port is MRRS485Port2) {
-                refreshSensorInfo()
-            }
+        portHomeViewModel.port2SensorUpdateEvent.observe(viewLifecycleOwner) { sensorItem ->
+            Timber.e("接收到传感器更新事件: ${sensorItem.sensorName}")
+            updateSensorInList(sensorItem)
         }
     }
 
@@ -378,19 +378,6 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    private fun refreshSensorInfo() {
-        commandItems.clear()
-
-        commandItems.add(
-            IOTCommandUtil.getCommand(
-                IOTCommandType.MR_MD_GET_RS485_PORT2_SENSOR,
-                "index=0"
-            )
-        )
-        showLoadingDialog(StringUtils.getString(R.string.loading))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
     private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
         (commandType == IOTCommandType.MR_MD_GET_RS485_PORT2_COLL)
                 || (commandType == IOTCommandType.MR_MD_GET_RS485_PORT2_UART)
@@ -398,6 +385,37 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 || (commandType == IOTCommandType.MR_MD_DEL_RS485_PORT2_SENSOR)
                 || (commandType == IOTCommandType.MR_MD_SET_RS485_PORT2_COLL)
                 || (commandType == IOTCommandType.MR_MD_SET_RS485_PORT2_UART)
+
+    /**
+     * 添加传感器到列表（增量更新）
+     */
+    private fun addSensorToList(sensorItem: MRSensorItem) {
+        binding.rv.bindingAdapter.apply {
+            mutable.add(sensorItem)
+            notifyItemInserted(itemCount)
+        }
+        updateFooter()
+    }
+
+    /**
+     * 更新列表中的传感器（增量更新）
+     */
+    private fun updateSensorInList(sensorItem: MRSensorItem) {
+        val currentList = binding.rv.mutable.filterIsInstance<MRSensorItem>().toMutableList()
+        val index =
+            currentList.indexOfFirst { it.uuid == sensorItem.uuid }
+        if (index >= 0) {
+            currentList[index].refreshStatus(
+                sensorItem.isPlugin,
+                sensorItem.addr,
+                sensorItem.addrDesc
+            )
+        } else {
+            // 如果没找到，直接添加
+            addSensorToList(sensorItem)
+        }
+    }
+
 
     /**
      * 4G 下发指令响应失败
@@ -536,9 +554,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("移除成功")
-                            binding.rv.bindingAdapter.mutable.removeAt(deleteItemIndex)
-                            binding.rv.bindingAdapter.notifyItemRemoved(deleteItemIndex)
-                            updateFooter()
+                            updateAdapterRemoveSensorItem()
                         }
                     }
                 }
@@ -555,6 +571,8 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("数据保存成功")
+                            // 保存初始状态
+                            mStates.saveInitialState()
                         }
                     }
                 }
@@ -645,6 +663,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                             ?: "未知类型",
                         modelToken = portHomeViewModel.configPort4852SensorIDToSensorModelMap[sensorType]?.modelToken
                             ?: "",
+                        uuid = UUID.randomUUID().toString()
                     )
                 }
                 withContext(Dispatchers.Main) {
@@ -658,8 +677,13 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     }
 
     private fun initEmptySensor() {
-        val list = arrayListOf<MRSensorItem>()
-        binding.rv.models = list
+        binding.rv.models = arrayListOf<MRSensorItem>()
+        updateFooter()
+    }
+
+    private fun updateAdapterRemoveSensorItem() {
+        binding.rv.bindingAdapter.mutable.removeAt(deleteItemIndex)
+        binding.rv.bindingAdapter.notifyItemRemoved(deleteItemIndex)
         updateFooter()
     }
 
@@ -668,7 +692,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             if (binding.rv.bindingAdapter.footerCount == 0)
                 binding.rv.bindingAdapter.addFooter(RVEmptyFooter(), animation = true)
         } else {
-            binding.rv.bindingAdapter.removeFooterAt(animation = true)
+            binding.rv.bindingAdapter.clearFooter()
         }
     }
 

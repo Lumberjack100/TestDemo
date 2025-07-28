@@ -25,3 +25,10 @@ fun String?.formatDoubleValue(defaultValue: String = "", digit: Int = 2): String
 
     return this?.toDoubleOrNull()?.let { decimalFormat.format(it) } ?: defaultValue
 }
+
+fun Double?.formatDoubleValue(defaultValue: String = "", digit: Int = 2): String {
+    // 使用getDecimalFormat方法创建DecimalFormat实例
+    val decimalFormat = getDecimalFormat(digit)
+
+    return this?.let { decimalFormat.format(it) } ?: defaultValue
+}

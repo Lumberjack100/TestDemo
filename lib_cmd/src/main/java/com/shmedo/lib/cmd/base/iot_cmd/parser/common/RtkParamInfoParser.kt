@@ -37,6 +37,13 @@ class RtkParamInfoParser : IOTCommandParser<RtkParamInfo> {
             alarmSwitch = keyValueMap.getOrDefault("alarmSwitch", alarmSwitch)
             reportMode = keyValueMap.getOrDefault("reportMode", reportMode)
             networkMode = keyValueMap.getOrDefault("networkMode", reportMode)
+            basearc = keyValueMap.getOrDefault("basearc", basearc)
+            arc = keyValueMap.getOrDefault("arc", arc)
+            frontCalcMode = keyValueMap.getOrDefault("frontCalcMode", frontCalcMode)
+            diffdata = keyValueMap.getOrDefault("diffdata", diffdata)
+            rtkbase_lat = keyValueMap.getOrDefault("rtkbase_lat", rtkbase_lat)
+            rtkbase_lon = keyValueMap.getOrDefault("rtkbase_lon", rtkbase_lon)
+            rtkbase_hgt = keyValueMap.getOrDefault("rtkbase_hgt", rtkbase_hgt)
         }
     }
 

@@ -1,11 +1,23 @@
 
 
+## 5.3.4
+- 遥测终端机(MR702)数据链路配置优化
+
+## 5.3.3
+### 一体式自供电 GNSS 接收机(M50)
+- 功能优化
+### 优化一些问题
+
+## 5.3.2
+- 适配MR701H-多要素气象计数字式传感器配置
+- 优化一些问题
+
 ## 5.3.1
 - 优化一些问题
 
+
 ## 5.3.0
 - 优化一些问题
-
 
 ## 5.2.55
 - 修复 bugs
@@ -36,8 +48,6 @@
 - 重构BLE权限管理，新增BlePermissionNotAvailableReason和BlePermissionState类
 - 优化BluetoothStateManager和LocationStateManager中的权限状态处理逻辑
 - 提升权限状态检查的准确性和用户体验
-
-
 
 ## 5.2.53
 - 修复 bugs

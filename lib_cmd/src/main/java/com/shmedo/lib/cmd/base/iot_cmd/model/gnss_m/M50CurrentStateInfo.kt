@@ -75,10 +75,13 @@ data class M50CurrentStateInfo(
     @Json(name = "humidity")
     val internalHumidity: String = IOTConstants.NULL_KEY, //内部湿度  70.4
     val battery: List<BatteryInfo>? = arrayListOf(),
+    var starNum: String = IOTConstants.NULL_KEY, //星数
+    var gpsCard: String = IOTConstants.NULL_KEY, //板卡
     var gnss: String = IOTConstants.NULL_KEY, //GNSS 模块版本
     var scl: String = IOTConstants.NULL_KEY, //倾角加速度状态 OK/FAIL
     @Json(name = "4g")
     var _4g: String = IOTConstants.NULL_KEY, //状态  OK/FAIL  OK，状态正常；FAIL，状态异常
+    var simCard: String = IOTConstants.NULL_KEY, //sim卡状态  OK/FAIL
     @Json(name = "sim_status")
     var simStatus: String = IOTConstants.NULL_KEY, //SIM 卡状态 OK/FAIL
     var bt: String = IOTConstants.NULL_KEY, //蓝牙状态 OK/FAIL

@@ -35,7 +35,6 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CommunicateWay
-import com.shmedo.mcloudapp.model.MRRS485Port1
 import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -44,6 +43,8 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1SingleSensorParamV
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
+import timber.log.Timber
+import java.util.UUID
 
 class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port1SingleSensorAddParamBinding
@@ -535,9 +536,24 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
                 return@launchWithViewLifecycle
             }
 
-            delay(1500)
-            //需要给上一级浏览页面传递最新的事件信息
-            mMessenger.requestMR702Rs485PortSensorRefresh(MRRS485Port1)
+            delay(1000)
+
+            // 使用优化的事件机制通知传感器添加
+            val newSensor = MRSensorItem(
+                sensorID = sensorItem.sensorID,
+                sensorName = sensorItem.sensorName,
+                modelToken = mStates.modelToken.get(),
+                addr = mStates.address.get(),
+                addrDesc = "地址-${mStates.address.get()}",
+                isPlugin = true, // 新添加的传感器默认在线
+                uuid = UUID.randomUUID().toString()
+            )
+
+            // 通过共享的 ViewModel 通知传感器更新
+            portHomeViewModel.notifyPort1SensorUpdate(newSensor)
+
+            Timber.d("通过 ViewModel 发送传感器更新事件: ${newSensor.sensorName}")
+
             nav().navigateUp()
         }
     }

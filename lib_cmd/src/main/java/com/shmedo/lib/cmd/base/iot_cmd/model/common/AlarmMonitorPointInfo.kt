@@ -18,4 +18,5 @@ data class AlarmMonitorPointInfo(
     var level2: String = "",//二级报警语音编号  [1~255] 默认 3
     var level3: String = "",//三级报警语音编号  [1~255] 默认 2
     var level4: String = "",//四级报警语音编号  [1~255] 默认 1
+    var memsAlarmSw: String = "", //倾斜触发功能开关  0 关闭 1 开启 默认 0   仅仅 m50 设备支持这个字段
 )

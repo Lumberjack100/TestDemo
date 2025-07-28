@@ -387,7 +387,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             type = (transferProtocolList.indexOf(mStates.transferProtocol.get()) + 1).toString(),
             datatype = (dataProtocolList.indexOf(mStates.dataProtocol.get()) + 1).toString(),
             plattype = allPlatformList.indexOf(mStates.platformType.get()).toString(),
-            packtype = if (mStates.platformType.get().contains("广东水利")) {
+            packtype = if (mStates.platformType.get().contains("广东水文")) {
                 when (mStates.guangdongWaterPlatformStationType.get()) {
                     "山洪灾害监测站" -> "0"
                     "河道水情监测站" -> "1"

@@ -14,7 +14,6 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasBaseInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasNetStatusInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.cmd.base.md_cmd.model.common.DeviceNetStatus
 import com.shmedo.lib.cmd.base.md_cmd.model.das.DeviceStatusInfoOne
@@ -185,6 +184,96 @@ class DasNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         }
     }
 
+    private fun init4GBaseInfo(baseInfo: DasBaseInfo) {
+        try {
+            val groupList = mutableListOf<Any>()
+
+            groupList.add(DeviceStatusInfoGroupItem("数据网络"))
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "运营商",
+                value = when (baseInfo.isp) {
+                    "1" -> "中国移动"
+                    "2" -> "中国联通"
+                    "3" -> "中国电信"
+                    else -> AppContants.Companion.PLACE_HOLDER_VALUE
+                }
+            )
+            baseInfo.csq.notNullKey {
+                var temp = it.toIntOrNull() ?: 0
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "信号强度",
+                    value = when (temp) {
+                        in 26..31 -> "优"
+                        in 19..25 -> "良好"
+                        in 12..18 -> "较差"
+                        else -> "差"
+                    }
+                )
+            }
+            groupList.add(
+                DeviceStatusInfoBasicItem(
+                    name = "IMEI",
+                    value = baseInfo.imei.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    isClipboard = true
+                )
+            )
+            groupList.add(
+                DeviceStatusInfoBasicItem(
+                    name = "ICCID",
+                    value = baseInfo.iccid.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    isClipboard = true,
+                    isBottomItem = true
+                )
+            )
+
+            binding.recyclerview.models = groupList
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    private fun init4GCommunicationInfo(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val dataList = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<List<DasNetStatusInfo>>(content)
+                }
+                if (dataList.isNullOrEmpty()) {
+                    return@launchWithViewLifecycle
+                }
+                val groupList = mutableListOf<Any>()
+
+                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                groupList.add(DeviceStatusInfoGroupItem("数据链路"))
+                dataList.forEachIndexed { index, netStatusInfo ->
+                    val statusText = netStatusInfo.errno.compareAndReturn(
+                        1,
+                        "已连接",
+                        netStatusInfo.errno.compareAndReturn(0, "未启用", "未连接")
+                    )
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                        groupList,
+                        name = "数据链路${netStatusInfo.index}",
+                        value = if (netStatusInfo.index == 3) "$statusText(米度物联平台)" else statusText,
+                        textColorRes = if (statusText == "已连接") ColorUtils.getColor(R.color.online_colorPrimary) else 0,
+                        isBottomItem = index == dataList.size - 1
+                    )
+                }
+
+                binding.recyclerview.bindingAdapter.apply {
+                    mutable.addAll(groupList)
+                    notifyItemRangeInserted(itemCount, groupList.size)
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
     /**
      * 处理蓝牙通讯指令结果
      */
@@ -238,95 +327,6 @@ class DasNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         }
     }
 
-    private fun init4GBaseInfo(baseInfo: DasBaseInfo) {
-        try {
-            val groupList = mutableListOf<Any>()
-
-            groupList.add(DeviceStatusInfoGroupItem("数据网络"))
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                groupList,
-                name = "运营商",
-                value = when (baseInfo.isp) {
-                    "1" -> "中国移动"
-                    "2" -> "中国联通"
-                    "3" -> "中国电信"
-                    else -> AppContants.Companion.PLACE_HOLDER_VALUE
-                }
-            )
-            baseInfo.csq.notNullKey {
-                var temp = it.toIntOrNull() ?: 0
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "信号强度",
-                    value = when (temp) {
-                        in 26..31 -> "优"
-                        in 19..25 -> "良好"
-                        in 12..18 -> "较差"
-                        else -> "差"
-                    }
-                )
-            }
-            groupList.add(
-                DeviceStatusInfoBasicItem(
-                    name = "IMEI",
-                    value = baseInfo.imei.ifEmpty { IOTConstants.HOLD_VALUE },
-                    isClipboard = true
-                )
-            )
-            groupList.add(
-                DeviceStatusInfoBasicItem(
-                    name = "ICCID",
-                    value = baseInfo.iccid.ifEmpty { IOTConstants.HOLD_VALUE },
-                    isClipboard = true,
-                    isBottomItem = true
-                )
-            )
-
-            binding.recyclerview.models = groupList
-        } catch (e: Exception) {
-            Timber.e(e)
-            addDeviceLogItem(Log.ERROR, e.errorMsg)
-        }
-    }
-
-    private fun init4GCommunicationInfo(content: String) {
-        launchWithViewLifecycle {
-            try {
-                val dataList = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<List<DasNetStatusInfo>>(content)
-                }
-                if (dataList.isNullOrEmpty()) {
-                    return@launchWithViewLifecycle
-                }
-                val groupList = mutableListOf<Any>()
-
-                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                groupList.add(DeviceStatusInfoGroupItem("数据链路"))
-                dataList.forEachIndexed { index, netStatusInfo ->
-                    val statusText = netStatusInfo.errno.compareAndReturn(
-                        1,
-                        "已连接",
-                        netStatusInfo.errno.compareAndReturn(0, "未启用", "未连接")
-                    )
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                        groupList,
-                        name = "数据链路${netStatusInfo.index}",
-                        value = if (netStatusInfo.index == 3) "$statusText(米度物联平台)" else statusText,
-                        textColorRes = if (statusText == "已连接") ColorUtils.getColor(R.color.online_colorPrimary) else 0,
-                        isBottomItem = index == dataList.size - 1
-                    )
-                }
-
-                binding.recyclerview.bindingAdapter.apply {
-                    mutable.addAll(groupList)
-                    notifyItemRangeInserted(itemCount, groupList.size)
-                }
-            } catch (e: Exception) {
-                Timber.e(e)
-                addDeviceLogItem(Log.ERROR, e.errorMsg)
-            }
-        }
-    }
 
     private fun initBleDeviceStatusOne(info: DeviceStatusInfoOne) {
         try {
@@ -348,14 +348,14 @@ class DasNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = "IMEI",
-                    value = info.imeiNumber.ifEmpty { IOTConstants.HOLD_VALUE },
+                    value = info.imeiNumber.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                     isClipboard = true
                 )
             )
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = "ICCID",
-                    value = info.simNumber.ifEmpty { IOTConstants.HOLD_VALUE },
+                    value = info.simNumber.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                     isClipboard = true,
                     isBottomItem = true
                 )

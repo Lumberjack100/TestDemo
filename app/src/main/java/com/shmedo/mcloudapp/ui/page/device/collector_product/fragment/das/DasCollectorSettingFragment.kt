@@ -103,7 +103,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                 collectorModel = it.getString(COLLECTOR_MODEL, "-1")
             }
         }
-        
+
         resetDefaultParams()
         // 保存初始状态
         mStates.saveInitialState()
@@ -380,7 +380,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -388,7 +388,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        initParamData(result.data)
+                        init4GParamData(result.data)
                     }
                 }
             }
@@ -397,125 +397,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "配置参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            processNavigateUp()
-                        }
-                    }
-                }
-            }
-
-            else -> {
-                cancelNearbyCommunicationTimeoutJob()
-            }
-        }
-    }
-
-    /**
-     * 处理蓝牙通讯指令结果
-     */
-    private fun handleBleCommandResult(cmdStr: String) {
-        when (MDCommandUtil.extractCommandType(cmdStr)) {
-            MDCommandType.COLLECTOR_CONFIG -> {
-                val result = mdParseManager.parse<DasCollectorInfo>(
-                    cmdStr,
-                    MDCommandType.COLLECTOR_CONFIG
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "查询采集器参数出错：${result.message}"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        initBleCollectorInfo(result.data)
-                    }
-                }
-            }
-
-            MDCommandType.SET_COLLECTOR_ADDRESS -> {
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "采集器地址配置错误!"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList()
-                    }
-                }
-            }
-
-            MDCommandType.COLLECTOR_SOLUTION_FREQUENCY -> {
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "采集器解算间隔配置错误!"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList()
-                    }
-                }
-            }
-
-            MDCommandType.COLLECTOR_STANDBY_TIME -> {
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "采集器待机时长配置错误!"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList()
-                    }
-                }
-            }
-
-            MDCommandType.COLLECTOR_FREQUENCY -> {
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "采集器采集间隔配置错误!"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList()
-                    }
-                }
-            }
-
-            MDCommandType.SET_COLLECTOR_SENSITIVITY -> {
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "采集器灵敏度配置错误!"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList()
-                    }
-                }
-            }
-
-            MDCommandType.SAVE_CONFIG_INFO -> {
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "保存出错!"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -536,7 +418,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
     /**
      * 初始化4G通讯模式下的参数数据
      */
-    private fun initParamData(collectorInfo: DasCollectorInfo) {
+    private fun init4GParamData(collectorInfo: DasCollectorInfo) {
         try {
             mStates.type.set(collectorInfo.type)
             mStates.collectorAddress.set(collectorInfo.addr)
@@ -553,6 +435,124 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    /**
+     * 处理蓝牙通讯指令结果
+     */
+    private fun handleBleCommandResult(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.COLLECTOR_CONFIG -> {
+                val result = mdParseManager.parse<DasCollectorInfo>(
+                    cmdStr,
+                    MDCommandType.COLLECTOR_CONFIG
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询采集器参数出错：${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    is MDCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initBleCollectorInfo(result.data)
+                    }
+                }
+            }
+
+            MDCommandType.SET_COLLECTOR_ADDRESS -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "采集器地址配置错误!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            MDCommandType.COLLECTOR_SOLUTION_FREQUENCY -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "采集器解算间隔配置错误!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            MDCommandType.COLLECTOR_STANDBY_TIME -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "采集器待机时长配置错误!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            MDCommandType.COLLECTOR_FREQUENCY -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "采集器采集间隔配置错误!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            MDCommandType.SET_COLLECTOR_SENSITIVITY -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "采集器灵敏度配置错误!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            MDCommandType.SAVE_CONFIG_INFO -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "保存出错!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            processNavigateUp()
+                        }
+                    }
+                }
+            }
+
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

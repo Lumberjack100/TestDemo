@@ -43,7 +43,6 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
     private val averageTimesList = arrayListOf("2", "3", "5", "10")
 
 
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_ui_product_sensor_param,
@@ -58,19 +57,13 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUiProductSensorParamBinding
         binding.llToolbar.toolbar.title = "传感配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
 //                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         initRefresh()
-    }
-
-    override fun initData() {
-        super.initData()
-        resetParams()
     }
 
     private fun initRefresh() {
@@ -85,6 +78,18 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun initData() {
+        super.initData()
+        resetDefaultParams()
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
+    }
+
+    private fun resetDefaultParams() {
+        mStates.measureInterval.set(measureIntervalList[0])//测量间隔：1s、2s、5s、10s；默认为1s，当前置灰不可配置
+        mStates.averageTimes.set(averageTimesList[2])
+    }
+
     inner class ClickProxy : BaseClickProxy() {
         fun onMeasureIntervalClick() {
             val selectedIndex = measureIntervalList.indexOf(mStates.measureInterval.get())
@@ -94,7 +99,7 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "",measureIntervalList.toTypedArray(),
+                    "", measureIntervalList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.measureInterval.set(text)
@@ -143,8 +148,8 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
         /**
          * 恢复默认配置
          */
-        fun onResetClick() {
-            resetParams()
+        override fun onResetButtonClick() {
+            resetDefaultParams()
         }
 
         override fun onSubmitButtonClick() {
@@ -155,11 +160,6 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
             }
             initSaveCommand()
         }
-    }
-
-    private fun resetParams() {
-        mStates.measureInterval.set(measureIntervalList[0])//测量间隔：1s、2s、5s、10s；默认为1s，当前置灰不可配置
-        mStates.averageTimes.set(averageTimesList[2])
     }
 
     private fun initSaveCommand() {
@@ -191,6 +191,7 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
 //        commandItems.add(command)
 //        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
+
     private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
         (commandType == IOTCommandType.MD_SET_SENSOR_INITIAL)
 
@@ -249,13 +250,14 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
             errMsg = errMsg
         )
     }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_SET_SENSOR_INITIAL -> {//设置开关量传感器
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "更新倾角初始值出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -271,6 +273,14 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
                 cancelNearbyCommunicationTimeoutJob()
             }
         }
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

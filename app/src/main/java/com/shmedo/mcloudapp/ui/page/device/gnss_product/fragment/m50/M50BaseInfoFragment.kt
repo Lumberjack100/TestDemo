@@ -6,7 +6,6 @@ import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
-import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
@@ -23,7 +22,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/9/19
- * 描述： 基本信息
+ * 描述： 一体式自供电 GNSS 接收机(M50)基本信息
  */
 class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
@@ -112,41 +111,6 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         )
                     )
                 }
-
-                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                groupList.add(DeviceStatusInfoGroupItem("工作信息"))
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "工作模式",
-                    value = when (stateInfo.workMode) {
-                        "1" -> "基站"
-                        "2" -> "测站"
-                        "3" -> "PPP-B2b"
-                        "4" -> "CORS接入"
-                        else -> AppContants.PLACE_HOLDER_VALUE
-                    },
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "上报模式",
-                    value = when (stateInfo.reportMode) {
-                        "0" -> "常在线"
-                        "1" -> "低功耗"
-                        "2" -> "自适应"
-                        else -> AppContants.PLACE_HOLDER_VALUE
-                    },
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "网络模式",
-                    value = when (stateInfo.netMode) {
-                        "0" -> "4G传输"
-                        "1" -> "电台传输"
-                        "2" -> "自动"
-                        else -> AppContants.PLACE_HOLDER_VALUE
-                    },
-                    isBottomItem = true
-                )
 
                 groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                 groupList.add(DeviceStatusInfoGroupItem("存储信息"))

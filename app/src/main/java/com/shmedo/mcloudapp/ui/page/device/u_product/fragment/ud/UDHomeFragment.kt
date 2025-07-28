@@ -2,40 +2,28 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.NetworkUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.TimeUtils
-import com.drake.brv.utils.linear
+import com.drake.brv.BindingAdapter.BindingViewHolder
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
-import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
-import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.baseclickproxy.DoubleClickListener
-import com.shmedo.mcloudapp.databinding.FragmentUdHomeBinding
-import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
+import com.shmedo.mcloudapp.databinding.ItemUdMeasureDataBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BleConnect
@@ -45,168 +33,69 @@ import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
-import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.model.UDMeasureDataItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
-import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.UDHomeViewModel
-import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
+import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
 import com.shmedo.mcloudapp.utils.UDDeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 /**
- * @author：gonghe
- * @time: 2024/8/21
- * @desc: 一体式雷达水位/泥位计首页
- *
+ * 创建者：gonghe
+ * 创建时间：2025/1/24
+ * 描述：一体式雷达水位计(DR030)设备主页 - 支持4G和蓝牙两种通讯方式（重构版本）
  */
-@Deprecated("This class is deprecated", ReplaceWith("NewUDHomeFragment"))
-class UDHomeFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentUdHomeBinding
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mHeadStates: UDHomeViewModel by viewModels()
-    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
-    private val iotParseManager: IOTParserManager by inject()
-
-    private var lastOnlineStatus: Boolean = false//在线状态
-    private var deviceStatusCheckJob: Job? = null
+class UDHomeFragment : NewUniversalBaseDeviceHomeFragment() {
+    private var measureDataItem: UDMeasureDataItem = UDMeasureDataItem()
+    private var measureDataLoadingDialogId = ""
+    
     private var abnormalInfoJob: Job? = null
     private var queryMeasureResultTimeoutJob: Job? = null
     private var repeatPollNum = 0 //重复轮询次数
 
-
-    override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_ud_home, BR.stateVM, mHeadStates)
-            .addBindingParam(BR.toolbarVM, toolbarViewModel)
-            .addBindingParam(BR.click, ClickProxy())
+    override fun initData() {
+        super.initData()
+        // 设置 UD 设备的 Logo 资源
+        mHeadStates.productErrorResId.set(R.drawable.device_logo_dr030_error)
+        mHeadStates.productAlarmResId.set(R.drawable.device_logo_dr030_alarm)
+        mHeadStates.productOfflineResId.set(R.drawable.device_logo_dr030_offline)
+        mHeadStates.productNormalResId.set(R.drawable.device_logo_dr030)
+        mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentUdHomeBinding
-        binding.llToolbar.toolbar.title = "返回"
-        binding.llToolbar.toolbar.setNavigationOnClickListener {
-            if (bleViewModel.isConnected()) {
-                bleViewModel.disconnect()
-            }
-            mActivity.finish()
-        }
-        registerOnBackPressedDispatcher {
-            if (bleViewModel.isConnected()) {
-                bleViewModel.disconnect()
-            }
-            mActivity.finish()
-        }
-        initDeviceLogoDoubleClickListener()
-        initModuleAdapter()
+        super.initView(savedInstanceState)
+
+        // 扩展适配器支持 UDMeasureDataItem
+        binding.rvModule.bindingAdapter.addType<UDMeasureDataItem>(R.layout.item_ud_measure_data)
     }
 
-    private fun initDeviceLogoDoubleClickListener() {
-        binding.llDeviceInfo.ivDeviceLogo.setOnClickListener(object : DoubleClickListener() {
-            override fun onDoubleClick(v: View) {
-                if (isBleDisconnected() || isNetDisconnected()) {
-                    return
-                }
-                searchDevice()
-            }
-        })
-    }
+    override fun BindingViewHolder.processOtherItemViewBind(itemViewType: Int) {
+        if (itemViewType == R.layout.item_ud_measure_data) {
+            val binding = getBinding<ItemUdMeasureDataBinding>()
+            val measureDataItem = getModel<UDMeasureDataItem>()
 
-    override fun initData() {
-        super.initData()
-        mHeadStates.productName.set(productType.productName)
-        mHeadStates.productToken.set(productType.productToken)
-        mHeadStates.deviceToken.set(deviceInfo.deviceToken)
-
-        toolbarViewModel.toolbarIvActionVisible.set(communicateWay is BleConnect)
-
-        initModuleData()
-    }
-
-    override fun onConnectionStateChanged(isConnected: Boolean) {
-        mHeadStates.isConnected.set(isConnected)
-        if (isConnected) {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030)
-            mHeadStates.iotPlatformStateText.set("蓝牙已连接")
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
-        } else {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030_offline)
-            mHeadStates.iotPlatformStateText.set("蓝牙已断开")
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-
-            mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
-        }
-
-        //刷新模块状态
-        binding.rvModule.models?.forEach {
-            if (it is ConfigModuleTree) {
-                it.configModules.forEach { configModule ->
-                    configModule.functionModule.refreshStatus(isConnected)
-                }
-            }
+            // 设置数据绑定参数
+            binding.setVariable(BR.m, measureDataItem)
+            binding.setVariable(BR.click, UDClickProxy())
+            binding.executePendingBindings()
         }
     }
 
-    private fun initModuleAdapter() {
-        binding.rvModule.linear().setup { rv ->
-            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group2)
-            addType<ConfigModuleTree>(R.layout.item_sub_config_module)
-            addType<GapItem>(R.layout.item_device_status_info_gap)
-            onCreate {
-                when (itemViewType) {
-                    R.layout.item_sub_config_module -> {
-                        val itemBinding = getBinding<ItemSubConfigModuleBinding>()
-                        itemBinding.rvSubModule.setup { subRv ->
-                            subRv.addItemDecoration(
-                                MyGridSpacingItemDecoration(
-                                    4,
-                                    ConvertUtils.dp2px(10f), false
-                                )
-                            )
-                            addType<ConfigModule>(R.layout.item_device_config_module_ud)
-                            R.id.item.onClick {
-                                val configModule = getModel<ConfigModule>()
-                                processSubModuleItemClick(configModule.functionModule)
-                            }
-                        }
-                    }
-
-                    else -> {}
-                }
-            }
-            onBind {
-                when (itemViewType) {
-                    R.layout.item_sub_config_module -> {
-                        val configModuleTree = getModel<ConfigModuleTree>()
-                        val itemBinding = getBinding<ItemSubConfigModuleBinding>()
-                        itemBinding.rvSubModule.models = configModuleTree.configModules
-                    }
-
-                    else -> {
-
-                    }
-                }
-            }
-        }
-    }
-
-    private fun initModuleData() {
+    override fun initModuleData() {
         val groupList = mutableListOf<Any>()
+
+        // 添加测量数据作为第一个项目
+        groupList.add(measureDataItem)
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+
         groupList.add(DeviceStatusInfoGroupItem("设备信息"))
         groupList.add(
             ConfigModuleTree(
@@ -249,97 +138,81 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
         groupList.add(DeviceStatusInfoGroupItem("设备配置"))
-        val configModuleTree = ConfigModuleTree()
-        configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "工作模式",
-                    resID = R.drawable.ic_module_work_mode_new,
-                    navId = R.id.action_global_to_udWorkModelParamFragment
+        val configModuleTree = ConfigModuleTree(
+            configModules = arrayListOf(
+                ConfigModule(
+                    CommonModule(
+                        name = "工作模式",
+                        resID = R.drawable.ic_module_work_mode_new,
+                        navId = R.id.action_global_to_udWorkModelParamFragment
+                    )
+                ),
+                ConfigModule(
+                    CommonModule(
+                        name = "网络配置",
+                        resID = R.drawable.ic_module_network_setting,
+                        navId = R.id.action_global_to_udMobileNetworkParamFragment
+                    )
+                ),
+                ConfigModule(
+                    DataCenterModule(
+                        name = "链路配置",
+                        resID = R.drawable.ic_module_datacenter_new,
+                        navId = R.id.action_global_to_udProductDataCenterHomeFragment
+                    )
+                ),
+                ConfigModule(
+                    CommonModule(
+                        name = "海拔配置",
+                        resID = R.drawable.ic_module_cors,
+                        navId = R.id.action_global_to_udCORSParamFragment
+                    )
+                ),
+                ConfigModule(
+                    CommonModule(
+                        name = "传感配置",
+                        resID = R.drawable.ic_module_sensor_setting_new,
+                        navId = R.id.action_global_to_udProductSensorParamFragment
+                    )
+                ),
+                ConfigModule(
+                    CommonModule(
+                        name = "端口配置",
+                        resID = R.drawable.ic_module_serial_port,
+                        navId = R.id.action_global_to_udSerialPortParamFragment
+                    )
+                ),
+                ConfigModule(
+                    CommonModule(
+                        name = "电台配置",
+                        resID = R.drawable.ic_module_lora_new,
+                        navId = R.id.action_global_to_udRadioParamFragment
+                    )
+                ),
+                ConfigModule(
+                    CommonModule(
+                        name = "报警配置",
+                        resID = R.drawable.ic_module_alarm_new,
+                        navId = R.id.action_global_to_alarmSettingFragment
+                    )
+                ),
+                ConfigModule(
+                    CommonModule(
+                        name = "时间校准",
+                        resID = R.drawable.ic_module_time_calibration_new,
+                        navId = R.id.action_global_to_time_calibration
+                    )
+                ),
+                ConfigModule(
+                    CommonModule(
+                        name = "系统配置",
+                        resID = R.drawable.ic_module_system_setting,
+                        navId = R.id.action_global_to_advancedSettingFragment
+                    )
                 )
             )
         )
-        configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "网络配置",
-                    resID = R.drawable.ic_module_network_setting,
-                    navId = R.id.action_global_to_udMobileNetworkParamFragment
-                )
-            )
-        )
-        configModuleTree.configModules.add(
-            ConfigModule(
-                DataCenterModule(
-                    name = "链路配置",
-                    resID = R.drawable.ic_module_datacenter_new,
-                    navId = R.id.action_global_to_udProductDataCenterHomeFragment
-                )
-            )
-        )
-        configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "海拔配置",
-                    resID = R.drawable.ic_module_cors,
-                    navId = R.id.action_global_to_udCORSParamFragment
-                )
-            )
-        )
-        configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "传感配置",
-                    resID = R.drawable.ic_module_sensor_setting_new,
-                    navId = R.id.action_global_to_udProductSensorParamFragment
-                )
-            )
-        )
-        configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "端口配置",
-                    resID = R.drawable.ic_module_serial_port,
-                    navId = R.id.action_global_to_udSerialPortParamFragment
-                )
-            )
-        )
-        configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "电台配置",
-                    resID = R.drawable.ic_module_lora_new,
-                    navId = R.id.action_global_to_udRadioParamFragment
-                )
-            )
-        )
-        configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "报警配置",
-                    resID = R.drawable.ic_module_alarm_new,
-                    navId = R.id.action_global_to_alarmSettingFragment
-                )
-            )
-        )
-        configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "时间校准",
-                    resID = R.drawable.ic_module_time_calibration_new,
-                    navId = R.id.action_global_to_time_calibration
-                )
-            )
-        )
-        configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "系统配置",
-                    resID = R.drawable.ic_module_system_setting,
-                    navId = R.id.action_global_to_advancedSettingFragment
-                )
-            )
-        )
+
         if (communicateWay is BleConnect) {
             configModuleTree.configModules.add(
                 ConfigModule(
@@ -349,57 +222,16 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 )
             )
         }
-        groupList.add(configModuleTree)
 
+        groupList.add(configModuleTree)
         binding.rvModule.models = groupList
     }
 
-    inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            if (bleViewModel.isConnected()) {
-                bleViewModel.disconnect()
-
-            } else {
-                bleViewModel.launch(bleDevice!!)
-            }
-        }
-
-        fun onMeasureDataClick() {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-            if (mHeadStates.isMeasuring.get())
-                return
-
-            measureData()
-        }
-
-        fun onTakePhotoClick() {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-            takePhoto()
-        }
-
-        fun onGoToSensorDataHistoryClick() {
-            nav().safeNavigate(
-                R.id.action_global_to_commonSensorDataHistoryFragment,
-                CommonSensorDataHistoryFragment.newBundleArguments(productType, deviceInfo)
-            )
-        }
-    }
-
-    private fun processSubModuleItemClick(module: DeviceFunctionModule) {
-        if (isBleDisconnected()) {
-            Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-            return
-        }
-        when (module) {
+    override fun processOtherItemClick(configModule: DeviceFunctionModule) {
+        when (configModule) {
             is DataCenterModule -> {
                 nav().safeNavigate(
-                    module.navId,
+                    configModule.navId,
                     BaseDataCenterHomeFragment.newBundleArguments(
                         centerNum = 4,
                         productType,
@@ -410,27 +242,13 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-
             else -> {
-                if (module.navId != 0) {
-                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice
-                    )
-                    nav().safeNavigate(
-                        module.navId,
-                        bundle
-                    )
-                } else {
-                    Toaster.show("正在开发中")
-                }
+                super.processOtherItemClick(configModule)
             }
         }
     }
 
-    private fun queryDeviceStatusInfo() {
+    override fun queryStatusInfo() {
         commandItems.clear()
 
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "method=0")
@@ -438,78 +256,9 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    /**
-     * 查询测量数据
-     */
-    private fun queryMeasureData() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=0")
-        commandItems.add(command)
-
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 测量数据
-     */
-    private fun measureData() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=1")
-        commandItems.add(command)
-
-        mHeadStates.measureDataLoadingDialogId =
-            showLoadingWithUUID(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 拍照
-     */
-    private fun takePhoto() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=2")
-        commandItems.add(command)
-
-        mHeadStates.measureDataLoadingDialogId =
-            showLoadingWithUUID(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
     override fun lazyLoadData() {
-        //4G 模式下，直接查询设备工作模式
-        if (communicateWay is NetPlatformConnect) {
-            onNetPlatformReady()
-        } else {
-            bleViewModel.launch(bleDevice!!)
-        }
+        super.lazyLoadData()
         initLastHistorySensorData()
-    }
-
-    private fun onNetPlatformReady() {
-        lastOnlineStatus = deviceInfo.onlineStatus
-        if (deviceInfo.onlineStatus) {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030)
-            mHeadStates.iotPlatformStateText.set("米度平台在线")
-            queryDeviceStatusInfo()
-        } else {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030_offline)
-            mHeadStates.iotPlatformStateText.set("米度平台离线")
-
-            mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
-        }
-        //刷新模块状态
-        binding.rvModule.models?.forEach {
-            if (it is ConfigModuleTree) {
-                it.configModules.forEach { configModule ->
-                    configModule.functionModule.refreshStatus(deviceInfo.onlineStatus)
-                }
-            }
-        }
-    }
-
-    override fun onBleDeviceReady() {
-        super.onBleDeviceReady()
-        queryDeviceStatusInfo()
     }
 
     private fun initLastHistorySensorData() {
@@ -534,18 +283,55 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 val measurementTime = resultMap["time"]?.replace(".000", "")?.replace("-", ".")
                     ?: AppContants.PLACE_HOLDER_VALUE
 
-                mHeadStates.waterSurfaceElevation.set(waterSurfaceElevation)
-                mHeadStates.airDistance.set(airDistance)
-                mHeadStates.installationAngle.set(installationAngle)
-                mHeadStates.todayRainfall.set(todayRainfall)
-                mHeadStates.measurementTime.set(measurementTime)
+                binding.rvModule.bindingAdapter.getModel<UDMeasureDataItem>(0)
+                    .refreshMeasureData(
+                        waterSurfaceElevation,
+                        airDistance,
+                        installationAngle,
+                        todayRainfall,
+                        measurementTime
+                    )
             }
         }
     }
 
     /**
-     * 4G 下发指令响应失败
+     * 查询测量数据
      */
+    private fun queryMeasureData() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=0")
+        commandItems.add(command)
+
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 测量数据
+     */
+    private fun measureData() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=1")
+        commandItems.add(command)
+
+        measureDataLoadingDialogId =
+            showLoadingWithUUID(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 拍照
+     */
+    private fun takePhoto() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=2")
+        commandItems.add(command)
+
+        measureDataLoadingDialogId =
+            showLoadingWithUUID(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
     override fun doCmdResponseResultError(
         cmdStr: String,
         errMsg: String,
@@ -553,10 +339,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_DEVICE_STATUS -> {
-                dismissLoadingDialog()
-            }
-
             IOTCommandType.SAMPLE -> {
                 stopMeasurementAnimation()
                 if (cmdStr.contains("method=1")) {
@@ -576,15 +358,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                super.doCmdResponseResultError(
-                    cmdStr = cmdStr,
-                    errMsg = "设备查找出错: $errMsg",
-                    isShowErrMsg = true,
-                    isMessageDialog = true
-                )
-            }
-
             else -> {
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
@@ -596,9 +369,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /**
-     * 4G 下发指令响应超时
-     */
     override fun doCmdResponseResultTimeOut(
         cmdStr: String,
         errMsg: String,
@@ -606,10 +376,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_DEVICE_STATUS -> {
-                dismissLoadingDialog()
-            }
-
             IOTCommandType.SAMPLE -> {
                 stopMeasurementAnimation()
                 if (!cmdStr.contains("method=0")) {
@@ -622,15 +388,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = true,
-                    isMessageDialog = true
-                )
-            }
-
             else -> {
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
@@ -642,9 +399,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /**
-     * 蓝牙下发指令响应超时
-     */
     override fun showNearbyCommunicationTimeoutAlert(
         cmdStr: String,
         isDismissLoadingDialog: Boolean,
@@ -653,27 +407,9 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         errMsg: String
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_DEVICE_STATUS -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = false,
-                    isMessageDialog = isMessageDialog,
-                    errMsg = errMsg
-                )
-            }
-
             IOTCommandType.SAMPLE -> {
                 stopMeasurementAnimation()
-                if (cmdStr.contains("method=0")) {
-                    super.showNearbyCommunicationTimeoutAlert(
-                        cmdStr = cmdStr,
-                        isDismissLoadingDialog = isDismissLoadingDialog,
-                        isShowErrMsg = false,
-                        isMessageDialog = isMessageDialog,
-                        errMsg = errMsg
-                    )
-                } else {
+                if (!cmdStr.contains("method=0")) {
                     super.showNearbyCommunicationTimeoutAlert(
                         cmdStr = cmdStr,
                         isDismissLoadingDialog = isDismissLoadingDialog,
@@ -682,16 +418,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         errMsg = errMsg
                     )
                 }
-            }
-
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = true,
-                    isMessageDialog = true,
-                    errMsg = errMsg
-                )
             }
 
             else -> {
@@ -706,10 +432,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun setResultData(cmdStr: String) {
-        updateLastCommunicationTime()
-
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+    override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {
+        when (commandType) {
             IOTCommandType.MD_GET_DEVICE_STATUS -> {
                 val result =
                     iotParseManager.parse<String>(cmdStr, IOTCommandType.MD_GET_DEVICE_STATUS)
@@ -727,7 +451,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.SAMPLE -> {//召测
+            IOTCommandType.SAMPLE -> { //召测
                 val result = iotParseManager.parse<String>(
                     cmdStr,
                     IOTCommandType.SAMPLE
@@ -742,26 +466,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
-                        dismissLoadingDialog(mHeadStates.measureDataLoadingDialogId)
+                        dismissLoadingDialog(measureDataLoadingDialogId)
                         processSampleResponse(cmdStr, result.data)
-                    }
-                }
-            }
-
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "设备查找出错: ${result.message}"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            showDialogFragment(FindDeviceBeepDialog.TAG) {
-                                FindDeviceBeepDialog.newInstance(ProductType.U_D_2)
-                            }
-                        }
                     }
                 }
             }
@@ -894,11 +600,14 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     val measurementTime =
                         resultMap["time"]?.replace("-", ".") ?: AppContants.PLACE_HOLDER_VALUE
 
-                    mHeadStates.waterSurfaceElevation.set(waterSurfaceElevation)
-                    mHeadStates.airDistance.set(airDistance)
-                    mHeadStates.installationAngle.set(installationAngle)
-                    mHeadStates.todayRainfall.set(todayRainfall)
-                    mHeadStates.measurementTime.set(measurementTime)
+                    binding.rvModule.bindingAdapter.getModel<UDMeasureDataItem>(0)
+                        .refreshMeasureData(
+                            waterSurfaceElevation,
+                            airDistance,
+                            installationAngle,
+                            todayRainfall,
+                            measurementTime
+                        )
                     return
                 }
 
@@ -913,15 +622,23 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     private fun startMeasurementAnimation() {
         // 显示进度条并开始动画
-        mHeadStates.isMeasuring.set(true)
-        binding.llRadarWaterGaugeMeasureData.btnMeasureData.startProgressAnimation()
+        measureDataItem.setMeasuringStatus(true)
+        binding.rvModule.bindingAdapter.getModel<UDMeasureDataItem>(0).let {
+            val viewHolder = binding.rvModule.findViewHolderForAdapterPosition(0)
+            viewHolder?.itemView?.findViewById<com.shmedo.mcloudapp.ui.widget.ProgressMaterialButton>(R.id.btn_measure_data)
+                ?.startProgressAnimation()
+        }
     }
 
     private fun stopMeasurementAnimation() {
-        dismissLoadingDialog(mHeadStates.measureDataLoadingDialogId)
+        dismissLoadingDialog(measureDataLoadingDialogId)
         // 隐藏进度条并停止动画
-        mHeadStates.isMeasuring.set(false)
-        binding.llRadarWaterGaugeMeasureData.btnMeasureData.stopProgressAnimation()
+        measureDataItem.setMeasuringStatus(false)
+        binding.rvModule.bindingAdapter.getModel<UDMeasureDataItem>(0)?.let {
+            val viewHolder = binding.rvModule.findViewHolderForAdapterPosition(0)
+            viewHolder?.itemView?.findViewById<com.shmedo.mcloudapp.ui.widget.ProgressMaterialButton>(R.id.btn_measure_data)
+                ?.stopProgressAnimation()
+        }
     }
 
     private fun startQueryMeasureResultJob() {
@@ -945,74 +662,44 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         queryMeasureResultTimeoutJob = null
     }
 
-    override fun createObserver() {
-        super.createObserver()
-        if (communicateWay is NetPlatformConnect) {
-            checkDeviceOnlineStatus()
-        } else {
-            setupHeartbeat()
-        }
-    }
-
-    /**
-     * 设置心���检查
-     */
-    private fun setupHeartbeat() {
-        launchWithViewLifecycle {
-            lastCommunicationTime
-                .debounce(AppContants.Communication.DELAY_BLE_HEART_BEAT)  //20秒无更新触发
-                .collect { lastUpdateTime ->
-                    val updateTime =
-                        TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
-                    //仅当设备连接并且需要发送心跳时，才发送心跳包
-                    if (mHeadStates.isConnected.get()) {
-                        Timber.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
-                        val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
-                        Timber.d("发送心跳包指令: $command")
-                        sendBleCommand(command)
-                    }
-                }
-        }
-    }
-
-    private fun checkDeviceOnlineStatus() {
-        // 取消现有的job
-        deviceStatusCheckJob?.cancel()
-
-        // 创建新的job，每30秒执行一次
-        deviceStatusCheckJob = launchWithViewLifecycle {
-            while (isActive) {
-                try {
-                    deviceRequestViewModel.getDeviceDetailInfo(deviceInfo.deviceToken) { error: Throwable ->
-                        addDeviceLogItem(Log.ERROR, error.errorMsg)
-                    }?.let { deviceDetailInfo ->
-                        deviceInfo = deviceDetailInfo.deviceInfo
-                        // 如果设备在线状态发生变化，更新UI
-                        if (deviceInfo.onlineStatus != lastOnlineStatus) {
-                            onNetPlatformReady()
-                        }
-                    }
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
-                delay(30000) // 延迟30秒
-            }
-        }
-    }
-
-    // 在 onDestroy 中取消 job
     override fun onDestroy() {
         super.onDestroy()
-        deviceStatusCheckJob?.cancel()
-        deviceStatusCheckJob = null
+        abnormalInfoJob?.cancel()
+        abnormalInfoJob = null
+        queryMeasureResultTimeoutJob?.cancel()
+        queryMeasureResultTimeoutJob = null
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
+    // 扩展 ClickProxy 以支持 UD 特有的功能
+    inner class UDClickProxy {
+        fun onMeasureDataClick() {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            if (measureDataItem.isMeasuring.get())
+                return
+
+            measureData()
+        }
+
+        fun onTakePhotoClick() {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            takePhoto()
+        }
+
+        fun onGoToSensorDataHistoryClick() {
+            nav().safeNavigate(
+                R.id.action_global_to_commonSensorDataHistoryFragment,
+                CommonSensorDataHistoryFragment.newBundleArguments(productType, deviceInfo)
+            )
+        }
     }
 
     companion object {
         const val REPEAT_POLL_NUM = 10
     }
-}
+} 

@@ -199,80 +199,6 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         }
     }
 
-    /**
-     * 处理蓝牙通讯指令结果
-     */
-    private fun handleBleCommandResult(cmdStr: String) {
-        when (MDCommandUtil.extractCommandType(cmdStr)) {
-            MDCommandType.QUERY_DAS_STATUS_2 -> {//##042\r\n：查询设备状态2
-                val result = mdParseManager.parse<DeviceStatusInfoTwo>(
-                    cmdStr,
-                    MDCommandType.QUERY_DAS_STATUS_2
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "查询信息出错"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        initBleDeviceStatus(result.data)
-                    }
-                }
-            }
-
-            MDCommandType.QUERY_INCLINOMETER_INFO -> {//##046
-                val result = mdParseManager.parse<InclinometerInfo>(
-                    cmdStr,
-                    MDCommandType.QUERY_INCLINOMETER_INFO
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "查询倾角计信息出错"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        initBleInclinometerInfo(result.data)
-                    }
-                }
-            }
-
-            MDCommandType.QUERY_DAS_STATUS_3 -> {//##043\r\n: 获取主传感器状态
-                val result = mdParseManager.parse<DeviceStatusInfoThree>(
-                    cmdStr,
-                    MDCommandType.QUERY_DAS_STATUS_3
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "查询扩展传感器状态出错"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        initBleExternalSensorData(result.data)
-                    }
-                }
-            }
-
-            else -> {
-                cancelNearbyCommunicationTimeoutJob()
-            }
-        }
-    }
-
     private fun init4GInternalSensorData(content: String) {
         launchWithViewLifecycle {
             try {
@@ -503,6 +429,80 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             } catch (e: Exception) {
                 Timber.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    /**
+     * 处理蓝牙通讯指令结果
+     */
+    private fun handleBleCommandResult(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.QUERY_DAS_STATUS_2 -> {//##042\r\n：查询设备状态2
+                val result = mdParseManager.parse<DeviceStatusInfoTwo>(
+                    cmdStr,
+                    MDCommandType.QUERY_DAS_STATUS_2
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询信息出错"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is MDCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initBleDeviceStatus(result.data)
+                    }
+                }
+            }
+
+            MDCommandType.QUERY_INCLINOMETER_INFO -> {//##046
+                val result = mdParseManager.parse<InclinometerInfo>(
+                    cmdStr,
+                    MDCommandType.QUERY_INCLINOMETER_INFO
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询倾角计信息出错"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is MDCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initBleInclinometerInfo(result.data)
+                    }
+                }
+            }
+
+            MDCommandType.QUERY_DAS_STATUS_3 -> {//##043\r\n: 获取主传感器状态
+                val result = mdParseManager.parse<DeviceStatusInfoThree>(
+                    cmdStr,
+                    MDCommandType.QUERY_DAS_STATUS_3
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询扩展传感器状态出错"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is MDCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initBleExternalSensorData(result.data)
+                    }
+                }
+            }
+
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
             }
         }
     }

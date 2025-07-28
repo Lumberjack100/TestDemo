@@ -14,11 +14,12 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item"
         style="@style/Common_EditItem_Layout_Style"
-        android:background="@drawable/layer_common_click_item_with_divider">
+        bgResId="@{m.bgResId}"
+        tools:background="@drawable/layer_common_click_item_with_divider">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/btn_desc"
-            visible="@{!m.desc.empty}"
+            visible="@{!m.tipDesc.empty}"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:scaleType="centerCrop"
@@ -50,8 +51,8 @@
             android:paddingHorizontal="@dimen/dimen_size_10"
             android:paddingVertical="@dimen/dimen_size_3"
             android:text='@{m.btnText}'
-            tools:text="重置"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            tools:text="重置" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

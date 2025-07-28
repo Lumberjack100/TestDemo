@@ -36,7 +36,6 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.model.MRRS485Port1
 import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
@@ -62,7 +61,6 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
     private val dataFormatList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_data_format) }
     private val siteTypeList = mutableListOf("无", "测点", "参考点")
     private val calculateList = mutableListOf("不计算", "线性方程计算", "传感器联合计算")
-
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -112,7 +110,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
 
         mStates.modelName.set(mStates.curSensorModel.modelName)//物模型名称
         mStates.modelToken.set(mStates.curSensorModel.modelToken)//物模型编号
-        mStates.address.set("1")//传感器地址,默认1
+        mStates.address.set(sensorItem.addr)//传感器地址
         resetDefaultParam()
     }
 
@@ -676,8 +674,23 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
                 return@launchWithViewLifecycle
             }
             delay(1000)
-            //需要给上一级浏览页面传递最新的事件信息
-            mMessenger.requestMR702Rs485PortSensorRefresh(MRRS485Port1)
+
+            // 使用优化的事件机制通知传感器更新
+            val updatedSensor = MRSensorItem(
+                sensorID = sensorItem.sensorID,
+                sensorName = sensorItem.sensorName,
+                modelToken = mStates.modelToken.get(),
+                addr = mStates.address.get(),
+                addrDesc = "地址-${mStates.address.get()}",
+                isPlugin = sensorItem.isPlugin, // 保持原有在线状态
+                uuid = sensorItem.uuid
+            )
+
+            // 通过共享的 ViewModel 通知传感器更新
+            portHomeViewModel.notifyPort1SensorUpdate(updatedSensor)
+
+            Timber.d("通过 ViewModel 发送传感器更新事件: ${updatedSensor.sensorName}")
+
             nav().navigateUp()
         }
     }

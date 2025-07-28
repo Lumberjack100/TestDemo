@@ -12,10 +12,10 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRReportMethodEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRDataReportTypeEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRReportMethod
+import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDataReportType
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -158,13 +158,13 @@ class MR702ReportConfigFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请输入上报间隔!")
             return
         }
-        val entity = MRReportMethodEntity(
+        val entity = MRDataReportTypeEntity(
             type = (reportMethodList.indexOf(mStates.reportMethod.get()) + 1).toString(),
             basis = reportStartTimeList.indexOf(mStates.startTime.get()).toString(),
             interval = mStates.interval.get()
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MR_MD_SET_REPORT_METHOD,
+            IOTCommandType.MR_MD_SET_REPORT_TYPE,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -180,15 +180,15 @@ class MR702ReportConfigFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
 
-        var command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_REPORT_METHOD)
+        var command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_REPORT_TYPE)
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.MR_MD_GET_REPORT_METHOD)
-                || (commandType == IOTCommandType.MR_MD_SET_REPORT_METHOD)
+        (commandType == IOTCommandType.MR_MD_GET_REPORT_TYPE)
+                || (commandType == IOTCommandType.MR_MD_SET_REPORT_TYPE)
 
     /**
      * 4G 下发指令响应失败
@@ -248,10 +248,10 @@ class MR702ReportConfigFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MR_MD_GET_REPORT_METHOD -> {
-                val result = iotParseManager.parse<MRReportMethod>(
+            IOTCommandType.MR_MD_GET_REPORT_TYPE -> {
+                val result = iotParseManager.parse<MRDataReportType>(
                     cmdStr,
-                    IOTCommandType.MR_MD_GET_REPORT_METHOD
+                    IOTCommandType.MR_MD_GET_REPORT_TYPE
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -270,7 +270,7 @@ class MR702ReportConfigFragment : BaseIOTDeviceFragment() {
             }
 
 
-            IOTCommandType.MR_MD_SET_REPORT_METHOD -> {
+            IOTCommandType.MR_MD_SET_REPORT_TYPE -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"
@@ -292,7 +292,7 @@ class MR702ReportConfigFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initReportMethod(info: MRReportMethod) {
+    private fun initReportMethod(info: MRDataReportType) {
         try {
             info.type.toInt().let {
                 if (it in 1..reportMethodList.size) {

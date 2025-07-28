@@ -29,6 +29,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.common.AlarmTriggerValueInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.CommonSettingParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DataCenterInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DataCenterStatusParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DataReportTypeParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DeviceCurrentStateParser2
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DeviceHistorySensorDataParser
@@ -52,11 +53,12 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.das.DasDigitalPiezometerInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.DasExternalSensorInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.DasIOSensorInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.DasInternalSensorStatusParser
-import com.shmedo.lib.cmd.base.iot_cmd.parser.das.DasReportInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.DasSensorStatusParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.DasSolarStatusInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.DasTemperatureAndHumidityStatusInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.McuAddressInfoParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.gnss_m.GNSSRawDataParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.gnss_m.ModuleParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.hac.AdmeHacExecutiveAgencyInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.hac.HacMeasuringDataInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.hac.HacMeasuringHoleDepthInfoParser
@@ -72,6 +74,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDIPortParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDOPortParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDataCenterParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDataCenterStatusParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDataReportTypeParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDeviceInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRPulsePortParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS232Port1ParamParser
@@ -87,7 +90,6 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port3CameraParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port3SensorParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port3SensorStatusParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRainGaugeParamParser
-import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRReportMethodParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRReservoirCapacityParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRScreenParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRWiredNetParser
@@ -146,7 +148,6 @@ object IOTParserRegistry {
 
         DasBaseInfoParser(),
         DasCollectorInfoParser(),
-        DasReportInfoParser(),
         DasDataReportInfoParser(),
         DasBdTerminalInfoParser(),
         DasIOSensorInfoParser(),
@@ -162,12 +163,13 @@ object IOTParserRegistry {
         M20BaseInfoParser(),
         M50SerialPortParamParser(),
         M50CorsParamParser(),
+        DataReportTypeParser(),
         GNSSSateliteInfoParser(),
         DeviceCurrentStateParser(),
         DeviceCurrentStateParser2(),
         MRWirelessNetParser(),
         MRWiredNetParser(),
-        MRReportMethodParser(),
+        MRDataReportTypeParser(),
         MRScreenParamParser(),
         MRDataCenterStatusParser(),
         MRDataCenterParser(),
@@ -203,5 +205,7 @@ object IOTParserRegistry {
         UDRainGaugeSerialPortInfoParser(),
         SensorInitialParser(),
         LR200ZeroValueParser(),
+        GNSSRawDataParser(),
+        ModuleParamParser(),
     )
 }

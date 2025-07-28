@@ -22,7 +22,6 @@ import com.shmedo.mcloudapp.databinding.ItemM50MeasureDataBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
@@ -116,11 +115,10 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     ),
                     ConfigModule(
                         CommonModule(
-                            name = "卫星信息",
+                            name = "运行信息",
                             resID = R.drawable.ic_module_satellite_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = 0, // 暂未实现
-                            isSupport = false
+                            navId = R.id.action_global_to_m50RunningInfoFragment
                         )
                     )
                 )
@@ -149,7 +147,7 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     DataCenterModule(
                         name = "链路配置",
                         resID = R.drawable.ic_module_datacenter_new,
-                        navId = R.id.action_global_to_universalDataCenterHomeFragment
+                        navId = R.id.action_global_dataCenterHomeFragment
                     )
                 ),
                 ConfigModule(
@@ -161,23 +159,23 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 ),
                 ConfigModule(
                     CommonModule(
-                        name = "传感配置",
+                        name = "GNSS配置",
+                        resID = R.drawable.ic_module_cors,
+                        navId = R.id.action_global_to_m50GNSSConfigFragment,
+                    )
+                ),
+                ConfigModule(
+                    CommonModule(
+                        name = "倾斜触发",
                         resID = R.drawable.ic_module_sensor_setting_new,
                         navId = R.id.action_global_to_m50SensorConfigFragment
                     )
                 ),
                 ConfigModule(
                     CommonModule(
-                        name = "端口配置",
+                        name = "串口配置",
                         resID = R.drawable.ic_module_serial_port,
-                        navId = R.id.action_global_to_m50SerialPortParamFragment
-                    )
-                ),
-                ConfigModule(
-                    CommonModule(
-                        name = "CORS接入",
-                        resID = R.drawable.ic_module_cors,
-                        navId = 0,
+                        navId = R.id.action_global_to_m50SerialPortParamFragment,
                         isSupport = false
                     )
                 ),
@@ -185,7 +183,7 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     CommonModule(
                         name = "报警配置",
                         resID = R.drawable.ic_module_alarm_new,
-                        navId = R.id.action_global_to_alarmSettingFragment
+                        navId = R.id.action_global_to_m50AlarmParamSettingFragment
                     )
                 ),
                 ConfigModule(
@@ -249,109 +247,10 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
         command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=0")
         commandItems.add(command)
 
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 拍照
-     */
-    private fun takePhoto() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=1")
+        command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=2")
         commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.SAMPLE -> {
-                if (cmdStr.contains("method=1")) {
-                    super.doCmdResponseResultError(
-                        cmdStr = cmdStr,
-                        errMsg = "拍照指令下发出错: $errMsg",
-                        isShowErrMsg = true,
-                        isMessageDialog = true
-                    )
-                }
-            }
-
-            else -> {
-                super.doCmdResponseResultError(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
-                    isMessageDialog = isMessageDialog
-                )
-            }
-        }
-    }
-
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.SAMPLE -> {
-                if (cmdStr.contains("method=1")) {
-                    super.doCmdResponseResultTimeOut(
-                        cmdStr = cmdStr,
-                        errMsg = errMsg,
-                        isShowErrMsg = true,
-                        isMessageDialog = true
-                    )
-                }
-            }
-
-            else -> {
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
-                    isMessageDialog = isMessageDialog
-                )
-            }
-        }
-    }
-
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.SAMPLE -> {
-                if (cmdStr.contains("method=1")) {
-                    super.showNearbyCommunicationTimeoutAlert(
-                        cmdStr = cmdStr,
-                        isDismissLoadingDialog = isDismissLoadingDialog,
-                        isShowErrMsg = true,
-                        isMessageDialog = true,
-                        errMsg = errMsg
-                    )
-                }
-            }
-
-            else -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = isShowErrMsg,
-                    isMessageDialog = isMessageDialog,
-                    errMsg = errMsg
-                )
-            }
-        }
     }
 
     override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {
@@ -380,14 +279,14 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "拍照出错: ${result.message}"
+                        val errMsg = "召测出错: ${result.message}"
                         handleFailureResult(errMsg, isShowErrMsg = false)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
-                        processSampleResponse(result.data)
+                        processSampleResponse(cmdStr, result.data)
                     }
                 }
             }
@@ -406,7 +305,7 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 } ?: return@launchWithViewLifecycle
 
                 //检查电台模块是否可用
-                updateRadioModuleStatus(stateInfo.radioEnableStatus == "1")
+                updateRadioModuleStatus(stateInfo.lora.uppercase() == "OK")
 
                 val status = when (stateInfo.deviceStatus) {
                     "-2" -> "告警"
@@ -436,18 +335,14 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
     /**
      * 处理召测响应
      */
-    private fun processSampleResponse(content: String) {
+    private fun processSampleResponse(cmdStr: String, content: String) {
         try {
-            // {"sum_value":2,"x_value":"22","y_value":"22","z_value":"22"}
+            // $cmd=sample&method=0&datastreams={"date":"2025-07-18 17:12:22","sum_value":6013.101,"x_value":-1429.354,"y_value":-0.006,"z_value":-5840.747}
             val resultMap = MoshiUtil.fromJson<Map<String, String>>(content) ?: return
-            if (resultMap.containsKey("sum_value")
-                && resultMap.containsKey("x_value")
+            if (cmdStr.contains("method=0") && resultMap.containsKey("x_value")
                 && resultMap.containsKey("y_value")
                 && resultMap.containsKey("z_value")
             ) {
-                val resultantDisplacement =
-                    resultMap["sum_value"]?.let { "$it mm" }
-                        ?: AppContants.PLACE_HOLDER_VALUE
                 val xDisplacement =
                     resultMap["x_value"]?.let { "$it mm" }
                         ?: AppContants.PLACE_HOLDER_VALUE
@@ -458,15 +353,31 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     resultMap["z_value"]?.let { "$it mm" }
                         ?: AppContants.PLACE_HOLDER_VALUE
 
-                // 刷新测量数据项
-                binding.rvModule.bindingAdapter.getModel<M50MeasureDataItem>(0)
-                    .refreshStatus(
-                        resultantDisplacement,
+                val measureDataItem =
+                    binding.rvModule.bindingAdapter.getModel<M50MeasureDataItem>(0)
+
+                // 检查是否包含时间信息
+                if (resultMap.containsKey("date")) {
+                    val latestDataTime =
+                        resultMap["date"] ?: AppContants.PLACE_HOLDER_VALUE
+
+                    // 使用包含时间信息的刷新方法
+                    measureDataItem.refreshStatusWithTime(
                         xDisplacement,
                         yDisplacement,
-                        zDisplacement
+                        zDisplacement,
+                        latestDataTime
                     )
+                }
                 return
+            }
+
+            //$cmd=sample&method=2&datastreams={"sw":1,"mode":8,"initdate":"2025-07-18 18:12:26","initENU":""0.000000,0.000000,0.000000","baseLine":0.000000","fixRate":34.4,"gap_fixRate":0.0,"result":"-1429.354,-0.006,-5840.747","status":"not-fix","dataSource":"mqtt"}
+            if (cmdStr.contains("method=2") && resultMap.containsKey("initdate")) {
+                val initCompletionTime =
+                    resultMap["initdate"] ?: AppContants.PLACE_HOLDER_VALUE
+
+                measureDataItem.refreshInitCompletionTime(initCompletionTime)
             }
         } catch (e: Exception) {
             Timber.Forest.e(e)
@@ -500,7 +411,6 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            takePhoto()
         }
 
         fun onGoToSensorDataHistoryClick() {

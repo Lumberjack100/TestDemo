@@ -8,6 +8,7 @@ package com.shmedo.core.commonlib.utils
 interface AppContants {
 
     companion object {
+        /** 占位值 */
         const val PLACE_HOLDER_VALUE = "- -"
     }
 
@@ -37,6 +38,9 @@ interface AppContants {
             const val SENSOR_INDEX = "sensor_index"
 
             const val SENSOR_ADDR = "sensor_addr"
+
+            const val FRAGMENT_COMMON_RESULT_REQUEST_KEY =
+                "fragment_common_result_request_key"
 
             const val FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY =
                 "fragment_data_center_home_result_request_key"

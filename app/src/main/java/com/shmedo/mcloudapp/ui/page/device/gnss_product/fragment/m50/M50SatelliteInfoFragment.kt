@@ -76,10 +76,6 @@ class M50SatelliteInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
-        //判断是否页面是否处于 resume 状态
-        if (!isResumed) {
-            return
-        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.M50_MD_GET_SATELITE_INFO -> {
                 val result = iotParseManager.parse<String>(
