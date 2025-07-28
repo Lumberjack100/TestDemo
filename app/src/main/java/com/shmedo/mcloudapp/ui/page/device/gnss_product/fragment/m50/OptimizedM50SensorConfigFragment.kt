@@ -23,8 +23,6 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.communication.model.CommandResult
-import com.shmedo.mcloudapp.communication.model.CommandSequenceCallbacks
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentM50SensorConfigBinding
@@ -47,7 +45,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/6/10
- * @desc: 使用优化架构的M50传感器配置页面
+ * @desc: 一体式自供电 GNSS 接收机(M50)倾斜触发配置页面
  *
  * 优化特点：
  * 1. 使用新的通信架构，代码更简洁
@@ -62,9 +60,9 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     // 状态管理
-    private var isOnRefresh = false
+    private var isOnRefresh = false//是否刷新状态
     private var queryMeasureResultTimeoutJob: Job? = null
-    private var repeatPollNum = 0
+    private var repeatPollNum = 0//重复轮询次数
     private var measureInitialValueLoadingDialogId = ""
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -98,6 +96,7 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         resetDefaultParams()
+        //保存初始状态
         mStates.saveInitialState()
     }
 
@@ -145,13 +144,6 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 timeout = AppContants.Communication.DELAY_10000_MILLIS,
                 showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
                 errorConfig = ErrorConfig.dialogConfig() // 状态查询失败显示Dialog
-            ),
-            callbacks = CommandSequenceCallbacks(
-                onComplete = { results ->
-                },
-                onError = { error, command ->
-
-                }
             )
         )
     }
@@ -318,7 +310,8 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        processNavigateUp()
+                        if (!isCommunicationExecuting())
+                            processNavigateUp()
                     }
                 }
             }
@@ -332,7 +325,8 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        processNavigateUp()
+                        if (!isCommunicationExecuting())
+                            processNavigateUp()
                     }
                 }
             }
@@ -391,11 +385,9 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 ) {
                     if (!isOnRefresh) {
                         dismissLoadingDialog(measureInitialValueLoadingDialogId)
-                        cancelCurrentCommunication()
                         showMessageDialog("初始值更新成功")
                     } else {
                         isOnRefresh = false
-                        finishRefresh()
                     }
 
                     val xAxis = resultMap["xAxis"] ?: ""
@@ -412,15 +404,15 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 }
 
                 if (!isOnRefresh) {
-                    // 更新倾角初始值模式下，轮询测得的初始值
+                    // 更新倾角初始值模式下，继续轮询测得的初始值
                     startQueryMeasureResultJob(type)
                 } else {
                     // 刷新模式
                     isOnRefresh = false
-                    finishRefresh()
                 }
             } else { // 更新初始值指令
                 clearQueryMeasureResultTimeoutJob()
+                // 更新倾角初始值模式下，开始轮询测得的初始值
                 startQueryMeasureResultJob(type)
             }
         } catch (e: Exception) {
@@ -487,7 +479,6 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
         mStates.saveInitialState()
     }
 
-
     /**
      * 启动查询测量结果轮询任务
      */
@@ -496,7 +487,6 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
         queryMeasureResultTimeoutJob = launchWithViewLifecycle {
             if (repeatPollNum >= REPEAT_POLL_NUM) {
                 dismissLoadingDialog(measureInitialValueLoadingDialogId)
-                cancelCurrentCommunication()
                 showMessageDialog("更新倾角初始值失败，请稍后重试")
                 return@launchWithViewLifecycle
             }
@@ -513,24 +503,6 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
         repeatPollNum = 0
         queryMeasureResultTimeoutJob?.cancel()
         queryMeasureResultTimeoutJob = null
-    }
-
-    override fun handleBackByCheckDataModified() {
-        if (mStates.isDataModified.value == true) {
-            showExitConfirmationDialog()
-            return
-        }
-        nav().navigateUp()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
-
-    override fun onDestroy() {
-        clearQueryMeasureResultTimeoutJob()
-        super.onDestroy()
     }
 
     /**
@@ -556,6 +528,24 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
             }
             saveConfiguration()
         }
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    override fun onDestroy() {
+        clearQueryMeasureResultTimeoutJob()
+        super.onDestroy()
     }
 
     companion object {

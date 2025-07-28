@@ -122,9 +122,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     protected fun sendCommandSequence(
         commands: List<String>,
         config: CommandSequenceConfig = CommandSequenceConfig(),
-        callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks(
-            onComplete = { results -> finishRefresh() },
-            onError = { error, command -> finishRefresh() }),
+        callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks(),
     ) {
         addDeviceLogItem(Log.DEBUG, "发送指令序列: ${commands.size}条指令")
 
@@ -134,13 +132,14 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
             callbacks = CommandSequenceCallbacks(
                 onSuccess = { successResult ->
                     handleCommandResponse(successResult.responseData)
-                    callbacks.onSuccess?.invoke(successResult)
                 },
                 onComplete = { results ->
+                    cancelCurrentCommunication()
                     callbacks.onComplete(results)
                 },
                 onError = { error, command ->
                     addDeviceLogItem(Log.ERROR, "指令执行失败: $command, 错误: ${error.message}")
+                    cancelCurrentCommunication()
                     callbacks.onError(error, command)
                 }
             )
@@ -280,7 +279,6 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
         isMessageDialog: Boolean = false
     ) {
         Timber.e(errMsg)
-        cancelCurrentCommunication()
         if (isShowErrMsg) {
             if (isMessageDialog) showMessageDialog(errMsg)
             else Toaster.show(errMsg)

@@ -248,12 +248,13 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
         val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
         when (result) {
             is IOTCommandResult.Failure -> {
-                Timber.e("保存采样率失败: ${result.message}")
-                addDeviceLogItem(Log.ERROR, "保存采样率失败: ${result.message}")
+                val errMsg = "采样率保存出错: ${result.message}"
+                handleFailureResult(errMsg, isMessageDialog = true)
             }
 
             else -> {
-                Timber.d("采样率保存成功")
+                if (!isCommunicationExecuting())
+                    processNavigateUp()
             }
         }
     }
@@ -265,12 +266,13 @@ class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
         val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
         when (result) {
             is IOTCommandResult.Failure -> {
-                Timber.e("保存截至高度角失败: ${result.message}")
-                addDeviceLogItem(Log.ERROR, "保存截至高度角失败: ${result.message}")
+                val errMsg = "截至高度角保存出错: ${result.message}"
+                handleFailureResult(errMsg, isMessageDialog = true)
             }
 
             else -> {
-                Timber.d("截至高度角保存成功")
+                if (!isCommunicationExecuting())
+                    processNavigateUp()
             }
         }
     }
