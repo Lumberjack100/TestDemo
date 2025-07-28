@@ -196,7 +196,10 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
         )
     ) {
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
-        sendSingleCommand(command, config)
+        sendCommandSequence(
+            commands = listOf(command),
+            config
+        )
     }
 
     /**
@@ -210,8 +213,8 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
         callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks()
     ) {
         val command = IOTCommandUtil.getCommand(IOTCommandType.REBOOT)
-        sendSingleCommand(
-            command = command,
+        sendCommandSequence(
+            commands = listOf(command),
             config = config,
             callbacks = CommandSequenceCallbacks(
                 onComplete = { results ->
@@ -238,7 +241,8 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
         callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks(),
     ) {
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_SEARCH_DEVICE, "switch=1")
-        sendSingleCommand(command, config)
+        sendCommandSequence(
+            commands = listOf(command), config)
     }
 
     // ==================== 抽象方法 ====================

@@ -177,8 +177,8 @@ class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
             Timber.d("查询更新初始值结果轮询次数：$repeatPollNum")
         }
 
-        sendSingleCommand(
-            command = command,
+        sendCommandSequence(
+            commands = listOf(command),
             config = CommandSequenceConfig(
                 timeout = AppContants.Communication.DELAY_10000_MILLIS,
                 showLoadingDialog = false, // 已经显示特殊的加载对话框了

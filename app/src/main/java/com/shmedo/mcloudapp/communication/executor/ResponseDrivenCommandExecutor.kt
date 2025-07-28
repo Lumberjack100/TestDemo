@@ -99,7 +99,10 @@ class ResponseDrivenCommandExecutor(
                 // 处理结果
                 when (result) {
                     is CommandResult.Success -> {
-                        Timber.i("指令执行成功: $command")
+                        if(index == commands.size - 1){
+                            isExecuting.set(false)
+                            callbacks.onComplete.invoke(executionResults.toList())
+                        }
                         // 实时回调处理
                         callbacks.onSuccess?.invoke(result)
                         // 继续执行下一条指令
@@ -129,6 +132,7 @@ class ResponseDrivenCommandExecutor(
 
             // 所有指令执行完成
             Timber.i("指令序列执行完成，成功${getSuccessCount()}条，失败${getErrorCount()}条")
+            isExecuting.set(false)
             callbacks.onComplete(executionResults.toList())
 
         } catch (e: Exception) {
@@ -175,6 +179,7 @@ class ResponseDrivenCommandExecutor(
         config: CommandSequenceConfig,
         callbacks: CommandSequenceCallbacks,
     ) {
+        isExecuting.set(false)
         errorHandler.handleError(error, config.errorConfig)
         callbacks.onError(error, command)
     }

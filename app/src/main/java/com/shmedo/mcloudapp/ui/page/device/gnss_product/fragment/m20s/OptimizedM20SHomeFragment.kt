@@ -244,9 +244,9 @@ class OptimizedM20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
      */
     override fun queryStatusInfo() {
         val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
-        
-        sendSingleCommand(
-            command = command,
+
+        sendCommandSequence(
+            commands = listOf(command),
             config = CommandSequenceConfig(
                 timeout = AppContants.Communication.DELAY_10000_MILLIS,
                 errorConfig = ErrorConfig.silentConfig() // 状态查询失败不显示错误

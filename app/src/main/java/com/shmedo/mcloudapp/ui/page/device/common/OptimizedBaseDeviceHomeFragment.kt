@@ -344,11 +344,11 @@ abstract class OptimizedBaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment(
         // 根据通信方式设置不同的观察者
         setupCommunicationObservers()
 
-        // 设置位置同步相关观察者
-        setupLocationObservers()
-
         // 设置蓝牙通信时间更新观察者
         setupBleCommunicationObserver()
+
+        // 设置位置同步相关观察者
+        setupLocationObservers()
     }
 
     /**
@@ -421,7 +421,7 @@ abstract class OptimizedBaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment(
     protected open fun setupHeartbeat() {
         launchWithViewLifecycle {
             lastCommunicationTime
-                .debounce(AppContants.Communication.DELAY_BLE_HEART_BEAT)  //20秒无更新触发
+                .debounce(AppContants.Communication.DELAY_BLE_HEART_BEAT)  //蓝牙连接心跳包发送间隔
                 .collect { lastUpdateTime ->
                     // 检查设备是否连接
                     if (!isDeviceConnected()) {
@@ -442,8 +442,8 @@ abstract class OptimizedBaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment(
 
     protected open fun sendHeartbeatCommand() {
         val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
-        sendSingleCommand(
-            command = command,
+        sendCommandSequence(
+            commands = listOf(command),
             config = CommandSequenceConfig(
                 showLoadingDialog = false,
                 errorConfig = ErrorConfig.silentConfig(),
@@ -657,8 +657,8 @@ abstract class OptimizedBaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment(
         }
 
         Timber.d("自动同步位置指令: $command")
-        sendSingleCommand(
-            command = command,
+        sendCommandSequence(
+            commands = listOf(command),
             config = CommandSequenceConfig(
                 showLoadingDialog = false,
                 errorConfig = ErrorConfig.silentConfig()

@@ -665,8 +665,8 @@ abstract class OptimizedBaseDeviceStatusInfoStyle2Fragment : OptimizedBaseIOTDev
     protected open fun queryStatusInfo() {
         val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
 
-        sendSingleCommand(
-            command = command,
+        sendCommandSequence(
+            commands = listOf(command),
             config = CommandSequenceConfig(
                 timeout = AppContants.Communication.DELAY_10000_MILLIS,
                 showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
