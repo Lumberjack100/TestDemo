@@ -50,7 +50,7 @@ class M50GNSSConfigFragment : BaseIOTDeviceFragment() {
     private val samplingRateValueList = arrayListOf("1", "5") // 对应的实际值
     
     // 截至高度角选项列表 - 根据需求文档："5度"到"30度"，默认值为"5度"
-    private val elevationAngleList = arrayListOf("5度", "10度", "15度", "20度", "25度", "30度")
+    private val elevationAngleList = arrayListOf("5°", "10°", "15°", "20°", "25°", "30°")
     private val elevationAngleValueList = arrayListOf("5", "10", "15", "20", "25", "30") // 对应的实际值
 
     override fun getDataBindingConfig(): DataBindingConfig {
