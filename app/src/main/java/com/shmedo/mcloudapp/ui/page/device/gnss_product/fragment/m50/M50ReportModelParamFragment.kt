@@ -63,17 +63,17 @@ class M50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
     private val coordinateInitializationList = arrayListOf("是", "否")
     private val initializationModeList = arrayListOf("手动", "自动")
     private val initializationTimeList =
-        arrayListOf("15分钟", "30分钟", "60分钟", "120分钟", "360分钟", "12小时", "24小时")
+        arrayListOf("15min", "30min", "60min", "120min", "360min", "12小时", "24小时")
     private val calculationIntervalTimeList = arrayListOf(
-        "5分钟",
-        "10分钟",
-        "15分钟",
-        "30分钟",
-        "60分钟",
-        "120分钟",
-        "360分钟",
-        "12小时",
-        "24小时"
+        "5min",
+        "10min",
+        "15min",
+        "30min",
+        "60min",
+        "120min",
+        "360min",
+        "12h",
+        "24h"
     )
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -122,8 +122,8 @@ class M50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
         mStates.longitude.set("") // 经度
         mStates.latitude.set("") // 纬度
         mStates.altitude.set("") // 高度
-        mStates.initializationTime.set(initializationTimeList[0]) // 默认15分钟
-        mStates.calculationIntervalTime.set(calculationIntervalTimeList[0]) // 默认5分钟
+        mStates.initializationTime.set(initializationTimeList[0]) // 默认15min
+        mStates.calculationIntervalTime.set(calculationIntervalTimeList[0]) // 默认5min
     }
 
     override fun lazyLoadData() {

@@ -48,6 +48,12 @@
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
+        android:id="@+id/m20SRunningInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SRunningInfoFragment"
+        android:label="M20SRunningInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
         android:id="@+id/m20SWorkModelFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SWorkModelFragment"
         android:label="M20SWorkModelFragment"
@@ -94,6 +100,14 @@
     <action
         android:id="@+id/action_global_to_m20SStatusInfoFragment"
         app:destination="@id/m20SStatusInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_m20SRunningInfoFragment"
+        app:destination="@id/m20SRunningInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

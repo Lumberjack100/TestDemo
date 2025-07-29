@@ -6,7 +6,6 @@ import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
-import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
@@ -119,24 +118,6 @@ class M20SBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
-                }
-
-                // 工作信息组
-                stateInfo.workMode.notNullKey {
-                    groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                    groupList.add(DeviceStatusInfoGroupItem("工作信息"))
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                        groupList,
-                        name = "工作模式",
-                        value = when (stateInfo.workMode) {
-                            "1" -> "基站"
-                            "2" -> "测站"
-                            "3" -> "PPP-B2b"
-                            "4" -> "CORS接入"
-                            else -> AppContants.PLACE_HOLDER_VALUE
-                        },
-                        isBottomItem = true
-                    )
                 }
 
                 // 存储信息组（方式一：emmc_storage格式）
