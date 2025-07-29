@@ -40,112 +40,135 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <!-- 位移量数据显示区域 -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/ll_air_distance"
+        <!-- 主要内容区域：4行布局结构 -->
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_8">
-
-            <View
-                android:id="@+id/vertical_divider_line"
-                android:layout_width="1dp"
-                android:layout_height="0dp"
-                android:layout_marginVertical="@dimen/dimen_size_2"
-                android:background="@color/divider_line_bg2"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_air_distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{"东向位移量："+m.xDisplacement}'
-                android:textColor="@color/title_text_color_black_90"
-                android:textSize="@dimen/measure_data_item_text_size_12"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:text="东向位移量：-0.24mm" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_installation_angle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_16"
-                android:text='@{"北向位移量："+m.yDisplacement}'
-                android:textColor="@color/title_text_color_black_90"
-                android:textSize="@dimen/measure_data_item_text_size_12"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/vertical_divider_line"
-                tools:text="北向位移量：4.23mm" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_size_8"
-            android:text='@{"垂直位移量："+m.zDisplacement}'
-            android:textColor="@color/title_text_color_black_90"
-            android:textSize="@dimen/measure_data_item_text_size_12"
-            tools:text="垂直位移量：7.88mm" />
+            android:orientation="vertical">
 
-        <!-- 时间信息显示区域 -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_8">
-
+            <!-- 第一行：初始化完成时间标题 -->
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_init_completion_time_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="初始化完成时间："
                 android:textColor="@color/title_text_color_black_90"
-                android:textSize="@dimen/measure_data_item_text_size_12"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textSize="@dimen/measure_data_item_text_size_12" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_init_completion_time_value"
-                android:layout_width="0dp"
+            <!-- 第二行：时间值 | 东向位移量 -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_4"
-                android:text="@{m.initCompletionTime}"
-                android:textColor="@color/title_text_color_black_90"
-                android:textSize="@dimen/measure_data_item_text_size_12"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tv_init_completion_time_label"
-                app:layout_constraintTop_toTopOf="@+id/tv_init_completion_time_label"
-                tools:text="2025-06-10 15:00:00" />
+                android:layout_marginTop="@dimen/dimen_size_4"
+                android:orientation="horizontal">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_latest_data_time_label"
-                android:layout_width="wrap_content"
+                <!-- 左侧：初始化完成时间值 -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingEnd="@dimen/dimen_size_8"
+                    android:text="@{m.initCompletionTime}"
+                    android:textColor="@color/title_text_color_black_90"
+                    android:textSize="@dimen/measure_data_item_text_size_12"
+                    tools:text="2025-06-10 15:00:00" />
+
+                <!-- 中间分割线 -->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="@dimen/dimen_size_2"
+                    android:background="@color/divider_line_bg2" />
+
+                <!-- 右侧：东向位移量 -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="@dimen/dimen_size_8"
+                    android:text='@{"东向位移量："+m.xDisplacement}'
+                    android:textColor="@color/title_text_color_black_90"
+                    android:textSize="@dimen/measure_data_item_text_size_12"
+                    tools:text="东向位移量：-0.24mm" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <!-- 第三行：最新数据时间标题 | 北向位移量 -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_size_8"
-                android:text="最新数据时间："
-                android:textColor="@color/title_text_color_black_90"
-                android:textSize="@dimen/measure_data_item_text_size_12"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_init_completion_time_label" />
+                android:layout_marginTop="@dimen/dimen_size_5"
+                android:orientation="horizontal">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_latest_data_time_value"
-                android:layout_width="0dp"
+                <!-- 左侧：最新数据时间标题 -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingEnd="@dimen/dimen_size_8"
+                    android:text="最新数据时间："
+                    android:textColor="@color/title_text_color_black_90"
+                    android:textSize="@dimen/measure_data_item_text_size_12" />
+
+                <!-- 中间分割线 -->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="@dimen/dimen_size_2"
+                    android:background="@color/divider_line_bg2" />
+
+                <!-- 右侧：北向位移量 -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="@dimen/dimen_size_8"
+                    android:text='@{"北向位移量："+m.yDisplacement}'
+                    android:textColor="@color/title_text_color_black_90"
+                    android:textSize="@dimen/measure_data_item_text_size_12"
+                    tools:text="北向位移量：4.23mm" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <!-- 第四行：最新数据时间值 | 垂直位移量 -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_4"
-                android:text="@{m.latestDataTime}"
-                android:textColor="@color/title_text_color_black_90"
-                android:textSize="@dimen/measure_data_item_text_size_12"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tv_latest_data_time_label"
-                app:layout_constraintTop_toTopOf="@+id/tv_latest_data_time_label"
-                tools:text="2025-06-10 17:00:00" />
+                android:layout_marginTop="@dimen/dimen_size_4"
+                android:orientation="horizontal">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- 左侧：最新数据时间值 -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingEnd="@dimen/dimen_size_8"
+                    android:text="@{m.latestDataTime}"
+                    android:textColor="@color/title_text_color_black_90"
+                    android:textSize="@dimen/measure_data_item_text_size_12"
+                    tools:text="2025-06-10 17:00:00" />
+
+                <!-- 中间分割线 -->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="@dimen/dimen_size_2"
+                    android:background="@color/divider_line_bg2" />
+
+                <!-- 右侧：垂直位移量 -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="@dimen/dimen_size_8"
+                    android:text='@{"垂直位移量："+m.zDisplacement}'
+                    android:textColor="@color/title_text_color_black_90"
+                    android:textSize="@dimen/measure_data_item_text_size_12"
+                    tools:text="垂直位移量：7.88mm" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"

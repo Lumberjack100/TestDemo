@@ -8,7 +8,6 @@ import com.drake.brv.BindingAdapter.BindingViewHolder
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
-import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -38,6 +37,7 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceHomeFragment
+import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -135,7 +135,7 @@ class OptimizedM50HomeFragment : OptimizedBaseDeviceHomeFragment() {
         )
 
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-        
+
         // 设备配置模块
         groupList.add(DeviceStatusInfoGroupItem("设备配置"))
         val configModuleTree = ConfigModuleTree(
@@ -243,6 +243,7 @@ class OptimizedM50HomeFragment : OptimizedBaseDeviceHomeFragment() {
                     )
                 )
             }
+
             else -> {
                 super.processOtherItemClick(configModule)
             }
@@ -254,16 +255,16 @@ class OptimizedM50HomeFragment : OptimizedBaseDeviceHomeFragment() {
      */
     override fun queryStatusInfo() {
         val commands = mutableListOf<String>()
-        
+
         // 查询设备状态
         commands.add(IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS))
-        
+
         // 召测 method=0
         commands.add(IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=0"))
-        
+
         // 召测 method=2
         commands.add(IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=2"))
-        
+
         sendCommandSequence(
             commands = commands,
             config = CommandSequenceConfig(
@@ -280,18 +281,20 @@ class OptimizedM50HomeFragment : OptimizedBaseDeviceHomeFragment() {
     override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
-                val result = iotParseManager.parse<String>(cmdStr, IOTCommandType.QUERY_DEVICE_STATUS)
+                val result =
+                    iotParseManager.parse<String>(cmdStr, IOTCommandType.QUERY_DEVICE_STATUS)
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询设备状态出错: ${result.message}"
                         handleFailureResult(errMsg, isShowErrMsg = false)
                     }
+
                     is IOTCommandResult.Success -> {
                         initStatusInfo(result.data)
                     }
                 }
             }
-            
+
             IOTCommandType.SAMPLE -> {
                 val result = iotParseManager.parse<String>(cmdStr, IOTCommandType.SAMPLE)
                 when (result) {
@@ -299,12 +302,13 @@ class OptimizedM50HomeFragment : OptimizedBaseDeviceHomeFragment() {
                         val errMsg = "召测出错: ${result.message}"
                         handleFailureResult(errMsg, isShowErrMsg = false)
                     }
+
                     is IOTCommandResult.Success -> {
                         processSampleResponse(cmdStr, result.data)
                     }
                 }
             }
-            
+
             else -> {
                 // 其他指令交给父类处理
                 super.handleCommandResponse(cmdStr)
@@ -325,25 +329,37 @@ class OptimizedM50HomeFragment : OptimizedBaseDeviceHomeFragment() {
                 // 检查电台模块是否可用
                 updateRadioModuleStatus(stateInfo.lora.uppercase() == "OK")
 
-                val status = when (stateInfo.deviceStatus) {
-                    "-2" -> "告警"
-                    "-3" -> "故障"
-                    else -> "正常"
-                }
-                
-                val logoResId = status.compareAndReturn(
-                    "故障",
-                    R.drawable.device_logo_m50_error,
-                    status.compareAndReturn(
-                        "告警",
-                        R.drawable.device_logo_m50_alarm,
-                        R.drawable.device_logo_m50
+
+                val deviceAbnormalList =
+                    if (content.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkDeviceAbnormal2(
+                        content
                     )
-                )
-                
-                mHeadStates.productLogoResId.set(logoResId)
-                mHeadStates.deviceStatusCode.set(stateInfo.deviceStatus)
+                deviceAbnormalList.remove("电台故障")
+                val status = if (deviceAbnormalList.isEmpty()) "正常" else "故障"
+                mHeadStates.productLogoResId.set(if (deviceAbnormalList.isEmpty()) mHeadStates.productNormalResId.get() else mHeadStates.productErrorResId.get())
+                mHeadStates.deviceStatusCode.set(if (deviceAbnormalList.isEmpty()) "0" else "-3")
                 mHeadStates.warnErrorText.set(status)
+
+
+//                val status = when (stateInfo.deviceStatus) {
+//                    "-2" -> "告警"
+//                    "-3" -> "故障"
+//                    else -> "正常"
+//                }
+//
+//                val logoResId = status.compareAndReturn(
+//                    "故障",
+//                    R.drawable.device_logo_m50_error,
+//                    status.compareAndReturn(
+//                        "告警",
+//                        R.drawable.device_logo_m50_alarm,
+//                        R.drawable.device_logo_m50
+//                    )
+//                )
+//
+//                mHeadStates.productLogoResId.set(logoResId)
+//                mHeadStates.deviceStatusCode.set(stateInfo.deviceStatus)
+//                mHeadStates.warnErrorText.set(status)
 
             } catch (e: Exception) {
                 Timber.e(e)
@@ -370,7 +386,8 @@ class OptimizedM50HomeFragment : OptimizedBaseDeviceHomeFragment() {
                 val zDisplacement = resultMap["z_value"]?.let { "$it mm" }
                     ?: AppContants.PLACE_HOLDER_VALUE
 
-                val measureDataItem = binding.rvModule.bindingAdapter.getModel<M50MeasureDataItem>(0)
+                val measureDataItem =
+                    binding.rvModule.bindingAdapter.getModel<M50MeasureDataItem>(0)
 
                 // 检查是否包含时间信息
                 if (resultMap.containsKey("date")) {
@@ -390,7 +407,7 @@ class OptimizedM50HomeFragment : OptimizedBaseDeviceHomeFragment() {
                 val initCompletionTime = resultMap["initdate"] ?: AppContants.PLACE_HOLDER_VALUE
                 measureDataItem.refreshInitCompletionTime(initCompletionTime.toString())
             }
-            
+
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
