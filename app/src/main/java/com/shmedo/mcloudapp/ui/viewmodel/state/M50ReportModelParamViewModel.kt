@@ -11,7 +11,10 @@ class M50ReportModelParamViewModel : BaseStateViewModel() {
     val workModel = NonNullObservableField("")//工作模式
     val networkModel = NonNullObservableField("")//网络模式
     
-    // 新增坐标初始化相关字段
+    // 新增前端解算字段
+    val frontendCalculation = NonNullObservableField("")//前端解算
+    
+    // 坐标初始化相关字段
     val coordinateInitialization = NonNullObservableField("")//坐标初始化
     val initializationMode = NonNullObservableField("")//初始化模式
     val longitude = NonNullObservableField("")//经度（度）
@@ -34,6 +37,7 @@ class M50ReportModelParamViewModel : BaseStateViewModel() {
             "reportModel" to reportModel.get(),
             "workModel" to workModel.get(),
             "networkModel" to networkModel.get(),
+            "frontendCalculation" to frontendCalculation.get(),
             "coordinateInitialization" to coordinateInitialization.get(),
             "initializationMode" to initializationMode.get(),
             "longitude" to longitude.get(),
@@ -51,6 +55,7 @@ class M50ReportModelParamViewModel : BaseStateViewModel() {
             reportModel,
             workModel,
             networkModel,
+            frontendCalculation,
             coordinateInitialization,
             initializationMode,
             longitude,
@@ -74,6 +79,7 @@ class M50ReportModelParamViewModel : BaseStateViewModel() {
                 "reportModel" -> reportModel.get() != value
                 "workModel" -> workModel.get() != value
                 "networkModel" -> networkModel.get() != value
+                "frontendCalculation" -> frontendCalculation.get() != value
                 "coordinateInitialization" -> coordinateInitialization.get() != value
                 "initializationMode" -> initializationMode.get() != value
                 "longitude" -> longitude.get() != value

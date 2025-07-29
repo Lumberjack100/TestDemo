@@ -98,10 +98,27 @@
                             tools:text="测站" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
+                    <!-- 前端解算选择项 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@{stateVM.frontendCalculation.equals(`开`)?@drawable/layer_common_click_item_with_divider:@drawable/shape_common_click_item_bottom_corner_4}"
+                        android:onClick="@{()->click.onFrontendCalculationChooseClick()}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="前端解算" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.frontendCalculation}"
+                            tools:text="关" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
                     <!-- 坐标初始化选择项 -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
-                        android:background="@{stateVM.coordinateInitialization.equals(`是`)?@drawable/layer_common_click_item_with_divider:@drawable/shape_common_click_item_bottom_corner_4}"
+                        visible="@{stateVM.frontendCalculation.equals(`开`)}"
+                        android:background="@{ stateVM.coordinateInitialization.equals(`是`)?@drawable/layer_common_click_item_with_divider:@drawable/shape_common_click_item_bottom_corner_4}"
                         android:onClick="@{()->click.onCoordinateInitializationChooseClick()}">
 
                         <com.google.android.material.textview.MaterialTextView
@@ -116,7 +133,7 @@
 
                     <!-- 坐标初始化相关配置项容器 -->
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        visible="@{stateVM.coordinateInitialization.equals(`是`)}"
+                        visible="@{stateVM.frontendCalculation.equals(`开`) &amp;&amp; stateVM.coordinateInitialization.equals(`是`)}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">

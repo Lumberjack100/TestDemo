@@ -59,10 +59,22 @@ class OptimizedM50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
     private val reportModelList = arrayListOf("常在线", "低功耗", "自适应")
     private val networkModelList = arrayListOf("4G传输", "电台传输", "自动")
     private val workModelList = arrayListOf("基站", "测站")
+    private val frontendCalculationList = arrayListOf("关", "开")
     private val coordinateInitializationList = arrayListOf("是", "否")
     private val initializationModeList = arrayListOf("手动", "自动")
-    private val initializationTimeList = arrayListOf("15分钟", "30分钟", "60分钟", "120分钟", "360分钟", "12小时", "24小时")
-    private val calculationIntervalTimeList = arrayListOf("5分钟", "10分钟", "15分钟", "30分钟", "60分钟", "120分钟", "360分钟", "12小时", "24小时")
+    private val initializationTimeList =
+        arrayListOf("15分钟", "30分钟", "60分钟", "120分钟", "360分钟", "12小时", "24小时")
+    private val calculationIntervalTimeList = arrayListOf(
+        "5分钟",
+        "10分钟",
+        "15分钟",
+        "30分钟",
+        "60分钟",
+        "120分钟",
+        "360分钟",
+        "12小时",
+        "24小时"
+    )
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_m50_report_model_param, BR.stateVM, mStates)
@@ -104,6 +116,7 @@ class OptimizedM50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
         mStates.reportModel.set(reportModelList[0]) // 默认常在线
         mStates.networkModel.set(networkModelList[2]) // 默认自动
         mStates.workModel.set(workModelList[1]) // 默认测站
+        mStates.frontendCalculation.set(frontendCalculationList[0]) // 默认关
         mStates.coordinateInitialization.set(coordinateInitializationList[1]) // 默认否
         mStates.initializationMode.set(initializationModeList[1]) // 默认自动
         mStates.longitude.set("") // 经度
@@ -171,8 +184,8 @@ class OptimizedM50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
             return false
         }
 
-        // 验证坐标初始化相关配置
-        if (mStates.coordinateInitialization.get() == "是") {
+        // 验证坐标初始化相关配置（仅当前端解算为"开"时）
+        if (mStates.frontendCalculation.get() == "开" && mStates.coordinateInitialization.get() == "是") {
             if (mStates.workModel.get() == "基站" && mStates.initializationMode.get() == "手动") {
                 // 验证手动模式下的坐标输入
                 if (mStates.longitude.get().isEmpty()) {
@@ -209,14 +222,17 @@ class OptimizedM50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
     private fun buildSaveCommands(): List<String> {
         val commands = mutableListOf<String>()
 
-        if (mStates.coordinateInitialization.get() == "是") {
+        if (mStates.frontendCalculation.get() == "开" && mStates.coordinateInitialization.get() == "是") {
+            // 前端解算开启且坐标初始化为"是"时的完整配置
             if (mStates.workModel.get() == "基站") {
                 // 构建基站模式下的保存命令
                 val entity = RtkParamEntity(
                     reportMode = reportModelList.indexOf(mStates.reportModel.get()).toString(),
                     networkMode = networkModelList.indexOf(mStates.networkModel.get()).toString(),
                     mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
-                    baseStationMode = initializationModeList.indexOf(mStates.initializationMode.get()).toString(),
+                    frontCalc = "1",
+                    baseStationMode = initializationModeList.indexOf(mStates.initializationMode.get())
+                        .toString(),
                     latitude = if (mStates.initializationMode.get() == "手动") mStates.latitude.get() else "0",
                     longitude = if (mStates.initializationMode.get() == "手动") mStates.longitude.get() else "0",
                     height = if (mStates.initializationMode.get() == "手动") mStates.altitude.get() else "0",
@@ -234,6 +250,7 @@ class OptimizedM50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
                     reportMode = reportModelList.indexOf(mStates.reportModel.get()).toString(),
                     networkMode = networkModelList.indexOf(mStates.networkModel.get()).toString(),
                     mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
+                    frontCalc = "1",
                     basearc = (initializationTimeList.indexOf(mStates.initializationTime.get()) + 1).toString(),
                     arc = (calculationIntervalTimeList.indexOf(mStates.calculationIntervalTime.get()) + 1).toString(),
                 )
@@ -248,11 +265,12 @@ class OptimizedM50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
                 commands.add(command)
             }
         } else {
-            // 坐标初始化为"否"时的保存命令
+            // 前端解算为"关"或坐标初始化为"否"时的基础配置
             val entity = RtkParamEntity(
                 reportMode = reportModelList.indexOf(mStates.reportModel.get()).toString(),
                 networkMode = networkModelList.indexOf(mStates.networkModel.get()).toString(),
                 mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
+                frontCalc = frontendCalculationList.indexOf(mStates.frontendCalculation.get()).toString(),
             )
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.GM_MD_CFG_RTK,
@@ -318,9 +336,9 @@ class OptimizedM50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
 
         when (result) {
             is IOTCommandResult.Failure -> {
-                val errMsg = if (cmdStr.contains("method=0")) 
-                    "查询信息出错: ${result.message}" 
-                else 
+                val errMsg = if (cmdStr.contains("method=0"))
+                    "查询信息出错: ${result.message}"
+                else
                     "数据保存出错: ${result.message}"
                 handleFailureResult(errMsg, isMessageDialog = true)
             }
@@ -396,7 +414,11 @@ class OptimizedM50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
                     mStates.workModel.set(workModelList[it - 1])
                 }
             }
-
+            info.frontCalc.toIntOrNull()?.let {
+                if (it in frontendCalculationList.indices) {
+                    mStates.frontendCalculation.set(frontendCalculationList[it])
+                }
+            }
             info.baseStationMode.toIntOrNull()?.let {
                 if (it in initializationModeList.indices) {
                     mStates.initializationMode.set(initializationModeList[it])
@@ -499,9 +521,32 @@ class OptimizedM50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
                 .show()
         }
 
+        /** 选择前端解算 */
+        fun onFrontendCalculationChooseClick() {
+            val selectedIndex = frontendCalculationList.indexOf(mStates.frontendCalculation.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true)
+                .enableDrag(false)
+                .asBottomList(
+                    "", frontendCalculationList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.frontendCalculation.set(text)
+                        // 当前端解算选择"关"时，自动将坐标初始化设为"否"
+                        if (text == "关") {
+                            mStates.coordinateInitialization.set("否")
+                        }
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
         /** 选择坐标初始化 */
         fun onCoordinateInitializationChooseClick() {
-            val selectedIndex = coordinateInitializationList.indexOf(mStates.coordinateInitialization.get())
+            val selectedIndex =
+                coordinateInitializationList.indexOf(mStates.coordinateInitialization.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
@@ -555,7 +600,8 @@ class OptimizedM50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
 
         /** 选择解算间隔时间 */
         fun onCalculationIntervalTimeChooseClick() {
-            val selectedIndex = calculationIntervalTimeList.indexOf(mStates.calculationIntervalTime.get())
+            val selectedIndex =
+                calculationIntervalTimeList.indexOf(mStates.calculationIntervalTime.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
