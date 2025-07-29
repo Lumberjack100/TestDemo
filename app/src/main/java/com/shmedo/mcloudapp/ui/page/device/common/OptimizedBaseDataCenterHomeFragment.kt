@@ -20,13 +20,10 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
-import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentUniversalDataCenterHomeBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
@@ -80,7 +77,7 @@ abstract class OptimizedBaseDataCenterHomeFragment : OptimizedBaseIOTDeviceFragm
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (!isDeviceConnected() && communicateWay is BleConnect) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -123,7 +120,7 @@ abstract class OptimizedBaseDataCenterHomeFragment : OptimizedBaseIOTDeviceFragm
 
             R.id.btn_submit.onClick {
                 KeyboardUtils.hideSoftInput(binding.root)
-                if (!isDeviceConnected() && communicateWay is BleConnect) {
+                if (!isDeviceConnected() ) {
                     Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                     return@onClick
                 }
@@ -219,25 +216,6 @@ abstract class OptimizedBaseDataCenterHomeFragment : OptimizedBaseIOTDeviceFragm
         return BaseClickProxy()
     }
 
-    /**
-     * 执行指令序列的便捷方法
-     */
-    protected fun executeDataCenterCommands(
-        commands: List<String>,
-        showLoading: Boolean = true,
-        loadingMessage: String = "处理中...",
-        errorConfig: ErrorConfig = ErrorConfig.dialogConfig()
-    ) {
-        sendCommandSequence(
-            commands = commands,
-            config = CommandSequenceConfig(
-                timeout = AppContants.Communication.DELAY_10000_MILLIS,
-                showLoadingDialog = showLoading,
-                loadingMessage = loadingMessage,
-                errorConfig = errorConfig
-            )
-        )
-    }
 
     companion object {
         const val CENTER_NUM = "center_num"

@@ -53,7 +53,7 @@ import timber.log.Timber
  * 3. 响应驱动的指令执行
  * 4. 保持原有的复杂业务逻辑不变
  */
-class OptimizedM50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
+class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM50SensorConfigBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: M50SensorConfigViewModel by viewModels()

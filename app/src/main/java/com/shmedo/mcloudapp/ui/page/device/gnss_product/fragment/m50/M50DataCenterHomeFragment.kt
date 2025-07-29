@@ -29,29 +29,35 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.databinding.ItemDataReportingPeriodBinding
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.model.DataReportingPeriodItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.ParamSubmitButtonItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDataCenterHomeFragment
 import timber.log.Timber
 
 /**
  * @author：gonghe
- * @time: 2025/7/21
- * @desc: 一体式自供电 GNSS 接收机(M50)数据中心列表页面 - 支持4G和蓝牙两种通讯方式
+ * @time: 2025/7/26
+ * @desc: 一体式自供电 GNSS 接收机(M50)数据中心列表页面
  *
+ * 优化特点：
+ * 1. 继承自 OptimizedBaseDataCenterHomeFragment，使用新的通信架构
+ * 2. 统一的错误处理策略
+ * 3. 响应驱动的指令执行
+ * 4. 支持4G和蓝牙两种通讯方式
  */
-class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
+class M50DataCenterHomeFragment : OptimizedBaseDataCenterHomeFragment() {
     private val reportMethodList = listOf("固定间隔上报", "定时定点上报")
     private val reportStartTimeList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_report_start_time) }
 
     private var dataReportingPeriodItem: DataReportingPeriodItem = DataReportingPeriodItem()
-
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -68,18 +74,10 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
         groupList.addAll(getAdapterData())
 
-        groupList.add(
-            GapItem(
-                height = ConvertUtils.dp2px(60f)
-            )
-        )
-        groupList.add(
-            ParamSubmitButtonItem(
-                btnText = "确定",
-            )
-        )
+        groupList.add(GapItem(height = ConvertUtils.dp2px(60f)))
+        groupList.add(ParamSubmitButtonItem(btnText = "确定"))
 
-        binding.recyclerView.bindingAdapter.models = groupList
+        binding.recyclerView.models = groupList
     }
 
     override fun BindingViewHolder.processOtherItemViewBind(itemViewType: Int) {
@@ -94,145 +92,63 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
         }
     }
 
-    override fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        super.isTargetCommandType(commandType)
-                || (commandType == IOTCommandType.MD_GET_DATA_REPORT_TYPE)
-                || (commandType == IOTCommandType.MD_SET_DATA_REPORT_TYPE)
-
-
     override fun getNavigationActionId(): Int {
         return R.id.action_global_dataCenterParamFragment
     }
 
     override fun queryData() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
-        //获取上报周期信息
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TYPE)
-        commandItems.add(command)
+        // 获取上报周期信息
+        commands.add(IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TYPE))
 
+        // 获取数据链路状态
         for (i in 1..centerNum) {
             val entity = CenterNumberEntity(i.toString())
-            val command =
-                IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
-            commandItems.add(command)
+            commands.add(
+                IOTCommandUtil.getCommand(
+                    IOTCommandType.MD_GET_DATA_CENTER_STATUS,
+                    entity
+                )
+            )
         }
 
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig(
+                    strategy = ErrorHandlingStrategy.Dialog
+                )
+            )
+        )
     }
 
     override fun handleFragmentResult(bundle: Bundle) {
         val centerNumber =
             bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
 
-        commandItems.clear()
         val entity = CenterNumberEntity(centerNumber.toString())
-        val command =
-            IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
-        commandItems.add(command)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
 
-        showLoadingDialog(StringUtils.getString(R.string.loading))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    inner class M50ClickProxy {
-        /**
-         * 上报方式
-         */
-        fun onReportingMethodClick() {
-            val selectedIndex =
-                reportMethodList.indexOf(dataReportingPeriodItem.getReportMethodStr())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "请选择上报方式", reportMethodList.toTypedArray(),
-                    null, selectedIndex,
-                    { position, text ->
-                        dataReportingPeriodItem.setReportMethod(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
-        }
-
-        /**
-         * 上报起始时间
-         */
-        fun onReportingStartTimeClick() {
-//            XPopup.Builder(context)
-//                .hasShadowBg(false)
-//                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.4f).toInt())
-//                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-//                .atView(binding.tvStartTime) // 依附于所点击的View，内部会自动判断在上方或者下方显示
-//                .asAttachList(reportStartTimeList, null, { _, text ->
-//                    dataReportingPeriodItem.setReportStartTimeHour(text)
-//                }, 0, 0)
-//                .show()
-
-            val selectedIndex =
-                reportStartTimeList.indexOf(dataReportingPeriodItem.getReportStartTimeHourStr())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "请选择起始时间", reportStartTimeList,
-                    null, selectedIndex,
-                    { position, text ->
-                        dataReportingPeriodItem.setReportStartTimeHour(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
-        }
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.loading),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun initSaveCommand() {
-        if (dataReportingPeriodItem.getReportMethodStr().contains("定时定点")) {
-            if (dataReportingPeriodItem.getReportStartTimeHourStr().isEmpty()) {
-                showMessageDialog("请选择起始时间（小时）!")
-                return
-            }
-            if (dataReportingPeriodItem.getReportStartTimeMinuteStr().isEmpty()) {
-                showMessageDialog("请输入起始时间（分钟）!")
-                return
-            }
-            try {
-                val value = dataReportingPeriodItem.getReportStartTimeMinuteStr().toDouble()
-                if (value < 5 || value > 60) {
-                    showMessageDialog("起始时间（分钟）数值范围[5,60]!")
-                    return
-                }
-            } catch (ex: Exception) {
-                showMessageDialog("请输入正确的起始时间（分钟）!")
-                return
-            }
+        // 验证输入
+        if (!validateInput()) return
 
-        } else {
-            if (dataReportingPeriodItem.getReportIntervalStr().isEmpty()) {
-                showMessageDialog("请输入时间间隔（分钟）!")
-                return
-            }
-            try {
-                val value = dataReportingPeriodItem.getReportIntervalStr().toDouble()
-                if (value < 5 || value > 1440) {
-                    showMessageDialog("时间间隔（分钟）数值范围[5,1440]!")
-                    return
-                }
-            } catch (ex: Exception) {
-                showMessageDialog("请输入正确的时间间隔（分钟）!")
-                return
-            }
-        }
+        val commands = mutableListOf<String>()
 
-        commandItems.clear()
-
-        // 优化 timehour 参数：从时间字符串中提取小时数值，而不是使用索引
+        // 从时间字符串中提取小时数值，而不是使用索引
         val timehourValue = if (dataReportingPeriodItem.getReportMethodStr().contains("定时定点")) {
             try {
-                // 从时间字符串（如 "08:00"）中提取小时数值（如 8）
                 val timeStr = dataReportingPeriodItem.getReportStartTimeHourStr()
                 val hourStr = timeStr.split(":")[0]
                 hourStr.toInt().toString()
@@ -248,24 +164,74 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
             type = reportMethodList.indexOf(dataReportingPeriodItem.getReportMethodStr())
                 .toString(),
             timehour = timehourValue,
-            timemin = if (dataReportingPeriodItem.getReportMethodStr()
-                    .contains("定时定点")
-            ) dataReportingPeriodItem.getReportStartTimeMinuteStr() else IOTConstants.NULL_KEY,
-            timegap = if (dataReportingPeriodItem.getReportMethodStr()
-                    .contains("定时定点")
-            ) IOTConstants.NULL_KEY else dataReportingPeriodItem.getReportIntervalStr()
+            timemin = if (dataReportingPeriodItem.getReportMethodStr().contains("定时定点"))
+                dataReportingPeriodItem.getReportStartTimeMinuteStr() else IOTConstants.NULL_KEY,
+            timegap = if (dataReportingPeriodItem.getReportMethodStr().contains("定时定点"))
+                IOTConstants.NULL_KEY else dataReportingPeriodItem.getReportIntervalStr()
         )
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_DATA_REPORT_TYPE,
-            entity.toCommandString()
-        )
-        commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        commands.add(
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_DATA_REPORT_TYPE,
+                entity.toCommandString()
+            )
+        )
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
-    override fun setResultData(cmdStr: String) {
+    /**
+     * 验证输入数据
+     */
+    private fun validateInput(): Boolean {
+        if (dataReportingPeriodItem.getReportMethodStr().contains("定时定点")) {
+            if (dataReportingPeriodItem.getReportStartTimeHourStr().isEmpty()) {
+                showMessageDialog("请选择起始时间（小时）!")
+                return false
+            }
+            if (dataReportingPeriodItem.getReportStartTimeMinuteStr().isEmpty()) {
+                showMessageDialog("请输入起始时间（分钟）!")
+                return false
+            }
+            try {
+                val value = dataReportingPeriodItem.getReportStartTimeMinuteStr().toDouble()
+                if (value < 5 || value > 60) {
+                    showMessageDialog("起始时间（分钟）数值范围[5,60]!")
+                    return false
+                }
+            } catch (ex: Exception) {
+                showMessageDialog("请输入正确的起始时间（分钟）!")
+                return false
+            }
+        } else {
+            if (dataReportingPeriodItem.getReportIntervalStr().isEmpty()) {
+                showMessageDialog("请输入时间间隔（分钟）!")
+                return false
+            }
+            try {
+                val value = dataReportingPeriodItem.getReportIntervalStr().toDouble()
+                if (value < 5 || value > 1440) {
+                    showMessageDialog("时间间隔（分钟）数值范围[5,1440]!")
+                    return false
+                }
+            } catch (ex: Exception) {
+                showMessageDialog("请输入正确的时间间隔（分钟）!")
+                return false
+            }
+        }
+        return true
+    }
+
+    /**
+     * 处理指令响应 - 重写父类方法处理M50特定的指令
+     */
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DATA_REPORT_TYPE -> {
                 val result = iotParseManager.parse<DataReportType>(
@@ -276,13 +242,9 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询上报周期出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initDataReportInfo(result.data)
                     }
                 }
@@ -297,13 +259,9 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询数据链路状态出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initDataCenterStatus(result.data)
                     }
                 }
@@ -313,12 +271,12 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        // 保存成功，检查是否还有指令需要执行
+                        if (!isCommunicationExecuting()) {
                             processNavigateUp()
                         }
                     }
@@ -326,11 +284,14 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+
             }
         }
     }
 
+    /**
+     * 初始化数据上报信息
+     */
     private fun initDataReportInfo(dataReportType: DataReportType) {
         try {
             dataReportType.type.toIntOrNull()?.let {
@@ -339,7 +300,6 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
                 }
             }
             dataReportType.timehour.toIntOrNull()?.let { hourValue ->
-                // 根据小时数值查找对应的时间字符串（如 8 -> "08:00"）
                 val timeStr = String.format("%02d:00", hourValue)
                 if (timeStr in reportStartTimeList) {
                     dataReportingPeriodItem.setReportStartTimeHour(timeStr)
@@ -353,6 +313,9 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
         }
     }
 
+    /**
+     * 初始化数据链路状态
+     */
     private fun initDataCenterStatus(dataCenterStatus: DataCenterStatus) {
         when (dataCenterStatus.centerid) {
             ServerOne.centerId -> {
@@ -386,4 +349,59 @@ class M50DataCenterHomeFragment : BaseDataCenterHomeFragment() {
             }
         }
     }
-}
+
+    /**
+     * M50特定的点击处理代理
+     */
+    inner class M50ClickProxy {
+        /**
+         * 上报方式选择
+         */
+        fun onReportingMethodClick() {
+            val selectedIndex =
+                reportMethodList.indexOf(dataReportingPeriodItem.getReportMethodStr())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true)
+                .enableDrag(false)
+                .asBottomList(
+                    "请选择上报方式",
+                    reportMethodList.toTypedArray(),
+                    null,
+                    selectedIndex,
+                    { position, text ->
+                        dataReportingPeriodItem.setReportMethod(text)
+                    },
+                    0,
+                    R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        /**
+         * 上报起始时间选择
+         */
+        fun onReportingStartTimeClick() {
+            val selectedIndex =
+                reportStartTimeList.indexOf(dataReportingPeriodItem.getReportStartTimeHourStr())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true)
+                .enableDrag(false)
+                .asBottomList(
+                    "请选择起始时间",
+                    reportStartTimeList,
+                    null,
+                    selectedIndex,
+                    { position, text ->
+                        dataReportingPeriodItem.setReportStartTimeHour(text)
+                    },
+                    0,
+                    R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+    }
+} 

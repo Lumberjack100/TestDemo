@@ -53,7 +53,7 @@ import timber.log.Timber
  * 3. 响应驱动的指令执行
  * 4. 支持4G和蓝牙两种通讯方式
  */
-class OptimizedM50HomeFragment : OptimizedBaseDeviceHomeFragment() {
+class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
 
     private var measureDataItem: M50MeasureDataItem = M50MeasureDataItem()
 

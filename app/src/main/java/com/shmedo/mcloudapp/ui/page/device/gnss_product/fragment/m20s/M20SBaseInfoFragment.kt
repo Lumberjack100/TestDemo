@@ -26,7 +26,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/12/19
- * @desc: 使用优化架构的M20S基本信息Fragment
+ * @desc: 普适型 GNSS 接收机(M20S)基本信息
  *
  * 优化特点：
  * 1. 继承自 OptimizedBaseDeviceStatusInfoStyle2Fragment，使用新的通信架构
@@ -35,7 +35,7 @@ import timber.log.Timber
  * 4. 保持原有的M20S特定业务逻辑不变
  * 5. 支持4G和蓝牙两种通讯方式
  */
-class OptimizedM20SBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
+class M20SBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)

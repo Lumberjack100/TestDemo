@@ -14,7 +14,7 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyle2Fragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -23,9 +23,15 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/9/19
- * 描述： 状态信息
+ * 描述：普适型 GNSS 接收机(M20S)状态信息
+ * 
+ * 优化特点：
+ * 1. 继承自OptimizedBaseDeviceStatusInfoStyle2Fragment，使用新的优化架构
+ * 2. 统一的错误处理和指令执行机制
+ * 3. 保持原有的M20S状态信息显示逻辑不变
+ * 4. 支持供电信息、环境信息、模块信息等状态监控
  */
-class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+class M20SStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -45,6 +51,7 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
+                // 供电信息
                 groupList.add(DeviceStatusInfoGroupItem("供电信息"))
                 val externalVoltage = stateInfo.ext_power_volt.toDoubleOrNull() ?: Double.MAX_VALUE
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -58,6 +65,7 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     isBottomItem = true
                 )
 
+                // 环境信息
                 groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                 groupList.add(DeviceStatusInfoGroupItem("环境信息"))
                 val internalTemp = stateInfo.temp.toDoubleOrNull() ?: Double.MAX_VALUE
@@ -78,9 +86,12 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     isBottomItem = true
                 )
 
+                // 模块信息
                 stateInfo.self_check.notNullKey {
                     groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                     groupList.add(DeviceStatusInfoGroupItem("模块信息"))
+                    
+                    // GNSS模块
                     if (stateInfo.self_check.uppercase().indexOf("GNSS") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
@@ -95,6 +106,8 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
+                    
+                    // 倾角加速度模块
                     if (stateInfo.self_check.uppercase().indexOf("SCL") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
@@ -109,6 +122,8 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
+                    
+                    // 4G模块
                     if (stateInfo.self_check.uppercase().indexOf("4G") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
@@ -123,6 +138,8 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
+                    
+                    // 蓝牙模块
                     if (stateInfo.self_check.uppercase().indexOf("BT") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
@@ -137,6 +154,8 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
+                    
+                    // 电台模块
                     if (stateInfo.self_check.uppercase().indexOf("RADIO") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
@@ -151,6 +170,8 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
+                    
+                    // 存储模块
                     if (stateInfo.self_check.uppercase().indexOf("EMMC") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
@@ -165,6 +186,8 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
+                    
+                    // 温湿度模块
                     if (stateInfo.self_check.uppercase().indexOf("SHT21") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
@@ -179,10 +202,12 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
+                    
+                    // 倾角加速度模块
                     if (stateInfo.self_check.uppercase().indexOf("MEMS") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
-                            name = "倾角计模块",
+                            name = "倾角加速度模块",
                             value = if (stateInfo.self_check.uppercase()
                                     .indexOf("MEMS:0") == -1
                             ) "正常" else "故障",
@@ -204,5 +229,4 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             }
         }
     }
-
 }

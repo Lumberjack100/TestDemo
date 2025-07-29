@@ -49,7 +49,7 @@ import timber.log.Timber
  * 4. 保持原有的复杂业务逻辑不变
  * 5. 更清晰的代码结构和职责分离
  */
-class OptimizedM50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
+class M50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM50ReportModelParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: M50ReportModelParamViewModel by viewModels()

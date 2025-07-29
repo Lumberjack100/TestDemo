@@ -43,13 +43,13 @@ import timber.log.Timber
  * @desc:  普适型 GNSS 接收机(M20S)配置主页
  *
  * 优化特点：
- * 1. 继承自 OptimizedUniversalBaseDeviceHomeFragment，使用新的通信架构
+ * 1. 继承自 OptimizedBaseDeviceHomeFragment，使用新的通信架构
  * 2. 统一的错误处理策略
  * 3. 响应驱动的指令执行
  * 4. 保持原有的M20S特定业务逻辑不变
  * 5. 支持4G和蓝牙两种通讯方式
  */
-class OptimizedM20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
+class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
 
     private var measureDataItem: M20SMeasureDataItem = M20SMeasureDataItem()
 

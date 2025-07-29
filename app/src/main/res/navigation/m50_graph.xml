@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/m50HomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.OptimizedM50HomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50HomeFragment"
         android:label="M50HomeFragment"
         tools:layout="@layout/fragment_universal_device_home_new" />
 
@@ -53,7 +53,7 @@
 
     <fragment
         android:id="@+id/m50WorkModelParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.OptimizedM50ReportModelParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50ReportModelParamFragment"
         android:label="M50ReportModelParamFragment"
         tools:layout="@layout/fragment_m50_report_model_param" />
 
@@ -71,13 +71,13 @@
 
     <fragment
         android:id="@+id/m50GNSSConfigFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.OptimizedM50GNSSConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50GNSSConfigFragment"
         android:label="M50GNSSConfigFragment"
         tools:layout="@layout/fragment_m50_gnss_config" />
 
     <fragment
         android:id="@+id/m50SensorConfigFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.OptimizedM50SensorConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50SensorConfigFragment"
         android:label="M50SensorConfigFragment"
         tools:layout="@layout/fragment_m50_sensor_config" />
 
@@ -142,14 +142,6 @@
     <action
         android:id="@+id/action_global_to_m50RunningInfoFragment"
         app:destination="@id/m50RunningInfoFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
-        android:id="@+id/action_global_to_m50SatelliteInfoFragment"
-        app:destination="@id/m50SatelliteInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

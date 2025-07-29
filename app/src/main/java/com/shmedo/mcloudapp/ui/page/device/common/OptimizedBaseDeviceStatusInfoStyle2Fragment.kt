@@ -15,7 +15,6 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.interfaces.SimpleCallback
-import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasSensorStatusInfo
@@ -666,7 +665,6 @@ abstract class OptimizedBaseDeviceStatusInfoStyle2Fragment : OptimizedBaseIOTDev
         sendCommandSequence(
             commands = listOf(command),
             config = CommandSequenceConfig(
-                timeout = AppContants.Communication.DELAY_10000_MILLIS,
                 showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
                 errorConfig = ErrorConfig.dialogConfig() // 状态查询失败显示Dialog
             )

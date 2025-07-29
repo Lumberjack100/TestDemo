@@ -47,7 +47,7 @@ import timber.log.Timber
  * 3. 响应驱动的指令执行
  * 4. 配置化的行为控制
  */
-class OptimizedM50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
+class M50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM50GnssConfigBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: M50GNSSConfigViewModel by viewModels()
