@@ -59,7 +59,7 @@
 
     <fragment
         android:id="@+id/m50WorkModelParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50ReportModelParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.OptimizedM50ReportModelParamFragment"
         android:label="M50ReportModelParamFragment"
         tools:layout="@layout/fragment_m50_report_model_param" />
 
