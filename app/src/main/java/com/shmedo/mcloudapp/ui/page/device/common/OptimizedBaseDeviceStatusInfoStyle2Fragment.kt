@@ -27,7 +27,6 @@ import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.communication.model.CommandSequenceCallbacks
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentBaseDeviceStatusInfoStyle2Binding
@@ -35,7 +34,6 @@ import com.shmedo.mcloudapp.databinding.ItemDasSensorStatusBinding
 import com.shmedo.mcloudapp.databinding.ItemDeviceStatusInfoBasic2Binding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.DasSensorSubMonitorStatusItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
@@ -93,7 +91,7 @@ abstract class OptimizedBaseDeviceStatusInfoStyle2Fragment : OptimizedBaseIOTDev
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (!isDeviceConnected() && communicateWay is BleConnect) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 binding.refreshLayout.finishRefresh(false)
                 return@onRefresh

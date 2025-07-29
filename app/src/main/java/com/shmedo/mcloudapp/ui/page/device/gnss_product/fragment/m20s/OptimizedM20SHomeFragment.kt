@@ -40,7 +40,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/12/19
- * @desc: 使用优化架构的M20S设备主页
+ * @desc:  普适型 GNSS 接收机(M20S)配置主页
  *
  * 优化特点：
  * 1. 继承自 OptimizedUniversalBaseDeviceHomeFragment，使用新的通信架构
@@ -249,6 +249,7 @@ class OptimizedM20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
             commands = listOf(command),
             config = CommandSequenceConfig(
                 timeout = AppContants.Communication.DELAY_10000_MILLIS,
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
                 errorConfig = ErrorConfig.silentConfig() // 状态查询失败不显示错误
             )
         )

@@ -52,12 +52,6 @@
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
-        android:id="@+id/m50SatelliteInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50SatelliteInfoFragment"
-        android:label="M50SatelliteInfoFragment"
-        tools:layout="@layout/fragment_m50_satellite_info" />
-
-    <fragment
         android:id="@+id/m50WorkModelParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.OptimizedM50ReportModelParamFragment"
         android:label="M50ReportModelParamFragment"
