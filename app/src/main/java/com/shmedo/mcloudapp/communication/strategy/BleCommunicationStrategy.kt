@@ -8,14 +8,17 @@ import com.shmedo.mcloudapp.communication.model.DeviceConnectionState
 import com.shmedo.mcloudapp.communication.model.DeviceError
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.timeout
 import no.nordicsemi.android.ble.ktx.state.ConnectionState
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * 蓝牙通信策略实现
@@ -46,31 +49,27 @@ class BleCommunicationStrategy(
 
             // 发送指令
             sendBleCommand(command)
-            
-            // 等待响应，设置超时
-            val result = withTimeoutOrNull(config.timeout) {
-                bleViewModel.commandData.collect { data ->
+
+            // 使用 timeout 操作符更合适
+            bleViewModel.commandData
+                .timeout(config.timeout.milliseconds)
+                .take(1) // 只取第一个响应
+                .collect { data ->
                     Timber.i("BLE响应内容: ${data.response}")
                     emit(CommandResult.Success(
                         responseData = data.response,
                         command = command
                     ))
-                    return@collect
                 }
-            }
-            
-            // 如果超时
-            emit(CommandResult.Timeout(
-                command = command,
-                timeoutMs = config.timeout
-            ))
         }.catch { e ->
             // 使用Flow.catch处理异常，避免Flow异常透明度违规
             when (e) {
+                is TimeoutCancellationException -> {
+                    emit(CommandResult.Timeout(command, config.timeout))
+                }
                 is CancellationException -> {
                     // Flow被取消，不发出任何值，避免异常透明度违规
                     Timber.d("BLE指令被取消: $command")
-                    // 不emit任何值，让Flow自然结束
                 }
                 else -> {
                     // 其他异常

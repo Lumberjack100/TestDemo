@@ -286,7 +286,7 @@ isDeviceConnected()
 isCommunicationExecuting()
 
 // 取消当前通信
-cancelCurrentCommunication()
+finishCommunication()
 ```
 
 ## 性能优化

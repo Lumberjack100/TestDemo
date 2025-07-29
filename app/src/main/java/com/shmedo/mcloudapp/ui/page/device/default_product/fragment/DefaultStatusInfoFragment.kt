@@ -98,7 +98,7 @@ class DefaultStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     if (stateInfo.self_check.uppercase().indexOf("SCL") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
-                            name = "加速度计",
+                            name = "倾角加速度模块",
                             value = if (stateInfo.self_check.uppercase()
                                     .indexOf("SCL:0") == -1
                             ) "正常" else "故障",

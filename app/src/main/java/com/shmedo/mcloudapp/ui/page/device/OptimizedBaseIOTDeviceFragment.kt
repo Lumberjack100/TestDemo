@@ -132,14 +132,18 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
             callbacks = CommandSequenceCallbacks(
                 onSuccess = { successResult ->
                     handleCommandResponse(successResult.responseData)
+                    // 调用原始回调
+                    callbacks.onSuccess?.invoke(successResult)
                 },
                 onComplete = { results ->
-                    cancelCurrentCommunication()
+                    // 统一的清理逻辑
+                    finishCommunication()
                     callbacks.onComplete(results)
                 },
                 onError = { error, command ->
                     addDeviceLogItem(Log.ERROR, "指令执行失败: $command, 错误: ${error.message}")
-                    cancelCurrentCommunication()
+                    // 统一的清理逻辑
+                    finishCommunication()
                     callbacks.onError(error, command)
                 }
             )
@@ -268,7 +272,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     /**
      * 取消当前通信
      */
-    protected fun cancelCurrentCommunication() {
+    protected fun finishCommunication() {
         finishRefresh()
         communicationManager.cancelExecution()
     }

@@ -22,7 +22,7 @@ object UDDeviceStatusHelper {
             resultMap["ld"]?.let { errorInfoList.add("雷达故障") }
             resultMap["cam"]?.let { errorInfoList.add("摄像头故障") }
             resultMap["gnss"]?.let { errorInfoList.add("GNSS故障") }
-            resultMap["qj"]?.let { errorInfoList.add("加速度计故障") }
+            resultMap["qj"]?.let { errorInfoList.add("倾角加速度故障") }
             resultMap["4G"]?.let { errorInfoList.add("4G故障") }
             resultMap["bt"]?.let { errorInfoList.add("蓝牙故障") }
             resultMap["radio"]?.let { errorInfoList.add("电台故障") }

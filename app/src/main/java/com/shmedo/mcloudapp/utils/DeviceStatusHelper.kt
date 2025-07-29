@@ -27,7 +27,7 @@ object DeviceStatusHelper {
 
                 "SCL" -> {
                     if (errors.size > 1 && errors[1] == "0") {
-                        deviceAbnormalList.add("加速度计故障")
+                        deviceAbnormalList.add("倾角加速度故障")
                     }
                 }
 
@@ -143,7 +143,7 @@ object DeviceStatusHelper {
         if (currentStateInfo.scl != IOTConstants.NULL_KEY && !currentStateInfo.scl.uppercase()
                 .contains("OK")
         ) {
-            deviceAbnormalList.add("加速度计故障")
+            deviceAbnormalList.add("倾角加速度故障")
         }
         //lora LORA模块
         if (currentStateInfo.lora != IOTConstants.NULL_KEY && !currentStateInfo.lora.uppercase()

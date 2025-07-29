@@ -119,7 +119,7 @@ class UProductStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 stateInfo.scl.notNullKey(notNullKeyAction = {
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
-                        name = "倾角加速度计",
+                        name = "倾角加速度模块",
                         value = stateInfo.scl.uppercase().compareAndReturn("OK", "正常", "故障"),
                         textColorRes = if (stateInfo.scl.uppercase() == "OK") 0 else ColorUtils.getColor(
                             R.color.error_FF4400
