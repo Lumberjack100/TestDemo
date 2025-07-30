@@ -54,11 +54,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/SwitchButton_Item_Title_Style"
-                        android:text="报警启用" />
+                        textViewEnabled="@{stateVM.isRadioEnable}"
+                        android:text="本地报警启用" />
 
                     <com.kyleduo.switchbutton.SwitchButton
                         style="@style/SwitchButton_Item_Button_Style"
                         checkedImmediatelyNoEvent="@{stateVM.isOpened}"
+                        android:enabled="@{stateVM.isRadioEnable}"
                         android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                         app:kswAnimationDuration="100"
                         app:kswBackDrawable="@drawable/sl_switchbutton_back"
@@ -69,10 +71,12 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onGoToParamSettingClick()}"
-                    android:background="@drawable/shape_common_click_item_bottom_corner_4">
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4"
+                    android:enabled="@{stateVM.isOpened &amp;&amp; stateVM.isRadioEnable}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
+                        textViewEnabled="@{stateVM.isOpened &amp;&amp; stateVM.isRadioEnable}"
                         android:text="参数配置" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -108,7 +112,7 @@
                         style="@style/TestButton_Style"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestFirstAlarmClick()}"
-                        textViewEnabled="@{stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened &amp;&amp; stateVM.isRadioEnable}"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dimen_size_30"
                         android:text="一级报警测试"
@@ -123,7 +127,7 @@
                         style="@style/TestButton_Style"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestSecondAlarmClick()}"
-                        textViewEnabled="@{stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened &amp;&amp; stateVM.isRadioEnable}"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dimen_size_30"
                         android:text="二级报警测试"
@@ -141,7 +145,7 @@
                         style="@style/TestButton_Style"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestThirdAlarmClick()}"
-                        textViewEnabled="@{stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened &amp;&amp; stateVM.isRadioEnable}"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dimen_size_30"
                         android:text="三级报警测试"
@@ -156,7 +160,7 @@
                         style="@style/TestButton_Style"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestFourthAlarmClick()}"
-                        textViewEnabled="@{stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened &amp;&amp; stateVM.isRadioEnable}"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dimen_size_30"
                         android:text="四级报警测试"
