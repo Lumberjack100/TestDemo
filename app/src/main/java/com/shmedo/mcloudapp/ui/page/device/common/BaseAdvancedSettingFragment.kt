@@ -248,7 +248,9 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
      * 是否支持格式化数据存储
      */
     private fun isSupportFormatDataStorage(): Boolean {
-        return productType == ProductType.GNSS_M_5
+        return productType == ProductType.GNSS_M_1
+                || productType == ProductType.GNSS_M_2
+                || productType == ProductType.GNSS_M_5
     }
 
     override fun createObserver() {
