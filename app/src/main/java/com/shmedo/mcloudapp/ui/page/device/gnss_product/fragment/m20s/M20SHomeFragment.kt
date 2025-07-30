@@ -3,19 +3,23 @@ package com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s
 import android.os.Bundle
 import android.util.Log
 import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.StringUtils
+import com.drake.brv.BindingAdapter.BindingViewHolder
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
+import com.hjq.toast.Toaster
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
-import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
+import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.databinding.ItemM50MeasureDataBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
@@ -28,8 +32,10 @@ import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.model.M20SMeasureDataItem
+import com.shmedo.mcloudapp.model.M50MeasureDataItem
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceHomeFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
@@ -51,7 +57,7 @@ import timber.log.Timber
  */
 class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
 
-    private var measureDataItem: M20SMeasureDataItem = M20SMeasureDataItem()
+    private var measureDataItem: M50MeasureDataItem = M50MeasureDataItem()
 
     override fun initData() {
         super.initData()
@@ -66,8 +72,20 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
 
-        // 扩展适配器支持 M20SMeasureDataItem
-        binding.rvModule.bindingAdapter.addType<M20SMeasureDataItem>(R.layout.item_m20s_measure_data)
+        // 扩展适配器支持 M50MeasureDataItem
+        binding.rvModule.bindingAdapter.addType<M50MeasureDataItem>(R.layout.item_m50_measure_data)
+    }
+
+    override fun BindingViewHolder.processOtherItemViewBind(itemViewType: Int) {
+        if (itemViewType == R.layout.item_m50_measure_data) {
+            val binding = getBinding<ItemM50MeasureDataBinding>()
+            val measureDataItem = getModel<M50MeasureDataItem>()
+
+            // 设置数据绑定参数
+            binding.setVariable(BR.m, measureDataItem)
+            binding.setVariable(BR.click, ClickProxy())
+            binding.executePendingBindings()
+        }
     }
 
     override fun initModuleData() {
@@ -108,10 +126,10 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                     ),
                     ConfigModule(
                         CommonModule(
-                            name = "位置信息",
-                            resID = R.drawable.ic_module_location_info,
+                            name = "运行信息",
+                            resID = R.drawable.ic_module_satellite_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_commonLocationInfoFragment
+                            navId = R.id.action_global_to_m20SRunningInfoFragment
                         )
                     )
                 )
@@ -119,71 +137,85 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
         )
 
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-        
+
         // 设备配置模块
         groupList.add(DeviceStatusInfoGroupItem("设备配置"))
         val configModuleTree = ConfigModuleTree()
-        
+
         // 根据产品类型添加不同的配置模块
-        if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) {
-            configModuleTree.configModules.add(
-                ConfigModule(
-                    CommonModule(
-                        name = "工作模式",
-                        resID = R.drawable.ic_module_work_mode_new,
-                        navId = R.id.action_global_to_m20SWorkModelFragment
-                    )
+        configModuleTree.configModules.add(
+            ConfigModule(
+                CommonModule(
+                    name = "工作模式",
+                    resID = R.drawable.ic_module_work_mode_new,
+                    navId = R.id.action_global_to_m20SWorkModelParamFragment
                 )
             )
-        }
-        
+        )
+        configModuleTree.configModules.add(
+            ConfigModule(
+                CommonModule(
+                    name = "网络配置",
+                    resID = R.drawable.ic_module_network_setting,
+                    navId = R.id.action_global_to_m50NetworkConfigFragment
+                )
+            )
+        )
         configModuleTree.configModules.add(
             ConfigModule(
                 DataCenterModule(
                     name = "链路配置",
                     resID = R.drawable.ic_module_datacenter_new,
-                    navId = R.id.action_global_to_universalDataCenterHomeFragment
+                    navId = R.id.action_global_dataCenterHomeFragment
                 )
             )
         )
-        
-        if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) {
-            configModuleTree.configModules.add(
-                ConfigModule(
-                    CommonModule(
-                        name = "电台配置",
-                        resID = R.drawable.ic_module_lora_new,
-                        navId = R.id.action_global_to_m20SRadioSettingFragment
-                    )
+        configModuleTree.configModules.add(
+            ConfigModule(
+                CommonModule(
+                    name = "电台配置",
+                    resID = R.drawable.ic_module_lora_new,
+                    navId = R.id.action_global_to_m20SRadioSettingFragment
                 )
             )
-        }
-        
-        if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) {
-            configModuleTree.configModules.add(
-                ConfigModule(
-                    CommonModule(
-                        name = "报警配置",
-                        resID = R.drawable.ic_module_alarm_new,
-                        navId = R.id.action_global_to_alarmSettingFragment
-                    )
+        )
+        configModuleTree.configModules.add(
+            ConfigModule(
+                CommonModule(
+                    name = "GNSS配置",
+                    resID = R.drawable.ic_module_cors,
+                    navId = R.id.action_global_to_m50GNSSConfigFragment,
                 )
             )
-        }
-        
-        if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) {
-            configModuleTree.configModules.add(
-                ConfigModule(
-                    CommonModule(
-                        name = "卫星通信",
-                        resID = R.drawable.ic_module_cors,
-                        navId = 0,
-                        isSupport = false
-                    )
+        )
+        configModuleTree.configModules.add(
+            ConfigModule(
+                CommonModule(
+                    name = "倾斜触发",
+                    resID = R.drawable.ic_module_sensor_setting_new,
+                    navId = R.id.action_global_to_m50SensorConfigFragment
                 )
             )
-        }
-        
+        )
+        configModuleTree.configModules.add(
+            ConfigModule(
+                CommonModule(
+                    name = "串口配置",
+                    resID = R.drawable.ic_module_serial_port,
+                    navId = 0,
+                    isSupport = false
+                )
+            )
+        )
+        configModuleTree.configModules.add(
+            ConfigModule(
+                CommonModule(
+                    name = "报警配置",
+                    resID = R.drawable.ic_module_alarm_new,
+                    navId = R.id.action_global_to_alarmSettingFragment
+                )
+            )
+        )
         configModuleTree.configModules.add(
             ConfigModule(
                 CommonModule(
@@ -193,7 +225,7 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                 )
             )
         )
-        
+
         configModuleTree.configModules.add(
             ConfigModule(
                 CommonModule(
@@ -203,7 +235,7 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                 )
             )
         )
-        
+
         // 蓝牙连接时添加指令调试模块
         if (communicateWay is BleConnect) {
             configModuleTree.configModules.add(
@@ -233,6 +265,7 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                     )
                 )
             }
+
             else -> {
                 super.processOtherItemClick(configModule)
             }
@@ -248,7 +281,6 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
         sendCommandSequence(
             commands = listOf(command),
             config = CommandSequenceConfig(
-                timeout = AppContants.Communication.DELAY_10000_MILLIS,
                 showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
                 errorConfig = ErrorConfig.silentConfig() // 状态查询失败不显示错误
             )
@@ -261,17 +293,20 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
     override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
-                val result = iotParseManager.parse<String>(cmdStr, IOTCommandType.QUERY_DEVICE_STATUS)
+                val result =
+                    iotParseManager.parse<String>(cmdStr, IOTCommandType.QUERY_DEVICE_STATUS)
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询设备状态出错: ${result.message}"
                         handleFailureResult(errMsg, isShowErrMsg = false)
                     }
+
                     is IOTCommandResult.Success -> {
                         initStatusInfo(result.data)
                     }
                 }
             }
+
             else -> {
                 // 其他指令交给父类处理
                 super.handleCommandResponse(cmdStr)
@@ -301,14 +336,14 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                 // 移除特定的故障信息
                 deviceAbnormalList.remove("电台故障")
                 deviceAbnormalList.remove("太阳能控制器故障")
-                
+
                 val status = if (deviceAbnormalList.isEmpty()) "正常" else "故障"
                 val logoResId = if (deviceAbnormalList.isEmpty()) {
                     mHeadStates.productNormalResId.get()
                 } else {
                     mHeadStates.productErrorResId.get()
                 }
-                
+
                 mHeadStates.productLogoResId.set(logoResId)
                 mHeadStates.deviceStatusCode.set(if (deviceAbnormalList.isEmpty()) "0" else "-3")
                 mHeadStates.warnErrorText.set(status)
@@ -345,9 +380,7 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
             2
         ) + "°"
 
-        // 刷新测量数据项
-        binding.rvModule.bindingAdapter.getModel<M20SMeasureDataItem>(0)
-            .refreshStatus(newXAngle, newYAngle, newZAngle)
+
     }
 
     /**
@@ -361,6 +394,45 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                     configModule.functionModule.name.contains("电台配置")
                 }?.functionModule?.refreshSupport(enable)
             }
+        }
+    }
+
+    inner class ClickProxy : BaseClickProxy() {
+        /**
+         * 跳转到位置信息页面
+         */
+        override fun onGotoLocationClick() {
+            if (!isDeviceConnected() && communicateWay is BleConnect) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            nav().safeNavigate(
+                R.id.action_global_to_commonLocationInfoFragment,
+                BaseIOTDeviceFragment.newBundleArguments(
+                    productType,
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+            )
+        }
+
+        override fun onTakePhotoClick() {
+            if (!isDeviceConnected() && communicateWay is BleConnect) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            // TODO: 实现拍照功能
+        }
+
+        override fun onGoToSensorDataHistoryClick() {
+            nav().safeNavigate(
+                R.id.action_global_to_commonSensorDataHistoryFragment,
+                CommonSensorDataHistoryFragment.newBundleArguments(
+                    productType,
+                    deviceInfo
+                )
+            )
         }
     }
 } 

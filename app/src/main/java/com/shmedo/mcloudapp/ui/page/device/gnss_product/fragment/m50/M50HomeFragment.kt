@@ -17,6 +17,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.ItemM50MeasureDataBinding
@@ -81,7 +82,7 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
 
             // 设置数据绑定参数
             binding.setVariable(BR.m, measureDataItem)
-            binding.setVariable(BR.click, M50ClickProxy())
+            binding.setVariable(BR.click, ClickProxy())
             binding.executePendingBindings()
         }
     }
@@ -268,7 +269,6 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
         sendCommandSequence(
             commands = commands,
             config = CommandSequenceConfig(
-                timeout = AppContants.Communication.DELAY_10000_MILLIS,
                 showLoadingDialog = false,
                 errorConfig = ErrorConfig.silentConfig() // 状态查询失败不显示错误
             )
@@ -431,11 +431,11 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
     /**
      * M50特定的点击处理代理
      */
-    inner class M50ClickProxy {
+    inner class ClickProxy : BaseClickProxy() {
         /**
          * 跳转到位置信息页面
          */
-        fun onGotoLocationClick() {
+        override fun onGotoLocationClick() {
             if (!isDeviceConnected() && communicateWay is BleConnect) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
@@ -451,7 +451,7 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
             )
         }
 
-        fun onTakePhotoClick() {
+        override fun onTakePhotoClick() {
             if (!isDeviceConnected() && communicateWay is BleConnect) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
@@ -459,7 +459,7 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
             // TODO: 实现拍照功能
         }
 
-        fun onGoToSensorDataHistoryClick() {
+        override fun onGoToSensorDataHistoryClick() {
             nav().safeNavigate(
                 R.id.action_global_to_commonSensorDataHistoryFragment,
                 CommonSensorDataHistoryFragment.newBundleArguments(

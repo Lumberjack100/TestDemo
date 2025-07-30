@@ -11,11 +11,11 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.M50ReportModelParamViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.M20SWorkModelParamViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50ReportModelParamFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SWorkModelParamFragment.ClickProxy" />
 
     </data>
 
@@ -53,39 +53,10 @@
                     android:paddingTop="@dimen/page_content_container_padding_top_12"
                     android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
+                    <!-- M20S版本移除上报模式和网络模式，只保留工作模式 -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_top_corner_4_with_divider"
-                        android:onClick="@{()->click.onReportModelChooseClick()}">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            android:text="上报模式" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Value_Style"
-                            android:text="@{stateVM.reportModel}"
-                            tools:text="自适应" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:onClick="@{()->click.onNetworkModelChooseClick()}">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            android:text="网络模式" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Value_Style"
-                            android:text="@{stateVM.networkModel}"
-                            tools:text="自动" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider"
                         android:onClick="@{()->click.onWorkModelChooseClick()}">
 
                         <com.google.android.material.textview.MaterialTextView

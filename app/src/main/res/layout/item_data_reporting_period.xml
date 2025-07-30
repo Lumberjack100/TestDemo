@@ -11,7 +11,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50DataCenterHomeFragment.M50ClickProxy" />
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseDataCenterHomeClickProxy" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat

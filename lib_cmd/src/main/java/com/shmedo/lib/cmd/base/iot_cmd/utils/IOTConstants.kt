@@ -31,6 +31,7 @@ object IOTConstants {
     object ErrorReasons {
         const val UNSUPPORTED = "unsupported"
         const val CMD_UNSUPPORTED = "cmd_unsupported"
+        const val METHOD_UNSUPPORTED = "method-unsupported"
         const val STATE_NOT_READY = "state not ready"
         const val EQUIPMENT_MODEL_ERROR = "equimodel_err"
         const val CORS_NETWORK_ERROR = "PSRDIFF_ERROR_NET"
@@ -44,8 +45,9 @@ object IOTConstants {
      * 错误原因中文映射
      */
     val errorReasonMap = mapOf(
-        ErrorReasons.UNSUPPORTED to "设备固件版本不支持此功能",
-        ErrorReasons.CMD_UNSUPPORTED to "设备固件版本不支持此功能",
+        ErrorReasons.UNSUPPORTED to "设备不支持此功能",
+        ErrorReasons.CMD_UNSUPPORTED to "设备不支持此功能",
+        ErrorReasons.METHOD_UNSUPPORTED to "设备不支持此功能",
         ErrorReasons.STATE_NOT_READY to "状态未就绪",
         ErrorReasons.EQUIPMENT_MODEL_ERROR to "设备模式错误",
         ErrorReasons.CORS_NETWORK_ERROR to "网络错误",

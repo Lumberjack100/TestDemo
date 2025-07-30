@@ -29,6 +29,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseDataCenterHomeClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
@@ -87,7 +88,7 @@ class M50DataCenterHomeFragment : OptimizedBaseDataCenterHomeFragment() {
 
             // 设置数据绑定参数
             binding.setVariable(BR.m, item)
-            binding.setVariable(BR.click, M50ClickProxy())
+            binding.setVariable(BR.click, ClickProxy())
             binding.executePendingBindings()
         }
     }
@@ -353,11 +354,11 @@ class M50DataCenterHomeFragment : OptimizedBaseDataCenterHomeFragment() {
     /**
      * M50特定的点击处理代理
      */
-    inner class M50ClickProxy {
+    inner class ClickProxy : BaseDataCenterHomeClickProxy() {
         /**
          * 上报方式选择
          */
-        fun onReportingMethodClick() {
+        override fun onReportingMethodClick() {
             val selectedIndex =
                 reportMethodList.indexOf(dataReportingPeriodItem.getReportMethodStr())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -382,7 +383,7 @@ class M50DataCenterHomeFragment : OptimizedBaseDataCenterHomeFragment() {
         /**
          * 上报起始时间选择
          */
-        fun onReportingStartTimeClick() {
+        override fun onReportingStartTimeClick() {
             val selectedIndex =
                 reportStartTimeList.indexOf(dataReportingPeriodItem.getReportStartTimeHourStr())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))

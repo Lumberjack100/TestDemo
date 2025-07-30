@@ -26,13 +26,13 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
-import com.shmedo.mcloudapp.databinding.FragmentM50ReportModelParamBinding
+import com.shmedo.mcloudapp.databinding.FragmentM50WorkModelParamBinding
 import com.shmedo.mcloudapp.extensions.formatDoubleValue
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.M50ReportModelParamViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.M50WorkModelParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -49,10 +49,10 @@ import timber.log.Timber
  * 4. 保持原有的复杂业务逻辑不变
  * 5. 更清晰的代码结构和职责分离
  */
-class M50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentM50ReportModelParamBinding
+class M50WorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentM50WorkModelParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: M50ReportModelParamViewModel by viewModels()
+    private val mStates: M50WorkModelParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     // 配置选项列表
@@ -77,13 +77,13 @@ class M50ReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
     )
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_m50_report_model_param, BR.stateVM, mStates)
+        return DataBindingConfig(R.layout.fragment_m50_work_model_param, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentM50ReportModelParamBinding
+        binding = getBinding() as FragmentM50WorkModelParamBinding
         binding.llToolbar.toolbar.title = "工作模式"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
