@@ -141,7 +141,6 @@ class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
         sendCommandSequence(
             commands = commands,
             config = CommandSequenceConfig(
-                timeout = AppContants.Communication.DELAY_10000_MILLIS,
                 showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
                 errorConfig = ErrorConfig.dialogConfig() // 状态查询失败显示Dialog
             )
