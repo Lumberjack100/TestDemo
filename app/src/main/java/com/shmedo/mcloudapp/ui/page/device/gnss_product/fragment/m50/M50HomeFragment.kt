@@ -40,6 +40,9 @@ import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragmen
 import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceHomeFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -57,6 +60,8 @@ import timber.log.Timber
 class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
 
     private var measureDataItem: M50MeasureDataItem = M50MeasureDataItem()
+    private var abnormalInfoJob: Job? = null
+
 
     override fun initData() {
         super.initData()
@@ -334,19 +339,22 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
                     if (content.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkDeviceAbnormal2(
                         content
                     )
-                deviceAbnormalList.remove("电台故障")
+                deviceAbnormalList.remove("电台模块故障")
                 val status = if (deviceAbnormalList.isEmpty()) "正常" else "故障"
                 mHeadStates.productLogoResId.set(if (deviceAbnormalList.isEmpty()) mHeadStates.productNormalResId.get() else mHeadStates.productErrorResId.get())
                 mHeadStates.deviceStatusCode.set(if (deviceAbnormalList.isEmpty()) "0" else "-3")
-                mHeadStates.warnErrorText.set(status)
 
+                if (status == "正常") {
+                    mHeadStates.warnErrorText.set("正常")
+                    return@launchWithViewLifecycle
+                }
+                handleAbnormalInfo(deviceAbnormalList)
 
 //                val status = when (stateInfo.deviceStatus) {
 //                    "-2" -> "告警"
 //                    "-3" -> "故障"
 //                    else -> "正常"
 //                }
-//
 //                val logoResId = status.compareAndReturn(
 //                    "故障",
 //                    R.drawable.device_logo_m50_error,
@@ -356,7 +364,6 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
 //                        R.drawable.device_logo_m50
 //                    )
 //                )
-//
 //                mHeadStates.productLogoResId.set(logoResId)
 //                mHeadStates.deviceStatusCode.set(stateInfo.deviceStatus)
 //                mHeadStates.warnErrorText.set(status)
@@ -364,6 +371,36 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
             } catch (e: Exception) {
                 Timber.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    /**
+     * 处理设备异常信息轮播展示
+     * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
+     */
+    private fun handleAbnormalInfo(errorInfoList: List<String>) {
+        //取消之前的job（如果存在）
+        abnormalInfoJob?.cancel()
+
+        //如果列表为空，直接返回
+        if (errorInfoList.isEmpty()) {
+            return
+        }
+        if (errorInfoList.size == 1) {
+            mHeadStates.warnErrorText.set(errorInfoList[0])
+            return
+        }
+        abnormalInfoJob = launchWithViewLifecycle {
+            flow {
+                while (true) {
+                    errorInfoList.forEach { errorInfo ->
+                        emit(errorInfo)
+                        delay(1500) // 延迟3秒
+                    }
+                }
+            }.collect { errorInfo ->
+                mHeadStates.warnErrorText.set(errorInfo)
             }
         }
     }
@@ -468,5 +505,11 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
                 )
             )
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        abnormalInfoJob?.cancel()
+        abnormalInfoJob = null
     }
 } 

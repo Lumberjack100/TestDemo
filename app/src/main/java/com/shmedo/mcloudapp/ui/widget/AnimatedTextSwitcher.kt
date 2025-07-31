@@ -22,7 +22,7 @@ class AnimatedTextSwitcher @JvmOverloads constructor(
     private var _textSize: Float =
         context.resources.getDimension(R.dimen.page_content_item_text_size_14)
     private var textGravity: Int = Gravity.CENTER
-    private var _maxEms: Int = 7
+    private var _maxEms: Int = 15
     private var defaultTextColor: Int = ContextCompat.getColor(context, R.color.online_colorPrimary)
     private var warnTextColor: Int = ContextCompat.getColor(context, R.color.warn_FF9D00)
     private var errorTextColor: Int = ContextCompat.getColor(context, R.color.error_FF4400)

@@ -334,7 +334,7 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                 }
 
                 // 移除特定的故障信息
-                deviceAbnormalList.remove("电台故障")
+                deviceAbnormalList.remove("电台模块故障")
                 deviceAbnormalList.remove("太阳能控制器故障")
 
                 val status = if (deviceAbnormalList.isEmpty()) "正常" else "故障"

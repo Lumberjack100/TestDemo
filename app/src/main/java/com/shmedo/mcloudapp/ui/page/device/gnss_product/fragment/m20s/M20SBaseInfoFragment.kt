@@ -73,7 +73,7 @@ class M20SBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
                 }
 
                 // 移除特定故障类型
-                deviceAbnormalList.remove("电台故障")
+                deviceAbnormalList.remove("电台模块故障")
                 deviceAbnormalList.remove("太阳能控制器故障")
                 val deviceStatus = if (deviceAbnormalList.isEmpty()) "正常" else "故障"
 
