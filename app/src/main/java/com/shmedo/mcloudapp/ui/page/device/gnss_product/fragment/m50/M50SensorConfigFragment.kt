@@ -168,7 +168,6 @@ class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
         sendCommandSequence(
             commands = listOf(command),
             config = CommandSequenceConfig(
-                timeout = AppContants.Communication.DELAY_10000_MILLIS,
                 showLoadingDialog = false, // 已经显示特殊的加载对话框了
                 errorConfig = ErrorConfig.customConfig { errorMsg ->
                     dismissLoadingDialog(measureInitialValueLoadingDialogId)
@@ -213,7 +212,6 @@ class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
         sendCommandSequence(
             commands = commands,
             config = CommandSequenceConfig(
-                timeout = AppContants.Communication.DELAY_10000_MILLIS,
                 loadingMessage = StringUtils.getString(R.string.processing),
                 errorConfig = ErrorConfig.dialogConfig()
             )

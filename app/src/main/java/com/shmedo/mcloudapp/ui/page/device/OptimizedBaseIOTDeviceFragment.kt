@@ -124,8 +124,6 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
         config: CommandSequenceConfig = CommandSequenceConfig(),
         callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks(),
     ) {
-        addDeviceLogItem(Log.DEBUG, "发送指令序列: ${commands.size}条指令")
-
         communicationManager.executeCommandSequence(
             commands = commands,
             config = config,
