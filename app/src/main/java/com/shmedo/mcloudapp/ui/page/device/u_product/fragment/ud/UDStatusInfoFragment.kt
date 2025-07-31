@@ -74,7 +74,7 @@ class UDStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "放电中"
                         "1" -> "充电中"
                         "2" -> "空闲"
-                        "-1" -> "异常"
+                        "-1" -> "故障"
                         else -> AppContants.Companion.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.batteryStatus == "-1") ColorUtils.getColor(

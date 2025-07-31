@@ -82,7 +82,7 @@ class M50StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
                             "0" -> "放电中"
                             "1" -> "充电中"
                             "2" -> "空闲"
-                            "-1" -> "异常"
+                            "-1" -> "故障"
                             else -> AppContants.PLACE_HOLDER_VALUE
                         },
                         textColorRes = if (batteryInfo.batteryStatus == "-1") ColorUtils.getColor(

@@ -336,38 +336,42 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
 
 
                 val deviceAbnormalList =
-                    if (content.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkDeviceAbnormal2(
+                    if (content.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkM50Abnormal(
                         content
                     )
+                //电台模块不参与故障判断
                 deviceAbnormalList.remove("电台模块故障")
-                val status = if (deviceAbnormalList.isEmpty()) "正常" else "故障"
-                mHeadStates.productLogoResId.set(if (deviceAbnormalList.isEmpty()) mHeadStates.productNormalResId.get() else mHeadStates.productErrorResId.get())
-                mHeadStates.deviceStatusCode.set(if (deviceAbnormalList.isEmpty()) "0" else "-3")
 
+                val deviceWarnList =
+                    if (content.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkM50Warn(
+                        content
+                    )
+
+                val status =
+                    if (deviceAbnormalList.isEmpty() && deviceWarnList.isEmpty()) "正常" else if (deviceAbnormalList.isNotEmpty()) "故障" else "告警"
+                mHeadStates.productLogoResId.set(
+                    when (status) {
+                        "告警" -> mHeadStates.productAlarmResId.get()
+                        "故障" -> mHeadStates.productErrorResId.get()
+                        else -> mHeadStates.productNormalResId.get()
+                    }
+                )
+                mHeadStates.deviceStatusCode.set(
+                    when (status) {
+                        "告警" -> "-2"
+                        "故障" -> "-3"
+                        else -> "0"
+                    }
+                )
                 if (status == "正常") {
                     mHeadStates.warnErrorText.set("正常")
                     return@launchWithViewLifecycle
                 }
-                handleAbnormalInfo(deviceAbnormalList)
 
-//                val status = when (stateInfo.deviceStatus) {
-//                    "-2" -> "告警"
-//                    "-3" -> "故障"
-//                    else -> "正常"
-//                }
-//                val logoResId = status.compareAndReturn(
-//                    "故障",
-//                    R.drawable.device_logo_m50_error,
-//                    status.compareAndReturn(
-//                        "告警",
-//                        R.drawable.device_logo_m50_alarm,
-//                        R.drawable.device_logo_m50
-//                    )
-//                )
-//                mHeadStates.productLogoResId.set(logoResId)
-//                mHeadStates.deviceStatusCode.set(stateInfo.deviceStatus)
-//                mHeadStates.warnErrorText.set(status)
-
+                val tempInfoList = mutableListOf<String>()
+                tempInfoList.addAll(deviceAbnormalList)
+                tempInfoList.addAll(deviceWarnList)
+                handleAbnormalInfo(tempInfoList)
             } catch (e: Exception) {
                 Timber.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)

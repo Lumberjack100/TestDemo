@@ -9,7 +9,6 @@ import com.drake.brv.BindingAdapter.BindingViewHolder
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
-import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -495,15 +494,11 @@ class UDHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 }
                 mHeadStates.deviceStatusCode.set(stateInfo.deviceStatus)
                 mHeadStates.productLogoResId.set(
-                    status.compareAndReturn(
-                        "故障",
-                        R.drawable.device_logo_dr030_error,
-                        status.compareAndReturn(
-                            "告警",
-                            R.drawable.device_logo_dr030_alarm,
-                            R.drawable.device_logo_dr030
-                        )
-                    )
+                    when (status) {
+                        "告警" -> mHeadStates.productAlarmResId.get()
+                        "故障" -> mHeadStates.productErrorResId.get()
+                        else -> mHeadStates.productNormalResId.get()
+                    }
                 )
                 if (status == "正常") {
                     mHeadStates.warnErrorText.set("正常")

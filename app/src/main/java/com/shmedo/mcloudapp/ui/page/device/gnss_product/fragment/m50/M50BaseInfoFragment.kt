@@ -2,13 +2,11 @@ package com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50
 
 import android.os.Bundle
 import android.util.Log
-import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.network.ext.errorMsg
-import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
@@ -54,25 +52,6 @@ class M50BaseInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
                     groupList,
                     name = "设备SN",
                     value = stateInfo.sn,
-                )
-                val deviceStatus = when (stateInfo.deviceStatus) {
-                    "-2" -> "告警"
-                    "-3" -> "故障"
-                    else -> "正常"
-                }
-                groupList.add(
-                    DeviceStatusInfoBasicItem(
-                        name = "设备状态",
-                        value = deviceStatus,
-                        textColorRes = when (deviceStatus) {
-                            "正常" -> ColorUtils.getColor(R.color.online_colorPrimary)
-                            "告警" -> ColorUtils.getColor(
-                                R.color.warn_FF9D00
-                            )
-
-                            else -> ColorUtils.getColor(R.color.error_FF4400)
-                        }
-                    )
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,

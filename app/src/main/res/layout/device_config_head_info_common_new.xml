@@ -91,7 +91,6 @@
                     app:defaultTextSize="@dimen/text_size_11"
                     app:deviceStatusCode="@{stateVM.deviceStatusCode}"
                     app:errorTextColor="@color/error_FF4400"
-                    app:maxEms="16"
                     app:needBackground="true" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
