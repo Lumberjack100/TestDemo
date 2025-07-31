@@ -75,7 +75,6 @@
             <flag name="start" value="8388611" />
             <flag name="end" value="8388613" />
         </attr>
-        <attr name="maxEms" format="integer" />
         <attr name="needBackground" format="boolean" />
         <attr name="defaultBackground" format="reference" />
         <attr name="errorBackground" format="reference" />

@@ -8,7 +8,6 @@ import com.drake.brv.BindingAdapter.BindingViewHolder
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
-import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -18,6 +17,9 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.ItemM50MeasureDataBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -35,23 +37,35 @@ import com.shmedo.mcloudapp.model.M50MeasureDataItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
-import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceHomeFragment
+import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
- * 创建者：gonghe
- * 创建时间：2025/1/24
- * 描述：一体式自供电 GNSS 接收机(M50)设备主页 - 支持4G和蓝牙两种通讯方式
+ * @author：gonghe
+ * @time: 2025/7/26
+ * @desc: 一体式自供电 GNSS 接收机(M50)设备主页
  *
+ * 优化特点：
+ * 1. 继承自 OptimizedBaseDeviceHomeFragment，使用新的通信架构
+ * 2. 统一的错误处理策略
+ * 3. 响应驱动的指令执行
+ * 4. 支持4G和蓝牙两种通讯方式
  */
-class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
+class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
+
     private var measureDataItem: M50MeasureDataItem = M50MeasureDataItem()
+    private var abnormalInfoJob: Job? = null
+
 
     override fun initData() {
         super.initData()
-        // 设置 M50 设备的 Logo 资源
+        // 设置M50特定的设备Logo资源
         mHeadStates.productErrorResId.set(R.drawable.device_logo_m50_error)
         mHeadStates.productAlarmResId.set(R.drawable.device_logo_m50_alarm)
         mHeadStates.productOfflineResId.set(R.drawable.device_logo_m50_offline)
@@ -73,7 +87,7 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
 
             // 设置数据绑定参数
             binding.setVariable(BR.m, measureDataItem)
-            binding.setVariable(BR.click, M50ClickProxy())
+            binding.setVariable(BR.click, ClickProxy())
             binding.executePendingBindings()
         }
     }
@@ -85,6 +99,7 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
         groupList.add(measureDataItem)
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
 
+        // 设备信息模块
         groupList.add(DeviceStatusInfoGroupItem("设备信息"))
         groupList.add(
             ConfigModuleTree(
@@ -126,6 +141,8 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
         )
 
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+
+        // 设备配置模块
         groupList.add(DeviceStatusInfoGroupItem("设备配置"))
         val configModuleTree = ConfigModuleTree(
             configModules = arrayListOf(
@@ -203,6 +220,7 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
             )
         )
 
+        // 蓝牙连接时添加指令调试模块
         if (communicateWay is BleConnect) {
             configModuleTree.configModules.add(
                 ConfigModule(
@@ -238,22 +256,34 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
         }
     }
 
+    /**
+     * 查询设备状态信息
+     */
     override fun queryStatusInfo() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
-        var command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
-        commandItems.add(command)
+        // 查询设备状态
+        commands.add(IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS))
 
-        command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=0")
-        commandItems.add(command)
+        // 召测 method=0
+        commands.add(IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=0"))
 
-        command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=2")
-        commandItems.add(command)
+        // 召测 method=2
+        commands.add(IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=2"))
 
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false,
+                errorConfig = ErrorConfig.silentConfig() // 状态查询失败不显示错误
+            )
+        )
     }
 
-    override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {
+    /**
+     * 处理指令响应 - 重写父类方法处理M50特定的指令
+     */
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
                 val result =
@@ -262,41 +292,38 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询设备状态出错: ${result.message}"
                         handleFailureResult(errMsg, isShowErrMsg = false)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
                         initStatusInfo(result.data)
                     }
                 }
             }
 
-            IOTCommandType.SAMPLE -> { // 召测
-                val result = iotParseManager.parse<String>(
-                    cmdStr,
-                    IOTCommandType.SAMPLE
-                )
+            IOTCommandType.SAMPLE -> {
+                val result = iotParseManager.parse<String>(cmdStr, IOTCommandType.SAMPLE)
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "召测出错: ${result.message}"
                         handleFailureResult(errMsg, isShowErrMsg = false)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
                         processSampleResponse(cmdStr, result.data)
                     }
                 }
             }
 
             else -> {
-
+                // 其他指令交给父类处理
+                super.handleCommandResponse(cmdStr)
             }
         }
     }
 
+    /**
+     * 初始化状态信息 - 处理M50设备状态数据
+     */
     private fun initStatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
@@ -304,29 +331,46 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     MoshiUtil.fromJson<M50CurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
-                //检查电台模块是否可用
+                // 检查电台模块是否可用
                 updateRadioModuleStatus(stateInfo.lora.uppercase() == "OK")
 
-                val status = when (stateInfo.deviceStatus) {
-                    "-2" -> "告警"
-                    "-3" -> "故障"
-                    else -> "正常"
-                }
-                mHeadStates.productLogoResId.set(
-                    status.compareAndReturn(
-                        "故障",
-                        R.drawable.device_logo_m50_error,
-                        status.compareAndReturn(
-                            "告警",
-                            R.drawable.device_logo_m50_alarm,
-                            R.drawable.device_logo_m50
-                        )
+                val deviceAbnormalList = if (content.isEmpty()) arrayListOf<String>()
+                else DeviceStatusHelper.checkM50Abnormal(content)
+                //移除特定的故障信息
+                deviceAbnormalList.remove("电台模块故障")
+
+                val deviceWarnList =
+                    if (content.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkM50Warn(
+                        content
                     )
+
+                val status =
+                    if (deviceAbnormalList.isEmpty() && deviceWarnList.isEmpty()) "正常" else if (deviceAbnormalList.isNotEmpty()) "故障" else "告警"
+                mHeadStates.productLogoResId.set(
+                    when (status) {
+                        "告警" -> mHeadStates.productAlarmResId.get()
+                        "故障" -> mHeadStates.productErrorResId.get()
+                        else -> mHeadStates.productNormalResId.get()
+                    }
                 )
-                mHeadStates.deviceStatusCode.set(stateInfo.deviceStatus)
-                mHeadStates.warnErrorText.set(status)
+                mHeadStates.deviceStatusCode.set(
+                    when (status) {
+                        "告警" -> "-2"
+                        "故障" -> "-3"
+                        else -> "0"
+                    }
+                )
+                if (status == "正常") {
+                    mHeadStates.warnErrorText.set("正常")
+                    return@launchWithViewLifecycle
+                }
+
+                val tempInfoList = mutableListOf<String>()
+                tempInfoList.addAll(deviceAbnormalList)
+                tempInfoList.addAll(deviceWarnList)
+                handleAbnormalInfo(tempInfoList)
             } catch (e: Exception) {
-                Timber.Forest.e(e)
+                Timber.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
@@ -338,60 +382,99 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
     private fun processSampleResponse(cmdStr: String, content: String) {
         try {
             // $cmd=sample&method=0&datastreams={"date":"2025-07-18 17:12:22","sum_value":6013.101,"x_value":-1429.354,"y_value":-0.006,"z_value":-5840.747}
-            val resultMap = MoshiUtil.fromJson<Map<String, String>>(content) ?: return
+            val resultMap = MoshiUtil.fromJson<Map<String, Any>>(content) ?: return
             if (cmdStr.contains("method=0") && resultMap.containsKey("x_value")
                 && resultMap.containsKey("y_value")
                 && resultMap.containsKey("z_value")
             ) {
-                val xDisplacement =
-                    resultMap["x_value"]?.let { "$it mm" }
-                        ?: AppContants.PLACE_HOLDER_VALUE
-                val yDisplacement =
-                    resultMap["y_value"]?.let { "$it mm" }
-                        ?: AppContants.PLACE_HOLDER_VALUE
-                val zDisplacement =
-                    resultMap["z_value"]?.let { "$it mm" }
-                        ?: AppContants.PLACE_HOLDER_VALUE
+                val xDisplacement = resultMap["x_value"]?.let { "$it mm" }
+                    ?: AppContants.PLACE_HOLDER_VALUE
+                val yDisplacement = resultMap["y_value"]?.let { "$it mm" }
+                    ?: AppContants.PLACE_HOLDER_VALUE
+                val zDisplacement = resultMap["z_value"]?.let { "$it mm" }
+                    ?: AppContants.PLACE_HOLDER_VALUE
 
                 val measureDataItem =
                     binding.rvModule.bindingAdapter.getModel<M50MeasureDataItem>(0)
 
                 // 检查是否包含时间信息
                 if (resultMap.containsKey("date")) {
-                    val latestDataTime =
-                        resultMap["date"] ?: AppContants.PLACE_HOLDER_VALUE
-
-                    // 使用包含时间信息的刷新方法
+                    val latestDataTime = resultMap["date"] ?: AppContants.PLACE_HOLDER_VALUE
                     measureDataItem.refreshStatusWithTime(
                         xDisplacement,
                         yDisplacement,
                         zDisplacement,
-                        latestDataTime
+                        latestDataTime.toString()
                     )
                 }
                 return
             }
 
-            //$cmd=sample&method=2&datastreams={"sw":1,"mode":8,"initdate":"2025-07-18 18:12:26","initENU":""0.000000,0.000000,0.000000","baseLine":0.000000","fixRate":34.4,"gap_fixRate":0.0,"result":"-1429.354,-0.006,-5840.747","status":"not-fix","dataSource":"mqtt"}
+            //$cmd=sample&method=2&datastreams={"sw":1,"mode":8,"initdate":"0000-00-00 00:00:00","initENU":"0.000000,0.000000,0.000000","baseLine":0.000000,"fixRate":100.0,"gap_fixRate":100.0,"result":"0.000,0.000,0.000","status":"base-not-ready","dataSource":"ntrip","ntrip":{"status":"recv_rtcm","onlineRate":100.0,"connectCnt":1}}
             if (cmdStr.contains("method=2") && resultMap.containsKey("initdate")) {
-                val initCompletionTime =
-                    resultMap["initdate"] ?: AppContants.PLACE_HOLDER_VALUE
-
-                measureDataItem.refreshInitCompletionTime(initCompletionTime)
+                val initCompletionTime = resultMap["initdate"] ?: AppContants.PLACE_HOLDER_VALUE
+                measureDataItem.refreshInitCompletionTime(initCompletionTime.toString())
             }
+
         } catch (e: Exception) {
-            Timber.Forest.e(e)
+            Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
+    /**
+     * 更新电台模块状态，false 表示电台模块不可用，true 表示电台模块可用
+     */
+    private fun updateRadioModuleStatus(enable: Boolean) {
+        // 刷新模块状态
+        binding.rvModule.models?.forEach { item ->
+            if (item is ConfigModuleTree) {
+                item.configModules.find { configModule ->
+                    configModule.functionModule.name.contains("电台配置")
+                }?.functionModule?.refreshSupport(enable)
+            }
+        }
+    }
 
-    inner class M50ClickProxy {
+    /**
+     * 处理设备异常信息轮播展示
+     * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
+     */
+    private fun handleAbnormalInfo(errorInfoList: List<String>) {
+        //取消之前的job（如果存在）
+        abnormalInfoJob?.cancel()
+
+        //如果列表为空，直接返回
+        if (errorInfoList.isEmpty()) {
+            return
+        }
+        if (errorInfoList.size == 1) {
+            mHeadStates.warnErrorText.set(errorInfoList[0])
+            return
+        }
+        abnormalInfoJob = launchWithViewLifecycle {
+            flow {
+                while (true) {
+                    errorInfoList.forEach { errorInfo ->
+                        emit(errorInfo)
+                        delay(1500) // 延迟3秒
+                    }
+                }
+            }.collect { errorInfo ->
+                mHeadStates.warnErrorText.set(errorInfo)
+            }
+        }
+    }
+
+    /**
+     * M50特定的点击处理代理
+     */
+    inner class ClickProxy : BaseClickProxy() {
         /**
          * 跳转到位置信息页面
          */
-        fun onGotoLocationClick() {
-            if (isBleDisconnected()) {
+        override fun onGotoLocationClick() {
+            if (!isDeviceConnected() && communicateWay is BleConnect) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -406,14 +489,15 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
             )
         }
 
-        fun onTakePhotoClick() {
-            if (isBleDisconnected()) {
+        override fun onTakePhotoClick() {
+            if (!isDeviceConnected() && communicateWay is BleConnect) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
+            // TODO: 实现拍照功能
         }
 
-        fun onGoToSensorDataHistoryClick() {
+        override fun onGoToSensorDataHistoryClick() {
             nav().safeNavigate(
                 R.id.action_global_to_commonSensorDataHistoryFragment,
                 CommonSensorDataHistoryFragment.newBundleArguments(
@@ -424,19 +508,9 @@ class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
         }
     }
 
-    /**
-     * 更新电台模块状态，false 表示电台模块不可用，true 表示电台模块可用
-     */
-    private fun updateRadioModuleStatus(enable: Boolean) {
-        //刷新模块状态
-        binding.rvModule.models?.forEach { item ->
-            if (item is ConfigModuleTree) {
-                item.configModules.find { configModule ->
-                    configModule.functionModule.name.contains(
-                        "电台配置"
-                    )
-                }?.functionModule?.refreshSupport(enable)
-            }
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        abnormalInfoJob?.cancel()
+        abnormalInfoJob = null
     }
-}
+} 

@@ -22,19 +22,19 @@ class AnimatedTextSwitcher @JvmOverloads constructor(
     private var _textSize: Float =
         context.resources.getDimension(R.dimen.page_content_item_text_size_14)
     private var textGravity: Int = Gravity.CENTER
-    private var _maxEms: Int = 7
     private var defaultTextColor: Int = ContextCompat.getColor(context, R.color.online_colorPrimary)
     private var warnTextColor: Int = ContextCompat.getColor(context, R.color.warn_FF9D00)
     private var errorTextColor: Int = ContextCompat.getColor(context, R.color.error_FF4400)
-    private var needBackground: Boolean = true
     private var defaultBackground: Int = R.drawable.bg_label_online_corner_1dp
     private var warnBackground: Int = R.drawable.bg_label_warn_corner_1dp
     private var errorBackground: Int = R.drawable.bg_label_error_corner_1dp
+    private var needBackground: Boolean = true
     private var paddingHorizontal: Int = resources.getDimensionPixelSize(R.dimen.dimen_size_7)
     private var paddingVertical: Int = resources.getDimensionPixelSize(R.dimen.dimen_size_2)
 
     init {
         initAttributes(attrs)
+        layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         setFactory { createTextView() }
         setupAnimations()
     }
@@ -51,7 +51,6 @@ class AnimatedTextSwitcher @JvmOverloads constructor(
                 errorTextColor =
                     getColor(R.styleable.AnimatedTextSwitcher_errorTextColor, errorTextColor)
                 textGravity = getInt(R.styleable.AnimatedTextSwitcher_textGravity, textGravity)
-                _maxEms = getInt(R.styleable.AnimatedTextSwitcher_maxEms, _maxEms)
                 needBackground =
                     getBoolean(R.styleable.AnimatedTextSwitcher_needBackground, needBackground)
                 defaultBackground =
@@ -81,9 +80,9 @@ class AnimatedTextSwitcher @JvmOverloads constructor(
         gravity = textGravity
         setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical)
-        setEms(_maxEms)
         ellipsize = TextUtils.TruncateAt.END
         maxLines = 1
+        layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
     }
 
     private fun setupAnimations() {

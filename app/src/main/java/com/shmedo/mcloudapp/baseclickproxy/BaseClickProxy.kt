@@ -32,6 +32,21 @@ open class BaseClickProxy {
 
     }
 
+    /**
+     * 跳转到位置信息页面
+     */
+    open fun onGotoLocationClick() {
+
+    }
+
+    open fun onTakePhotoClick() {
+
+    }
+
+    open fun onGoToSensorDataHistoryClick() {
+
+    }
+
     open fun onResetButtonClick() {
 
     }

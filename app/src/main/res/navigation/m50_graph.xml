@@ -5,8 +5,8 @@
     android:id="@+id/m50_graph"
     app:startDestination="@id/m50HomeFragment">
 
-    <include app:graph="@navigation/include_time_calibration_graph" />
     <include app:graph="@navigation/include_advanced_setting_graph" />
+    <include app:graph="@navigation/include_time_calibration_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
 
     <fragment
@@ -52,22 +52,28 @@
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
-        android:id="@+id/m50SatelliteInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50SatelliteInfoFragment"
-        android:label="M50SatelliteInfoFragment"
-        tools:layout="@layout/fragment_m50_satellite_info" />
-
-    <fragment
         android:id="@+id/m50WorkModelParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50ReportModelParamFragment"
-        android:label="M50ReportModelParamFragment"
-        tools:layout="@layout/fragment_m50_report_model_param" />
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50WorkModelParamFragment"
+        android:label="M50WorkModelParamFragment"
+        tools:layout="@layout/fragment_m50_work_model_param" />
 
     <fragment
         android:id="@+id/m50NetworkConfigFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50NetworkConfigFragment"
         android:label="M50NetworkConfigFragment"
         tools:layout="@layout/fragment_m50_network_config" />
+
+    <fragment
+        android:id="@+id/dataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50DataCenterHomeFragment"
+        android:label="M50DataCenterHomeFragment"
+        tools:layout="@layout/fragment_universal_data_center_home" />
+
+    <fragment
+        android:id="@+id/dataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment"
+        android:label="DataCenterParamFragment"
+        tools:layout="@layout/fragment_data_center_param" />
 
     <fragment
         android:id="@+id/m50RadioSettingFragment"
@@ -154,14 +160,6 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_m50SatelliteInfoFragment"
-        app:destination="@id/m50SatelliteInfoFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
         android:id="@+id/action_global_to_m50WorkModelParamFragment"
         app:destination="@id/m50WorkModelParamFragment"
         app:enterAnim="@anim/activity_open_enter"
@@ -172,6 +170,22 @@
     <action
         android:id="@+id/action_global_to_m50NetworkConfigFragment"
         app:destination="@id/m50NetworkConfigFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_dataCenterHomeFragment"
+        app:destination="@id/dataCenterHomeFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_dataCenterParamFragment"
+        app:destination="@id/dataCenterParamFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -244,34 +258,6 @@
     <action
         android:id="@+id/action_global_to_time_calibration"
         app:destination="@id/time_calibration_graph"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <fragment
-        android:id="@+id/dataCenterHomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50DataCenterHomeFragment"
-        android:label="M50DataCenterHomeFragment"
-        tools:layout="@layout/fragment_universal_data_center_home" />
-
-    <fragment
-        android:id="@+id/dataCenterParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment"
-        android:label="DataCenterParamFragment"
-        tools:layout="@layout/fragment_data_center_param" />
-
-    <action
-        android:id="@+id/action_global_dataCenterHomeFragment"
-        app:destination="@id/dataCenterHomeFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
-        android:id="@+id/action_global_dataCenterParamFragment"
-        app:destination="@id/dataCenterParamFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
