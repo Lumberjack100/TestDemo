@@ -334,12 +334,9 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
                 // 检查电台模块是否可用
                 updateRadioModuleStatus(stateInfo.lora.uppercase() == "OK")
 
-
-                val deviceAbnormalList =
-                    if (content.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkM50Abnormal(
-                        content
-                    )
-                //电台模块不参与故障判断
+                val deviceAbnormalList = if (content.isEmpty()) arrayListOf<String>()
+                else DeviceStatusHelper.checkM50Abnormal(content)
+                //移除特定的故障信息
                 deviceAbnormalList.remove("电台模块故障")
 
                 val deviceWarnList =
@@ -375,36 +372,6 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
             } catch (e: Exception) {
                 Timber.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
-            }
-        }
-    }
-
-    /**
-     * 处理设备异常信息轮播展示
-     * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
-     */
-    private fun handleAbnormalInfo(errorInfoList: List<String>) {
-        //取消之前的job（如果存在）
-        abnormalInfoJob?.cancel()
-
-        //如果列表为空，直接返回
-        if (errorInfoList.isEmpty()) {
-            return
-        }
-        if (errorInfoList.size == 1) {
-            mHeadStates.warnErrorText.set(errorInfoList[0])
-            return
-        }
-        abnormalInfoJob = launchWithViewLifecycle {
-            flow {
-                while (true) {
-                    errorInfoList.forEach { errorInfo ->
-                        emit(errorInfo)
-                        delay(1500) // 延迟3秒
-                    }
-                }
-            }.collect { errorInfo ->
-                mHeadStates.warnErrorText.set(errorInfo)
             }
         }
     }
@@ -465,6 +432,36 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
                 item.configModules.find { configModule ->
                     configModule.functionModule.name.contains("电台配置")
                 }?.functionModule?.refreshSupport(enable)
+            }
+        }
+    }
+
+    /**
+     * 处理设备异常信息轮播展示
+     * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
+     */
+    private fun handleAbnormalInfo(errorInfoList: List<String>) {
+        //取消之前的job（如果存在）
+        abnormalInfoJob?.cancel()
+
+        //如果列表为空，直接返回
+        if (errorInfoList.isEmpty()) {
+            return
+        }
+        if (errorInfoList.size == 1) {
+            mHeadStates.warnErrorText.set(errorInfoList[0])
+            return
+        }
+        abnormalInfoJob = launchWithViewLifecycle {
+            flow {
+                while (true) {
+                    errorInfoList.forEach { errorInfo ->
+                        emit(errorInfo)
+                        delay(1500) // 延迟3秒
+                    }
+                }
+            }.collect { errorInfo ->
+                mHeadStates.warnErrorText.set(errorInfo)
             }
         }
     }

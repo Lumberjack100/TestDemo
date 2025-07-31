@@ -64,7 +64,7 @@ class M50StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
                     name = "外部电压",
                     value = if (externalVoltage == 0.0) "0" else stateInfo.externalVoltage.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     unit = "V",
-                    textColorRes = if (solarVoltage > 0 && solarVoltage < 12) ColorUtils.getColor(
+                    textColorRes = if (externalVoltage > 0 && externalVoltage < 11) ColorUtils.getColor(
                         R.color.warn_FF9D00
                     ) else 0,
                     isBottomItem = true

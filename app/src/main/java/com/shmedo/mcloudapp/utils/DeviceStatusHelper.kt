@@ -31,6 +31,12 @@ object DeviceStatusHelper {
                     }
                 }
 
+                "MEMS" -> {
+                    if (errors.size > 1 && errors[1] == "0") {
+                        deviceAbnormalList.add("倾角加速度模块故障")
+                    }
+                }
+
                 "LORA" -> {
                     if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("LORA模块故障")
@@ -155,7 +161,7 @@ object DeviceStatusHelper {
             deviceAbnormalList.add("雷达模块故障")
         }
         //radio 电台模块
-        if (currentStateInfo.radio.uppercase() .contains("FAIL")) {
+        if (currentStateInfo.radio.uppercase().contains("FAIL")) {
             deviceAbnormalList.add("电台模块故障")
         }
         //cam相机
@@ -163,23 +169,23 @@ object DeviceStatusHelper {
             deviceAbnormalList.add("摄像头模块故障")
         }
         //gnss 
-        if (currentStateInfo.gnss.uppercase().contains("FAIL") ) {
+        if (currentStateInfo.gnss.uppercase().contains("FAIL")) {
             deviceAbnormalList.add("GNSS模块故障")
         }
-        if (currentStateInfo.adc.uppercase() .contains("FAIL")) {
+        if (currentStateInfo.adc.uppercase().contains("FAIL")) {
             deviceAbnormalList.add("电压采集故障")
         }
-        if (currentStateInfo.emmc.uppercase() .contains("FAIL")) {
+        if (currentStateInfo.emmc.uppercase().contains("FAIL")) {
             deviceAbnormalList.add("存储卡故障")
         }
         if (currentStateInfo.sht21.uppercase().contains("FAIL")) {
             deviceAbnormalList.add("温湿度模块故障")
         }
-        if (currentStateInfo.qmc5883.uppercase() .contains("FAIL") ) {
+        if (currentStateInfo.qmc5883.uppercase().contains("FAIL")) {
             deviceAbnormalList.add("磁力计故障")
         }
         //battery 电池
-        if (currentStateInfo.battery.uppercase().contains("FAIL") ) {
+        if (currentStateInfo.battery.uppercase().contains("FAIL")) {
             deviceAbnormalList.add("电池故障")
         }
         //simCard sim卡
@@ -187,11 +193,11 @@ object DeviceStatusHelper {
             deviceAbnormalList.add("SIM卡故障")
         }
         //flash
-        if (currentStateInfo.flash.uppercase() .contains("FAIL")) {
+        if (currentStateInfo.flash.uppercase().contains("FAIL")) {
             deviceAbnormalList.add("FLASH故障")
         }
         //fram FRAM
-        if (currentStateInfo.fram.uppercase() .contains("FAIL") ) {
+        if (currentStateInfo.fram.uppercase().contains("FAIL")) {
             deviceAbnormalList.add("铁电存储器故障")
         }
         //rtc RTC状态
@@ -302,23 +308,6 @@ object DeviceStatusHelper {
             deviceAbnormalList.add("温湿度模块故障")
         }
 
-        // 检查电池
-        //    "battery": [
-        //        {
-        //            "battery_volt": 0.0,
-        //            "battery_cap": 0.0,
-        //            "battery_status": -1,
-        //            "battery_temp": 0.0,
-        //            "battery_health": 1.0
-        //        },
-        //        {
-        //            "battery_volt": 0.0,
-        //            "battery_cap": 0.0,
-        //            "battery_status": -1,
-        //            "battery_temp": 0.0,
-        //            "battery_health": 1.0
-        //        }
-        //    ]
         // 检查电池信息
         val batteryList = statusMap["battery"] as? List<*>
         if (batteryList != null && batteryList.isNotEmpty()) {
@@ -402,7 +391,7 @@ object DeviceStatusHelper {
         // 2. 检查外部电压 (ext_power_volt)
         val extPowerVolt = statusMap["ext_power_volt"] as? String
         val externalVoltage = extPowerVolt?.toDoubleOrNull() ?: 0.0
-        if (externalVoltage > 0 && externalVoltage <= 11) {
+        if (externalVoltage > 0 && externalVoltage < 11) {
             deviceWarnList.add("外部输入电压过低")
         }
 
@@ -417,13 +406,15 @@ object DeviceStatusHelper {
 
                 if (!isInternalBatteryFailed) {
                     // 内部电池电量检查
-                    val internalBatteryCap = internalBattery["battery_cap"]?.toString()?.toDoubleOrNull() ?: 100.0
+                    val internalBatteryCap =
+                        internalBattery["battery_cap"]?.toString()?.toDoubleOrNull() ?: 100.0
                     if (internalBatteryCap < 20) {
                         deviceWarnList.add("内部电池电量过低")
                     }
 
                     // 内部电池健康度检查
-                    val internalBatteryHealth = internalBattery["battery_health"]?.toString()?.toDoubleOrNull() ?: 100.0
+                    val internalBatteryHealth =
+                        internalBattery["battery_health"]?.toString()?.toDoubleOrNull() ?: 100.0
                     if (internalBatteryHealth < 80) {
                         deviceWarnList.add("内部电池健康度过低")
                     }
@@ -439,19 +430,59 @@ object DeviceStatusHelper {
 
                     if (!isBackupBatteryFailed) {
                         // 备用电池电量检查
-                        val backupBatteryCap = backupBattery["battery_cap"]?.toString()?.toDoubleOrNull() ?: 100.0
+                        val backupBatteryCap =
+                            backupBattery["battery_cap"]?.toString()?.toDoubleOrNull() ?: 100.0
                         if (backupBatteryCap < 20) {
                             deviceWarnList.add("备用电池电量过低")
                         }
 
                         // 备用电池健康度检查
-                        val backupBatteryHealth = backupBattery["battery_health"]?.toString()?.toDoubleOrNull() ?: 100.0
+                        val backupBatteryHealth =
+                            backupBattery["battery_health"]?.toString()?.toDoubleOrNull() ?: 100.0
                         if (backupBatteryHealth < 80) {
                             deviceWarnList.add("备用电池健康度过低")
                         }
                     }
                 }
             }
+        }
+
+        return deviceWarnList
+    }
+
+    /**
+     * 通过JSON字符串检查M20设备告警状态
+     * @param statusInfo CommonCurrentStateInfo 的 JSON 字符串
+     * @return 设备告警信息列表
+     */
+    fun checkM20Warn(statusInfo: String): ArrayList<String> {
+        return try {
+            // 将 JSON 字符串解析为 Map 对象
+            val statusMap = MoshiUtil.fromJson<Map<String, Any>>(statusInfo)
+            if (statusMap != null) {
+                checkM20WarnFromMap(statusMap)
+            } else {
+                ArrayList<String>()
+            }
+        } catch (e: Exception) {
+            // 异常处理：返回空列表
+            ArrayList<String>()
+        }
+    }
+
+    /**
+     * 通过Map检查M20设备告警状态
+     * @param statusMap 状态信息Map
+     * @return 设备告警信息列表
+     */
+    private fun checkM20WarnFromMap(statusMap: Map<String, Any>): ArrayList<String> {
+        val deviceWarnList: ArrayList<String> = ArrayList()
+
+        // 检查外部电压 (ext_power_volt)
+        val extPowerVolt = statusMap["ext_power_volt"] as? String
+        val externalVoltage = extPowerVolt?.toDoubleOrNull() ?: 0.0
+        if (externalVoltage > 0 && externalVoltage < 11) {
+            deviceWarnList.add("外部输入电压过低")
         }
 
         return deviceWarnList

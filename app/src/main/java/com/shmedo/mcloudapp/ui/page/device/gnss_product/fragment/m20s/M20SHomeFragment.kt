@@ -9,6 +9,7 @@ import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -38,8 +39,10 @@ import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceHomeFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
-import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -58,6 +61,7 @@ import timber.log.Timber
 class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
 
     private var measureDataItem: M50MeasureDataItem = M50MeasureDataItem()
+    private var abnormalInfoJob: Job? = null
 
     override fun initData() {
         super.initData()
@@ -276,12 +280,21 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
      * 查询设备状态信息
      */
     override fun queryStatusInfo() {
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+        val commands = mutableListOf<String>()
+
+        // 查询设备状态
+        commands.add(IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS))
+
+        // 召测 method=0
+        commands.add(IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=0"))
+
+        // 召测 method=2
+        commands.add(IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=2"))
 
         sendCommandSequence(
-            commands = listOf(command),
+            commands = commands,
             config = CommandSequenceConfig(
-                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                showLoadingDialog = false,
                 errorConfig = ErrorConfig.silentConfig() // 状态查询失败不显示错误
             )
         )
@@ -303,6 +316,20 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
 
                     is IOTCommandResult.Success -> {
                         initStatusInfo(result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.SAMPLE -> {
+                val result = iotParseManager.parse<String>(cmdStr, IOTCommandType.SAMPLE)
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "召测出错: ${result.message}"
+                        handleFailureResult(errMsg, isShowErrMsg = false)
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        processSampleResponse(cmdStr, result.data)
                     }
                 }
             }
@@ -332,24 +359,39 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                 } else {
                     DeviceStatusHelper.checkDeviceAbnormal(stateInfo.self_check)
                 }
-
-                // 移除特定的故障信息
+                //移除特定的故障信息
                 deviceAbnormalList.remove("电台模块故障")
                 deviceAbnormalList.remove("太阳能控制器故障")
 
-                val status = if (deviceAbnormalList.isEmpty()) "正常" else "故障"
-                val logoResId = if (deviceAbnormalList.isEmpty()) {
-                    mHeadStates.productNormalResId.get()
-                } else {
-                    mHeadStates.productErrorResId.get()
+                val deviceWarnList =
+                    if (content.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkM20Warn(
+                        content
+                    )
+                val status =
+                    if (deviceAbnormalList.isEmpty() && deviceWarnList.isEmpty()) "正常" else if (deviceAbnormalList.isNotEmpty()) "故障" else "告警"
+                mHeadStates.productLogoResId.set(
+                    when (status) {
+                        "告警" -> mHeadStates.productAlarmResId.get()
+                        "故障" -> mHeadStates.productErrorResId.get()
+                        else -> mHeadStates.productNormalResId.get()
+                    }
+                )
+                mHeadStates.deviceStatusCode.set(
+                    when (status) {
+                        "告警" -> "-2"
+                        "故障" -> "-3"
+                        else -> "0"
+                    }
+                )
+                if (status == "正常") {
+                    mHeadStates.warnErrorText.set("正常")
+                    return@launchWithViewLifecycle
                 }
 
-                mHeadStates.productLogoResId.set(logoResId)
-                mHeadStates.deviceStatusCode.set(if (deviceAbnormalList.isEmpty()) "0" else "-3")
-                mHeadStates.warnErrorText.set(status)
-
-                // 更新测量数据
-                updateMeasureData(stateInfo)
+                val tempInfoList = mutableListOf<String>()
+                tempInfoList.addAll(deviceAbnormalList)
+                tempInfoList.addAll(deviceWarnList)
+                handleAbnormalInfo(tempInfoList)
 
             } catch (e: Exception) {
                 Timber.e(e)
@@ -359,28 +401,49 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
     }
 
     /**
-     * 更新测量数据显示
+     * 处理召测响应
      */
-    private fun updateMeasureData(stateInfo: CommonCurrentStateInfo) {
-        val newXAngle = DeviceStatusInfoProcessor.formatDoubleValue(
-            stateInfo.x_Angle,
-            "--",
-            2
-        ) + "°"
+    private fun processSampleResponse(cmdStr: String, content: String) {
+        try {
+            // $cmd=sample&method=0&datastreams={"date":"2025-07-18 17:12:22","sum_value":6013.101,"x_value":-1429.354,"y_value":-0.006,"z_value":-5840.747}
+            val resultMap = MoshiUtil.fromJson<Map<String, Any>>(content) ?: return
+            if (cmdStr.contains("method=0") && resultMap.containsKey("x_value")
+                && resultMap.containsKey("y_value")
+                && resultMap.containsKey("z_value")
+            ) {
+                val xDisplacement = resultMap["x_value"]?.let { "$it mm" }
+                    ?: AppContants.PLACE_HOLDER_VALUE
+                val yDisplacement = resultMap["y_value"]?.let { "$it mm" }
+                    ?: AppContants.PLACE_HOLDER_VALUE
+                val zDisplacement = resultMap["z_value"]?.let { "$it mm" }
+                    ?: AppContants.PLACE_HOLDER_VALUE
 
-        val newYAngle = DeviceStatusInfoProcessor.formatDoubleValue(
-            stateInfo.y_Angle,
-            "--",
-            2
-        ) + "°"
+                val measureDataItem =
+                    binding.rvModule.bindingAdapter.getModel<M50MeasureDataItem>(0)
 
-        val newZAngle = DeviceStatusInfoProcessor.formatDoubleValue(
-            stateInfo.z_Angle,
-            "--",
-            2
-        ) + "°"
+                // 检查是否包含时间信息
+                if (resultMap.containsKey("date")) {
+                    val latestDataTime = resultMap["date"] ?: AppContants.PLACE_HOLDER_VALUE
+                    measureDataItem.refreshStatusWithTime(
+                        xDisplacement,
+                        yDisplacement,
+                        zDisplacement,
+                        latestDataTime.toString()
+                    )
+                }
+                return
+            }
 
+            //$cmd=sample&method=2&datastreams={"sw":1,"mode":8,"initdate":"0000-00-00 00:00:00","initENU":"0.000000,0.000000,0.000000","baseLine":0.000000,"fixRate":100.0,"gap_fixRate":100.0,"result":"0.000,0.000,0.000","status":"base-not-ready","dataSource":"ntrip","ntrip":{"status":"recv_rtcm","onlineRate":100.0,"connectCnt":1}}
+            if (cmdStr.contains("method=2") && resultMap.containsKey("initdate")) {
+                val initCompletionTime = resultMap["initdate"] ?: AppContants.PLACE_HOLDER_VALUE
+                measureDataItem.refreshInitCompletionTime(initCompletionTime.toString())
+            }
 
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
     }
 
     /**
@@ -393,6 +456,36 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                 item.configModules.find { configModule ->
                     configModule.functionModule.name.contains("电台配置")
                 }?.functionModule?.refreshSupport(enable)
+            }
+        }
+    }
+
+    /**
+     * 处理设备异常信息轮播展示
+     * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
+     */
+    private fun handleAbnormalInfo(errorInfoList: List<String>) {
+        //取消之前的job（如果存在）
+        abnormalInfoJob?.cancel()
+
+        //如果列表为空，直接返回
+        if (errorInfoList.isEmpty()) {
+            return
+        }
+        if (errorInfoList.size == 1) {
+            mHeadStates.warnErrorText.set(errorInfoList[0])
+            return
+        }
+        abnormalInfoJob = launchWithViewLifecycle {
+            flow {
+                while (true) {
+                    errorInfoList.forEach { errorInfo ->
+                        emit(errorInfo)
+                        delay(1500) // 延迟3秒
+                    }
+                }
+            }.collect { errorInfo ->
+                mHeadStates.warnErrorText.set(errorInfo)
             }
         }
     }
@@ -434,5 +527,11 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                 )
             )
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        abnormalInfoJob?.cancel()
+        abnormalInfoJob = null
     }
 } 

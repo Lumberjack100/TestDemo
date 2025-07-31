@@ -24,7 +24,7 @@ import timber.log.Timber
  * 创建者：gonghe
  * 创建时间：2024/9/19
  * 描述：普适型 GNSS 接收机(M20S)状态信息
- * 
+ *
  * 优化特点：
  * 1. 继承自OptimizedBaseDeviceStatusInfoStyle2Fragment，使用新的优化架构
  * 2. 统一的错误处理和指令执行机制
@@ -59,9 +59,9 @@ class M20SStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
                     name = "外部电压",
                     value = if (externalVoltage == 0.0) "0" else stateInfo.ext_power_volt.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     unit = "V",
-                    textColorRes = if ((externalVoltage >= 9 && externalVoltage < 28) || externalVoltage == Double.MAX_VALUE) 0 else ColorUtils.getColor(
+                    textColorRes = if (externalVoltage > 0 && externalVoltage < 11) ColorUtils.getColor(
                         R.color.warn_FF9D00
-                    ),
+                    ) else 0,
                     isBottomItem = true
                 )
 
@@ -90,7 +90,7 @@ class M20SStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
                 stateInfo.self_check.notNullKey {
                     groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                     groupList.add(DeviceStatusInfoGroupItem("模块信息"))
-                    
+
                     // GNSS模块
                     if (stateInfo.self_check.uppercase().indexOf("GNSS") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -106,7 +106,23 @@ class M20SStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
-                    
+
+                    // 倾角加速度模块
+                    if (stateInfo.self_check.uppercase().indexOf("MEMS") != -1) {
+                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                            groupList,
+                            name = "倾角加速度模块",
+                            value = if (stateInfo.self_check.uppercase()
+                                    .indexOf("MEMS:0") == -1
+                            ) "正常" else "故障",
+                            textColorRes = if (stateInfo.self_check.uppercase()
+                                    .indexOf("MEMS:0") == -1
+                            ) 0 else ColorUtils.getColor(
+                                R.color.error_FF4400
+                            )
+                        )
+                    }
+
                     // 倾角加速度模块
                     if (stateInfo.self_check.uppercase().indexOf("SCL") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -122,7 +138,7 @@ class M20SStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
-                    
+
                     // 4G模块
                     if (stateInfo.self_check.uppercase().indexOf("4G") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -138,7 +154,7 @@ class M20SStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
-                    
+
                     // 蓝牙模块
                     if (stateInfo.self_check.uppercase().indexOf("BT") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -154,7 +170,7 @@ class M20SStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
-                    
+
                     // 电台模块
                     if (stateInfo.self_check.uppercase().indexOf("RADIO") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -170,12 +186,12 @@ class M20SStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
-                    
+
                     // 存储模块
                     if (stateInfo.self_check.uppercase().indexOf("EMMC") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
-                            name = "存储模块",
+                            name = "存储卡",
                             value = if (stateInfo.self_check.uppercase()
                                     .indexOf("EMMC:0") == -1
                             ) "正常" else "故障",
@@ -186,7 +202,7 @@ class M20SStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
                             )
                         )
                     }
-                    
+
                     // 温湿度模块
                     if (stateInfo.self_check.uppercase().indexOf("SHT21") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -197,22 +213,6 @@ class M20SStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
                             ) "正常" else "故障",
                             textColorRes = if (stateInfo.self_check.uppercase()
                                     .indexOf("SHT21:0") == -1
-                            ) 0 else ColorUtils.getColor(
-                                R.color.error_FF4400
-                            )
-                        )
-                    }
-                    
-                    // 倾角加速度模块
-                    if (stateInfo.self_check.uppercase().indexOf("MEMS") != -1) {
-                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                            groupList,
-                            name = "倾角加速度模块",
-                            value = if (stateInfo.self_check.uppercase()
-                                    .indexOf("MEMS:0") == -1
-                            ) "正常" else "故障",
-                            textColorRes = if (stateInfo.self_check.uppercase()
-                                    .indexOf("MEMS:0") == -1
                             ) 0 else ColorUtils.getColor(
                                 R.color.error_FF4400
                             ),
