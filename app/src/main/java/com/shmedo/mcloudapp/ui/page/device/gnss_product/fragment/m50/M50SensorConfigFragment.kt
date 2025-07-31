@@ -142,7 +142,8 @@ class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
             commands = commands,
             config = CommandSequenceConfig(
                 showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
-                errorConfig = ErrorConfig.dialogConfig() // 状态查询失败显示Dialog
+                errorConfig = ErrorConfig.dialogConfig(), // 状态查询失败显示Dialog
+                enableBusinessParseFailureInterrupt = true // 启用业务层解析失败中断功能
             )
         )
     }
@@ -171,10 +172,10 @@ class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 showLoadingDialog = false, // 已经显示特殊的加载对话框了
                 errorConfig = ErrorConfig.customConfig { errorMsg ->
                     dismissLoadingDialog(measureInitialValueLoadingDialogId)
-                    if (command.contains("method=0")) {
-                        showMessageDialog("查询测量信息出错: $errorMsg")
-                    } else {
+                    if (command.contains("method=1")) {
                         showMessageDialog("更新倾角初始值出错: $errorMsg")
+                    } else {
+                        showMessageDialog("查询倾角初始值出错: $errorMsg")
                     }
                 }
             )
@@ -250,10 +251,10 @@ class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         dismissLoadingDialog(measureInitialValueLoadingDialogId)
-                        val errMsg = if (cmdStr.contains("method=0")) {
-                            "查询测量信息出错: ${result.message}"
-                        } else {
+                        val errMsg = if (cmdStr.contains("method=1")) {
                             "更新倾角初始值出错: ${result.message}"
+                        } else {
+                            "查询倾角初始值出错: ${result.message}"
                         }
                         handleFailureResult(errMsg, isMessageDialog = true)
                     }

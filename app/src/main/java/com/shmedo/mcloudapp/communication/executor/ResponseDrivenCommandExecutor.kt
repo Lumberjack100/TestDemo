@@ -99,12 +99,27 @@ class ResponseDrivenCommandExecutor(
                 // 处理结果
                 when (result) {
                     is CommandResult.Success -> {
-                        if(index == commands.size - 1){
+                        // 检查是否是最后一条指令
+                        if (index == commands.size - 1) {
                             isExecuting.set(false)
                             callbacks.onComplete.invoke(executionResults.toList())
                         }
-                        // 实时回调处理
-                        callbacks.onSuccess?.invoke(result)
+
+                        // 检查是否启用了业务层解析失败中断功能
+                        if (config.enableBusinessParseFailureInterrupt) {
+                            // 实时回调处理，检查是否应该继续执行
+                            val shouldContinue = callbacks.onSuccess?.invoke(result) ?: true
+
+                            if (!shouldContinue) {
+                                Timber.i("业务层要求中断指令序列执行")
+                                isExecuting.set(false)
+                                callbacks.onComplete(executionResults.toList())
+                                return
+                            }
+                        } else {
+                            // 保持原有逻辑：只是回调，不检查返回值
+                            callbacks.onSuccess?.invoke(result)
+                        }
                         // 继续执行下一条指令
                     }
 

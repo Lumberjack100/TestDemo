@@ -136,7 +136,12 @@ data class CommandSequenceConfig(
     val stopOnFirstError: Boolean = true,
     val showLoadingDialog: Boolean = true,
     val loadingMessage: String = "处理中...",
-    val errorConfig: ErrorConfig = ErrorConfig.toastConfig()
+    val errorConfig: ErrorConfig = ErrorConfig.toastConfig(),
+    /**
+     * 是否启用业务层解析失败中断功能
+     * 当启用时，如果 handleCommandResponse 抛出异常，会中断后续指令执行
+     */
+    val enableBusinessParseFailureInterrupt: Boolean = true
 )
 
 
@@ -144,7 +149,15 @@ data class CommandSequenceConfig(
  * 指令序列执行回调
  */
 data class CommandSequenceCallbacks(
-    val onSuccess: ((CommandResult.Success) -> Unit)? = null,
+    /**
+     * 单条指令成功回调
+     * @param result 指令执行结果
+     * @return Boolean? 当enableBusinessParseFailureInterrupt=true时有效：
+     *         - true: 继续执行后续指令
+     *         - false: 中断后续指令执行
+     *         - null: 使用默认行为（继续执行）
+     */
+    val onSuccess: ((CommandResult.Success) -> Boolean?)? = null,
     val onComplete: (List<CommandResult>) -> Unit = {},
     val onError: (DeviceError, String) -> Unit = { _, _ -> }
 )

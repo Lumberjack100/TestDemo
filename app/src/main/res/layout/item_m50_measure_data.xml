@@ -67,7 +67,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:paddingEnd="@dimen/dimen_size_8"
+                    android:paddingEnd="@dimen/dimen_size_5"
                     android:text="@{m.initCompletionTime}"
                     android:textColor="@color/title_text_color_black_90"
                     android:textSize="@dimen/measure_data_item_text_size_12"
@@ -85,7 +85,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:paddingStart="@dimen/dimen_size_8"
+                    android:paddingStart="@dimen/dimen_size_5"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:text='@{"东向位移量："+m.xDisplacement}'
                     android:textColor="@color/title_text_color_black_90"
                     android:textSize="@dimen/measure_data_item_text_size_12"
@@ -97,7 +99,7 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_size_5"
+                android:layout_marginTop="@dimen/dimen_size_4"
                 android:orientation="horizontal">
 
                 <!-- 左侧：最新数据时间标题 -->
@@ -105,7 +107,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:paddingEnd="@dimen/dimen_size_8"
+                    android:paddingEnd="@dimen/dimen_size_5"
                     android:text="最新数据时间："
                     android:textColor="@color/title_text_color_black_90"
                     android:textSize="@dimen/measure_data_item_text_size_12" />
@@ -122,7 +124,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:paddingStart="@dimen/dimen_size_8"
+                    android:paddingStart="@dimen/dimen_size_5"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:text='@{"北向位移量："+m.yDisplacement}'
                     android:textColor="@color/title_text_color_black_90"
                     android:textSize="@dimen/measure_data_item_text_size_12"
@@ -142,7 +146,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:paddingEnd="@dimen/dimen_size_8"
+                    android:paddingEnd="@dimen/dimen_size_5"
                     android:text="@{m.latestDataTime}"
                     android:textColor="@color/title_text_color_black_90"
                     android:textSize="@dimen/measure_data_item_text_size_12"
@@ -160,7 +164,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:paddingStart="@dimen/dimen_size_8"
+                    android:paddingStart="@dimen/dimen_size_5"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:text='@{"垂直位移量："+m.zDisplacement}'
                     android:textColor="@color/title_text_color_black_90"
                     android:textSize="@dimen/measure_data_item_text_size_12"

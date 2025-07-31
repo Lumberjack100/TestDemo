@@ -129,9 +129,32 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
             config = config,
             callbacks = CommandSequenceCallbacks(
                 onSuccess = { successResult ->
-                    handleCommandResponse(successResult.responseData)
-                    // 调用原始回调
-                    callbacks.onSuccess?.invoke(successResult)
+                    // 根据配置决定是否启用业务层解析失败中断功能
+                    if (config.enableBusinessParseFailureInterrupt) {
+                        // 启用了业务层解析失败中断功能
+                        val shouldContinue = try {
+                            handleCommandResponse(successResult.responseData)
+                            // 如果handleCommandResponse没有抛出异常，表示解析成功，继续指令序列执行
+                            true
+                        } catch (e: Exception) {
+                            // 如果handleCommandResponse抛出异常，表示解析失败，中断指令序列执行
+                            Timber.e(e, "业务解析失败，中断指令序列执行")
+                            false
+                        }
+
+                        // 调用原始回调（如果有）
+                        val originalResult = callbacks.onSuccess?.invoke(successResult)
+
+                        // 返回最终的控制决策：优先使用原始回调的结果，其次使用业务解析结果
+                        originalResult ?: shouldContinue
+                    } else {
+                        // 保持原有逻辑：直接处理响应，不进行中断控制
+                        handleCommandResponse(successResult.responseData)
+                        // 调用原始回调
+                        callbacks.onSuccess?.invoke(successResult)
+                        // 返回null表示使用默认行为（继续执行）
+                        null
+                    }
                 },
                 onComplete = { results ->
                     // 统一的清理逻辑
@@ -285,6 +308,8 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
             if (isMessageDialog) showMessageDialog(errMsg)
             else Toaster.show(errMsg)
         }
+        // 当启用enableBusinessParseFailureInterrupt时，抛出异常会中断后续指令执行
+        throw IllegalStateException(errMsg)
     }
 
     // ==================== 导航和UI工具方法 ====================
