@@ -24,10 +24,6 @@ class MedoTcpRepository(
         }.launchIn(scope)
     }
 
-    fun initTcpClient(host: String, port: Int) {
-        tcpManager.initTcpClient(host, port)
-    }
-
     /**
      * 初始化原始模式TCP客户端（不设置分隔符）
      */
@@ -35,7 +31,12 @@ class MedoTcpRepository(
         tcpManager.initTcpClient(host, port, false, null) // packetSeparator 设置为 null
     }
 
-    fun initTcpClient(host: String, port: Int, isSendHeartBeat: Boolean, packetSeparator: String?) {
+    fun initTcpClient(
+        host: String,
+        port: Int,
+        isSendHeartBeat: Boolean,
+        packetSeparator: String?
+    ) {
         tcpManager.initTcpClient(host, port, isSendHeartBeat, packetSeparator)
     }
 

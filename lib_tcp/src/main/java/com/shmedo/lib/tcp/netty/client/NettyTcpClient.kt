@@ -35,10 +35,11 @@ class NettyTcpClient private constructor(val host: String, val tcpPort: Int, val
     private var listener: NettyClientListener<String>? = null
     private var channel: Channel? = null
     private var isConnect = false
-    private var reconnectNum = MAX_CONNECT_TIMES
-    private var isNeedReconnect = true
     private var isConnecting = false
+    private var isNeedReconnect = true
 
+    var MAX_CONNECT_TIMES = 3//最大重连次数
+    private var reconnectNum = MAX_CONNECT_TIMES
     private var reconnectIntervalTime: Long = CONNECT_TIMEOUT_MILLIS
     private var heartBeatInterval: Long = 5 //心跳间隔时间 单位秒
     private var isSendHeartBeat = false//是否发送心跳
@@ -48,7 +49,6 @@ class NettyTcpClient private constructor(val host: String, val tcpPort: Int, val
 
     companion object {
         const val CONNECT_TIMEOUT_MILLIS = 5000L
-        var MAX_CONNECT_TIMES = Integer.MAX_VALUE//最大重连次数
     }
 
     private fun setPacketSeparator(separator: String) {
@@ -264,7 +264,7 @@ class NettyTcpClient private constructor(val host: String, val tcpPort: Int, val
      * 构建者，创建NettyTcpClient
      */
     class Builder {
-        private var MAX_CONNECT_TIMES = Integer.MAX_VALUE//最大重连次数
+        private var MAX_CONNECT_TIMES = 3//最大重连次数
         private var reconnectIntervalTime: Long = 5000//重连间隔
         private var host: String? = null//服务器地址
         private var tcpPort: Int = 0//服务器端口

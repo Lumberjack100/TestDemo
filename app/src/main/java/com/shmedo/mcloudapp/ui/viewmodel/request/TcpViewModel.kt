@@ -30,10 +30,6 @@ class TcpViewModel(
         }.launchIn(viewModelScope)
     }
 
-    fun initTcpClient(host: String, port: Int) {
-        medoTcpRepository.initTcpClient(host, port)
-    }
-
     /**
      * 初始化原始模式TCP客户端（不使用分隔符）
      */

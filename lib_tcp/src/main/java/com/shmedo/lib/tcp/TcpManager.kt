@@ -34,10 +34,6 @@ class TcpManager : NettyClientListener<String> {
 
     private var mNettyTcpClient: NettyTcpClient? = null
 
-    fun initTcpClient(host: String, port: Int) {
-        initTcpClient(host, port, true, null)
-    }
-
     fun initTcpClient(host: String, port: Int, isSendHeartBeat: Boolean, packetSeparator: String?) {
         mNettyTcpClient = NettyTcpClient.Builder()
             .setHost(host) //设置服务端地址
