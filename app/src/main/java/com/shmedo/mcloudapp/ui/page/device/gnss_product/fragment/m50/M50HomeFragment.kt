@@ -304,7 +304,8 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
             commands = commands,
             config = CommandSequenceConfig(
                 showLoadingDialog = false,
-                errorConfig = ErrorConfig.silentConfig() // 状态查询失败不显示错误
+                errorConfig = ErrorConfig.silentConfig(), // 状态查询失败不显示错误
+                enableBusinessParseFailureInterrupt = false // 不启用业务层解析失败中断功能，中断后续指令执行
             )
         )
     }
