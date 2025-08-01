@@ -19,19 +19,19 @@
         android:id="@+id/defaultBaseInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.default_product.fragment.DefaultBaseInfoFragment"
         android:label="DefaultBaseInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/defaultNetInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.default_product.fragment.DefaultNetInfoFragment"
         android:label="DefaultNetInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/defaultStatusInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.default_product.fragment.DefaultStatusInfoFragment"
         android:label="DefaultStatusInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/commonLocationInfoFragment"

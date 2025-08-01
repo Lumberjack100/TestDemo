@@ -14,7 +14,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyle2Fragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,7 +25,7 @@ import timber.log.Timber
  * 创建时间：2024/9/19
  * 描述：  一体式自供电 GNSS 接收机(M50)状态信息
  */
-class M50StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
+class M50StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)

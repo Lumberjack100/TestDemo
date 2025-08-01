@@ -49,12 +49,12 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/DeviceCurrentState_Item_Layout_Style2"
+            style="@style/DeviceCurrentState_Item_Layout_Style"
             android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_Item_Title_Style2"
+                style="@style/DeviceCurrentState_Item_Title_Style"
                 android:text="UTC时间" />
 
             <View
@@ -75,12 +75,12 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/DeviceCurrentState_Item_Layout_Style2"
+            style="@style/DeviceCurrentState_Item_Layout_Style"
             android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_Item_Title_Style2"
+                style="@style/DeviceCurrentState_Item_Title_Style"
                 android:text="经度" />
 
             <View
@@ -101,12 +101,12 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/DeviceCurrentState_Item_Layout_Style2"
+            style="@style/DeviceCurrentState_Item_Layout_Style"
             android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:background='@{stateVM.elevation.empty ?@drawable/shape_common_click_item_bottom_corner_4:@drawable/layer_common_click_item_with_divider}'>
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_Item_Title_Style2"
+                style="@style/DeviceCurrentState_Item_Title_Style"
                 android:text="纬度" />
 
             <View
@@ -127,13 +127,13 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/DeviceCurrentState_Item_Layout_Style2"
+            style="@style/DeviceCurrentState_Item_Layout_Style"
             visible='@{!stateVM.elevation.empty}'
             android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_Item_Title_Style2"
+                style="@style/DeviceCurrentState_Item_Title_Style"
                 android:text="高程" />
 
             <View

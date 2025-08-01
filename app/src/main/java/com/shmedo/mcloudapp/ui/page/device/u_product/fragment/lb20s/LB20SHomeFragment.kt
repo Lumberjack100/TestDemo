@@ -24,14 +24,14 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.OneClickSilenceModule
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/5/7
  * 描述： 无线预警广播(LB20S)(江苏赛立科技有限公司)
  */
-class LB20SHomeFragment : NewUniversalBaseDeviceHomeFragment() {
+class LB20SHomeFragment : BaseDeviceHomeFragment() {
     override fun initData() {
         super.initData()
         mHeadStates.productErrorResId.set(R.drawable.device_logo_lb20s_error)

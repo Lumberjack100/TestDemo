@@ -42,7 +42,7 @@ import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
-import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import kotlinx.coroutines.flow.debounce
 import org.koin.android.ext.android.inject
@@ -54,7 +54,7 @@ import java.nio.charset.StandardCharsets
  * 创建时间：2024/5/7
  * 描述： 物联网采集器(DAS) - 支持4G和蓝牙两种通讯方式
  */
-class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
+class DASHomeFragment : BaseDeviceHomeFragment() {
     private val mdParseManager: MDParserManager by inject()
 
     private var collectorModel = ""

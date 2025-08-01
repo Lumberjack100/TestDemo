@@ -238,7 +238,7 @@
     </style>
 
     <!--设备运行状态分组标题样式-->
-    <style name="DeviceCurrentState_GroupItem_Title_Style2">
+    <style name="DeviceCurrentState_GroupItem_Title_Style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/title_text_color_black_90</item>
@@ -247,7 +247,7 @@
     </style>
 
     <!--设备运行状态单条基本信息样式-->
-    <style name="DeviceCurrentState_Item_Layout_Style2">
+    <style name="DeviceCurrentState_Item_Layout_Style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">50dp</item>
         <item name="android:gravity">center_vertical</item>
@@ -258,7 +258,7 @@
     </style>
 
     <!--设备运行状态单条项目标题样式-->
-    <style name="DeviceCurrentState_Item_Title_Style2">
+    <style name="DeviceCurrentState_Item_Title_Style">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
@@ -267,7 +267,7 @@
         <item name="android:textSize">@dimen/page_content_item_text_size_14</item>
     </style>
 
-    <style name="DeviceCurrentState_ClickableItem_Value_Style2">
+    <style name="DeviceCurrentState_ClickableItem_Value_Style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">10dp</item>

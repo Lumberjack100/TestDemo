@@ -34,43 +34,43 @@
         android:id="@+id/lR200BaseInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200BaseInfoFragment"
         android:label="LR200BaseInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/uProductBaseInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UProductBaseInfoFragment"
         android:label="UProductBaseInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/lR200NetInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200NetInfoFragment"
         android:label="LR200NetInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/uProductNetInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UProductNetInfoFragment"
         android:label="UProductNetInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/lR200StatusInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200StatusInfoFragment"
         android:label="LR200StatusInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/uRProductStatusInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ur.URProductStatusInfoFragment"
         android:label="URProductStatusInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/uProductStatusInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UProductStatusInfoFragment"
         android:label="UProductStatusInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
 
     <fragment

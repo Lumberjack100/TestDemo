@@ -19,19 +19,19 @@
         android:id="@+id/dasBaseInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasBaseInfoFragment"
         android:label="DasBaseInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/dasNetInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasNetInfoFragment"
         android:label="DasNetInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/dasSensorInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasSensorInfoFragment"
         android:label="DasSensorInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/commonLocationInfoFragment"

@@ -22,19 +22,19 @@
         android:id="@+id/lB20SBaseInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lb20s.LB20SBaseInfoFragment"
         android:label="LB20SBaseInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/lB20SNetInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lb20s.LB20SNetInfoFragment"
         android:label="LB20SNetInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/lB20SStatusInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lb20s.LB20SStatusInfoFragment"
         android:label="LB20SStatusInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/commonLocationInfoFragment"

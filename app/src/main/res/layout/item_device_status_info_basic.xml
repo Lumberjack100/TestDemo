@@ -12,18 +12,18 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item"
-        style="@style/DeviceCurrentState_Item_Layout_Style2"
+        style="@style/DeviceCurrentState_Item_Layout_Style"
         android:background="@{m.bottomItem?@drawable/selector_click_item_bottom_corner_4:@drawable/selector_common_click_item_with_divider}"
         android:enabled="@{m.clickable}">
 
         <com.google.android.material.textview.MaterialTextView
-            style="@style/DeviceCurrentState_Item_Title_Style2"
+            style="@style/DeviceCurrentState_Item_Title_Style"
             android:text='@{m.name}'
             tools:text="固件版本" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_value"
-            style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
+            style="@style/DeviceCurrentState_ClickableItem_Value_Style"
             rightArrowVisible="@{m.clickable}"
             visible='@{ !m.clipboard}'
             android:text="@{m.value}"
@@ -32,7 +32,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_clipboard_value"
-            style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
+            style="@style/DeviceCurrentState_ClickableItem_Value_Style"
             rightArrowVisible="@{false}"
             visible='@{ m.clipboard}'
             android:background="@drawable/item_background_holo_light"

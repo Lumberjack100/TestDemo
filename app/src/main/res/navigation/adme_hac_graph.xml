@@ -29,7 +29,7 @@
         android:id="@+id/admeCurrentStateFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeCurrentStateFragment"
         android:label="AdmeCurrentStateFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/admeAdvancedConfigurationFragment"

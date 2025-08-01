@@ -16,7 +16,7 @@ import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyle2Fragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import timber.log.Timber
 
@@ -26,7 +26,7 @@ import timber.log.Timber
  * @desc: 普适型 GNSS 接收机(M20S)运行信息
  *
  */
-class M20SRunningInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
+class M20SRunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)

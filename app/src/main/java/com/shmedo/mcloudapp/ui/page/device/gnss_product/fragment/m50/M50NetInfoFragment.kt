@@ -22,7 +22,7 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyle2Fragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +34,7 @@ import timber.log.Timber
  * 创建时间：2024/9/19
  * 描述： 一体式自供电 GNSS 接收机(M50)网络信息
  */
-class M50NetInfoFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
+class M50NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
     private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
 
 

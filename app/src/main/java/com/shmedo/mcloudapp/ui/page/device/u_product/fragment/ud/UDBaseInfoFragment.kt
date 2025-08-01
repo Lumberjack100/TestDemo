@@ -16,7 +16,7 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoTextSwitcherItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import com.shmedo.mcloudapp.utils.UDDeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +31,7 @@ import timber.log.Timber
  * 创建时间：2024/8/28
  * 描述： 一体式雷达水位/泥位计基本信息
  */
-class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+class UDBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
     private var abnormalInfoJob: Job? = null
 
     private var textSwitcherItem: DeviceStatusInfoTextSwitcherItem? = null

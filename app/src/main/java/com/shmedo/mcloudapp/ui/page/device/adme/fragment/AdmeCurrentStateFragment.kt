@@ -30,7 +30,7 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyle2Fragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import timber.log.Timber
@@ -48,7 +48,7 @@ import timber.log.Timber
  * 5. 保持原有的ADME特定业务逻辑不变
  * 6. 支持4G和蓝牙两种通讯方式
  */
-class AdmeCurrentStateFragment : OptimizedBaseDeviceStatusInfoStyle2Fragment() {
+class AdmeCurrentStateFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
     private val deviceAbnormalList: ArrayList<String> = ArrayList()
     private var admeMotionStatusItem: AdmeMotionStatusItem = AdmeMotionStatusItem()
