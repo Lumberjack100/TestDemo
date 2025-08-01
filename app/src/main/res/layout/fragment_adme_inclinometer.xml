@@ -53,10 +53,10 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onVersionChooseClick()}"
                         android:layout_marginTop="@dimen/dimen_size_1"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }"
-                        onClickWithDebouncing="@{()->click.onVersionChooseClick()}">
+                        android:enabled="@{stateVM.isEditable }">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
@@ -73,9 +73,9 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onModeChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }"
-                        onClickWithDebouncing="@{()->click.onModeChooseClick()}">
+                        android:enabled="@{stateVM.isEditable }">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
@@ -115,10 +115,10 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onCompensateWayChooseClick()}"
                         visible="@{stateVM.isCompensateWayVisible}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }"
-                        onClickWithDebouncing="@{()->click.onCompensateWayChooseClick()}"
                         tools:visibility="visible">
 
                         <com.google.android.material.textview.MaterialTextView
@@ -186,9 +186,9 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="@={stateVM.collectionInterval}"
                             android:inputType="number"
-                            android:maxLength="5" />
+                            android:maxLength="5"
+                            android:text="@={stateVM.collectionInterval}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -204,9 +204,9 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="@={stateVM.solvingInterval}"
                             android:inputType="number"
-                            android:maxLength="5" />
+                            android:maxLength="5"
+                            android:text="@={stateVM.solvingInterval}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -222,9 +222,9 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="@={stateVM.sleepTime}"
                             android:inputType="number"
-                            android:maxLength="5" />
+                            android:maxLength="5"
+                            android:text="@={stateVM.sleepTime}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -250,14 +250,14 @@
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_Style"
-            onClickWithDebouncing="@{()->click.onSubmitClick()}"
+            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
             visible="@{stateVM.isEditable }"
-            android:layout_marginTop="0dp"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:layout_marginBottom="15dp"
-            android:text="保存"
+            android:text="@string/button_save_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

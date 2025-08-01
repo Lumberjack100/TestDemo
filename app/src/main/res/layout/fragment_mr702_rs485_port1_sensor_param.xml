@@ -439,7 +439,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_Style2"
+            style="@style/SubmitButton_Style"
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
             visible="@{stateVM.isEditable}"
             android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"

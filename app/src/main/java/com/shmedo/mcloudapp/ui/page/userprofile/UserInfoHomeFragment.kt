@@ -8,7 +8,6 @@ import android.text.InputFilter.LengthFilter
 import android.text.TextUtils
 import android.util.Base64
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
@@ -153,7 +152,7 @@ class UserInfoHomeFragment : BaseFragment() {
         /**
          * 保存事件
          */
-        fun onSubmitClick() {
+        override fun onSubmitButtonClick() {
             if (TextUtils.isEmpty(mStates.name.get())) {
                 Toaster.show("请输入用户名")
                 binding.nameET.requestFocus()

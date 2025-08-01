@@ -32,12 +32,12 @@
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/DeviceCurrentState_Item_Title_Style"
+                        style="@style/DeviceCurrentState_Item_Title_Style2"
                         android:text="4G信号强度" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_4g_signal_strength"
-                        style="@style/DeviceCurrentState_Item_Value_Style"
+                        style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
                         android:text='@{stateVM.signalValue==0?"--dBm":stateVM.signalValue+"dBm" }'
                         tools:text="-51dBm" />
 

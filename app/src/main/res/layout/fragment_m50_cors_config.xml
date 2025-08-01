@@ -152,7 +152,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_confirm"
-                        style="@style/SubmitButton_Style2"
+                        style="@style/SubmitButton_Style"
                         onClickWithDebouncing="@{()->click.onConnectClick()}"
                         android:layout_marginTop="@dimen/summit_button_margin_top_20"
                         android:text="确认连接" />
