@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.model.AdmeMotionStatusItem" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/page_content_item_padding_horizontal_16"
+        app:drawable_radius="@{4}"
+        app:drawable_solidColor="@{@color/white}"
+        visible="@{m.ctrMotionInfoVisible}"
+        tools:background="@color/white">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="14dp"
+                android:background="@color/green_00B26B" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/Common_GroupItem_Title_Style"
+                android:layout_marginStart="@dimen/dimen_size_8"
+                android:text="CTR工作状态"
+                android:textColor="@color/green_00B26B" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- CTR 工作状态内容区域 -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_8"
+            android:orientation="vertical">
+
+            <!-- 测量模式 -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="@dimen/dimen_size_4">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="测量模式："
+                    android:textColor="@color/title_text_color_black_90"
+                    android:textSize="15sp" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{m.measureMode}"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="15sp"
+                    tools:text="正向测量" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <!-- 分割线 -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_size_zero_point_5"
+                android:background="@color/divider_line_bg2" />
+
+            <!-- 马达信息 -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="@dimen/dimen_size_4">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="工作状态："
+                    android:textColor="@color/title_text_color_black_90"
+                    android:textSize="15sp" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{m.motorInfo}"
+                    android:textColor="@{m.isMotorInfoNormal ? @color/title_text_color : @color/error_FF4400}"
+                    android:textSize="15sp"
+                    tools:text="磁开关触发，测量结束" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <!-- 分割线 -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_size_zero_point_5"
+                android:background="@color/divider_line_bg2" />
+
+            <!-- 测量点信息 -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="@dimen/dimen_size_4">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="测量点："
+                    android:textColor="@color/title_text_color_black_90"
+                    android:textSize="15sp" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{m.measurePoint}"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="16sp"
+                    tools:text="第一个点测量：30.5米" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>
