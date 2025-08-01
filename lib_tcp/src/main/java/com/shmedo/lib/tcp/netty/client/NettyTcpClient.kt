@@ -96,17 +96,21 @@ class NettyTcpClient private constructor(val host: String, val tcpPort: Int, val
                                 ) //5s未发送数据，回调userEventTriggered
                             }
                             //黏包处理,需要客户端、服务端配合
-                            if (!TextUtils.isEmpty(packetSeparator)) {
-                                val delimiter = Unpooled.buffer().apply {
-                                    writeBytes(packetSeparator!!.toByteArray())
+                            // 当 packetSeparator 为 null 时，进入原始模式，不添加任何帧解码器
+                            if (packetSeparator != null) {
+                                if (!TextUtils.isEmpty(packetSeparator)) {
+                                    val delimiter = Unpooled.buffer().apply {
+                                        writeBytes(packetSeparator!!.toByteArray())
+                                    }
+                                    ch.pipeline()
+                                        .addLast(DelimiterBasedFrameDecoder(maxPacketLong, delimiter))
+                                } else {
+                                    ch.pipeline().addLast(LineBasedFrameDecoder(maxPacketLong))
                                 }
-                                ch.pipeline()
-                                    .addLast(DelimiterBasedFrameDecoder(maxPacketLong, delimiter))
-                            } else {
-                                ch.pipeline().addLast(LineBasedFrameDecoder(maxPacketLong))
+                                ch.pipeline().addLast(StringEncoder(CharsetUtil.UTF_8))
+                                ch.pipeline().addLast(StringDecoder(CharsetUtil.UTF_8))
                             }
-                            ch.pipeline().addLast(StringEncoder(CharsetUtil.UTF_8))
-                            ch.pipeline().addLast(StringDecoder(CharsetUtil.UTF_8))
+                            // 原始模式：packetSeparator == null 时不添加编解码器，直接处理ByteBuf
                             ch.pipeline().addLast(
                                 listener?.let {
                                     NettyClientHandler(
@@ -114,7 +118,8 @@ class NettyTcpClient private constructor(val host: String, val tcpPort: Int, val
                                         index,
                                         isSendHeartBeat,
                                         heartBeatData,
-                                        packetSeparator
+                                        packetSeparator,
+                                        packetSeparator == null // 传递是否为原始模式的标志
                                     )
                                 }
                             )
@@ -212,6 +217,20 @@ class NettyTcpClient private constructor(val host: String, val tcpPort: Int, val
     }
 
     fun sendMsgToServer(data: ByteArray, listener: MessageStateListener): Boolean {
+        val flag = channel != null && isConnect
+        if (flag) {
+            val buf = Unpooled.copiedBuffer(data)
+            channel?.writeAndFlush(buf)?.addListener { future ->
+                listener.isSendSuccess(future.isSuccess)
+            }
+        }
+        return flag
+    }
+
+    /**
+     * 发送原始字节数据（无分隔符）
+     */
+    fun sendRawDataToServer(data: ByteArray, listener: MessageStateListener): Boolean {
         val flag = channel != null && isConnect
         if (flag) {
             val buf = Unpooled.copiedBuffer(data)
