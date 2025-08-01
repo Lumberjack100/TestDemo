@@ -5,15 +5,18 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
+import com.bumptech.glide.Glide
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gnss_m.GNSSRawConfigEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gnss_m.ModuleParamConfigEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.GNSSRawData
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.ModuleParam
@@ -92,9 +95,22 @@ class M50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        loadStructurePicture()
         resetDefaultParams()
         // 保存初始状态
         mStates.saveInitialState()
+    }
+
+    private fun loadStructurePicture() {
+        val resId =
+            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) R.drawable.m20_structure else R.drawable.m50_structure
+
+        // 动态加载大图片
+        Glide.with(this)
+            .load(resId)
+            .override(binding.ivStructure.layoutParams.width, ConvertUtils.dp2px(150f)) // 限制高度
+            .centerInside()
+            .into(binding.ivStructure) // 需要给ImageView添加ID
     }
 
     private fun resetDefaultParams() {

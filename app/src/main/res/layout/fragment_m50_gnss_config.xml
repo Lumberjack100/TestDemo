@@ -109,10 +109,10 @@
                         android:background="@color/white">
 
                         <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_structure"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dimen_size_150"
-                            android:layout_gravity="center"
-                            android:src="@drawable/gnss" />
+                            android:layout_gravity="center" />
                     </FrameLayout>
 
 
