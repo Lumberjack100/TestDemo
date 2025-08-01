@@ -372,7 +372,6 @@ object DeviceStatusHelper {
             ArrayList<String>()
         }
     }
-
     /**
      * 通过Map检查M50设备告警状态
      * @param statusMap 状态信息Map
@@ -449,6 +448,37 @@ object DeviceStatusHelper {
 
         return deviceWarnList
     }
+    /**
+     * 合并故障和告警信息，并进行过滤
+     * @param abnormalList 故障信息列表
+     * @param warnList 告警信息列表
+     * @return 过滤后的合并列表
+     */
+    fun mergeM50StatusInfo(abnormalList: ArrayList<String>, warnList: ArrayList<String>): ArrayList<String> {
+        val mergedList = ArrayList<String>()
+        
+        // 添加所有故障信息
+        mergedList.addAll(abnormalList)
+        
+        // 检查电池故障状态
+        val hasInternalBatteryFault = abnormalList.any { it.contains("内部电池故障") }
+        val hasBackupBatteryFault = abnormalList.any { it.contains("备用电池故障") }
+        
+        // 过滤告警信息
+        warnList.forEach { warn ->
+            val shouldAdd = when (warn) {
+                "内部电池电量过低", "内部电池健康度过低" -> !hasInternalBatteryFault
+                "备用电池电量过低", "备用电池健康度过低" -> !hasBackupBatteryFault
+                else -> true
+            }
+            
+            if (shouldAdd) {
+                mergedList.add(warn)
+            }
+        }
+        
+        return mergedList
+    }
 
     /**
      * 通过JSON字符串检查M20设备告警状态
@@ -486,6 +516,24 @@ object DeviceStatusHelper {
         }
 
         return deviceWarnList
+    }
+
+    /**
+     * 合并故障和告警信息，并进行过滤
+     * @param abnormalList 故障信息列表
+     * @param warnList 告警信息列表
+     * @return 过滤后的合并列表
+     */
+    fun mergeM20StatusInfo(abnormalList: ArrayList<String>, warnList: ArrayList<String>): ArrayList<String> {
+        val mergedList = ArrayList<String>()
+
+        // 添加所有故障信息
+        mergedList.addAll(abnormalList)
+
+        // 添加所有告警信息
+        mergedList.addAll(warnList)
+
+        return mergedList
     }
 
     fun checkAdmeDeviceAbnormal(abndiasis: String): ArrayList<String> {
