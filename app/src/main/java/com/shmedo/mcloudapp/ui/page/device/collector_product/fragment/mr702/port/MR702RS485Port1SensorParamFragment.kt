@@ -300,7 +300,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
             initSaveCommand()
         }
 
-        fun onSubmitClick() {
+        override fun onSubmitButtonClick() {
             processBack()
         }
     }

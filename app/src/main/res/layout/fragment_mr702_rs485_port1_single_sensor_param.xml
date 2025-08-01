@@ -63,7 +63,7 @@
                             android:background="@color/black" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_GroupItem_Title_Style2"
+                            style="@style/Common_GroupItem_Title_Style"
                             android:layout_marginStart="@dimen/dimen_size_8"
                             android:text="采集指令" />
 
@@ -384,7 +384,7 @@
                             android:background="@color/black" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_GroupItem_Title_Style2"
+                            style="@style/Common_GroupItem_Title_Style"
                             android:layout_marginStart="@dimen/dimen_size_8"
                             android:text="采集数据处理" />
 

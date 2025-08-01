@@ -37,7 +37,7 @@
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.core.widget.NestedScrollView
@@ -49,11 +49,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/dimen_size_25">
+                    android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_container_padding_top_12"
+                    android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupItem_Title_Style"
-                        android:text="声光报警器" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="声光报警器" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <RelativeLayout
                         style="@style/SwitchButton_Item_Layout_Style"
@@ -77,7 +91,7 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onAlarmTypeChooseClick()}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4"
                         android:enabled="@{stateVM.isAudibleOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
@@ -88,14 +102,26 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
-
                             android:text="@{stateVM.alarmType}"
                             tools:text="降雨量" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupItem_Title_Style"
-                        android:text="设备参数" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="设备参数" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
@@ -111,8 +137,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:hint="请输入"
-                            android:text="@={stateVM.alarmAddress}"
                             android:inputType="number"
+                            android:text="@={stateVM.alarmAddress}"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -131,8 +157,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:hint="请输入10~300之间数值"
-                            android:text="@={stateVM.duration}"
                             android:inputType="number"
+                            android:text="@={stateVM.duration}"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -151,8 +177,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:hint="请输入5~300之间数值"
-                            android:text="@={stateVM.interval}"
                             android:inputType="number"
+                            android:text="@={stateVM.interval}"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -196,9 +222,22 @@
 
                     </FrameLayout>
 
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupItem_Title_Style"
-                        android:text="报警阈值" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="报警阈值" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
@@ -240,7 +279,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
@@ -257,9 +296,22 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupItem_Title_Style"
-                        android:text="电子点阵屏" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="电子点阵屏" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <RelativeLayout
                         style="@style/SwitchButton_Item_Layout_Style"
@@ -279,6 +331,7 @@
                             app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
 
                     </RelativeLayout>
+
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
@@ -293,8 +346,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isScreenOpened}"
                             android:hint="请输入"
-                            android:text="@={stateVM.screenAddress}"
                             android:inputType="number"
+                            android:text="@={stateVM.screenAddress}"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -313,15 +366,15 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isScreenOpened}"
                             android:hint="请输入"
-                            android:text="@={stateVM.showTime}"
                             android:inputType="number"
+                            android:text="@={stateVM.showTime}"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
@@ -333,26 +386,21 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isScreenOpened}"
                             android:hint="请输入"
-                            android:text="@={stateVM.showGap}"
                             android:inputType="number"
+                            android:text="@={stateVM.showGap}"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_confirm"
+                        style="@style/SubmitButton_Style2"
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:text="@string/button_save_text" />
+
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_Style"
-            onClickWithDebouncing="@{()->click.onSubmitClick()}"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="15dp"
-            android:text="保存"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/refreshLayout" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
