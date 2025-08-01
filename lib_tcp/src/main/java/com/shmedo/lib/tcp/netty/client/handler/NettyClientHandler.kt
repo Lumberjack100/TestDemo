@@ -15,8 +15,9 @@ class NettyClientHandler(
     private val index: Int,
     private val isSendHeartBeat: Boolean,
     private val heartBeatData: Any?,
-    private val packetDelimiters: String?
-) : SimpleChannelInboundHandler<String>() {
+    private val packetDelimiters: String?,
+    private val isRawMode: Boolean = false // 是否为原始模式
+) : SimpleChannelInboundHandler<Any>() { // 改为 Any 类型以支持 String 和 ByteBuf
 
     private val packetSeparator: String
         get() {
@@ -91,9 +92,29 @@ class NettyClientHandler(
      * @param channelHandlerContext ChannelHandlerContext
      * @param msg                   消息
      */
-    override fun channelRead0(channelHandlerContext: ChannelHandlerContext, msg: String) {
-        Timber.d("Received Data(channelRead0): length=${msg.toByteArray().size} bytes;content: $msg")
-        listener.onMessageResponseClient(msg, index)
+    override fun channelRead0(channelHandlerContext: ChannelHandlerContext, msg: Any) {
+        when {
+            isRawMode && msg is ByteBuf -> {
+                // 原始模式：直接处理字节数据
+                val byteArray = ByteArray(msg.readableBytes())
+                msg.readBytes(byteArray)
+                
+                // 转换为字符串用于现有接口兼容（可以根据需要调整）
+                val dataStr = String(byteArray, Charsets.UTF_8)
+                Timber.d("Received Raw Data: length=${byteArray.size} bytes;content: $dataStr")
+                
+                // 通过现有接口传递，前缀标识为原始数据
+                listener.onMessageResponseClient("TCP_RAW:$dataStr", index)
+            }
+            !isRawMode && msg is String -> {
+                // 传统模式：字符串处理
+                Timber.d("Received Data(channelRead0): length=${msg.toByteArray().size} bytes;content: $msg")
+                listener.onMessageResponseClient(msg, index)
+            }
+            else -> {
+                Timber.w("Unsupported message type: ${msg::class.java}")
+            }
+        }
     }
 
     /**

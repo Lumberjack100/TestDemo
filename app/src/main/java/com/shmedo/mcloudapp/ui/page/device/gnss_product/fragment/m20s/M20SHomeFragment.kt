@@ -10,7 +10,9 @@ import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.u_product.UDInitialValueEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmTriggerValueInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -62,6 +64,20 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
 
     private var measureDataItem: M50MeasureDataItem = M50MeasureDataItem()
     private var abnormalInfoJob: Job? = null
+
+    // 角度数据存储
+    private data class AngleData(
+        var xCurrent: Double = 0.0,
+        var yCurrent: Double = 0.0,
+        var zCurrent: Double = 0.0,
+        var xInitial: Double = 0.0,
+        var yInitial: Double = 0.0,
+        var zInitial: Double = 0.0,
+        var angleTrigger: Double = 0.0
+    )
+
+    private val angleData = AngleData()
+
 
     override fun initData() {
         super.initData()
@@ -282,20 +298,35 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
     override fun queryStatusInfo() {
         val commands = mutableListOf<String>()
 
-        // 查询设备状态
-        commands.add(IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS))
-
-        // 召测 method=0
+        // 召测 method=0  获取最新数据时间及数据
         commands.add(IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=0"))
 
-        // 召测 method=2
+        // 召测 method=2 获取最新初始化完成时间
         commands.add(IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=2"))
+
+        //获取当前角度值，通过遥测获取，物模型103_1
+        commands.add(IOTCommandUtil.getCommand(IOTCommandType.SAMPLE))
+
+        //获取初始角度值
+        commands.add(
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_SENSOR_INITIAL,
+                UDInitialValueEntity(method = "0", type = "2").toCommandString()
+            )
+        )
+
+        //获取角度触发值
+        commands.add(IOTCommandUtil.getCommand(IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE))
+
+        // 查询设备状态
+        commands.add(IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS))
 
         sendCommandSequence(
             commands = commands,
             config = CommandSequenceConfig(
                 showLoadingDialog = false,
-                errorConfig = ErrorConfig.silentConfig() // 状态查询失败不显示错误
+                errorConfig = ErrorConfig.silentConfig(), // 状态查询失败不显示错误
+                enableBusinessParseFailureInterrupt = false // 不启用业务层解析失败中断功能，中断后续指令执行
             )
         )
     }
@@ -305,6 +336,54 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
      */
     override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.SAMPLE -> {
+                val result = iotParseManager.parse<String>(cmdStr, IOTCommandType.SAMPLE)
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "召测出错: ${result.message}"
+                        handleFailureResult(errMsg, isShowErrMsg = false)
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        processSampleResponse(cmdStr, result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.MD_SET_SENSOR_INITIAL -> {
+                val result = iotParseManager.parse<Map<String, String>>(
+                    cmdStr,
+                    IOTCommandType.MD_SET_SENSOR_INITIAL
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询倾角初始值出错: ${result.message}"
+                        handleFailureResult(errMsg, isShowErrMsg = false)
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        processInitialAngleResponse(result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE -> {
+                val result = iotParseManager.parse<AlarmTriggerValueInfo>(
+                    cmdStr,
+                    IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询角度触发值出错: ${result.message}"
+                        handleFailureResult(errMsg, isShowErrMsg = false)
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        processAngleTriggerResponse(result.data)
+                    }
+                }
+            }
+
             IOTCommandType.QUERY_DEVICE_STATUS -> {
                 val result =
                     iotParseManager.parse<String>(cmdStr, IOTCommandType.QUERY_DEVICE_STATUS)
@@ -320,82 +399,9 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                 }
             }
 
-            IOTCommandType.SAMPLE -> {
-                val result = iotParseManager.parse<String>(cmdStr, IOTCommandType.SAMPLE)
-                when (result) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "召测出错: ${result.message}"
-                        handleFailureResult(errMsg, isShowErrMsg = false)
-                    }
-
-                    is IOTCommandResult.Success -> {
-                        processSampleResponse(cmdStr, result.data)
-                    }
-                }
-            }
-
             else -> {
                 // 其他指令交给父类处理
                 super.handleCommandResponse(cmdStr)
-            }
-        }
-    }
-
-    /**
-     * 初始化状态信息 - 处理M20S设备状态数据
-     */
-    private fun initStatusInfo(content: String) {
-        launchWithViewLifecycle {
-            try {
-                val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
-                } ?: return@launchWithViewLifecycle
-
-                // 检查电台模块是否可用
-                updateRadioModuleStatus(stateInfo.self_check.uppercase().contains("RADIO:1"))
-
-                val deviceAbnormalList = if (stateInfo.self_check.isEmpty()) {
-                    arrayListOf<String>()
-                } else {
-                    DeviceStatusHelper.checkDeviceAbnormal(stateInfo.self_check)
-                }
-                //移除特定的故障信息
-                deviceAbnormalList.remove("电台模块故障")
-                deviceAbnormalList.remove("太阳能控制器故障")
-
-                val deviceWarnList =
-                    if (content.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkM20Warn(
-                        content
-                    )
-                val status =
-                    if (deviceAbnormalList.isEmpty() && deviceWarnList.isEmpty()) "正常" else if (deviceAbnormalList.isNotEmpty()) "故障" else "告警"
-                mHeadStates.productLogoResId.set(
-                    when (status) {
-                        "告警" -> mHeadStates.productAlarmResId.get()
-                        "故障" -> mHeadStates.productErrorResId.get()
-                        else -> mHeadStates.productNormalResId.get()
-                    }
-                )
-                mHeadStates.deviceStatusCode.set(
-                    when (status) {
-                        "告警" -> "-2"
-                        "故障" -> "-3"
-                        else -> "0"
-                    }
-                )
-                if (status == "正常") {
-                    mHeadStates.warnErrorText.set("正常")
-                    return@launchWithViewLifecycle
-                }
-
-                val tempInfoList = mutableListOf<String>()
-                tempInfoList.addAll(deviceAbnormalList)
-                tempInfoList.addAll(deviceWarnList)
-                handleAbnormalInfo(tempInfoList)
-
-            } catch (e: Exception) {
-                Timber.e(e)
-                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }
@@ -406,7 +412,10 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
     private fun processSampleResponse(cmdStr: String, content: String) {
         try {
             // $cmd=sample&method=0&datastreams={"date":"2025-07-18 17:12:22","sum_value":6013.101,"x_value":-1429.354,"y_value":-0.006,"z_value":-5840.747}
+            // $cmd=sample&datastreams={"103_1":"0.012,-0.020,89.985,3.788,-28.510,-1022.529","224_1":"0.000,0.000,0.000"}
             val resultMap = MoshiUtil.fromJson<Map<String, Any>>(content) ?: return
+
+            // 处理位移数据 (method=0)
             if (cmdStr.contains("method=0") && resultMap.containsKey("x_value")
                 && resultMap.containsKey("y_value")
                 && resultMap.containsKey("z_value")
@@ -440,6 +449,21 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                 measureDataItem.refreshInitCompletionTime(initCompletionTime.toString())
             }
 
+            // 处理角度数据 (103_1)
+            if (!cmdStr.contains("method=") && resultMap.containsKey("103_1")) {
+                val currentAngle = resultMap["103_1"]?.toString() ?: return
+                currentAngle.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                    .let {
+                        if (it.size >= 3) {
+                            // 保存当前角度值
+                            angleData.xCurrent = it[0].toDoubleOrNull() ?: 0.0
+                            angleData.yCurrent = it[1].toDoubleOrNull() ?: 0.0
+                            angleData.zCurrent = it[2].toDoubleOrNull() ?: 0.0
+
+                            Timber.d("当前角度值: X=${angleData.xCurrent}, Y=${angleData.yCurrent}, Z=${angleData.zCurrent}")
+                        }
+                    }
+            }
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
@@ -447,17 +471,154 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
     }
 
     /**
-     * 更新电台模块状态，false 表示电台模块不可用，true 表示电台模块可用
+     * 处理初始角度值响应
      */
-    private fun updateRadioModuleStatus(enable: Boolean) {
-        // 刷新模块状态
-        binding.rvModule.models?.forEach { item ->
-            if (item is ConfigModuleTree) {
-                item.configModules.find { configModule ->
-                    configModule.functionModule.name.contains("电台配置")
-                }?.functionModule?.refreshSupport(enable)
+    private fun processInitialAngleResponse(resultMap: Map<String, String>) {
+        try {
+            val method = resultMap["method"] ?: ""
+            if (method == "0") { // 轮询测得的初始值
+                if (resultMap.containsKey("xAxis") && resultMap.containsKey("yAxis") && resultMap.containsKey(
+                        "zAxis"
+                    )
+                ) {
+                    val xAxis = resultMap["xAxis"] ?: ""
+                    val yAxis = resultMap["yAxis"] ?: ""
+                    val zAxis = resultMap["zAxis"] ?: ""
+
+                    // 保存初始角度值
+                    angleData.xInitial = xAxis.toDoubleOrNull() ?: 0.0
+                    angleData.yInitial = yAxis.toDoubleOrNull() ?: 0.0
+                    angleData.zInitial = zAxis.toDoubleOrNull() ?: 0.0
+
+                    Timber.d("初始角度值: X=${angleData.xInitial}, Y=${angleData.yInitial}, Z=${angleData.zInitial}")
+                }
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    /**
+     * 处理角度触发值响应
+     */
+    private fun processAngleTriggerResponse(info: AlarmTriggerValueInfo) {
+        try {
+            // 解析角度触发值，参考 M50SensorConfigFragment 中的逻辑
+            val level1 = info.level1.toDoubleOrNull() ?: 0.0
+
+            // 保存角度触发值
+            angleData.angleTrigger = level1
+
+            Timber.d("角度触发值: ${angleData.angleTrigger}")
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    /**
+     * 初始化状态信息 - 处理M20S设备状态数据
+     */
+    private fun initStatusInfo(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val stateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
+                } ?: return@launchWithViewLifecycle
+
+                // 检查电台模块是否可用
+                updateRadioModuleStatus(stateInfo.self_check.uppercase().contains("RADIO:1"))
+
+                val deviceAbnormalList = if (stateInfo.self_check.isEmpty()) {
+                    arrayListOf<String>()
+                } else {
+                    DeviceStatusHelper.checkDeviceAbnormal(stateInfo.self_check)
+                }
+                //移除特定的故障信息
+                deviceAbnormalList.remove("电台模块故障")
+                deviceAbnormalList.remove("太阳能控制器故障")
+
+                val deviceWarnList =
+                    if (content.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkM20Warn(
+                        content
+                    )
+                // 添加角度告警检查
+                val angleWarnings = calculateAngleWarnings()
+
+                // 合并告警列表，但如果倾角加速度模块故障，则不显示角度告警
+                val hasTiltSensorFault =
+                    deviceAbnormalList.any { it.contains("倾角加速度模块故障") }
+                val warnListWithAngles = if (hasTiltSensorFault) {
+                    deviceWarnList
+                } else {
+                    deviceWarnList + angleWarnings
+                }
+
+                // 合并故障和告警信息，并进行过滤
+                val mergedList = DeviceStatusHelper.mergeM50StatusInfo(
+                    deviceAbnormalList,
+                    warnListWithAngles as ArrayList<String>
+                )
+
+                val status =
+                    if (deviceAbnormalList.isEmpty() && deviceWarnList.isEmpty()) "正常" else if (deviceAbnormalList.isNotEmpty()) "故障" else "告警"
+                mHeadStates.productLogoResId.set(
+                    when (status) {
+                        "告警" -> mHeadStates.productAlarmResId.get()
+                        "故障" -> mHeadStates.productErrorResId.get()
+                        else -> mHeadStates.productNormalResId.get()
+                    }
+                )
+                mHeadStates.deviceStatusCode.set(
+                    when (status) {
+                        "告警" -> "-2"
+                        "故障" -> "-3"
+                        else -> "0"
+                    }
+                )
+                if (status == "正常") {
+                    mHeadStates.warnErrorText.set("正常")
+                    return@launchWithViewLifecycle
+                }
+
+                handleAbnormalInfo(mergedList)
+            } catch (e: Exception) {
+                Timber.e(e)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
+    }
+
+    /**
+     * 计算角度偏移值并返回角度告警信息
+     */
+    private fun calculateAngleWarnings(): List<String> {
+        val warnings = mutableListOf<String>()
+
+        try {
+            // 计算偏移角度值 = 当前角度值 - 初始角度值
+            val xOffset = angleData.xCurrent - angleData.xInitial
+            val yOffset = angleData.yCurrent - angleData.yInitial
+            val zOffset = angleData.zCurrent - angleData.zInitial
+
+            // 检查是否超过触发值
+            if (kotlin.math.abs(xOffset) > angleData.angleTrigger) {
+                warnings.add("X轴偏移角度过大")
+            }
+            if (kotlin.math.abs(yOffset) > angleData.angleTrigger) {
+                warnings.add("Y轴偏移角度过大")
+            }
+            if (kotlin.math.abs(zOffset) > angleData.angleTrigger) {
+                warnings.add("Z轴偏移角度过大")
+            }
+
+            Timber.d("角度偏移检查: X偏移=$xOffset, Y偏移=$yOffset, Z偏移=$zOffset, 触发值=${angleData.angleTrigger}")
+        } catch (e: Exception) {
+            Timber.e(e, "计算角度偏移值时出错")
+        }
+
+        return warnings
     }
 
     /**
@@ -526,6 +687,20 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                     deviceInfo
                 )
             )
+        }
+    }
+
+    /**
+     * 更新电台模块状态，false 表示电台模块不可用，true 表示电台模块可用
+     */
+    private fun updateRadioModuleStatus(enable: Boolean) {
+        // 刷新模块状态
+        binding.rvModule.models?.forEach { item ->
+            if (item is ConfigModuleTree) {
+                item.configModules.find { configModule ->
+                    configModule.functionModule.name.contains("电台配置")
+                }?.functionModule?.refreshSupport(enable)
+            }
         }
     }
 

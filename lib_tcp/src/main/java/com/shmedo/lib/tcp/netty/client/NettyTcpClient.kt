@@ -35,10 +35,11 @@ class NettyTcpClient private constructor(val host: String, val tcpPort: Int, val
     private var listener: NettyClientListener<String>? = null
     private var channel: Channel? = null
     private var isConnect = false
-    private var reconnectNum = MAX_CONNECT_TIMES
-    private var isNeedReconnect = true
     private var isConnecting = false
+    private var isNeedReconnect = true
 
+    var MAX_CONNECT_TIMES = 3//最大重连次数
+    private var reconnectNum = MAX_CONNECT_TIMES
     private var reconnectIntervalTime: Long = CONNECT_TIMEOUT_MILLIS
     private var heartBeatInterval: Long = 5 //心跳间隔时间 单位秒
     private var isSendHeartBeat = false//是否发送心跳
@@ -48,7 +49,6 @@ class NettyTcpClient private constructor(val host: String, val tcpPort: Int, val
 
     companion object {
         const val CONNECT_TIMEOUT_MILLIS = 5000L
-        var MAX_CONNECT_TIMES = Integer.MAX_VALUE//最大重连次数
     }
 
     private fun setPacketSeparator(separator: String) {
@@ -96,17 +96,21 @@ class NettyTcpClient private constructor(val host: String, val tcpPort: Int, val
                                 ) //5s未发送数据，回调userEventTriggered
                             }
                             //黏包处理,需要客户端、服务端配合
-                            if (!TextUtils.isEmpty(packetSeparator)) {
-                                val delimiter = Unpooled.buffer().apply {
-                                    writeBytes(packetSeparator!!.toByteArray())
+                            // 当 packetSeparator 为 null 时，进入原始模式，不添加任何帧解码器
+                            if (packetSeparator != null) {
+                                if (!TextUtils.isEmpty(packetSeparator)) {
+                                    val delimiter = Unpooled.buffer().apply {
+                                        writeBytes(packetSeparator!!.toByteArray())
+                                    }
+                                    ch.pipeline()
+                                        .addLast(DelimiterBasedFrameDecoder(maxPacketLong, delimiter))
+                                } else {
+                                    ch.pipeline().addLast(LineBasedFrameDecoder(maxPacketLong))
                                 }
-                                ch.pipeline()
-                                    .addLast(DelimiterBasedFrameDecoder(maxPacketLong, delimiter))
-                            } else {
-                                ch.pipeline().addLast(LineBasedFrameDecoder(maxPacketLong))
+                                ch.pipeline().addLast(StringEncoder(CharsetUtil.UTF_8))
+                                ch.pipeline().addLast(StringDecoder(CharsetUtil.UTF_8))
                             }
-                            ch.pipeline().addLast(StringEncoder(CharsetUtil.UTF_8))
-                            ch.pipeline().addLast(StringDecoder(CharsetUtil.UTF_8))
+                            // 原始模式：packetSeparator == null 时不添加编解码器，直接处理ByteBuf
                             ch.pipeline().addLast(
                                 listener?.let {
                                     NettyClientHandler(
@@ -114,7 +118,8 @@ class NettyTcpClient private constructor(val host: String, val tcpPort: Int, val
                                         index,
                                         isSendHeartBeat,
                                         heartBeatData,
-                                        packetSeparator
+                                        packetSeparator,
+                                        packetSeparator == null // 传递是否为原始模式的标志
                                     )
                                 }
                             )
@@ -223,6 +228,20 @@ class NettyTcpClient private constructor(val host: String, val tcpPort: Int, val
     }
 
     /**
+     * 发送原始字节数据（无分隔符）
+     */
+    fun sendRawDataToServer(data: ByteArray, listener: MessageStateListener): Boolean {
+        val flag = channel != null && isConnect
+        if (flag) {
+            val buf = Unpooled.copiedBuffer(data)
+            channel?.writeAndFlush(buf)?.addListener { future ->
+                listener.isSendSuccess(future.isSuccess)
+            }
+        }
+        return flag
+    }
+
+    /**
      * 获取TCP连接状态
      */
     fun getConnectStatus() = isConnect
@@ -245,7 +264,7 @@ class NettyTcpClient private constructor(val host: String, val tcpPort: Int, val
      * 构建者，创建NettyTcpClient
      */
     class Builder {
-        private var MAX_CONNECT_TIMES = Integer.MAX_VALUE//最大重连次数
+        private var MAX_CONNECT_TIMES = 3//最大重连次数
         private var reconnectIntervalTime: Long = 5000//重连间隔
         private var host: String? = null//服务器地址
         private var tcpPort: Int = 0//服务器端口

@@ -149,7 +149,11 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
                         originalResult ?: shouldContinue
                     } else {
                         // 保持原有逻辑：直接处理响应，不进行中断控制
-                        handleCommandResponse(successResult.responseData)
+                        try {
+                            handleCommandResponse(successResult.responseData)
+                        } catch (e: Exception) {
+                            Timber.e(e, "业务解析失败，继续指令序列执行")
+                        }
                         // 调用原始回调
                         callbacks.onSuccess?.invoke(successResult)
                         // 返回null表示使用默认行为（继续执行）

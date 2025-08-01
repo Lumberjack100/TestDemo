@@ -34,10 +34,6 @@ class TcpManager : NettyClientListener<String> {
 
     private var mNettyTcpClient: NettyTcpClient? = null
 
-    fun initTcpClient(host: String, port: Int) {
-        initTcpClient(host, port, true, null)
-    }
-
     fun initTcpClient(host: String, port: Int, isSendHeartBeat: Boolean, packetSeparator: String?) {
         mNettyTcpClient = NettyTcpClient.Builder()
             .setHost(host) //设置服务端地址
@@ -88,7 +84,15 @@ class TcpManager : NettyClientListener<String> {
         // 跳过心跳包数据的分发处理
         if (msg.contains(TCP_HEART_BEAT)) return
 
-        _data.tryEmit(TcpSuccessResult(msg))
+        // 检查是否为原始数据
+        if (msg.startsWith("TCP_RAW:")) {
+            // 移除RAW:前缀，获取原始数据
+            val rawData = msg.substring(8)
+            val byteArray = rawData.toByteArray(Charsets.UTF_8)
+            _data.tryEmit(TcpSuccessRawDataResult(byteArray))
+        } else {
+            _data.tryEmit(TcpSuccessDataResult(msg))
+        }
     }
 
     fun connect() {
@@ -123,6 +127,22 @@ class TcpManager : NettyClientListener<String> {
     fun sendMsgToServer(msg: String, messageStateListener: MessageStateListener) {
         Timber.d("发送消息: length${msg.toByteArray().size} bytes;content: $msg")
         mNettyTcpClient?.sendMsgToServer(msg, messageStateListener)
+    }
+
+    /**
+     * 发送原始字节数据到服务器
+     */
+    fun sendRawDataToServer(data: ByteArray) {
+        Timber.d("发送原始数据: length=${data.size} bytes")
+        mNettyTcpClient?.sendRawDataToServer(data, object : MessageStateListener {
+            override fun isSendSuccess(isSuccess: Boolean) {
+                if (isSuccess) {
+                    Timber.d("Send raw data successful")
+                } else {
+                    Timber.d("Send raw data error")
+                }
+            }
+        })
     }
 
 }

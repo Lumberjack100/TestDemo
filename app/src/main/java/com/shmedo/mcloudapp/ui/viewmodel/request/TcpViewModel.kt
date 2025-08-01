@@ -2,9 +2,9 @@ package com.shmedo.mcloudapp.ui.viewmodel.request
 
 import androidx.lifecycle.viewModelScope
 import com.shmedo.core.data.repository.LoggerRepositoryImp
-import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import com.shmedo.lib.tcp.MedoTcpRepository
 import com.shmedo.lib.tcp.TcpManagerResult
+import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -30,8 +30,11 @@ class TcpViewModel(
         }.launchIn(viewModelScope)
     }
 
-    fun initTcpClient(host: String, port: Int) {
-        medoTcpRepository.initTcpClient(host, port)
+    /**
+     * 初始化原始模式TCP客户端（不使用分隔符）
+     */
+    fun initTcpClientRawMode(host: String, port: Int) {
+        medoTcpRepository.initTcpClientRawMode(host, port)
     }
 
     fun initTcpClient(host: String, port: Int, isSendHeartBeat: Boolean, packetSeparator: String?) {
@@ -55,5 +58,12 @@ class TcpViewModel(
             delay(timeMillis)
             medoTcpRepository.sendMsgToServer(cmdStr)
         }
+    }
+
+    /**
+     * 发送原始字节数据到服务器
+     */
+    fun sendRawDataToServer(data: ByteArray) {
+        medoTcpRepository.sendRawDataToServer(data)
     }
 }

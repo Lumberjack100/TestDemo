@@ -24,11 +24,19 @@ class MedoTcpRepository(
         }.launchIn(scope)
     }
 
-    fun initTcpClient(host: String, port: Int) {
-        tcpManager.initTcpClient(host, port)
+    /**
+     * 初始化原始模式TCP客户端（不设置分隔符）
+     */
+    fun initTcpClientRawMode(host: String, port: Int) {
+        tcpManager.initTcpClient(host, port, false, null) // packetSeparator 设置为 null
     }
 
-    fun initTcpClient(host: String, port: Int, isSendHeartBeat: Boolean, packetSeparator: String?) {
+    fun initTcpClient(
+        host: String,
+        port: Int,
+        isSendHeartBeat: Boolean,
+        packetSeparator: String?
+    ) {
         tcpManager.initTcpClient(host, port, isSendHeartBeat, packetSeparator)
     }
 
@@ -46,5 +54,12 @@ class MedoTcpRepository(
 
     fun sendMsgToServer(msg: String) {
         tcpManager.sendMsgToServer(msg)
+    }
+
+    /**
+     * 发送原始字节数据到服务器
+     */
+    fun sendRawDataToServer(data: ByteArray) {
+        tcpManager.sendRawDataToServer(data)
     }
 }
