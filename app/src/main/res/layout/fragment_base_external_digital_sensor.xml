@@ -46,7 +46,7 @@
                 android:paddingBottom="@dimen/page_content_container_padding_bottom_100"
                 android:splitMotionEvents="false"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_device_status_info_basic" />
+                tools:listitem="@layout/item_das_external_digital_sensor_param_edit" />
 
         </com.drake.brv.PageRefreshLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
