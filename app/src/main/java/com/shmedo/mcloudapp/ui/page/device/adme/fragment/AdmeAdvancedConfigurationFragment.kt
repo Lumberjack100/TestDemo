@@ -19,7 +19,7 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommonModule
-import com.shmedo.mcloudapp.model.ConfigModule
+import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
@@ -69,9 +69,9 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     false
                 )
             )
-            addType<ConfigModule>(R.layout.item_device_config_module)
+            addType<DeviceFunctionModule>(R.layout.item_device_config_module)
             R.id.item.onClick {
-                val module = getModel<ConfigModule>()
+                val module = getModel<DeviceFunctionModule>()
                 processItemClick(module)
             }
         }
@@ -82,12 +82,12 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
         initModuleList()
     }
 
-    private fun processItemClick(module: ConfigModule) {
+    private fun processItemClick(functionModule: DeviceFunctionModule) {
         if (isBleDisconnected()) {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }
-        if (module.functionModule.navId != 0) {
+        if (functionModule.navId != 0) {
             val bundle = BaseIOTDeviceFragment.newBundleArguments(
                 productType,
                 communicateWay,
@@ -95,120 +95,100 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                 bleDevice
             )
             nav().safeNavigate(
-                module.functionModule.navId,
+                functionModule.navId,
                 bundle
             )
         }
     }
 
     private fun initModuleList() {
-        val moduleList = arrayListOf<ConfigModule>()
+        val moduleList = arrayListOf<DeviceFunctionModule>()
         moduleList.add(
-            ConfigModule(
-                CommonModule(
-                    name = "计米轮",
-                    desc = "参数配置",
-                    resID = R.drawable.ic_basic_config,
-                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeMeterWheelFragment
-                )
+            CommonModule(
+                name = "计米轮",
+                desc = "参数配置",
+                resID = R.drawable.ic_basic_config,
+                navId = R.id.action_admeAdvancedConfigurationFragment_to_admeMeterWheelFragment
             )
         )
         moduleList.add(
-            ConfigModule(
-                CommonModule(
-                    name = "测斜仪",
-                    desc = "参数配置",
-                    resID = R.drawable.ic_basic_config,
-                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeInclinometerFragment
-                )
+            CommonModule(
+                name = "测斜仪",
+                desc = "参数配置",
+                resID = R.drawable.ic_basic_config,
+                navId = R.id.action_admeAdvancedConfigurationFragment_to_admeInclinometerFragment
             )
         )
         moduleList.add(
-            ConfigModule(
-                CommonModule(
-                    name = "执行机构",
-                    desc = "参数配置",
-                    resID = R.drawable.ic_basic_config,
-                    navId = if (productType == ProductType.ADME) R.id.action_admeAdvancedConfigurationFragment_to_admeExecutiveAgencyFragment else R.id.action_admeAdvancedConfigurationFragment_to_admeHacExecutiveAgencyFragment
-                )
+            CommonModule(
+                name = "执行机构",
+                desc = "参数配置",
+                resID = R.drawable.ic_basic_config,
+                navId = if (productType == ProductType.ADME) R.id.action_admeAdvancedConfigurationFragment_to_admeExecutiveAgencyFragment else R.id.action_admeAdvancedConfigurationFragment_to_admeHacExecutiveAgencyFragment
             )
         )
         if (productType == ProductType.ADME) {
             moduleList.add(
-                ConfigModule(
-                    CommonModule(
-                        name = "步进电机",
-                        desc = "参数配置",
-                        resID = R.drawable.ic_basic_config,
-                        navId = R.id.action_admeAdvancedConfigurationFragment_to_admeStepperMotorFragment
-                    )
+                CommonModule(
+                    name = "步进电机",
+                    desc = "参数配置",
+                    resID = R.drawable.ic_basic_config,
+                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeStepperMotorFragment
                 )
             )
         }
 
         moduleList.add(
-            ConfigModule(
-                CommonModule(
-                    name = "堵转缓停",
-                    desc = "参数配置",
-                    resID = R.drawable.ic_basic_config,
-                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeLockedRotorDetectionFragment
-                )
+            CommonModule(
+                name = "堵转缓停",
+                desc = "参数配置",
+                resID = R.drawable.ic_basic_config,
+                navId = R.id.action_admeAdvancedConfigurationFragment_to_admeLockedRotorDetectionFragment
             )
         )
         if (productType == ProductType.ADME && communicateWay is BleConnect) {
             moduleList.add(
-                ConfigModule(
-                    CommonModule(
-                        name = "导槽校准",
-                        desc = "正反测起点校准",
-                        resID = R.drawable.ic_basic_config,
-                        navId = R.id.action_admeAdvancedConfigurationFragment_to_admeGuideGrooveCalibrationFragment
-                    )
+                CommonModule(
+                    name = "导槽校准",
+                    desc = "正反测起点校准",
+                    resID = R.drawable.ic_basic_config,
+                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeGuideGrooveCalibrationFragment
                 )
             )
         }
         moduleList.add(
-            ConfigModule(
-                CommonModule(
-                    name = "智能控制",
-                    desc = "参数配置",
-                    resID = R.drawable.ic_basic_config,
-                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeIntelligentControlFragment
-                )
+            CommonModule(
+                name = "智能控制",
+                desc = "参数配置",
+                resID = R.drawable.ic_basic_config,
+                navId = R.id.action_admeAdvancedConfigurationFragment_to_admeIntelligentControlFragment
             )
         )
         moduleList.add(
-            ConfigModule(
-                CommonModule(
-                    name = "阈值设置",
-                    desc = "参数配置",
-                    resID = R.drawable.ic_basic_config,
-                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeThresholdFragment
-                )
+            CommonModule(
+                name = "阈值设置",
+                desc = "参数配置",
+                resID = R.drawable.ic_basic_config,
+                navId = R.id.action_admeAdvancedConfigurationFragment_to_admeThresholdFragment
             )
         )
         if (productType == ProductType.ADME)
             moduleList.add(
-                ConfigModule(
-                    CommonModule(
-                        name = "运动检校处理",
-                        desc = "参数配置",
-                        resID = R.drawable.ic_basic_config,
-                        navId = R.id.action_admeAdvancedConfigurationFragment_to_admeSportsCalibrationProcessingFragment
-                    )
+                CommonModule(
+                    name = "运动检校处理",
+                    desc = "参数配置",
+                    resID = R.drawable.ic_basic_config,
+                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeSportsCalibrationProcessingFragment
                 )
             )
 
         if (productType == ProductType.ADME_HAC)
             moduleList.add(
-                ConfigModule(
-                    CommonModule(
-                        name = "报警配置",
-                        desc = "参数配置",
-                        resID = R.drawable.ic_basic_config,
-                        navId = R.id.action_admeAdvancedConfigurationFragment_to_admeHacAlarmSettingFragment
-                    )
+                CommonModule(
+                    name = "报警配置",
+                    desc = "参数配置",
+                    resID = R.drawable.ic_basic_config,
+                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeHacAlarmSettingFragment
                 )
             )
         binding.rvModule.models = moduleList

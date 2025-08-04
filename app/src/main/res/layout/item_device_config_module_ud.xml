@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.model.ConfigModule" />
+            type="com.shmedo.mcloudapp.model.DeviceFunctionModule" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/item_background_holo_light"
-        android:enabled="@{m.functionModule.moduleAvailable}"
+        android:enabled="@{m.moduleAvailable}"
         android:focusable="true"
         android:gravity="center"
         android:orientation="vertical"
@@ -23,11 +23,11 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_config_logo"
-            app:imageResId="@{m.functionModule.resID}"
-            app:imageSize="@{m.functionModule.iconSize}"
+            app:imageResId="@{m.resID}"
+            app:imageSize="@{m.iconSize}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:imageAlpha="@{m.functionModule.moduleAvailable ? 255 :128}"
+            app:imageAlpha="@{m.moduleAvailable ? 255 :128}"
             tools:src="@drawable/ic_module_net_info" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -37,8 +37,8 @@
             android:layout_marginTop="@dimen/dimen_size_5"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="@{m.functionModule.name}"
-            android:textColor="@{m.functionModule.moduleAvailable ? @color/sub_title_text_color_black_60 : @color/offline_BABABA}"
+            android:text="@{m.name}"
+            android:textColor="@{m.moduleAvailable ? @color/sub_title_text_color_black_60 : @color/offline_BABABA}"
             android:textSize="@dimen/device_home_module_item_text_size"
             tools:text="关于设备" />
 

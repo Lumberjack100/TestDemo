@@ -9,13 +9,10 @@ import com.shmedo.mcloudapp.R
  * 创建时间:  2020/8/27 <br></br>
  * 描述：   配置模块
  */
-data class ConfigModule(
-    val functionModule: DeviceFunctionModule
+data class ConfigModuleTree(
+    val configModules: MutableList<DeviceFunctionModule> = arrayListOf(),
 )
 
-data class ConfigModuleTree(
-    val configModules: MutableList<ConfigModule> = arrayListOf(),
-)
 
 sealed class DeviceFunctionModule(
     val name: String = "",

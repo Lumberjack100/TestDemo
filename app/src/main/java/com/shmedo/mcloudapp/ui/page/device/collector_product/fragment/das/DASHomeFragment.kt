@@ -32,7 +32,6 @@ import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CollectorConfigModule
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
-import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
@@ -41,8 +40,8 @@ import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import kotlinx.coroutines.flow.debounce
 import org.koin.android.ext.android.inject
@@ -70,7 +69,7 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
             mHeadStates.productToken.set("MR701")
         } else {
             when (productType) {
-                 ProductType.BHY -> {
+                ProductType.BHY -> {
                     mHeadStates.productErrorResId.set(R.drawable.device_logo_bhy_3s_error)
                     mHeadStates.productAlarmResId.set(R.drawable.device_logo_bhy_3s_alarm)
                     mHeadStates.productOfflineResId.set(R.drawable.device_logo_bhy_3s_offline)
@@ -94,37 +93,29 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
         groupList.add(
             ConfigModuleTree(
                 configModules = arrayListOf(
-                    ConfigModule(
-                        CommonModule(
-                            name = "基本信息",
-                            resID = R.drawable.ic_module_basic_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_dasBaseInfoFragment
-                        )
+                    CommonModule(
+                        name = "基本信息",
+                        resID = R.drawable.ic_module_basic_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_dasBaseInfoFragment
                     ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "网络信息",
-                            resID = R.drawable.ic_module_net_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_dasNetInfoFragment
-                        )
+                    CommonModule(
+                        name = "网络信息",
+                        resID = R.drawable.ic_module_net_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_dasNetInfoFragment
                     ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "传感信息",
-                            resID = R.drawable.ic_module_state_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_dasSensorInfoFragment
-                        )
+                    CommonModule(
+                        name = "传感信息",
+                        resID = R.drawable.ic_module_state_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_dasSensorInfoFragment
                     ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "位置信息",
-                            resID = R.drawable.ic_module_location_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_commonLocationInfoFragment
-                        )
+                    CommonModule(
+                        name = "位置信息",
+                        resID = R.drawable.ic_module_location_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_commonLocationInfoFragment
                     )
                 )
             )
@@ -134,67 +125,53 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
         groupList.add(DeviceStatusInfoGroupItem("设备配置"))
         val configModuleTree = ConfigModuleTree()
         configModuleTree.configModules.add(
-            ConfigModule(
-                CollectorConfigModule(
-                    name = "采集配置",
-                    resID = R.drawable.ic_module_collect_setting,
-                    navId = R.id.action_global_to_dasCollectorSettingFragment
-                )
+            CollectorConfigModule(
+                name = "采集配置",
+                resID = R.drawable.ic_module_collect_setting,
+                navId = R.id.action_global_to_dasCollectorSettingFragment
             )
         )
         configModuleTree.configModules.add(
-            ConfigModule(
-                DataCenterModule(
-                    name = "链路配置",
-                    resID = R.drawable.ic_module_datacenter_new,
-                    navId = if (communicateWay is NetPlatformConnect) R.id.action_global_to_dasDataCenterHomeFragment else R.id.action_global_to_bleDasDataCenterHomeFragment
-                )
+            DataCenterModule(
+                name = "链路配置",
+                resID = R.drawable.ic_module_datacenter_new,
+                navId = if (communicateWay is NetPlatformConnect) R.id.action_global_to_dasDataCenterHomeFragment else R.id.action_global_to_bleDasDataCenterHomeFragment
             )
         )
         if (communicateWay is NetPlatformConnect) {
             configModuleTree.configModules.add(
-                ConfigModule(
-                    CommonModule(
-                        name = "上报配置",
-                        resID = R.drawable.ic_module_work_mode_new,
-                        navId = R.id.action_global_to_dasReportConfigFragment
-                    )
+                CommonModule(
+                    name = "上报配置",
+                    resID = R.drawable.ic_module_work_mode_new,
+                    navId = R.id.action_global_to_dasReportConfigFragment
                 )
             )
         }
         configModuleTree.configModules.add(
-            ConfigModule(
-                SensorConfigModule(
-                    name = "传感配置",
-                    resID = R.drawable.ic_module_sensor_setting_new,
-                    navId = R.id.action_global_to_dasSensorHomeFragment
-                )
+            SensorConfigModule(
+                name = "传感配置",
+                resID = R.drawable.ic_module_sensor_setting_new,
+                navId = R.id.action_global_to_dasSensorHomeFragment
             )
         )
         configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "时间校准",
-                    resID = R.drawable.ic_module_time_calibration_new,
-                    navId = R.id.action_global_to_time_calibration
-                )
+            CommonModule(
+                name = "时间校准",
+                resID = R.drawable.ic_module_time_calibration_new,
+                navId = R.id.action_global_to_time_calibration
             )
         )
         configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "系统配置",
-                    resID = R.drawable.ic_module_system_setting,
-                    navId = R.id.action_global_to_advancedSettingFragment
-                )
+            CommonModule(
+                name = "系统配置",
+                resID = R.drawable.ic_module_system_setting,
+                navId = R.id.action_global_to_advancedSettingFragment
             )
         )
         if (communicateWay is BleConnect) {
             configModuleTree.configModules.add(
-                ConfigModule(
-                    CommandDebugConfigModule(
-                        resID = R.drawable.ic_module_cmd_debug_new,
-                    )
+                CommandDebugConfigModule(
+                    resID = R.drawable.ic_module_cmd_debug_new,
                 )
             )
         }
@@ -508,7 +485,5 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                     }
                 }
         }
-
     }
-
 }

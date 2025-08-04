@@ -29,7 +29,6 @@ import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
-import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
@@ -120,37 +119,29 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
         groupList.add(
             ConfigModuleTree(
                 configModules = arrayListOf(
-                    ConfigModule(
-                        CommonModule(
-                            name = "基本信息",
-                            resID = R.drawable.ic_module_basic_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_m20SBaseInfoFragment
-                        )
+                    CommonModule(
+                        name = "基本信息",
+                        resID = R.drawable.ic_module_basic_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_m20SBaseInfoFragment
                     ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "网络信息",
-                            resID = R.drawable.ic_module_net_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_m20SNetInfoFragment
-                        )
+                    CommonModule(
+                        name = "网络信息",
+                        resID = R.drawable.ic_module_net_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_m20SNetInfoFragment
                     ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "状态信息",
-                            resID = R.drawable.ic_module_state_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_m20SStatusInfoFragment
-                        )
+                    CommonModule(
+                        name = "状态信息",
+                        resID = R.drawable.ic_module_state_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_m20SStatusInfoFragment
                     ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "运行信息",
-                            resID = R.drawable.ic_module_satellite_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_m20SRunningInfoFragment
-                        )
+                    CommonModule(
+                        name = "运行信息",
+                        resID = R.drawable.ic_module_satellite_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_m20SRunningInfoFragment
                     )
                 )
             )
@@ -164,105 +155,82 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
 
         // 根据产品类型添加不同的配置模块
         configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "工作模式",
-                    resID = R.drawable.ic_module_work_mode_new,
-                    navId = R.id.action_global_to_m20SWorkModelParamFragment
-                )
+            CommonModule(
+                name = "工作模式",
+                resID = R.drawable.ic_module_work_mode_new,
+                navId = R.id.action_global_to_m20SWorkModelParamFragment
             )
         )
         configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "网络配置",
-                    resID = R.drawable.ic_module_network_setting,
-                    navId = R.id.action_global_to_m50NetworkConfigFragment
-                )
+            CommonModule(
+                name = "网络配置",
+                resID = R.drawable.ic_module_network_setting,
+                navId = R.id.action_global_to_m50NetworkConfigFragment
             )
         )
         configModuleTree.configModules.add(
-            ConfigModule(
-                DataCenterModule(
-                    name = "链路配置",
-                    resID = R.drawable.ic_module_datacenter_new,
-                    navId = R.id.action_global_dataCenterHomeFragment
-                )
+            DataCenterModule(
+                name = "链路配置",
+                resID = R.drawable.ic_module_datacenter_new,
+                navId = R.id.action_global_dataCenterHomeFragment
             )
         )
         configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "电台配置",
-                    resID = R.drawable.ic_module_lora_new,
-                    navId = R.id.action_global_to_m20SRadioSettingFragment
-                )
+            CommonModule(
+                name = "电台配置",
+                resID = R.drawable.ic_module_lora_new,
+                navId = R.id.action_global_to_m20SRadioSettingFragment
             )
         )
         configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "GNSS配置",
-                    resID = R.drawable.ic_module_cors,
-                    navId = R.id.action_global_to_m50GNSSConfigFragment,
-                )
+            CommonModule(
+                name = "GNSS配置",
+                resID = R.drawable.ic_module_cors,
+                navId = R.id.action_global_to_m50GNSSConfigFragment,
             )
         )
         configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "倾斜触发",
-                    resID = R.drawable.ic_module_sensor_setting_new,
-                    navId = R.id.action_global_to_m50SensorConfigFragment
-                )
+            CommonModule(
+                name = "倾斜触发",
+                resID = R.drawable.ic_module_sensor_setting_new,
+                navId = R.id.action_global_to_m50SensorConfigFragment
             )
         )
         configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "串口配置",
-                    resID = R.drawable.ic_module_serial_port,
-                    navId = 0,
-                    isSupport = false
-                )
+            CommonModule(
+                name = "串口配置",
+                resID = R.drawable.ic_module_serial_port,
+                navId = 0,
+                isSupport = false
             )
         )
         configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "报警配置",
-                    resID = R.drawable.ic_module_alarm_new,
-                    navId = R.id.action_global_to_alarmSettingFragment
-                )
+            CommonModule(
+                name = "报警配置",
+                resID = R.drawable.ic_module_alarm_new,
+                navId = R.id.action_global_to_alarmSettingFragment
             )
         )
         configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "时间校准",
-                    resID = R.drawable.ic_module_time_calibration_new,
-                    navId = R.id.action_global_to_time_calibration
-                )
+            CommonModule(
+                name = "时间校准",
+                resID = R.drawable.ic_module_time_calibration_new,
+                navId = R.id.action_global_to_time_calibration
             )
         )
-
         configModuleTree.configModules.add(
-            ConfigModule(
-                CommonModule(
-                    name = "系统配置",
-                    resID = R.drawable.ic_module_system_setting,
-                    navId = R.id.action_global_to_advancedSettingFragment
-                )
+            CommonModule(
+                name = "系统配置",
+                resID = R.drawable.ic_module_system_setting,
+                navId = R.id.action_global_to_advancedSettingFragment
             )
         )
 
         // 蓝牙连接时添加指令调试模块
         if (communicateWay is BleConnect) {
             configModuleTree.configModules.add(
-                ConfigModule(
-                    CommandDebugConfigModule(
-                        resID = R.drawable.ic_module_cmd_debug_new,
-                    )
+                CommandDebugConfigModule(
+                    resID = R.drawable.ic_module_cmd_debug_new,
                 )
             )
         }
@@ -697,9 +665,9 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
         // 刷新模块状态
         binding.rvModule.models?.forEach { item ->
             if (item is ConfigModuleTree) {
-                item.configModules.find { configModule ->
-                    configModule.functionModule.name.contains("电台配置")
-                }?.functionModule?.refreshSupport(enable)
+                item.configModules.find { functionModule ->
+                    functionModule.name.contains("电台配置")
+                }?.refreshSupport(enable)
             }
         }
     }

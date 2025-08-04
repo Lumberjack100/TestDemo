@@ -41,7 +41,6 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.model.BleConnect
-import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusEnum
@@ -165,8 +164,8 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
         //刷新模块状态
         binding.rvModule.models?.forEach { item ->
             if (item is ConfigModuleTree) {
-                item.configModules.forEach { configModule ->
-                    configModule.functionModule.refreshStatus(isConnected)
+                item.configModules.forEach { functionModule ->
+                    functionModule.refreshStatus(isConnected)
                 }
             }
         }
@@ -188,10 +187,10 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                                     ConvertUtils.dp2px(10f), false
                                 )
                             )
-                            addType<ConfigModule>(R.layout.item_device_config_module_ud)
+                            addType<DeviceFunctionModule>(R.layout.item_device_config_module_ud)
                             R.id.item.onClick {
-                                val configModule = getModel<ConfigModule>()
-                                processSubModuleItemClick(configModule.functionModule)
+                                val functionModule = getModel<DeviceFunctionModule>()
+                                processSubModuleItemClick(functionModule)
                             }
                         }
                     }
@@ -282,8 +281,8 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
         //刷新模块状态
         binding.rvModule.models?.forEach { item ->
             if (item is ConfigModuleTree) {
-                item.configModules.forEach { configModule ->
-                    configModule.functionModule.refreshStatus(deviceInfo.onlineStatus)
+                item.configModules.forEach { functionModule ->
+                    functionModule.refreshStatus(deviceInfo.onlineStatus)
                 }
             }
         }
@@ -537,7 +536,7 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
         if (!isNeedAutoSyncLocation()) {
             return
         }
-        
+
         // 如果已经在同步中，则不重复执行
         if (isLocationSyncInProgress) {
             Timber.d("位置同步已在进行中，跳过重复同步")
@@ -596,7 +595,7 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
     private fun startAutoLocationSync() {
         isLocationSyncInProgress = true
         gcjLatLng = null
-        
+
         // 首先尝试获取缓存的位置
         val cachedLocation = locationViewModel.getCachedLocation()
         if (cachedLocation != null) {
@@ -604,7 +603,7 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
             processLocationForSync(cachedLocation)
             return
         }
-        
+
         // 没有缓存位置，请求新的位置
         locationViewModel.requestImmediateLocationUpdate { location ->
             if (location != null) {
@@ -616,7 +615,7 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
             }
         }
     }
-    
+
     /**
      * 处理位置信息用于同步
      */
@@ -641,7 +640,7 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
         )
         locationSyncViewModel.latitude.set(mWgsLatLng.latitude.toString())
         locationSyncViewModel.longitude.set(mWgsLatLng.longitude.toString())
-        
+
         // 执行位置同步
         performLocationSync()
     }

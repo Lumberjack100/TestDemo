@@ -46,7 +46,6 @@ import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.model.BleConnect
-import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusEnum
@@ -224,8 +223,8 @@ abstract class OptimizedBaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment(
     private fun refreshModuleStatus(isConnected: Boolean) {
         binding.rvModule.models?.forEach { item ->
             if (item is ConfigModuleTree) {
-                item.configModules.forEach { configModule ->
-                    configModule.functionModule.refreshStatus(isConnected)
+                item.configModules.forEach { functionModule ->
+                    functionModule.refreshStatus(isConnected)
                 }
             }
         }
@@ -247,10 +246,10 @@ abstract class OptimizedBaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment(
                                     ConvertUtils.dp2px(10f), false
                                 )
                             )
-                            addType<ConfigModule>(R.layout.item_device_config_module_ud)
+                            addType<DeviceFunctionModule>(R.layout.item_device_config_module_ud)
                             R.id.item.onClick {
-                                val configModule = getModel<ConfigModule>()
-                                processSubModuleItemClick(configModule.functionModule)
+                                val functionModule = getModel<DeviceFunctionModule>()
+                                processSubModuleItemClick(functionModule)
                             }
                         }
                     }

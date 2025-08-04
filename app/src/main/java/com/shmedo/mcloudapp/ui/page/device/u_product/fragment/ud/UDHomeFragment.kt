@@ -28,7 +28,6 @@ import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
-import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
@@ -36,8 +35,8 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.UDMeasureDataItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.utils.UDDeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -54,7 +53,7 @@ import timber.log.Timber
 class UDHomeFragment : BaseDeviceHomeFragment() {
     private var measureDataItem: UDMeasureDataItem = UDMeasureDataItem()
     private var measureDataLoadingDialogId = ""
-    
+
     private var abnormalInfoJob: Job? = null
     private var queryMeasureResultTimeoutJob: Job? = null
     private var repeatPollNum = 0 //重复轮询次数
@@ -99,37 +98,29 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
         groupList.add(
             ConfigModuleTree(
                 configModules = arrayListOf(
-                    ConfigModule(
-                        CommonModule(
-                            name = "基本信息",
-                            resID = R.drawable.ic_module_basic_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_udBaseInfoFragment
-                        )
+                    CommonModule(
+                        name = "基本信息",
+                        resID = R.drawable.ic_module_basic_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_udBaseInfoFragment
                     ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "网络信息",
-                            resID = R.drawable.ic_module_net_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_udNetInfoFragment
-                        )
+                    CommonModule(
+                        name = "网络信息",
+                        resID = R.drawable.ic_module_net_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_udNetInfoFragment
                     ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "状态信息",
-                            resID = R.drawable.ic_module_state_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_udSensorInfoFragment
-                        )
+                    CommonModule(
+                        name = "状态信息",
+                        resID = R.drawable.ic_module_state_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_udSensorInfoFragment
                     ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "位置信息",
-                            resID = R.drawable.ic_module_location_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_commonLocationInfoFragment
-                        )
+                    CommonModule(
+                        name = "位置信息",
+                        resID = R.drawable.ic_module_location_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_commonLocationInfoFragment
                     )
                 )
             )
@@ -139,85 +130,63 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
         groupList.add(DeviceStatusInfoGroupItem("设备配置"))
         val configModuleTree = ConfigModuleTree(
             configModules = arrayListOf(
-                ConfigModule(
-                    CommonModule(
-                        name = "工作模式",
-                        resID = R.drawable.ic_module_work_mode_new,
-                        navId = R.id.action_global_to_udWorkModelParamFragment
-                    )
+                CommonModule(
+                    name = "工作模式",
+                    resID = R.drawable.ic_module_work_mode_new,
+                    navId = R.id.action_global_to_udWorkModelParamFragment
                 ),
-                ConfigModule(
-                    CommonModule(
-                        name = "网络配置",
-                        resID = R.drawable.ic_module_network_setting,
-                        navId = R.id.action_global_to_udMobileNetworkParamFragment
-                    )
+                CommonModule(
+                    name = "网络配置",
+                    resID = R.drawable.ic_module_network_setting,
+                    navId = R.id.action_global_to_udMobileNetworkParamFragment
                 ),
-                ConfigModule(
-                    DataCenterModule(
-                        name = "链路配置",
-                        resID = R.drawable.ic_module_datacenter_new,
-                        navId = R.id.action_global_to_udProductDataCenterHomeFragment
-                    )
+                DataCenterModule(
+                    name = "链路配置",
+                    resID = R.drawable.ic_module_datacenter_new,
+                    navId = R.id.action_global_to_udProductDataCenterHomeFragment
                 ),
-                ConfigModule(
-                    CommonModule(
-                        name = "海拔配置",
-                        resID = R.drawable.ic_module_cors,
-                        navId = R.id.action_global_to_udCORSParamFragment
-                    )
+                CommonModule(
+                    name = "海拔配置",
+                    resID = R.drawable.ic_module_cors,
+                    navId = R.id.action_global_to_udCORSParamFragment
                 ),
-                ConfigModule(
-                    CommonModule(
-                        name = "传感配置",
-                        resID = R.drawable.ic_module_sensor_setting_new,
-                        navId = R.id.action_global_to_udProductSensorParamFragment
-                    )
+                CommonModule(
+                    name = "传感配置",
+                    resID = R.drawable.ic_module_sensor_setting_new,
+                    navId = R.id.action_global_to_udProductSensorParamFragment
                 ),
-                ConfigModule(
-                    CommonModule(
-                        name = "端口配置",
-                        resID = R.drawable.ic_module_serial_port,
-                        navId = R.id.action_global_to_udSerialPortParamFragment
-                    )
+                CommonModule(
+                    name = "端口配置",
+                    resID = R.drawable.ic_module_serial_port,
+                    navId = R.id.action_global_to_udSerialPortParamFragment
                 ),
-                ConfigModule(
-                    CommonModule(
-                        name = "电台配置",
-                        resID = R.drawable.ic_module_lora_new,
-                        navId = R.id.action_global_to_udRadioParamFragment
-                    )
+                CommonModule(
+                    name = "电台配置",
+                    resID = R.drawable.ic_module_lora_new,
+                    navId = R.id.action_global_to_udRadioParamFragment
                 ),
-                ConfigModule(
-                    CommonModule(
-                        name = "报警配置",
-                        resID = R.drawable.ic_module_alarm_new,
-                        navId = R.id.action_global_to_alarmSettingFragment
-                    )
+                CommonModule(
+                    name = "报警配置",
+                    resID = R.drawable.ic_module_alarm_new,
+                    navId = R.id.action_global_to_alarmSettingFragment
                 ),
-                ConfigModule(
-                    CommonModule(
-                        name = "时间校准",
-                        resID = R.drawable.ic_module_time_calibration_new,
-                        navId = R.id.action_global_to_time_calibration
-                    )
+                CommonModule(
+                    name = "时间校准",
+                    resID = R.drawable.ic_module_time_calibration_new,
+                    navId = R.id.action_global_to_time_calibration
                 ),
-                ConfigModule(
-                    CommonModule(
-                        name = "系统配置",
-                        resID = R.drawable.ic_module_system_setting,
-                        navId = R.id.action_global_to_advancedSettingFragment
-                    )
+                CommonModule(
+                    name = "系统配置",
+                    resID = R.drawable.ic_module_system_setting,
+                    navId = R.id.action_global_to_advancedSettingFragment
                 )
             )
         )
 
         if (communicateWay is BleConnect) {
             configModuleTree.configModules.add(
-                ConfigModule(
-                    CommandDebugConfigModule(
-                        resID = R.drawable.ic_module_cmd_debug_new,
-                    )
+                CommandDebugConfigModule(
+                    resID = R.drawable.ic_module_cmd_debug_new,
                 )
             )
         }
@@ -620,7 +589,9 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
         measureDataItem.setMeasuringStatus(true)
         binding.rvModule.bindingAdapter.getModel<UDMeasureDataItem>(0).let {
             val viewHolder = binding.rvModule.findViewHolderForAdapterPosition(0)
-            viewHolder?.itemView?.findViewById<com.shmedo.mcloudapp.ui.widget.ProgressMaterialButton>(R.id.btn_measure_data)
+            viewHolder?.itemView?.findViewById<com.shmedo.mcloudapp.ui.widget.ProgressMaterialButton>(
+                R.id.btn_measure_data
+            )
                 ?.startProgressAnimation()
         }
     }
@@ -631,7 +602,9 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
         measureDataItem.setMeasuringStatus(false)
         binding.rvModule.bindingAdapter.getModel<UDMeasureDataItem>(0)?.let {
             val viewHolder = binding.rvModule.findViewHolderForAdapterPosition(0)
-            viewHolder?.itemView?.findViewById<com.shmedo.mcloudapp.ui.widget.ProgressMaterialButton>(R.id.btn_measure_data)
+            viewHolder?.itemView?.findViewById<com.shmedo.mcloudapp.ui.widget.ProgressMaterialButton>(
+                R.id.btn_measure_data
+            )
                 ?.stopProgressAnimation()
         }
     }
