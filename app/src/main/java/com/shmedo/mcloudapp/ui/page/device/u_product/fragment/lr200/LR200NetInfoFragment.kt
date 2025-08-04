@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lr200
 
 import android.os.Bundle
 import android.util.Log

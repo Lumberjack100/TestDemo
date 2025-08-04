@@ -32,7 +32,7 @@
 
     <fragment
         android:id="@+id/lR200BaseInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lr200.LR200BaseInfoFragment"
         android:label="LR200BaseInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
@@ -44,7 +44,7 @@
 
     <fragment
         android:id="@+id/lR200NetInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200NetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lr200.LR200NetInfoFragment"
         android:label="LR200NetInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
@@ -56,7 +56,7 @@
 
     <fragment
         android:id="@+id/lR200StatusInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200StatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lr200.LR200StatusInfoFragment"
         android:label="LR200StatusInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
@@ -87,13 +87,13 @@
 
     <fragment
         android:id="@+id/lR200SensorParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200SensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lr200.LR200SensorParamFragment"
         android:label="LR200SensorParamFragment"
         tools:layout="@layout/fragment_lr200_sensor_param"/>
 
     <fragment
         android:id="@+id/lR200InitialValueFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200InitialValueFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lr200.LR200InitialValueFragment"
         android:label="LR200InitialValueFragment"
         tools:layout="@layout/fragment_lr200_initial_value" />
 
