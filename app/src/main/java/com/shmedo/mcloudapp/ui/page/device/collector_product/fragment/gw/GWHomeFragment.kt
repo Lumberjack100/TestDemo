@@ -10,14 +10,14 @@ import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/5/7
  * 描述： 自组网报警网关
  */
-class GWHomeFragment : NewUniversalBaseDeviceHomeFragment() {
+class GWHomeFragment : BaseDeviceHomeFragment() {
     override fun initData() {
         super.initData()
         mHeadStates.productErrorResId.set(R.drawable.device_logo_gateway_error)

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lr200
 
 import android.os.Bundle
 import android.util.Log
@@ -10,7 +10,7 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,7 +22,7 @@ import timber.log.Timber
  * @desc: 一体式裂缝计基本信息
  *
  */
-class LR200BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+class LR200BaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)

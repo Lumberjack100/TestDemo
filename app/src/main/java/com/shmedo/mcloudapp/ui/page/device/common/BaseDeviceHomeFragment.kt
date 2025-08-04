@@ -76,7 +76,7 @@ import java.util.Locale
  * 创建时间：2025/6/9
  * 描述： 通用设备配置主页面抽象基类 - 支持4G和蓝牙两种通讯方式
  */
-abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
+abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentUniversalDeviceHomeNewBinding
     protected val toolbarViewModel: ToolbarViewModel by viewModels()
     protected val mHeadStates: CommonDeviceHomeViewModel by viewModels()
@@ -174,7 +174,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     private fun initModuleAdapter() {
         binding.rvModule.linear().setup { rv ->
-            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group2)
+            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group)
             addType<ConfigModuleTree>(R.layout.item_sub_config_module)
             addType<GapItem>(R.layout.item_device_status_info_gap)
             onCreate {

@@ -63,7 +63,7 @@
                             android:background="@color/black" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_GroupItem_Title_Style2"
+                            style="@style/Common_GroupItem_Title_Style"
                             android:layout_marginStart="@dimen/dimen_size_8"
                             android:text="串口参数" />
 
@@ -210,7 +210,7 @@
                             android:background="@color/black" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_GroupItem_Title_Style2"
+                            style="@style/Common_GroupItem_Title_Style"
                             android:layout_marginStart="@dimen/dimen_size_8"
                             android:text="设备参数" />
 
@@ -290,7 +290,7 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <com.google.android.material.button.MaterialButton
-                        style="@style/SubmitButton_Style2"
+                        style="@style/SubmitButton_Style"
                         onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
                         visible="@{stateVM.isOpened}"
                         android:layout_marginTop="@dimen/reset_button_margin_top_50"

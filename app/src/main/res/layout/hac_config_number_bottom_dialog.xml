@@ -58,7 +58,7 @@
             tools:background="@color/black_3" />
 
         <com.google.android.material.button.MaterialButton
-            style="@style/SubmitButton_Style2"
+            style="@style/SubmitButton_Style"
             onClickWithDebouncing="@{()->click.onConfirmClick()}"
             android:layout_marginHorizontal="@dimen/dimen_size_30"
             android:layout_marginTop="@dimen/dimen_size_30"

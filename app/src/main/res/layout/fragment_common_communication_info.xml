@@ -28,7 +28,7 @@
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/DeviceCurrentState_Item_Layout_Style2"
+                    style="@style/DeviceCurrentState_Item_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
@@ -37,7 +37,7 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_4g_signal_strength"
-                        style="@style/DeviceCurrentState_Item_Value_Style"
+                        style="@style/DeviceCurrentState_ClickableItem_Value_Style"
                         android:text='@{stateVM.signalValue==0?"--dBm":stateVM.signalValue+"dBm" }'
                         tools:text="-51dBm" />
 

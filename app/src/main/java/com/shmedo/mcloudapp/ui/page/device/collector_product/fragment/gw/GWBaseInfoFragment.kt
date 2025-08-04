@@ -18,7 +18,7 @@ import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +30,7 @@ import timber.log.Timber
  * 创建时间：2024/9/19
  * 描述： 自组网报警网关基本信息
  */
-class GWBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+class GWBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
     private val STATION_NODE_NUM = 10
 
     override fun initView(savedInstanceState: Bundle?) {

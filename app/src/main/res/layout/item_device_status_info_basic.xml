@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -13,37 +12,32 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item"
-        style="@style/DeviceCurrentState_Item_Layout_Style2"
-        android:background="@drawable/layer_common_click_item_with_divider">
+        style="@style/DeviceCurrentState_Item_Layout_Style"
+        android:background="@{m.bottomItem?@drawable/selector_click_item_bottom_corner_4:@drawable/selector_common_click_item_with_divider}"
+        android:enabled="@{m.clickable}">
 
         <com.google.android.material.textview.MaterialTextView
             style="@style/DeviceCurrentState_Item_Title_Style"
             android:text='@{m.name}'
             tools:text="固件版本" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_value"
-            style="@style/DeviceCurrentState_Item_Value_Style"
-            visible='@{ !m.clickable}'
-            android:layout_width="wrap_content"
-            android:background="@{m.clipboard?@color/gray_15:@color/transparent}"
+            style="@style/DeviceCurrentState_ClickableItem_Value_Style"
+            rightArrowVisible="@{m.clickable}"
+            visible='@{ !m.clipboard}'
             android:text="@{m.value}"
-            android:textColor="@{m.textColorRes==0?@color/title_text_color:m.textColorRes}"
+            android:textColor="@{m.textColorRes==0?@color/sub_title_text_color_black_60:m.textColorRes}"
             tools:text="1212" />
 
         <com.google.android.material.textview.MaterialTextView
-            style="@style/Common_ClickableItem_Value_Style"
-            rightArrowVisible="@{m.clickable}"
-            visible='@{ m.clickable}'
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_clipboard_value"
+            style="@style/DeviceCurrentState_ClickableItem_Value_Style"
+            rightArrowVisible="@{false}"
+            visible='@{ m.clipboard}'
+            android:background="@drawable/item_background_holo_light"
             android:text="@{m.value}"
-            android:textColor="@{m.textColorRes==0?@color/title_text_color:m.textColorRes}"
-            tools:drawableEndCompat="@drawable/icon_arrow_right"
+            android:textColor="@{m.textColorRes==0?@color/sub_title_text_color_black_60:m.textColorRes}"
             tools:text="1212" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

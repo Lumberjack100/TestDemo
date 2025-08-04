@@ -62,7 +62,7 @@
                             android:background="@color/black" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_GroupItem_Title_Style2"
+                            style="@style/Common_GroupItem_Title_Style"
                             android:layout_marginStart="@dimen/dimen_size_8"
                             android:text="串口参数" />
 
@@ -210,7 +210,7 @@
                             android:background="@color/black" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_GroupItem_Title_Style2"
+                            style="@style/Common_GroupItem_Title_Style"
                             android:layout_marginStart="@dimen/dimen_size_8"
                             android:text="水位报警参数" />
 
@@ -267,7 +267,7 @@
                             android:background="@color/black" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_GroupItem_Title_Style2"
+                            style="@style/Common_GroupItem_Title_Style"
                             android:layout_marginStart="@dimen/dimen_size_8"
                             android:text="水位报警阈值" />
 
@@ -358,7 +358,7 @@
                             android:background="@color/black" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_GroupItem_Title_Style2"
+                            style="@style/Common_GroupItem_Title_Style"
                             android:layout_marginStart="@dimen/dimen_size_8"
                             android:text="水位报警持续时间" />
 
@@ -375,7 +375,6 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -394,7 +393,6 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -413,7 +411,6 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -432,7 +429,6 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -440,9 +436,22 @@
                             android:text="@={stateVM.waterLevelHoldTime4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
                     <!-- 水位报警间隔时间 -->
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupItem_Title_Style"
-                        android:text="水位报警间隔时间" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="水位报警间隔时间" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
@@ -455,7 +464,6 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -474,7 +482,6 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -493,7 +500,6 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -512,7 +518,6 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -532,7 +537,7 @@
                             android:background="@color/black" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_GroupItem_Title_Style2"
+                            style="@style/Common_GroupItem_Title_Style"
                             android:layout_marginStart="@dimen/dimen_size_8"
                             android:text="语音设置" />
 
@@ -615,7 +620,7 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <com.google.android.material.button.MaterialButton
-                        style="@style/SubmitButton_Style2"
+                        style="@style/SubmitButton_Style"
                         onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
                         visible="@{stateVM.isOpened}"
                         android:layout_marginTop="@dimen/reset_button_margin_top_50"

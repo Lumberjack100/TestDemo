@@ -33,7 +33,7 @@ import com.shmedo.mcloudapp.model.UIMeasureDataItem
 import com.shmedo.mcloudapp.model.URMeasureDataItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +45,7 @@ import timber.log.Timber
  * 创建时间：2024/5/7
  * 描述：  一体式传感器配置主页 - 支持4G和蓝牙两种通讯方式
  */
-class UProductCommonHomeFragment : NewUniversalBaseDeviceHomeFragment() {
+class UProductCommonHomeFragment : BaseDeviceHomeFragment() {
 
     // 根据产品类型使用不同的测量数据项
     private var uiMeasureDataItem: UIMeasureDataItem = UIMeasureDataItem()

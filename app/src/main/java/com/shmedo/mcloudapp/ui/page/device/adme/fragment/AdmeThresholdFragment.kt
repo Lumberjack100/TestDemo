@@ -43,7 +43,7 @@ import java.util.Locale
 class AdmeThresholdFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeThresholdBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: AdmeThresholdViewModel  by viewModels()
+    private val mStates: AdmeThresholdViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
 
@@ -101,7 +101,7 @@ class AdmeThresholdFragment : BaseIOTDeviceFragment() {
             setEditable(false)
         }
 
-        fun onSubmitClick() {
+        override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))

@@ -13,8 +13,8 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item"
-        style="@style/DeviceCurrentState_Item_Layout_Style2"
-        android:background="@drawable/layer_common_click_item_with_divider">
+        style="@style/DeviceCurrentState_Item_Layout_Style"
+        android:background="@{m.bottomItem?@drawable/shape_common_click_item_bottom_corner_4:@drawable/layer_common_click_item_with_divider}">
 
         <com.google.android.material.textview.MaterialTextView
             style="@style/DeviceCurrentState_Item_Title_Style"
@@ -23,23 +23,24 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_4g_signal_strength"
-            style="@style/DeviceCurrentState_Item_Value_Style"
+            style="@style/DeviceCurrentState_ClickableItem_Value_Style"
+            android:drawableEnd="@null"
             android:text='@{m.signalValue==0?"-- dBm":m.signalValue+" dBm" }'
+            android:textColor="@{m.textColorRes==0?@color/sub_title_text_color_black_60:m.textColorRes}"
             tools:text="-51dBm" />
 
         <com.shmedo.mcloudapp.ui.widget.SignalView
             android:id="@+id/signal"
             android:layout_width="wrap_content"
-            android:layout_height="22dp"
+            android:layout_height="20dp"
             android:layout_marginStart="10dp"
             app:bind_signal_value="@{m.signalValue}"
             app:connected="true"
             app:primary_color="@color/text_color_CCCCCC"
-            app:shadow_color="@color/green_00B26B"
             app:shadow_open="false"
             app:signal_maximum="4"
             app:spacing="1"
-            app:unit_width="8" />
+            app:unit_width="6" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

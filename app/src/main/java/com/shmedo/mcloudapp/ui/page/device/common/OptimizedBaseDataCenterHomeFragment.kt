@@ -87,7 +87,7 @@ abstract class OptimizedBaseDataCenterHomeFragment : OptimizedBaseIOTDeviceFragm
 
     private fun initAdapter() {
         binding.recyclerView.linear().setup { rv ->
-            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group2)
+            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group)
             addType<DataCenterStatusItem>(R.layout.data_center_status_item)
             addType<GapItem>(R.layout.item_device_status_info_gap)
             addType<ParamSubmitButtonItem>(R.layout.item_param_summit_button)

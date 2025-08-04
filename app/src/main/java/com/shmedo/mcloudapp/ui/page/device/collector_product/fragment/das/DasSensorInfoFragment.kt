@@ -28,7 +28,7 @@ import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -40,7 +40,7 @@ import timber.log.Timber
  * @desc: 物联网采集器(DAS)传感器信息 - 支持4G和蓝牙两种通讯方式
  *
  */
-class DasSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+class DasSensorInfoFragment : BaseDeviceStatusInfoStyleFragment() {
     private var isBleMode = false
 
     override fun initView(savedInstanceState: Bundle?) {

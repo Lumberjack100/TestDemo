@@ -128,8 +128,8 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             android:hint="请输入"
-                            android:text="@={stateVM.address}"
                             android:inputType="number"
+                            android:text="@={stateVM.address}"
                             app:lengthFilter="@{5}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -146,8 +146,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="请输入"
-                            android:text="@={stateVM.baudRate}"
                             android:inputType="number"
+                            android:text="@={stateVM.baudRate}"
                             app:lengthFilter="@{6}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -400,8 +400,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:hint="请输入"
-                            android:text="@={stateVM.ngateval}"
                             android:inputType="number"
+                            android:text="@={stateVM.ngateval}"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -436,11 +436,13 @@
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
 
-        <com.google.android.material.textview.MaterialTextView
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_Style"
-            onClickWithDebouncing="@{()->click.onSubmitClick()}"
+            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
             visible="@{stateVM.isEditable}"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="15dp"
             android:text="完成"

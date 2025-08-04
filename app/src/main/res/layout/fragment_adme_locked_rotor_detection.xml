@@ -87,9 +87,9 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             android:hint="数值范围[1,10000]"
-                            android:text="@={stateVM.downPulsesPerUnitTime}"
                             android:inputType="number"
-                            android:maxLength="5" />
+                            android:maxLength="5"
+                            android:text="@={stateVM.downPulsesPerUnitTime}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -125,9 +125,9 @@
                             android:id="@+id/et_down_slow_start_interval"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
-                            android:text="@={stateVM.downSlowStartIntervalEndValue}"
                             android:inputType="number"
-                            android:maxLength="6" />
+                            android:maxLength="6"
+                            android:text="@={stateVM.downSlowStartIntervalEndValue}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -144,9 +144,9 @@
                             android:id="@+id/et_down_slow_stop_interval"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
-                            android:text="@={stateVM.downSlowStopIntervalStartValue}"
                             android:inputType="number"
-                            android:maxLength="6" />
+                            android:maxLength="6"
+                            android:text="@={stateVM.downSlowStopIntervalStartValue}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -170,8 +170,8 @@
                             app:rsb_indicator_padding_top="5dp"
                             app:rsb_indicator_radius="3dp"
                             app:rsb_indicator_show_mode="alwaysShow"
-                            app:rsb_indicator_width="wrap_content"
                             app:rsb_indicator_text_size="10sp"
+                            app:rsb_indicator_width="wrap_content"
                             app:rsb_max="100"
                             app:rsb_min="0"
                             app:rsb_min_interval="0"
@@ -329,9 +329,9 @@
                             android:id="@+id/et_pull_up_slow_start_interval"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.pullUpEnable}"
-                            android:text="@={stateVM.pullUpSlowStartIntervalEndValue}"
                             android:inputType="number"
-                            android:maxLength="5" />
+                            android:maxLength="5"
+                            android:text="@={stateVM.pullUpSlowStartIntervalEndValue}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -348,9 +348,9 @@
                             android:id="@+id/et_pull_up_slow_stop_interval"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.pullUpEnable}"
-                            android:text="@={stateVM.pullUpSlowStopIntervalStartValue}"
                             android:inputType="number"
-                            android:maxLength="5" />
+                            android:maxLength="5"
+                            android:text="@={stateVM.pullUpSlowStopIntervalStartValue}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -374,8 +374,8 @@
                             app:rsb_indicator_padding_top="5dp"
                             app:rsb_indicator_radius="3dp"
                             app:rsb_indicator_show_mode="alwaysShow"
-                            app:rsb_indicator_width="wrap_content"
                             app:rsb_indicator_text_size="10sp"
+                            app:rsb_indicator_width="wrap_content"
                             app:rsb_max="100"
                             app:rsb_min="0"
                             app:rsb_min_interval="0"
@@ -446,14 +446,14 @@
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_Style"
-            onClickWithDebouncing="@{()->click.onSubmitClick()}"
+            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
             visible="@{stateVM.isEditable }"
-            android:layout_marginTop="0dp"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:layout_marginBottom="15dp"
-            android:text="保存"
+            android:text="@string/button_save_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

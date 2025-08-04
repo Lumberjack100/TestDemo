@@ -13,22 +13,20 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@{m.bgColorRes==0?@color/main_bg_gray:m.bgColorRes}"
-        android:gravity="center_vertical">
+        style="@style/DeviceCurrentState_Item_Layout_Style"
+        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+        <View
+            android:layout_width="3dp"
+            android:layout_height="14dp"
+            android:background="@color/black" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/dimen_size_10"
-            android:layout_marginStart="@dimen/dimen_size_10"
-            android:singleLine="true"
+            style="@style/DeviceCurrentState_GroupItem_Title_Style"
+            android:layout_marginStart="@dimen/dimen_size_8"
             android:text='@{m.name}'
-            android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_17"
-            android:textStyle="bold"
             tools:text="2023-12-27" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
+
 </layout>

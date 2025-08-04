@@ -32,25 +32,25 @@
         android:id="@+id/m20SBaseInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SBaseInfoFragment"
         android:label="M20SBaseInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/m20SNetInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SNetInfoFragment"
         android:label="M20SNetInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/m20SStatusInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SStatusInfoFragment"
         android:label="M20SStatusInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/m20SRunningInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SRunningInfoFragment"
         android:label="M20SRunningInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/m20SWorkModelParamFragment"

@@ -37,7 +37,7 @@ import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.UDMeasureDataItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
-import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 import com.shmedo.mcloudapp.utils.UDDeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -51,7 +51,7 @@ import timber.log.Timber
  * 创建时间：2025/1/24
  * 描述：一体式雷达水位计(DR030)设备主页 - 支持4G和蓝牙两种通讯方式（重构版本）
  */
-class UDHomeFragment : NewUniversalBaseDeviceHomeFragment() {
+class UDHomeFragment : BaseDeviceHomeFragment() {
     private var measureDataItem: UDMeasureDataItem = UDMeasureDataItem()
     private var measureDataLoadingDialogId = ""
     
