@@ -35,6 +35,7 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.SensorConfigModule
+import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceHomeFragment
@@ -107,25 +108,25 @@ class OptimizedDASHomeFragment : OptimizedBaseDeviceHomeFragment() {
                         resID = R.drawable.ic_module_basic_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_dasBaseInfoFragment
-                    ),
+                    ).toUnified(),
                     CommonModule(
                         name = "网络信息",
                         resID = R.drawable.ic_module_net_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_dasNetInfoFragment
-                    ),
+                    ).toUnified(),
                     CommonModule(
                         name = "传感信息",
                         resID = R.drawable.ic_module_state_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_dasSensorInfoFragment
-                    ),
+                    ).toUnified(),
                     CommonModule(
                         name = "位置信息",
                         resID = R.drawable.ic_module_location_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_commonLocationInfoFragment
-                    )
+                    ).toUnified()
                 )
             )
         )
@@ -141,7 +142,7 @@ class OptimizedDASHomeFragment : OptimizedBaseDeviceHomeFragment() {
                 name = "采集配置",
                 resID = R.drawable.ic_module_collect_setting,
                 navId = R.id.action_global_to_dasCollectorSettingFragment
-            )
+            ).toUnified()
         )
 
         configModuleTree.configModules.add(
@@ -152,7 +153,7 @@ class OptimizedDASHomeFragment : OptimizedBaseDeviceHomeFragment() {
                     R.id.action_global_to_dasDataCenterHomeFragment
                 else
                     R.id.action_global_to_bleDasDataCenterHomeFragment
-            )
+            ).toUnified()
         )
 
         if (communicateWay is NetPlatformConnect) {
@@ -161,7 +162,7 @@ class OptimizedDASHomeFragment : OptimizedBaseDeviceHomeFragment() {
                     name = "上报配置",
                     resID = R.drawable.ic_module_work_mode_new,
                     navId = R.id.action_global_to_dasReportConfigFragment
-                )
+                ).toUnified()
             )
         }
 
@@ -170,7 +171,7 @@ class OptimizedDASHomeFragment : OptimizedBaseDeviceHomeFragment() {
                 name = "传感配置",
                 resID = R.drawable.ic_module_sensor_setting_new,
                 navId = R.id.action_global_to_dasSensorHomeFragment
-            )
+            ).toUnified()
         )
 
         configModuleTree.configModules.add(
@@ -178,7 +179,7 @@ class OptimizedDASHomeFragment : OptimizedBaseDeviceHomeFragment() {
                 name = "时间校准",
                 resID = R.drawable.ic_module_time_calibration_new,
                 navId = R.id.action_global_to_time_calibration
-            )
+            ).toUnified()
         )
 
         configModuleTree.configModules.add(
@@ -186,14 +187,14 @@ class OptimizedDASHomeFragment : OptimizedBaseDeviceHomeFragment() {
                 name = "系统配置",
                 resID = R.drawable.ic_module_system_setting,
                 navId = R.id.action_global_to_advancedSettingFragment
-            )
+            ).toUnified()
         )
 
         if (communicateWay is BleConnect) {
             configModuleTree.configModules.add(
                 CommandDebugConfigModule(
                     resID = R.drawable.ic_module_cmd_debug_new,
-                )
+                ).toUnified()
             )
         }
 

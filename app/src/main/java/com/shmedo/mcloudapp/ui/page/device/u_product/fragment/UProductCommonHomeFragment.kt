@@ -30,6 +30,7 @@ import com.shmedo.mcloudapp.model.LR200MeasureDataItem
 import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.model.UIMeasureDataItem
 import com.shmedo.mcloudapp.model.URMeasureDataItem
+import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
@@ -120,7 +121,7 @@ class UProductCommonHomeFragment : BaseDeviceHomeFragment() {
                             ProductType.U_R_1 -> R.id.action_global_to_uProductBaseInfoFragment //一体式雨量计
                             else -> 0
                         }
-                    ),
+                    ).toUnified(),
                     CommonModule(
                         name = "网络信息",
                         resID = R.drawable.ic_module_net_info,
@@ -131,7 +132,7 @@ class UProductCommonHomeFragment : BaseDeviceHomeFragment() {
                             ProductType.U_R_1 -> R.id.action_global_to_uProductNetInfoFragment //一体式雨量计
                             else -> 0
                         }
-                    ),
+                    ).toUnified(),
                     CommonModule(
                         name = "状态信息",
                         resID = R.drawable.ic_module_state_info,
@@ -142,13 +143,13 @@ class UProductCommonHomeFragment : BaseDeviceHomeFragment() {
                             ProductType.U_R_1 -> R.id.action_global_to_uRProductStatusInfoFragment //一体式雨量计
                             else -> 0
                         }
-                    ),
+                    ).toUnified(),
                     CommonModule(
                         name = "位置信息",
                         resID = R.drawable.ic_module_location_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_commonLocationInfoFragment
-                    )
+                    ).toUnified()
                 )
             )
         )
@@ -161,39 +162,39 @@ class UProductCommonHomeFragment : BaseDeviceHomeFragment() {
                     name = "链路配置",
                     resID = R.drawable.ic_module_datacenter_new,
                     navId = R.id.action_global_to_universalDataCenterHomeFragment
-                ),
+                ).toUnified(),
                 CommonModule(
                     name = "LORA配置",
                     resID = R.drawable.ic_module_lora_new,
                     navId = R.id.action_global_to_loraSettingFragment
-                ),
+                ).toUnified(),
                 CommonModule(
                     name = "传感配置",
                     resID = R.drawable.ic_module_sensor_setting_new,
                     navId = 0
-                ),
+                ).toUnified(),
                 CommonModule(
                     name = "报警配置",
                     resID = R.drawable.ic_module_alarm_new,
                     navId = R.id.action_global_to_alarmSettingFragment
-                ),
+                ).toUnified(),
                 CommonModule(
                     name = "时间校准",
                     resID = R.drawable.ic_module_time_calibration_new,
                     navId = R.id.action_global_to_time_calibration
-                ),
+                ).toUnified(),
                 CommonModule(
                     name = "系统配置",
                     resID = R.drawable.ic_module_system_setting,
                     navId = R.id.action_global_to_advancedSettingFragment
-                ),
+                ).toUnified(),
             )
         )
         if (communicateWay is BleConnect) {
             configModuleTree.configModules.add(
                 CommandDebugConfigModule(
                     resID = R.drawable.ic_module_cmd_debug_new,
-                )
+                ).toUnified()
             )
         }
         groupList.add(configModuleTree)

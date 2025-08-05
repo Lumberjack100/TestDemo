@@ -9,6 +9,7 @@ import com.shmedo.mcloudapp.model.CommonModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
+import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 
 /**
@@ -37,7 +38,7 @@ class GWHomeFragment : BaseDeviceHomeFragment() {
                         resID = R.drawable.ic_module_basic_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_gWBaseInfoFragment
-                    )
+                    ).toUnified()
                 )
             )
         )
@@ -50,27 +51,27 @@ class GWHomeFragment : BaseDeviceHomeFragment() {
                 name = "电台配置",
                 resID = R.drawable.ic_module_sensor_setting_new,
                 navId = R.id.action_global_to_radioSettingsFragment
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "LORA配置",
                 resID = R.drawable.ic_module_lora_new,
                 navId = R.id.action_global_to_loraSettingFragment
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "系统配置",
                 resID = R.drawable.ic_module_system_setting,
                 navId = R.id.action_global_to_advancedSettingFragment
-            )
+            ).toUnified()
         )
         if (communicateWay is BleConnect) {
             configModuleTree.configModules.add(
                 CommandDebugConfigModule(
                     resID = R.drawable.ic_module_cmd_debug_new,
-                )
+                ).toUnified()
             )
         }
 

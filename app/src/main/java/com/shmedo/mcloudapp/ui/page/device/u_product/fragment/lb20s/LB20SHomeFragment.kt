@@ -22,6 +22,7 @@ import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.OneClickSilenceModule
+import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 
@@ -51,25 +52,25 @@ class LB20SHomeFragment : BaseDeviceHomeFragment() {
                         resID = R.drawable.ic_module_basic_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_lB20SBaseInfoFragment
-                    ),
+                    ).toUnified(),
                     CommonModule(
                         name = "网络信息",
                         resID = R.drawable.ic_module_net_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_lB20SNetInfoFragment
-                    ),
+                    ).toUnified(),
                     CommonModule(
                         name = "状态信息",
                         resID = R.drawable.ic_module_state_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_lB20SStatusInfoFragment
-                    ),
+                    ).toUnified(),
                     CommonModule(
                         name = "位置信息",
                         resID = R.drawable.ic_module_location_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_commonLocationInfoFragment
-                    )
+                    ).toUnified()
                 )
             )
         )
@@ -82,55 +83,55 @@ class LB20SHomeFragment : BaseDeviceHomeFragment() {
                 name = "链路配置",
                 resID = R.drawable.ic_module_datacenter_new,
                 navId = R.id.action_global_to_universalDataCenterHomeFragment
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "自组网配置",
                 resID = R.drawable.ic_module_work_mode_new,
                 navId = R.id.action_global_to_lB20SAdHocNetworkSettingsFragment
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "报警测试",
                 resID = R.drawable.ic_module_alarm_new,
                 navId = R.id.action_global_to_lB20SAlarmTestFragment
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             OneClickSilenceModule(
                 name = "一键消音",
                 resID = R.drawable.ic_module_work_mode_new,
                 navId = 0
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "音量调节",
                 resID = R.drawable.ic_module_work_mode_new,
                 navId = R.id.action_global_to_lB20SVolumeSettingsFragment
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "时间校准",
                 resID = R.drawable.ic_module_time_calibration_new,
                 navId = R.id.action_global_to_time_calibration
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "系统配置",
                 resID = R.drawable.ic_module_system_setting,
                 navId = R.id.action_global_to_advancedSettingFragment
-            )
+            ).toUnified()
         )
         if (communicateWay is BleConnect) {
             configModuleTree.configModules.add(
                 CommandDebugConfigModule(
                     resID = R.drawable.ic_module_cmd_debug_new,
-                )
+                ).toUnified()
             )
         }
 

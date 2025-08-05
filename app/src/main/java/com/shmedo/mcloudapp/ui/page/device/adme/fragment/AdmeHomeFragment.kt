@@ -27,6 +27,8 @@ import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceOperationModule
 import com.shmedo.mcloudapp.model.RebootModule
 import com.shmedo.mcloudapp.model.RunningStatusModule
+import com.shmedo.mcloudapp.model.UnifiedDeviceModule
+import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDeviceHomeFragment
@@ -51,17 +53,17 @@ class AdmeHomeFragment : UniversalDeviceHomeFragment() {
     }
 
     override fun updateConfigModuleData() {
-        val moduleList = arrayListOf<DeviceFunctionModule>()
+        val moduleList = arrayListOf<UnifiedDeviceModule>()
         moduleList.add(
             RunningStatusModule(
                 resID = R.drawable.ic_module_current_state,
                 navId = R.id.action_admeHomeFragment_to_admeCurrentStateFragment
-            )
+            ).toUnified()
         )
         when (mHeadStates.admeModeText.get()) {
             modeList[0] -> {//设备配置模式
                 moduleList.add(
-                    BasicConfigModule(navId = R.id.action_admeHomeFragment_to_admeBasicParamConfigFragment)
+                    BasicConfigModule(navId = R.id.action_admeHomeFragment_to_admeBasicParamConfigFragment).toUnified()
                 )
                 if (communicateWay is BleConnect) {
                     moduleList.add(
@@ -70,10 +72,10 @@ class AdmeHomeFragment : UniversalDeviceHomeFragment() {
                             desc = "测量测斜管深度",
                             resID = R.drawable.ic_measuring_hole_depth,
                             navId = R.id.action_global_to_admeMeasuringHoleDepthFragment
-                        )
+                        ).toUnified()
                     )
                     moduleList.add(
-                        CommandDebugConfigModule()
+                        CommandDebugConfigModule().toUnified()
                     )
                 }
                 moduleList.add(
@@ -81,32 +83,32 @@ class AdmeHomeFragment : UniversalDeviceHomeFragment() {
                         name = "高级配置",
                         desc = "计米轮、测斜议、执行机构等",
                         navId = R.id.action_global_to_admeAdvancedConfigurationFragment
-                    )
+                    ).toUnified()
                 )
                 moduleList.add(
-                    RebootModule()
+                    RebootModule().toUnified()
                 )
                 moduleList.add(
-                    AdvancedSettingsModule(navId = R.id.action_global_to_admeAdvancedSettingFragment)
+                    AdvancedSettingsModule(navId = R.id.action_global_to_admeAdvancedSettingFragment).toUnified()
                 )
             }
 
             modeList[1] -> {//自动监测模式
                 moduleList.add(
-                    BasicConfigModule(navId = R.id.action_admeHomeFragment_to_admeBasicParamConfigFragment)
+                    BasicConfigModule(navId = R.id.action_admeHomeFragment_to_admeBasicParamConfigFragment).toUnified()
                 )
                 moduleList.add(
                     DeviceOperationModule(
                         name = "高级配置",
                         desc = "计米轮、测斜议、执行机构等",
                         navId = R.id.action_global_to_admeAdvancedConfigurationFragment
-                    )
+                    ).toUnified()
                 )
                 moduleList.add(
-                    RebootModule()
+                    RebootModule().toUnified()
                 )
                 moduleList.add(
-                    AdvancedSettingsModule(navId = R.id.action_global_to_admeAdvancedSettingFragment)
+                    AdvancedSettingsModule(navId = R.id.action_global_to_admeAdvancedSettingFragment).toUnified()
                 )
             }
         }

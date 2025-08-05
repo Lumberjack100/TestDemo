@@ -6,8 +6,11 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDataCenterStatus
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDataCenterHomeFragment
 
 /**
  * @author：gonghe
@@ -15,21 +18,27 @@ import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
  * @desc: 遥测终端机(MR702)数据中心列表页面 - 支持4G和蓝牙两种通讯方式
  *
  */
-class MR702DataCenterHomeFragment : BaseDataCenterHomeFragment() {
+class MR702DataCenterHomeFragment : OptimizedBaseDataCenterHomeFragment() {
     override fun getNavigationActionId(): Int {
         return R.id.action_global_to_mR702DataCenterParamFragment
     }
 
     override fun queryData() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
+        commands.add(IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS))
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS)
-        commandItems.add(command)
-
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig(
+                    strategy = ErrorHandlingStrategy.Dialog
+                )
+            )
+        )
     }
 
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS -> {
                 val result = iotParseManager.parse<MRDataCenterStatus>(
@@ -44,16 +53,12 @@ class MR702DataCenterHomeFragment : BaseDataCenterHomeFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initDataCenterStatus(result.data)
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
             }
         }
     }

@@ -35,6 +35,7 @@ import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.M50MeasureDataItem
+import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
@@ -124,25 +125,25 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                         resID = R.drawable.ic_module_basic_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_m20SBaseInfoFragment
-                    ),
+                    ).toUnified(),
                     CommonModule(
                         name = "网络信息",
                         resID = R.drawable.ic_module_net_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_m20SNetInfoFragment
-                    ),
+                    ).toUnified(),
                     CommonModule(
                         name = "状态信息",
                         resID = R.drawable.ic_module_state_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_m20SStatusInfoFragment
-                    ),
+                    ).toUnified(),
                     CommonModule(
                         name = "运行信息",
                         resID = R.drawable.ic_module_satellite_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_m20SRunningInfoFragment
-                    )
+                    ).toUnified()
                 )
             )
         )
@@ -159,42 +160,42 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                 name = "工作模式",
                 resID = R.drawable.ic_module_work_mode_new,
                 navId = R.id.action_global_to_m20SWorkModelParamFragment
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "网络配置",
                 resID = R.drawable.ic_module_network_setting,
                 navId = R.id.action_global_to_m50NetworkConfigFragment
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             DataCenterModule(
                 name = "链路配置",
                 resID = R.drawable.ic_module_datacenter_new,
                 navId = R.id.action_global_dataCenterHomeFragment
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "电台配置",
                 resID = R.drawable.ic_module_lora_new,
                 navId = R.id.action_global_to_m20SRadioSettingFragment
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "GNSS配置",
                 resID = R.drawable.ic_module_cors,
                 navId = R.id.action_global_to_m50GNSSConfigFragment,
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "倾斜触发",
                 resID = R.drawable.ic_module_sensor_setting_new,
                 navId = R.id.action_global_to_m50SensorConfigFragment
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
@@ -202,28 +203,28 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
                 resID = R.drawable.ic_module_serial_port,
                 navId = 0,
                 isSupport = false
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "报警配置",
                 resID = R.drawable.ic_module_alarm_new,
                 navId = R.id.action_global_to_alarmSettingFragment
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "时间校准",
                 resID = R.drawable.ic_module_time_calibration_new,
                 navId = R.id.action_global_to_time_calibration
-            )
+            ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "系统配置",
                 resID = R.drawable.ic_module_system_setting,
                 navId = R.id.action_global_to_advancedSettingFragment
-            )
+            ).toUnified()
         )
 
         // 蓝牙连接时添加指令调试模块
@@ -231,7 +232,7 @@ class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
             configModuleTree.configModules.add(
                 CommandDebugConfigModule(
                     resID = R.drawable.ic_module_cmd_debug_new,
-                )
+                ).toUnified()
             )
         }
 

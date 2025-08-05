@@ -20,6 +20,8 @@ import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommonModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
+import com.shmedo.mcloudapp.model.UnifiedDeviceModule
+import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
@@ -69,10 +71,10 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     false
                 )
             )
-            addType<DeviceFunctionModule>(R.layout.item_device_config_module)
+            addType<UnifiedDeviceModule>(R.layout.item_device_config_module)
             R.id.item.onClick {
-                val module = getModel<DeviceFunctionModule>()
-                processItemClick(module)
+                val unifiedModule = getModel<UnifiedDeviceModule>()
+                processItemClick(unifiedModule.module)
             }
         }
     }
@@ -102,14 +104,14 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initModuleList() {
-        val moduleList = arrayListOf<DeviceFunctionModule>()
+        val moduleList = arrayListOf<UnifiedDeviceModule>()
         moduleList.add(
             CommonModule(
                 name = "计米轮",
                 desc = "参数配置",
                 resID = R.drawable.ic_basic_config,
                 navId = R.id.action_admeAdvancedConfigurationFragment_to_admeMeterWheelFragment
-            )
+            ).toUnified()
         )
         moduleList.add(
             CommonModule(
@@ -117,7 +119,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                 desc = "参数配置",
                 resID = R.drawable.ic_basic_config,
                 navId = R.id.action_admeAdvancedConfigurationFragment_to_admeInclinometerFragment
-            )
+            ).toUnified()
         )
         moduleList.add(
             CommonModule(
@@ -125,7 +127,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                 desc = "参数配置",
                 resID = R.drawable.ic_basic_config,
                 navId = if (productType == ProductType.ADME) R.id.action_admeAdvancedConfigurationFragment_to_admeExecutiveAgencyFragment else R.id.action_admeAdvancedConfigurationFragment_to_admeHacExecutiveAgencyFragment
-            )
+            ).toUnified()
         )
         if (productType == ProductType.ADME) {
             moduleList.add(
@@ -134,7 +136,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     desc = "参数配置",
                     resID = R.drawable.ic_basic_config,
                     navId = R.id.action_admeAdvancedConfigurationFragment_to_admeStepperMotorFragment
-                )
+                ).toUnified()
             )
         }
 
@@ -144,7 +146,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                 desc = "参数配置",
                 resID = R.drawable.ic_basic_config,
                 navId = R.id.action_admeAdvancedConfigurationFragment_to_admeLockedRotorDetectionFragment
-            )
+            ).toUnified()
         )
         if (productType == ProductType.ADME && communicateWay is BleConnect) {
             moduleList.add(
@@ -153,7 +155,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     desc = "正反测起点校准",
                     resID = R.drawable.ic_basic_config,
                     navId = R.id.action_admeAdvancedConfigurationFragment_to_admeGuideGrooveCalibrationFragment
-                )
+                ).toUnified()
             )
         }
         moduleList.add(
@@ -162,7 +164,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                 desc = "参数配置",
                 resID = R.drawable.ic_basic_config,
                 navId = R.id.action_admeAdvancedConfigurationFragment_to_admeIntelligentControlFragment
-            )
+            ).toUnified()
         )
         moduleList.add(
             CommonModule(
@@ -170,7 +172,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                 desc = "参数配置",
                 resID = R.drawable.ic_basic_config,
                 navId = R.id.action_admeAdvancedConfigurationFragment_to_admeThresholdFragment
-            )
+            ).toUnified()
         )
         if (productType == ProductType.ADME)
             moduleList.add(
@@ -179,7 +181,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     desc = "参数配置",
                     resID = R.drawable.ic_basic_config,
                     navId = R.id.action_admeAdvancedConfigurationFragment_to_admeSportsCalibrationProcessingFragment
-                )
+                ).toUnified()
             )
 
         if (productType == ProductType.ADME_HAC)
@@ -189,7 +191,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     desc = "参数配置",
                     resID = R.drawable.ic_basic_config,
                     navId = R.id.action_admeAdvancedConfigurationFragment_to_admeHacAlarmSettingFragment
-                )
+                ).toUnified()
             )
         binding.rvModule.models = moduleList
     }

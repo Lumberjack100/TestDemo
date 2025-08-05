@@ -47,6 +47,7 @@ import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.model.UnifiedDeviceModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
@@ -187,10 +188,10 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                                     ConvertUtils.dp2px(10f), false
                                 )
                             )
-                            addType<DeviceFunctionModule>(R.layout.item_device_config_module_ud)
+                            addType<UnifiedDeviceModule>(R.layout.item_device_config_module_ud)
                             R.id.item.onClick {
-                                val functionModule = getModel<DeviceFunctionModule>()
-                                processSubModuleItemClick(functionModule)
+                                val unifiedModule = getModel<UnifiedDeviceModule>()
+                                processSubModuleItemClick(unifiedModule.module)
                             }
                         }
                     }

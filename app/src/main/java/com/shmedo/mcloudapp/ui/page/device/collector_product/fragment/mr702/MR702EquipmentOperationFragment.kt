@@ -42,6 +42,8 @@ import com.shmedo.mcloudapp.model.MR702Remote485SilenceModule
 import com.shmedo.mcloudapp.model.MonitoringElement
 import com.shmedo.mcloudapp.model.TelemetryDataModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
+import com.shmedo.mcloudapp.model.UnifiedDeviceModule
+import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.dialog.TelemetryPopupView
 import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -114,10 +116,10 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                     false
                 )
             )
-            addType<DeviceFunctionModule>(R.layout.item_device_config_module)
+            addType<UnifiedDeviceModule>(R.layout.item_device_config_module)
             R.id.item.onClick {
-                val module = getModel<DeviceFunctionModule>()
-                processItemClick(module)
+                val unifiedModule = getModel<UnifiedDeviceModule>()
+                processItemClick(unifiedModule.module)
             }
         }.models = getModuleList()
     }
@@ -806,22 +808,22 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
     }
 
     private fun getModuleList() =
-        arrayListOf<DeviceFunctionModule>(
-            TelemetryDataModule(),
-            MR702ManualSettingModule(),
-            DeviceLogUploadModule(),
-            MR702ParameterExportModule(),
-            MR702ParameterImportModule(),
-            MR702ManualPhotoTakingModule(),
+        arrayListOf(
+            TelemetryDataModule().toUnified(),
+            MR702ManualSettingModule().toUnified(),
+            DeviceLogUploadModule().toUnified(),
+            MR702ParameterExportModule().toUnified(),
+            MR702ParameterImportModule().toUnified(),
+            MR702ManualPhotoTakingModule().toUnified(),
             CommonModule(
                 name = "库容计算",
                 desc = "采用线性插值法计算公式计算",
                 resID = R.drawable.ic_sample,
                 navId = R.id.action_global_to_mR702ReservoirCapacityFragment
-            ),
-            MR702Remote485SilenceModule(),
-            MR702CleanClearAlarmModule(),
-            MR702RainSetZeroModule(),
+            ).toUnified(),
+            MR702Remote485SilenceModule().toUnified(),
+            MR702CleanClearAlarmModule().toUnified(),
+            MR702RainSetZeroModule().toUnified(),
         )
 
     override fun onResume() {

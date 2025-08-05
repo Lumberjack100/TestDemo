@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.model.DeviceFunctionModule" />
+            type="com.shmedo.mcloudapp.model.UnifiedDeviceModule" />
     </data>
 
     <androidx.cardview.widget.CardView

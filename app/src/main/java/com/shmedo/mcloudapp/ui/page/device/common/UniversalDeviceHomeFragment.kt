@@ -31,6 +31,7 @@ import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.RebootModule
 import com.shmedo.mcloudapp.model.TelemetryDataModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
+import com.shmedo.mcloudapp.model.UnifiedDeviceModule
 import com.shmedo.mcloudapp.ui.dialog.TelemetryPopupView
 import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -102,10 +103,10 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                     false
                 )
             )
-            addType<DeviceFunctionModule>(R.layout.item_device_config_module)
+            addType<UnifiedDeviceModule>(R.layout.item_device_config_module)
             R.id.item.onClick {
-                val module = getModel<DeviceFunctionModule>()
-                processItemClick(module)
+                val unifiedModule = getModel<UnifiedDeviceModule>()
+                processItemClick(unifiedModule.module)
             }
         }
     }

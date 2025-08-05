@@ -46,6 +46,8 @@ import com.shmedo.mcloudapp.model.RebootModule
 import com.shmedo.mcloudapp.model.RunningStatusModule
 import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.model.TelemetryDataModule
+import com.shmedo.mcloudapp.model.UnifiedDeviceModule
+import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleDasHomeFragmentViewModel
@@ -118,10 +120,10 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                     false
                 )
             )
-            addType<DeviceFunctionModule>(R.layout.item_device_config_module)
+            addType<UnifiedDeviceModule>(R.layout.item_device_config_module)
             R.id.item.onClick {
-                val module = getModel<DeviceFunctionModule>()
-                processItemClick(module)
+                val unifiedModule = getModel<UnifiedDeviceModule>()
+                processItemClick(unifiedModule.module)
             }
         }
     }
@@ -561,36 +563,36 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun updateConfigModuleData() {
-        val moduleList = arrayListOf<DeviceFunctionModule>()
+        val moduleList = arrayListOf<UnifiedDeviceModule>()
         moduleList.add(
             RunningStatusModule(
                 name = "关于设备",
                 desc = "设备基本信息、运行数据",
                 resID = R.drawable.ic_device_running_info,
                 navId = R.id.action_global_to_dasSensorInfoFragment
-            )
+            ).toUnified()
         )
         moduleList.add(
             CommonModule(
                 name = "时间校准",
                 resID = R.drawable.ic_module_time_calibration_new,
                 navId = R.id.action_global_to_time_calibration
-            )
+            ).toUnified()
         )
         moduleList.add(
-            TelemetryDataModule()
+            TelemetryDataModule().toUnified()
         )
         moduleList.add(
-            RebootModule()
+            RebootModule().toUnified()
         )
         moduleList.add(
-            CollectorConfigModule(navId = R.id.action_global_to_dasNetInfoFragment)
+            CollectorConfigModule(navId = R.id.action_global_to_dasNetInfoFragment).toUnified()
         )
         moduleList.add(
-            DataCenterModule(navId = R.id.action_global_to_bleDasDataCenterHomeFragment)
+            DataCenterModule(navId = R.id.action_global_to_bleDasDataCenterHomeFragment).toUnified()
         )
         moduleList.add(
-            SensorConfigModule(navId = 0)
+            SensorConfigModule(navId = 0).toUnified()
         )
         binding.rvModule.models = moduleList
     }

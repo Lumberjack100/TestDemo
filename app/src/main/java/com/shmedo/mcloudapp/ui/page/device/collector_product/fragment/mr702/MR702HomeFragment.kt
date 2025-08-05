@@ -13,6 +13,7 @@ import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
+import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 
@@ -43,25 +44,25 @@ class MR702HomeFragment : BaseDeviceHomeFragment() {
                         resID = R.drawable.ic_module_basic_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_mR702BaseInfoFragment
-                    ),
+                    ).toUnified(),
                     CommonModule(
                         name = "网络信息",
                         resID = R.drawable.ic_module_net_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_mR702NetInfoFragment
-                    ),
+                    ).toUnified(),
                     CommonModule(
                         name = "状态信息",
                         resID = R.drawable.ic_module_state_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_mR702StatusInfoFragment
-                    ),
+                    ).toUnified(),
                     CommonModule(
                         name = "位置信息",
                         resID = R.drawable.ic_module_location_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_commonLocationInfoFragment
-                    )
+                    ).toUnified()
                 )
             )
         )
@@ -74,47 +75,44 @@ class MR702HomeFragment : BaseDeviceHomeFragment() {
                     name = "网络配置",
                     resID = R.drawable.ic_module_network_setting,
                     navId = R.id.action_global_to_mR702NetworkConfigFragment
-                ),
+                ).toUnified(),
                 DataCenterModule(
                     name = "链路配置",
                     resID = R.drawable.ic_module_datacenter_new,
                     navId = R.id.action_global_to_mR702DataCenterHomeFragment
-                ),
+                ).toUnified(),
                 CommonModule(
                     name = "上报配置",
                     resID = R.drawable.ic_module_work_mode_new,
                     navId = R.id.action_global_to_mR702ReportConfigFragment
-                ),
+                ).toUnified(),
                 CommonModule(
                     name = "端口配置",
                     resID = R.drawable.ic_module_serial_port,
                     navId = R.id.action_global_to_mR702PortHomeFragment
-                ),
-
+                ).toUnified(),
                 CommonModule(
                     name = "设备操作",
                     resID = R.drawable.ic_module_equip_operation,
                     navId = R.id.action_global_to_mR702EquipmentOperationFragment
-                ),
-
+                ).toUnified(),
                 CommonModule(
                     name = "时间校准",
                     resID = R.drawable.ic_module_time_calibration_new,
                     navId = R.id.action_global_to_time_calibration
-                ),
-
+                ).toUnified(),
                 CommonModule(
                     name = "系统配置",
                     resID = R.drawable.ic_module_system_setting,
                     navId = R.id.action_global_to_advancedSettingFragment
-                ),
+                ).toUnified(),
             )
         )
         if (communicateWay is BleConnect) {
             configModuleTree.configModules.add(
                 CommandDebugConfigModule(
                     resID = R.drawable.ic_module_cmd_debug_new,
-                )
+                ).toUnified()
             )
         }
         groupList.add(configModuleTree)
