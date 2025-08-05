@@ -8,59 +8,6 @@
         <item>ERROR</item>
     </string-array>
 
-    <!-- 注册平台-->
-    <string-array name="data_center_register_platform">
-        <item>地大平台</item>
-        <item>中移物联平台</item>
-        <item>米度物联平台</item>
-        <item>地大平台2</item>
-        <item>河南水利平台</item>
-        <item>米度水文平台</item>
-        <item>AMS解算平台</item>
-        <item>重庆地灾平台</item>
-        <item>广东水文平台</item>
-        <item>广西水文平台</item>
-        <item>湖北水文平台</item>
-        <item>湖北生态流量平台</item>
-        <item>贵州加密平台</item>
-        <item>CORS平台</item>
-        <item>北京路安平台</item>
-        <item>广东山洪预警平台</item>
-    </string-array>
-
-    <string-array name="data_center_tcp_register_platform">
-        <item>AMS解算平台</item>
-    </string-array>
-
-    <string-array name="data_center_mqtt_register_platform">
-        <item>地大平台</item>
-        <item>中移物联平台</item>
-        <item>米度物联平台</item>
-        <item>地大平台2</item>
-        <item>重庆地灾平台</item>
-        <item>贵州加密平台</item>
-        <item>北京路安平台</item>
-    </string-array>
-
-    <string-array name="data_center_sl651_register_platform">
-        <item>河南水利平台</item>
-        <item>广东水文平台</item>
-        <item>广西水文平台</item>
-        <item>湖北水文平台</item>
-    </string-array>
-
-    <string-array name="data_center_szy206_register_platform">
-        <item>湖北生态流量平台</item>
-    </string-array>
-
-    <string-array name="data_center_ntrip_register_platform">
-        <item>CORS平台</item>
-    </string-array>
-
-    <string-array name="data_center_http_register_platform">
-        <item>广东山洪预警平台</item>
-    </string-array>
-
     <!-- 广东水文平台测站类型-->
     <string-array name="guangdong_water_platform_station_type">
         <item>山洪灾害监测站</item>

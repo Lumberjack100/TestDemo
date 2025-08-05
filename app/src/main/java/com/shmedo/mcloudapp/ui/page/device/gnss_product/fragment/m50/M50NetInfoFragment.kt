@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
-import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
+import com.shmedo.lib.cmd.base.iot_cmd.enums.DataCenterPlatform
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
@@ -35,8 +35,6 @@ import timber.log.Timber
  * 描述： 一体式自供电 GNSS 接收机(M50)网络信息
  */
 class M50NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
-    private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
-
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -142,7 +140,7 @@ class M50NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
                     onlineStatusList.forEachIndexed { index, status ->
                         val platformIndex = platformTypeList.getOrNull(index)?.toIntOrNull() ?: 0
-                        val platformType = platformList.getOrNull(platformIndex) ?: "未知"
+                        val platformType = DataCenterPlatform.valueByCmdValue(platformIndex.toString()).getPlatName()
                         val statusText = status.compareAndReturn(
                             "1",
                             "已连接",

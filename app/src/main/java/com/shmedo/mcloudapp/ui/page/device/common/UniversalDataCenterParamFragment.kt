@@ -10,7 +10,6 @@ import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -19,6 +18,7 @@ import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.CenterNumberEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.DataCenterParamEntity
+import com.shmedo.lib.cmd.base.iot_cmd.enums.DataCenterPlatform
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
@@ -74,13 +74,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         PlatformDataProtocol.HTTP.toString()
     )
 
-    private val allPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
-    private val mqttPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_mqtt_register_platform) }
-    private val tcpPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_tcp_register_platform) }
-    private val sl651PlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_sl651_register_platform) }
-    private val szy206PlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_szy206_register_platform) }
-    private val ntripPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_ntrip_register_platform) }
-    private val httpPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_http_register_platform) }
+    // 使用 DataCenterPlatform 枚举类替换硬编码的数组资源
 
     private val platformList: MutableList<String> = arrayListOf()
 
@@ -120,6 +114,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         arguments?.let {
             statusItem = it.getParcelable(AppContants.Extras.SERVER_NUMBER)!!
         }
+        binding.llToolbar.toolbar.title = statusItem.name.replace("数据", "") + "配置"
         resetDefaultParams()
         //添加这行来保存初始状态
         mStates.saveInitialState()
@@ -129,8 +124,6 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
      * 初始化默认参数
      */
     private fun resetDefaultParams() {
-        binding.llToolbar.toolbar.title = statusItem.name.replace("数据", "") + "配置"
-
         mStates.isCenterOpened.set(statusItem.status != "0")
         mStates.centerServerAddress.set("")//
         mStates.centerServerPort.set("")//
@@ -141,8 +134,8 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.dataProtocol.set(PlatformDataProtocol.MQTT.toString())//默认选择
 
         platformList.clear()
-        platformList.addAll(mqttPlatformList.asList())
-        mStates.platformType.set(allPlatformList[2])//默认选择米度物联平台
+        platformList.addAll(DataCenterPlatform.getPlatformNamesByProtocol(PlatformDataProtocol.MQTT))
+        mStates.platformType.set(DataCenterPlatform.MEDO_IOT_PLATFORM.getPlatName())//默认选择米度物联平台
 
         // MQTT 协议特有配置参数
         mStates.productId.set("")//
@@ -207,31 +200,51 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                         when (text) {
                             PlatformDataProtocol.MQTT.toString() -> {
                                 platformList.clear()
-                                platformList.addAll(mqttPlatformList.asList())
+                                platformList.addAll(
+                                    DataCenterPlatform.getPlatformNamesByProtocol(
+                                        PlatformDataProtocol.MQTT
+                                    )
+                                )
                                 mStates.platformType.set(platformList.first())
                             }
 
                             PlatformDataProtocol.TCP_C.toString() -> {
                                 platformList.clear()
-                                platformList.addAll(tcpPlatformList.asList())
+                                platformList.addAll(
+                                    DataCenterPlatform.getPlatformNamesByProtocol(
+                                        PlatformDataProtocol.TCP_C
+                                    )
+                                )
                                 mStates.platformType.set(platformList.first())
                             }
 
                             PlatformDataProtocol.SL651.toString() -> {//SL651
                                 platformList.clear()
-                                platformList.addAll(sl651PlatformList.asList())
+                                platformList.addAll(
+                                    DataCenterPlatform.getPlatformNamesByProtocol(
+                                        PlatformDataProtocol.SL651
+                                    )
+                                )
                                 mStates.platformType.set(platformList.first())
                             }
 
                             PlatformDataProtocol.NTRIP.toString() -> {//NTRIP
                                 platformList.clear()
-                                platformList.addAll(ntripPlatformList.asList())
+                                platformList.addAll(
+                                    DataCenterPlatform.getPlatformNamesByProtocol(
+                                        PlatformDataProtocol.NTRIP
+                                    )
+                                )
                                 mStates.platformType.set(platformList.first())
                             }
 
                             PlatformDataProtocol.HTTP.toString() -> {
                                 platformList.clear()
-                                platformList.addAll(httpPlatformList.asList())
+                                platformList.addAll(
+                                    DataCenterPlatform.getPlatformNamesByProtocol(
+                                        PlatformDataProtocol.HTTP
+                                    )
+                                )
                                 mStates.platformType.set(platformList.first())
                             }
                         }
@@ -255,7 +268,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.platformType.set(text)
-                        mStates.isRegisterVisible.set(!text.contains("重庆地灾"))
+                        mStates.isRegisterVisible.set(text != DataCenterPlatform.CHONGQING_DISASTER_PLATFORM.getPlatName())
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -354,7 +367,8 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                 (dataTypeList.indexOf(mStates.dataType.get()) + 1).toString()
             else IOTConstants.NULL_KEY,
             protocol = mStates.dataProtocol.get(),
-            plattype = allPlatformList.indexOf(mStates.platformType.get()).toString()
+            plattype = DataCenterPlatform.valueByPlatformName(mStates.platformType.get())
+                .getCmdValue()
         )
 
         if (mStates.dataProtocol.get() == PlatformDataProtocol.MQTT.toString()) {
@@ -560,34 +574,52 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         when (data.protocol) {
             PlatformDataProtocol.MQTT.toString() -> {//
                 platformList.clear()
-                platformList.addAll(mqttPlatformList.asList())
+                platformList.addAll(
+                    DataCenterPlatform.getPlatformNamesByProtocol(
+                        PlatformDataProtocol.MQTT
+                    )
+                )
             }
 
             PlatformDataProtocol.TCP_C.toString() -> {//
                 platformList.clear()
-                platformList.addAll(tcpPlatformList.asList())
+                platformList.addAll(
+                    DataCenterPlatform.getPlatformNamesByProtocol(
+                        PlatformDataProtocol.TCP_C
+                    )
+                )
             }
 
             PlatformDataProtocol.SL651.toString() -> {//SL651
                 platformList.clear()
-                platformList.addAll(sl651PlatformList.asList())
+                platformList.addAll(
+                    DataCenterPlatform.getPlatformNamesByProtocol(
+                        PlatformDataProtocol.SL651
+                    )
+                )
             }
 
             PlatformDataProtocol.NTRIP.toString() -> {//NTRIP
                 platformList.clear()
-                platformList.addAll(ntripPlatformList.asList())
+                platformList.addAll(
+                    DataCenterPlatform.getPlatformNamesByProtocol(
+                        PlatformDataProtocol.NTRIP
+                    )
+                )
             }
 
             PlatformDataProtocol.HTTP.toString() -> {//HTTP
                 platformList.clear()
-                platformList.addAll(httpPlatformList.asList())
+                platformList.addAll(
+                    DataCenterPlatform.getPlatformNamesByProtocol(
+                        PlatformDataProtocol.HTTP
+                    )
+                )
             }
         }
-        data.plattype.toIntOrNull()?.let {
-            if (it in allPlatformList.indices) {
-                mStates.platformType.set(allPlatformList[it])
-            }
-        }
+        // 使用 DataCenterPlatform 枚举类处理 plattype
+        val platform = DataCenterPlatform.valueByCmdValue(data.plattype)
+        mStates.platformType.set(platform.getPlatName())
 
         //MQTT/NTRIP 协议参数
         mStates.productId.set(data.projid)
@@ -598,7 +630,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.registerPort.set(data.httpport)
 
         //重庆地灾平台不显示注册码、注册地址、注册端口号
-        mStates.isRegisterVisible.set(!mStates.platformType.get().contains("重庆地灾"))
+        mStates.isRegisterVisible.set(mStates.platformType.get() !=DataCenterPlatform.CHONGQING_DISASTER_PLATFORM.getPlatName())
 
         //SL651 水文协议参数
         mStates.stationType.set(StationCode.valueByCode(data.type_code).description)
@@ -611,9 +643,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.reissuingDataValidDays.set(data.valid_day)
         mStates.reissuingDataInterval.set(data.reissue_time)
 
-        if (communicateWay is NetPlatformConnect && mStates.platformType.get()
-                .contains("米度物联平台") && statusItem.status == "1"
-        ) {
+        if (communicateWay is NetPlatformConnect && mStates.platformType.get() == DataCenterPlatform.MEDO_IOT_PLATFORM.getPlatName() && statusItem.status == "1") {
             mStates.isEditable.set(false)
             showMessageDialog("4G模式下，米度物联平台链路不允许修改，以免设备离线")
         }

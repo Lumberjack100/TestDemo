@@ -17,6 +17,7 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
+import com.shmedo.lib.cmd.base.iot_cmd.enums.DataCenterPlatform
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.md_cmd.assemble.entity.common.RegistrationPlatformEntity
 import com.shmedo.lib.cmd.base.md_cmd.assemble.entity.common.ServerAddressInfoEntity
@@ -62,7 +63,6 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
     private lateinit var statusItem: DataCenterStatusItem
 
     private val transferProtocolList by lazy { Utils.getApp().resources.getStringArray(R.array.register_protocol) }
-    private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
 
 
 
@@ -108,7 +108,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.isCenterOpened.set(statusItem.status != "0")
         mStates.transferProtocol.set(transferProtocolList[0])
         mStates.transferProtocolCode.set("2")
-        mStates.platformType.set(platformList[0])
+        mStates.platformType.set(DataCenterPlatform.MEDO_IOT_PLATFORM.getPlatName())//默认选择米度物联平台
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -174,14 +174,15 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
          * 平台类型
          */
         fun onPlatformTypeChooseClick() {
-            val selectedIndex = platformList.indexOf(mStates.platformType.get())
+            val allPlatformNames = DataCenterPlatform.platNames.toTypedArray()
+            val selectedIndex = allPlatformNames.indexOf(mStates.platformType.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "请选择平台类型", platformList,
+                    "请选择平台类型", allPlatformNames,
                     null, selectedIndex,
                     { position, text ->
                         mStates.platformType.set(text)
@@ -337,7 +338,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             //选择注册平台
             command = MDCommandUtil.getCommand(
                 MDCommandType.AUTO_REGISTRATION_PLATFORM,
-                "${statusItem.centerid}${platformList.indexOf(mStates.platformType.get())}"
+                "${statusItem.centerid}${DataCenterPlatform.valueByPlatformName(mStates.platformType.get()).getCmdValue()}"
             )
             Timber.Forest.d("选择平台配置===%s", command)
             commandItems.add(command)
@@ -381,7 +382,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             //选择注册平台
             command = MDCommandUtil.getCommand(
                 MDCommandType.AUTO_REGISTRATION_PLATFORM,
-                "${statusItem.centerid}${platformList.indexOf(mStates.platformType.get())}"
+                "${statusItem.centerid}${DataCenterPlatform.valueByPlatformName(mStates.platformType.get()).getCmdValue()}"
             )
             Timber.Forest.d("选择平台配置===%s", command)
             commandItems.add(command)
@@ -690,11 +691,10 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             }
         }
 
-        data.registerPlatform.toIntOrNull()?.let {
-            if (it in platformList.indices) {
-                mStates.platformType.set(platformList[it])
-            }
-        }
+        // 使用 DataCenterPlatform 枚举类处理 plattype
+        val platform = DataCenterPlatform.valueByCmdValue(data.registerPlatform)
+        mStates.platformType.set(platform.getPlatName())
+
         //MQTT 协议参数
         mStates.registerAddress.set(data.registerPlatformAddress)
         mStates.registerPort.set(data.registerPlatformPort)
