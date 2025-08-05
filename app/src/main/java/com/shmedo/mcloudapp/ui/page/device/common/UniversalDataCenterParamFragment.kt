@@ -108,7 +108,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
             if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 return@onRefresh
             }
             queryData()
@@ -612,7 +612,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.reissuingDataInterval.set(data.reissue_time)
 
         if (communicateWay is NetPlatformConnect && mStates.platformType.get()
-                .contains("米度物联平台")
+                .contains("米度物联平台") && statusItem.status == "1"
         ) {
             mStates.isEditable.set(false)
             showMessageDialog("4G模式下，米度物联平台链路不允许修改，以免设备离线")

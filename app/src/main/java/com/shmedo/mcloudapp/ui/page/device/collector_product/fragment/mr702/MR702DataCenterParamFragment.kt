@@ -112,7 +112,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
             if (!isDeviceConnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 return@onRefresh
             }
             queryData()
@@ -254,6 +254,19 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                     return
                 }
             }
+            // MQTT/MQTTS 协议注册端口验证
+            if (mStates.registerPort.get().isNotEmpty()) {
+                try {
+                    val port = mStates.registerPort.get().toInt()
+                    if (port < 0 || port > 65535) {
+                        showMessageDialog("设备注册端口号数值范围[0,65535]!")
+                        return
+                    }
+                } catch (ex: Exception) {
+                    showMessageDialog("设备注册端口号数值范围[0,65535]!")
+                    return
+                }
+            }
 
             entity.projid = mStates.productId.get()
             entity.deviceid = mStates.deviceId.get()
@@ -319,20 +332,6 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
         } catch (ex: Exception) {
             showMessageDialog("链路端口号数值范围[0,65535]!")
             return false
-        }
-
-        // MQTT/MQTTS 协议注册端口验证
-        if (mStates.registerPort.get().isNotEmpty()) {
-            try {
-                val port = mStates.registerPort.get().toInt()
-                if (port < 0 || port > 65535) {
-                    showMessageDialog("设备注册端口号数值范围[0,65535]!")
-                    return false
-                }
-            } catch (ex: Exception) {
-                showMessageDialog("设备注册端口号数值范围[0,65535]!")
-                return false
-            }
         }
 
         return true
@@ -470,7 +469,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                     mStates.reissuingDataInterval.set(data.reissue_time)
 
                     if (communicateWay is NetPlatformConnect && mStates.platformType.get()
-                            .contains("米度物联平台")
+                            .contains("米度物联平台") && statusItem.status == "1"
                     ) {
                         mStates.isEditable.set(false)
                         showMessageDialog("4G模式下，米度物联平台链路不允许修改，以免设备离线")
