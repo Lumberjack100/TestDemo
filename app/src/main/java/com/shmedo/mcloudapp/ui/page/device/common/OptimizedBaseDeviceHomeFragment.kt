@@ -46,13 +46,13 @@ import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.model.BleConnect
-import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.model.UnifiedDeviceModule
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
@@ -224,8 +224,8 @@ abstract class OptimizedBaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment(
     private fun refreshModuleStatus(isConnected: Boolean) {
         binding.rvModule.models?.forEach { item ->
             if (item is ConfigModuleTree) {
-                item.configModules.forEach { configModule ->
-                    configModule.functionModule.refreshStatus(isConnected)
+                item.configModules.forEach { functionModule ->
+                    functionModule.refreshStatus(isConnected)
                 }
             }
         }
@@ -247,10 +247,10 @@ abstract class OptimizedBaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment(
                                     ConvertUtils.dp2px(10f), false
                                 )
                             )
-                            addType<ConfigModule>(R.layout.item_device_config_module_ud)
+                            addType<UnifiedDeviceModule>(R.layout.item_device_config_module_ud)
                             R.id.item.onClick {
-                                val configModule = getModel<ConfigModule>()
-                                processSubModuleItemClick(configModule.functionModule)
+                                val unifiedModule = getModel<UnifiedDeviceModule>()
+                                processSubModuleItemClick(unifiedModule.module)
                             }
                         }
                     }

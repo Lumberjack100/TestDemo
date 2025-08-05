@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.model.ConfigModule" />
+            type="com.shmedo.mcloudapp.model.UnifiedDeviceModule" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:enabled="@{m.functionModule.moduleAvailable}"
+        android:enabled="@{m.moduleAvailable}"
         android:focusable="true"
         android:foreground="?android:selectableItemBackground"
         app:cardCornerRadius="3dp"
@@ -29,8 +29,8 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_config_logo"
-                imageResId="@{m.functionModule.resID}"
-                tintColor="@{m.functionModule.moduleAvailable ? @color/colorPrimary : @color/sub_title_text_color}"
+                imageResId="@{m.resID}"
+                tintColor="@{m.moduleAvailable ? @color/colorPrimary : @color/sub_title_text_color}"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 tools:src="@drawable/ic_module_current_state" />
@@ -42,21 +42,21 @@
                 android:layout_marginTop="12dp"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:text="@{m.functionModule.name}"
-                android:textColor="@{m.functionModule.moduleAvailable ? @color/title_text_color : @color/sub_title_text_color}"
+                android:text="@{m.name}"
+                android:textColor="@{m.moduleAvailable ? @color/title_text_color : @color/sub_title_text_color}"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 tools:text="关于设备" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_config_desc"
-                visible="@{!m.functionModule.desc.empty}"
+                visible="@{!m.desc.empty}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:text="@{m.functionModule.desc}"
+                android:text="@{m.desc}"
                 android:textColor="@color/sub_title_text_color"
                 android:textSize="11sp"
                 tools:text="配置测斜仪工作模式" />

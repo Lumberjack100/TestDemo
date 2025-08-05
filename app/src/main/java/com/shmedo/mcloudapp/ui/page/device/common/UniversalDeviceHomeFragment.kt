@@ -26,12 +26,12 @@ import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.BleConnect
-import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.RebootModule
 import com.shmedo.mcloudapp.model.TelemetryDataModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
+import com.shmedo.mcloudapp.model.UnifiedDeviceModule
 import com.shmedo.mcloudapp.ui.dialog.TelemetryPopupView
 import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -40,6 +40,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.CommonDeviceHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
+
 @Deprecated("This class is deprecated", ReplaceWith("NewUniversalBaseDeviceHomeFragment or OptimizedBaseDeviceHomeFragment"))
 abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentUniversalDeviceHomeBinding
@@ -102,10 +103,10 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                     false
                 )
             )
-            addType<ConfigModule>(R.layout.item_device_config_module)
+            addType<UnifiedDeviceModule>(R.layout.item_device_config_module)
             R.id.item.onClick {
-                val module = getModel<ConfigModule>()
-                processItemClick(module)
+                val unifiedModule = getModel<UnifiedDeviceModule>()
+                processItemClick(unifiedModule.module)
             }
         }
     }
@@ -159,8 +160,8 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         }
         //刷新模块状态
         binding.rvModule.models?.forEach {
-            if (it is ConfigModule) {
-                it.functionModule.refreshStatus(isConnected)
+            if (it is DeviceFunctionModule) {
+                it.refreshStatus(isConnected)
             }
         }
     }
@@ -188,12 +189,12 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun processItemClick(module: ConfigModule) {
+    private fun processItemClick(functionModule: DeviceFunctionModule) {
         if (isBleDisconnected()) {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }
-        when (module.functionModule) {
+        when (functionModule) {
             is TimeCalibrationModule -> {//时间校准
                 queryTerminalTime()
             }
@@ -218,7 +219,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                processOtherItemClick(module.functionModule)
+                processOtherItemClick(functionModule)
             }
         }
     }
@@ -526,8 +527,8 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     protected open fun chooseAdmeMode() {}
 
-    protected open fun processOtherItemClick(configModule: DeviceFunctionModule) {
-        if (configModule.navId != 0) {
+    protected open fun processOtherItemClick(functionModule: DeviceFunctionModule) {
+        if (functionModule.navId != 0) {
             val bundle = BaseIOTDeviceFragment.newBundleArguments(
                 productType,
                 communicateWay,
@@ -535,7 +536,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                 bleDevice
             )
             nav().safeNavigate(
-                configModule.navId,
+                functionModule.navId,
                 bundle
             )
         }

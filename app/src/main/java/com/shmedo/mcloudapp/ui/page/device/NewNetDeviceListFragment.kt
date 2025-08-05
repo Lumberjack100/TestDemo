@@ -315,7 +315,7 @@ class NewNetDeviceListFragment : BaseFragment() {
         tabList.add(
             FilterDeviceTabItem(
                 name = "在线状态",
-                value = "全部状态"
+                value = "在线"
             )
         )
         tabList.add(

@@ -30,7 +30,7 @@ import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommonModule
-import com.shmedo.mcloudapp.model.ConfigModule
+import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceLogUploadModule
 import com.shmedo.mcloudapp.model.MR702CleanClearAlarmModule
 import com.shmedo.mcloudapp.model.MR702ManualPhotoTakingModule
@@ -42,6 +42,8 @@ import com.shmedo.mcloudapp.model.MR702Remote485SilenceModule
 import com.shmedo.mcloudapp.model.MonitoringElement
 import com.shmedo.mcloudapp.model.TelemetryDataModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
+import com.shmedo.mcloudapp.model.UnifiedDeviceModule
+import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.dialog.TelemetryPopupView
 import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -114,20 +116,20 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                     false
                 )
             )
-            addType<ConfigModule>(R.layout.item_device_config_module)
+            addType<UnifiedDeviceModule>(R.layout.item_device_config_module)
             R.id.item.onClick {
-                val module = getModel<ConfigModule>()
-                processItemClick(module)
+                val unifiedModule = getModel<UnifiedDeviceModule>()
+                processItemClick(unifiedModule.module)
             }
         }.models = getModuleList()
     }
 
-    private fun processItemClick(module: ConfigModule) {
+    private fun processItemClick(functionModule: DeviceFunctionModule) {
         if (isBleDisconnected()) {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }
-        when (module.functionModule) {
+        when (functionModule) {
             is TimeCalibrationModule -> {//时间校准
                 commandItems.clear()
                 val command =
@@ -244,7 +246,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                if (module.functionModule.navId != 0) {
+                if (functionModule.navId != 0) {
                     val bundle = newBundleArguments(
                         productType,
                         communicateWay,
@@ -252,7 +254,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                         bleDevice
                     )
                     nav().safeNavigate(
-                        module.functionModule.navId,
+                        functionModule.navId,
                         bundle
                     )
                 }
@@ -806,24 +808,22 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
     }
 
     private fun getModuleList() =
-        arrayListOf<ConfigModule>(
-            ConfigModule(TelemetryDataModule()),
-            ConfigModule(MR702ManualSettingModule()),
-            ConfigModule(DeviceLogUploadModule()),
-            ConfigModule(MR702ParameterExportModule()),
-            ConfigModule(MR702ParameterImportModule()),
-            ConfigModule(MR702ManualPhotoTakingModule()),
-            ConfigModule(
-                CommonModule(
-                    name = "库容计算",
-                    desc = "采用线性插值法计算公式计算",
-                    resID = R.drawable.ic_sample,
-                    navId = R.id.action_global_to_mR702ReservoirCapacityFragment
-                )
-            ),
-            ConfigModule(MR702Remote485SilenceModule()),
-            ConfigModule(MR702CleanClearAlarmModule()),
-            ConfigModule(MR702RainSetZeroModule()),
+        arrayListOf(
+            TelemetryDataModule().toUnified(),
+            MR702ManualSettingModule().toUnified(),
+            DeviceLogUploadModule().toUnified(),
+            MR702ParameterExportModule().toUnified(),
+            MR702ParameterImportModule().toUnified(),
+            MR702ManualPhotoTakingModule().toUnified(),
+            CommonModule(
+                name = "库容计算",
+                desc = "采用线性插值法计算公式计算",
+                resID = R.drawable.ic_sample,
+                navId = R.id.action_global_to_mR702ReservoirCapacityFragment
+            ).toUnified(),
+            MR702Remote485SilenceModule().toUnified(),
+            MR702CleanClearAlarmModule().toUnified(),
+            MR702RainSetZeroModule().toUnified(),
         )
 
     override fun onResume() {
