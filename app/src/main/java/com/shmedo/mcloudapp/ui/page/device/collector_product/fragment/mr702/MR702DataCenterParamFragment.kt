@@ -14,6 +14,8 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.extensions.decimalStringToHexString
+import com.shmedo.core.commonlib.extensions.hexStringToDecimalString
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.CenterNumberEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRDataCenterParamEntity
@@ -42,9 +44,7 @@ import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702DataCenterParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -286,7 +286,11 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             entity.co_address =
                 if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.toString())
                     mStates.centerStationAddr.get() else IOTConstants.NULL_KEY
-            entity.password = mStates.password.get()
+            entity.password = if (mStates.platformType.get() == "湖北水文平台") {
+                mStates.password.get().hexStringToDecimalString()
+            } else {
+                mStates.password.get()
+            }
             entity.taddress = mStates.telemetryStationAddr.get()
             entity.hour_report = if (mStates.hourlyReport.get()) "1" else "0"
             entity.timed_report = if (mStates.timingReport.get()) "1" else "0"
@@ -384,104 +388,111 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
      * 初始化数据中心参数
      */
     private fun initDataCenterParam(data: MRDataCenterParam) {
-        launchWithViewLifecycle {
-            try {
-                withContext(Dispatchers.IO) {
-                    mStates.isDataNetOpened.set(data.datanet == "1")
-                    mStates.isWiredNetOpened.set(data.wirednet == "1")
+        try {
+            mStates.isDataNetOpened.set(data.datanet == "1")
+            mStates.isWiredNetOpened.set(data.wirednet == "1")
 
-                    mStates.centerServerAddress.set(data.addr)
-                    mStates.centerServerPort.set(data.port)
+            mStates.centerServerAddress.set(data.addr)
+            mStates.centerServerPort.set(data.port)
 
-                    data.line.toIntOrNull()?.let {
-                        if (it in 1..communicateWayList.size) {
-                            mStates.communicateWay.set(communicateWayList[it - 1])
-                        }
-                    }
-                    data.level.toIntOrNull()?.let {
-                        if (it in 1..ipLevelList.size) {
-                            mStates.ipLeve.set(ipLevelList[it - 1])
-                        }
-                    }
-
-                    data.type.toIntOrNull()?.let {
-                        if (it in 1..transferProtocolList.size) {
-                            mStates.transferProtocol.set(transferProtocolList[it - 1])
-                        }
-                    }
-                    mStates.dataProtocol.set(
-                        when (data.datatype) {
-                            "1", "5" -> { // MQTT, MQTTS
-                                if (data.datatype == "1") dataProtocolList[0] else dataProtocolList[4]
-                            }
-
-                            "2" -> { // TCP-C
-                                dataProtocolList[1]
-                            }
-
-                            "3" -> { // SL651
-                                dataProtocolList[2]
-                            }
-
-                            else -> { // SZY206
-                                dataProtocolList[3]
-                            }
-                        }
-                    )
-                    data.plattype.toIntOrNull()?.let {
-                        if (it in allPlatformList.indices) {
-                            mStates.platformType.set(allPlatformList[it])
-                        }
-                    }
-
-                    // Handle packtype for Guangdong Water Platform station types
-                    // The mapping is: 0=山洪灾害监测站, 1=河道水情监测站, 3=沉降监测站, 4=水质监测站, 5=雨量监测站, 6=流量监测站
-                    when (data.packtype) {
-                        "0" -> mStates.guangdongWaterPlatformStationType.set("山洪灾害监测站")
-                        "1" -> mStates.guangdongWaterPlatformStationType.set("河道水情监测站")
-                        "3" -> mStates.guangdongWaterPlatformStationType.set("沉降监测站")
-                        "4" -> mStates.guangdongWaterPlatformStationType.set("水质监测站")
-                        "5" -> mStates.guangdongWaterPlatformStationType.set("雨量监测站")
-                        "6" -> mStates.guangdongWaterPlatformStationType.set("流量监测站")
-                    }
-
-                    // MQTT 协议参数
-                    mStates.productId.set(data.projid)
-                    mStates.deviceId.set(data.deviceid)
-                    mStates.deviceKey.set(data.devicekey)
-                    mStates.registerCode.set(data.regcode)
-                    mStates.registerAddress.set(data.httpaddr)
-                    mStates.registerPort.set(data.httpport)
-
-                    // SL651/SZY206 协议参数
-                    if (mStates.dataProtocol.get() == dataProtocolList[2]) {
-                        mStates.stationType.set(StationCode.valueByCode(data.type_code).description)//测站分类编码
-                        mStates.centerStationAddr.set(data.co_address)
-                    }
-                    mStates.password.set(data.password)
-                    mStates.telemetryStationAddr.set(data.taddress)//遥测站地址/测站编码
-                    mStates.hourlyReport.set(data.hour_report == "1")
-                    mStates.timingReport.set(data.timed_report == "1")
-                    mStates.addReport.set(data.add_report == "1")
-                    mStates.maintainReport.set(data.maintain_report == "1")
-                    mStates.maintainReportInterval.set(data.keepalive)
-                    mStates.reissuingDataValidDays.set(data.valid_day)
-                    mStates.reissuingDataInterval.set(data.reissue_time)
-
-                    if (communicateWay is NetPlatformConnect && mStates.platformType.get()
-                            .contains("米度物联平台") && statusItem.status == "1"
-                    ) {
-                        mStates.isEditable.set(false)
-                        showMessageDialog("4G模式下，米度物联平台链路不允许修改，以免设备离线")
-                    }
-
-                    // 保存初始状态
-                    mStates.saveInitialState()
+            data.line.toIntOrNull()?.let {
+                if (it in 1..communicateWayList.size) {
+                    mStates.communicateWay.set(communicateWayList[it - 1])
                 }
-            } catch (e: Exception) {
-                Timber.e(e)
-                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
+            data.level.toIntOrNull()?.let {
+                if (it in 1..ipLevelList.size) {
+                    mStates.ipLeve.set(ipLevelList[it - 1])
+                }
+            }
+
+            data.type.toIntOrNull()?.let {
+                if (it in 1..transferProtocolList.size) {
+                    mStates.transferProtocol.set(transferProtocolList[it - 1])
+                }
+            }
+            mStates.dataProtocol.set(
+                when (data.datatype) {
+                    "1", "5" -> { // MQTT, MQTTS
+                        if (data.datatype == "1") dataProtocolList[0] else dataProtocolList[4]
+                    }
+
+                    "2" -> { // TCP-C
+                        dataProtocolList[1]
+                    }
+
+                    "3" -> { // SL651
+                        dataProtocolList[2]
+                    }
+
+                    else -> { // SZY206
+                        dataProtocolList[3]
+                    }
+                }
+            )
+            data.plattype.toIntOrNull()?.let {
+                if (it in allPlatformList.indices) {
+                    mStates.platformType.set(allPlatformList[it])
+                }
+            }
+
+            // Handle packtype for Guangdong Water Platform station types
+            // The mapping is: 0=山洪灾害监测站, 1=河道水情监测站, 3=沉降监测站, 4=水质监测站, 5=雨量监测站, 6=流量监测站
+            when (data.packtype) {
+                "0" -> mStates.guangdongWaterPlatformStationType.set("山洪灾害监测站")
+                "1" -> mStates.guangdongWaterPlatformStationType.set("河道水情监测站")
+                "3" -> mStates.guangdongWaterPlatformStationType.set("沉降监测站")
+                "4" -> mStates.guangdongWaterPlatformStationType.set("水质监测站")
+                "5" -> mStates.guangdongWaterPlatformStationType.set("雨量监测站")
+                "6" -> mStates.guangdongWaterPlatformStationType.set("流量监测站")
+            }
+
+            // MQTT 协议参数
+            mStates.productId.set(data.projid)
+            mStates.deviceId.set(data.deviceid)
+            mStates.deviceKey.set(data.devicekey)
+            mStates.registerCode.set(data.regcode)
+            mStates.registerAddress.set(data.httpaddr)
+            mStates.registerPort.set(data.httpport)
+
+            // SL651/SZY206 协议参数
+            if (mStates.dataProtocol.get() == dataProtocolList[2]) {
+                mStates.stationType.set(StationCode.valueByCode(data.type_code).description)//测站分类编码
+                mStates.centerStationAddr.set(data.co_address)
+            }
+
+            // 根据平台类型设置密码显示格式
+            val platformType = data.plattype.toIntOrNull()?.let {
+                if (it in allPlatformList.indices) allPlatformList[it] else ""
+            } ?: ""
+            mStates.password.set(
+                if (platformType == "湖北水文平台") {
+                    data.password.decimalStringToHexString()
+                } else {
+                    data.password
+                }
+            )
+            mStates.telemetryStationAddr.set(data.taddress)//遥测站地址/测站编码
+            mStates.hourlyReport.set(data.hour_report == "1")
+            mStates.timingReport.set(data.timed_report == "1")
+            mStates.addReport.set(data.add_report == "1")
+            mStates.maintainReport.set(data.maintain_report == "1")
+            mStates.maintainReportInterval.set(data.keepalive)
+            mStates.reissuingDataValidDays.set(data.valid_day)
+            mStates.reissuingDataInterval.set(data.reissue_time)
+
+            if (communicateWay is NetPlatformConnect && mStates.platformType.get()
+                    .contains("米度物联平台") && statusItem.status == "1"
+            ) {
+                mStates.isEditable.set(false)
+                showMessageDialog("4G模式下，米度物联平台链路不允许修改，以免设备离线")
+            }
+
+            // 保存初始状态
+            mStates.saveInitialState()
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

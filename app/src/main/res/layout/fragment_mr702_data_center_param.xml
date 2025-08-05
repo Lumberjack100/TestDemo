@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol" />
 
         <variable
@@ -429,9 +430,9 @@
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                android:inputType="number"
                                 android:text="@={stateVM.password}"
-                                app:lengthFilter="@{5}" />
+                                app:inputTypeFilter='@{"0123456789ABCDEF"}'
+                                app:lengthFilter="@{16}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
