@@ -170,7 +170,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 查询数据 - 使用新架构的指令序列API
+     * 查询数据
      */
     private fun queryData() {
         val entity = CenterNumberEntity(statusItem.centerid.toString())
@@ -208,7 +208,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 保存配置 - 使用新架构的简化API
+     * 保存配置
      */
     private fun saveConfiguration() {
         // 数据验证
@@ -346,7 +346,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 处理指令响应 - 这是唯一需要实现的方法
+     * 处理指令响应
      */
     override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {

@@ -283,7 +283,7 @@ class M50WorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 处理指令响应 - 这是唯一需要实现的方法
+     * 处理指令响应
      */
     override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {

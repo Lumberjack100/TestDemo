@@ -143,7 +143,7 @@ class M50AlarmParamSettingFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 查询数据 - 使用新架构的指令序列API
+     * 查询数据
      */
     private fun queryData() {
         val commands = listOf(
@@ -167,7 +167,7 @@ class M50AlarmParamSettingFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 报警测试 - 使用单条指令发送
+     * 报警测试
      */
     private fun testAlarm(level: Int) {
         val command = IOTCommandUtil.getCommand(
@@ -185,7 +185,7 @@ class M50AlarmParamSettingFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 保存配置 - 使用新架构的简化API
+     * 保存配置
      */
     private fun saveConfiguration() {
         // 数据验证
@@ -350,7 +350,7 @@ class M50AlarmParamSettingFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 处理指令响应 - 这是唯一需要实现的方法
+     * 处理指令响应
      */
     override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {

@@ -149,7 +149,7 @@ class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 更新倾角初始值 - 使用单条指令发送
+     * 更新倾角初始值
      */
     private fun measureInitialValue(method: String, type: String) {
         val entity = UDInitialValueEntity(method = method, type = type)
@@ -183,7 +183,7 @@ class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 保存配置 - 使用新架构的简化API
+     * 保存配置
      */
     private fun saveConfiguration() {
         val commands = mutableListOf<String>()
@@ -220,7 +220,7 @@ class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 处理指令响应 - 这是唯一需要实现的方法
+     * 处理指令响应
      */
     override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {

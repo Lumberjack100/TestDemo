@@ -97,7 +97,7 @@ class AlarmSettingFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 查询数据 - 使用新架构的指令序列API
+     * 查询数据
      */
     private fun queryData() {
         val commands =
@@ -122,7 +122,7 @@ class AlarmSettingFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 开启或关闭报警 - 使用新架构的简化API
+     * 开启或关闭报警
      */
     private fun toggleAlarm(isEnabled: Boolean) {
         val sw = if (isEnabled) "1" else "0"
@@ -143,7 +143,7 @@ class AlarmSettingFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 报警测试 - 使用单条指令发送
+     * 报警测试
      */
     private fun testAlarm(level: Int) {
         val command = IOTCommandUtil.getCommand(
@@ -161,7 +161,7 @@ class AlarmSettingFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 处理指令响应 - 这是唯一需要实现的方法
+     * 处理指令响应
      */
     override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
