@@ -17,7 +17,7 @@ import com.shmedo.mcloudapp.ui.adapter.PageAdapter
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.userprofile.MineFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.AppUpdateViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.request.ProductConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -27,7 +27,7 @@ class MainFragment : BaseFragment() {
     private lateinit var binding: FragmentMainBinding
     private val mStates: EmptyViewModel by viewModels()
     private val appUpdateViewModel: AppUpdateViewModel by viewModel()
-    private val loginRequestViewModel: LoginRequestViewModel by viewModel()
+    private val productConfigViewModel: ProductConfigViewModel by viewModel()
 
 
     override fun initViewModel() {
@@ -89,8 +89,8 @@ class MainFragment : BaseFragment() {
     override fun lazyLoadData() {
         requestPermission()
         //加载外部配置
-        loginRequestViewModel.loadProductGroupConfig()
-        loginRequestViewModel.loadMR702SensorConfig()
+        productConfigViewModel.loadProductGroupConfig()
+        productConfigViewModel.loadMR702SensorConfig()
         launchWithViewLifecycle {
             delay(1500)
             appUpdateViewModel.requestCheckAppVersion(false)

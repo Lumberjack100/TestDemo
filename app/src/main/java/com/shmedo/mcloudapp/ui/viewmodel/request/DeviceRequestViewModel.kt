@@ -7,9 +7,7 @@ import com.kunminx.architecture.domain.message.Result
 import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.data.repository.DeviceManageRepositoryImp
 import com.shmedo.core.data.repository.LoggerRepositoryImp
-import com.shmedo.core.data.repository.NetDataRepository
 import com.shmedo.core.model.CloudDeviceData
-import com.shmedo.core.model.DeviceDebugAddress
 import com.shmedo.core.model.DeviceDetailInfo
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.core.model.DeviceSensorBasicInfo
@@ -22,7 +20,6 @@ import com.shmedo.lib.network.response.PageList
 import com.shmedo.lib.network.response.ResponseStatus
 import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.lib.network.util.BaseURL
-import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.model.HoverHeaderModel
 import com.shmedo.mcloudapp.model.SingleSelectionItem
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
@@ -523,29 +520,6 @@ class DeviceRequestViewModel(
             onCatch
         )
     }
-
-    suspend fun getRemoteDeviceLogin(
-        deviceSn: String,
-        deviceKey: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): DeviceDebugAddress? {
-        val jsonObjectRequest = JSONObject()//接口请求参数
-        jsonObjectRequest.put("appKey", BuildConfig.AMS_APP_KEY)
-        jsonObjectRequest.put("appSecret", BuildConfig.AMS_APP_SECRET)
-        jsonObjectRequest.put("deviceSn", deviceSn)
-        jsonObjectRequest.put("deviceKey", deviceKey)
-        jsonObjectRequest.put("reCreate", false)
-
-        return NetDataRepository.instance.getRemoteDebugDeviceServerInfo(jsonObjectRequest.toString()) { error: Throwable ->
-            handleError(
-                MutableResult<DataResult<Unit>>(),
-                error,
-                "${BaseURL.AMS_CONFIG_ADDRESS.baseUrl}/DeviceLogin"
-            )
-            onCatch?.invoke(error)
-        }
-    }
-
 
     //<editor-fold desc="获取传感器数据">
     suspend fun queryDeviceSensor(

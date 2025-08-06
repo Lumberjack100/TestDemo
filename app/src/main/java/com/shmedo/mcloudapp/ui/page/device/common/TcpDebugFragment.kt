@@ -42,7 +42,7 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.request.ProductConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.TcpViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.TcpDebugViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -68,7 +68,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: TcpDebugViewModel by viewModels()
     private val tcpViewModel: TcpViewModel by viewModel()
-    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
+    private val productConfigViewModel: ProductConfigViewModel by viewModel()
 
     private var isIotCmd = true
     private var isRawMode = true // 是否为原始模式（不使用分隔符）
@@ -153,7 +153,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
 
             launchWithViewLifecycle {
                 try {
-                    val deviceDebugAddress = deviceRequestViewModel.getRemoteDeviceLogin(
+                    val deviceDebugAddress = productConfigViewModel.getRemoteDeviceLogin(
                         deviceSn = deviceInfo.deviceToken,
                         deviceKey = deviceInfo.apikey.ifEmpty { "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9" },
                     ) { error: Throwable ->

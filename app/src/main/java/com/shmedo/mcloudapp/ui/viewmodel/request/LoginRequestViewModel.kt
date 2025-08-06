@@ -1,21 +1,13 @@
 package com.shmedo.mcloudapp.ui.viewmodel.request
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.blankj.utilcode.util.ResourceUtils
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
-import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
-import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.data.repository.LoggerRepositoryImp
 import com.shmedo.core.data.repository.NetDataRepository
 import com.shmedo.core.model.BasicUserInfo
 import com.shmedo.core.model.CompanyInfo
-import com.shmedo.core.model.MR702PortSensorConfig
-import com.shmedo.core.model.ProductGroupConfig
-import com.shmedo.core.model.SensorModel
 import com.shmedo.core.model.UserPermissionInfo
 import com.shmedo.core.model.UserWrapperInfo
 import com.shmedo.lib.network.response.DataResult
@@ -28,7 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import timber.log.Timber
 
 /**
  * 创建者：gonghe
@@ -377,114 +368,4 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
                 )
             }.toMutableList()
         }
-
-    //<editor-fold desc="米易通远程配置接口">
-    /**
-     * 加载产品配置
-     */
-    fun loadProductGroupConfig() {
-        viewModelScope.launch(Dispatchers.Default) {
-            try {
-                val localConfigInfo =
-                    ResourceUtils.readAssets2String("product_group_config.json")
-//                Timber.d("loadProductGroupConfig: $localConfigInfo")
-                val localConfigList =
-                    MoshiUtil.fromJson<List<ProductGroupConfig>>(localConfigInfo)
-                        ?: arrayListOf()
-
-                MmkvCacheUtil.setProductGroupConfig(localConfigList)
-            } catch (e: Exception) {
-                Timber.e(e)
-                val msg =
-                    "call loadProductGroupConfig() error: ${e.localizedMessage}" //这里的msg是网络请求的错误信息
-                addLogItem(
-                    sessionId = CommonMMKVOwner.appLogSessionId,
-                    priority = Log.ERROR,
-                    data = msg
-                )
-            }
-        }
-    }
-
-    /**
-     * 加载MR702传感器配置
-     */
-    fun loadMR702SensorConfig() {
-        viewModelScope.launch(Dispatchers.Default) {
-            try {
-                val remoteSensorConfigList: List<SensorModel> = queryRemoteMR702SensorConfigList()
-                if (remoteSensorConfigList.isEmpty()) {
-                    val localSensorConfigInfo =
-                        ResourceUtils.readAssets2String("mr702_sensor_config.json")
-                    val localSensorConfigList =
-                        MoshiUtil.fromJson<List<SensorModel>>(localSensorConfigInfo)
-                            ?: arrayListOf()
-
-                    MmkvCacheUtil.setMR702SensorConfigInfo(localSensorConfigList)
-                    return@launch
-                }
-
-                MmkvCacheUtil.setMR702SensorConfigInfo(remoteSensorConfigList)
-            } catch (e: Exception) {
-                Timber.e(e)
-                val msg =
-                    "call loadMR702SensorConfig() error: ${e.localizedMessage}" //这里的msg是网络请求的错误信息
-                addLogItem(
-                    sessionId = CommonMMKVOwner.appLogSessionId,
-                    priority = Log.ERROR,
-                    data = msg
-                )
-            }
-        }
-    }
-
-    /**
-     * 获取远程 MR702 传感器配置列表
-     */
-    suspend fun queryRemoteMR702SensorConfigList(): List<SensorModel> {
-        val token: String = appConfigLogin() ?: return arrayListOf()
-        CommonMMKVOwner.deviceRemoteConfigToken = token
-
-        val remoteAppConfigInfo: MR702PortSensorConfig =
-            queryMR702SensorConfigList() ?: return arrayListOf()
-
-        return remoteAppConfigInfo.sensorModelList
-    }
-
-    suspend fun appConfigLogin(): String? {
-        val jsonObject = JSONObject().apply {
-            put("access_type", "android")
-            put("account", "medo_gh")
-            put("password", "medo123456")
-        }
-
-        return NetDataRepository.instance.appRemoteConfigLogin(jsonObject.toString()) { error: Throwable ->
-            error.printStackTrace()
-            val msg =
-                "${BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl}/SignIn error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
-            addLogItem(
-                sessionId = CommonMMKVOwner.appLogSessionId,
-                priority = Log.ERROR,
-                data = msg
-            )
-        }
-    }
-
-    private suspend fun queryMR702SensorConfigList(): MR702PortSensorConfig? {
-        val jsonObject = JSONObject().apply {
-            put("port", "")
-            put("sensorName", "")
-        }
-        return NetDataRepository.instance.queryMR702SensorConfigList(jsonObject.toString()) { error: Throwable ->
-            error.printStackTrace()
-            val msg =
-                "${BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl}/QueryMR702SensorConfigList error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
-            addLogItem(
-                sessionId = CommonMMKVOwner.appLogSessionId,
-                priority = Log.ERROR,
-                data = msg
-            )
-        }
-    }
-    // </editor-fold>
 }

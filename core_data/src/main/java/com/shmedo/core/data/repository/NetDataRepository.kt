@@ -2,14 +2,11 @@ package com.shmedo.core.data.repository
 
 import android.annotation.SuppressLint
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
-import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.model.BasicCompanyInfo
 import com.shmedo.core.model.BasicUserInfo
 import com.shmedo.core.model.CompanyInfo
 import com.shmedo.core.model.DeviceBackupInfo
-import com.shmedo.core.model.DeviceDebugAddress
 import com.shmedo.core.model.DeviceDetailInfo
-import com.shmedo.core.model.MR702PortSensorConfig
 import com.shmedo.core.model.UserPermissionInfo
 import com.shmedo.core.model.UserWrapperInfo
 import com.shmedo.lib.network.response.PageList
@@ -25,51 +22,6 @@ import rxhttp.wrapper.param.toAwaitResponse
  */
 @SuppressLint("CheckResult")
 class NetDataRepository private constructor() {
-
-    //<editor-fold desc="米易通远程配置管理系统 Api">
-    /**
-     * 获取App应用信息
-     */
-    suspend fun appRemoteConfigLogin(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): String? =
-        RxHttp.postJson("/auth/SignIn")
-            .setDomainIfAbsent(BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl)
-            .addAll(jsonParam)
-            .toAwaitResponse<String>()
-            .tryAwait(onCatch)
-
-    /**
-     * 获取 MR702 传感器远程配置信息
-     */
-    suspend fun queryMR702SensorConfigList(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): MR702PortSensorConfig? =
-        RxHttp.postJson("/config/QueryMR702SensorConfigList")
-            .setDomainIfAbsent(BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl)
-            .addHeader("Authorization", CommonMMKVOwner.deviceRemoteConfigToken)
-            .addAll(jsonParam)
-            .toAwaitResponse<MR702PortSensorConfig>()
-            .tryAwait(onCatch)
-
-    // </editor-fold>
-
-   //<editor-fold desc="孙建伟通用配置接口">
-    /**
-     * 查询设备远程调试连接地址信息
-     */
-    suspend fun getRemoteDebugDeviceServerInfo(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): DeviceDebugAddress? =
-        RxHttp.postJson("/DeviceLogin")
-            .setDomainIfAbsent(BaseURL.AMS_CONFIG_ADDRESS.baseUrl)
-            .addAll(jsonParam)
-            .toAwaitResponse<DeviceDebugAddress>()
-            .tryAwait(onCatch)
-    // </editor-fold>
 
     //<editor-fold desc="登录、用户信息">
     /**
