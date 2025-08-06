@@ -109,7 +109,7 @@ class LR200InitialValueFragment : BaseIOTDeviceFragment() {
         } else {
             //发送初始化指令
             val command = IOTCommandUtil.getCommand(
-                IOTCommandType.LF_MD_SET_INITIAL_VALUE,
+                IOTCommandType.LF_MD_MANUAL_SET_INITIAL_VALUE,
                 "datastreams=${mStates.initValue.get()}"
             )
             commandItems.add(command)
@@ -139,17 +139,19 @@ class LR200InitialValueFragment : BaseIOTDeviceFragment() {
                             MoshiUtil.fromJson<Map<String, Any>>(result.data)?.get("203_1")
                         //发送初始化指令
                         val command = IOTCommandUtil.getCommand(
-                            IOTCommandType.LF_MD_SET_INITIAL_VALUE,
+                            IOTCommandType.LF_MD_MANUAL_SET_INITIAL_VALUE,
                             "datastreams=$zeroValueMeasured"
                         )
                         commandItems.add(command)
                         sendCommandFromCmdList()
+
+                        mStates.initValue.set(result.data)
                     }
                 }
             }
 
 
-            IOTCommandType.LF_MD_SET_INITIAL_VALUE -> {//设置
+            IOTCommandType.LF_MD_MANUAL_SET_INITIAL_VALUE -> {//设置
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "初始化出错: ${result.message}"

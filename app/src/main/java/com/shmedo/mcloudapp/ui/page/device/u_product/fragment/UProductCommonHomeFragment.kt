@@ -77,10 +77,10 @@ class UProductCommonHomeFragment : OptimizedBaseDeviceHomeFragment() {
             }
 
             ProductType.U_L_1 -> {//北斗林木生长监测终端
-                mHeadStates.productErrorResId.set(R.drawable.device_logo_bhy_3_lr200_error)
-                mHeadStates.productAlarmResId.set(R.drawable.device_logo_bhy_3_lr200_alarm)
-                mHeadStates.productOfflineResId.set(R.drawable.device_logo_bhy_3_lr200_offline)
-                mHeadStates.productNormalResId.set(R.drawable.device_logo_bhy_3_lr200)
+                mHeadStates.productErrorResId.set(R.drawable.device_logo_lr100_error)
+                mHeadStates.productAlarmResId.set(R.drawable.device_logo_lr100_alarm)
+                mHeadStates.productOfflineResId.set(R.drawable.device_logo_lr100_offline)
+                mHeadStates.productNormalResId.set(R.drawable.device_logo_lr100)
             }
 
             else -> {
@@ -281,7 +281,7 @@ class UProductCommonHomeFragment : OptimizedBaseDeviceHomeFragment() {
                     ProductType.U_I_1 -> R.id.action_global_to_uIProductSensorParamFragment//倾斜仪
                     ProductType.U_R_1 -> R.id.action_global_to_uRProductSensorParamFragment//一体式雨量计
                     ProductType.LR200 -> R.id.action_global_to_lR200SensorParamFragment//米度一体式裂缝计
-                    ProductType.U_L_1 -> 0//北斗林木生长监测终端
+                    ProductType.U_L_1 -> R.id.action_global_to_uLSensorParamFragment//北斗林木生长监测终端
                     else -> 0
                 }
                 nav().safeNavigate(
