@@ -43,6 +43,12 @@
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
+        android:id="@+id/uLBaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.ULBaseInfoFragment"
+        android:label="ULBaseInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style" />
+
+    <fragment
         android:id="@+id/lR200NetInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lr200.LR200NetInfoFragment"
         android:label="LR200NetInfoFragment"
@@ -52,6 +58,12 @@
         android:id="@+id/uProductNetInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UProductNetInfoFragment"
         android:label="UProductNetInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style" />
+
+    <fragment
+        android:id="@+id/uLLORAInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.ULLORAInfoFragment"
+        android:label="ULLORAInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
@@ -72,6 +84,11 @@
         android:label="UProductStatusInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
+    <fragment
+        android:id="@+id/uLStatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.ULStatusInfoFragment"
+        android:label="ULStatusInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/uIProductSensorParamFragment"
@@ -130,6 +147,14 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
+        android:id="@+id/action_global_to_uLBaseInfoFragment"
+        app:destination="@id/uLBaseInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
         android:id="@+id/action_global_to_lR200NetInfoFragment"
         app:destination="@id/lR200NetInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
@@ -140,6 +165,14 @@
     <action
         android:id="@+id/action_global_to_uProductNetInfoFragment"
         app:destination="@id/uProductNetInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_uLLORAInfoFragment"
+        app:destination="@id/uLLORAInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -164,6 +197,14 @@
     <action
         android:id="@+id/action_global_to_uProductStatusInfoFragment"
         app:destination="@id/uProductStatusInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_uLStatusInfoFragment"
+        app:destination="@id/uLStatusInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

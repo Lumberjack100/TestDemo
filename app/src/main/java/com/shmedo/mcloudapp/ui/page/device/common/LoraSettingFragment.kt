@@ -41,12 +41,12 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
     private val mStates: LoraSettingViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
-    private val loraReceiveChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.lora_channel) }
-    private val transmitPowerList: List<String> = (5..20).map { it.toString() }
-    private val airSpeedList: List<String> = (1..6).map { it.toString() }
-    private val networkNumberList: List<String> = (1..10).map { it.toString() }
-    private val localAddressList: List<String> = (1..20).map { it.toString() }
-    private val targetAddressList: List<String> = (1..20).map { it.toString() }
+    private val loraReceiveChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.lora_channel) }//收发频点
+    private val transmitPowerList: List<String> = (5..20).map { it.toString() }//发射功率
+    private val airSpeedList: List<String> = (1..6).map { it.toString() }//空中速率
+    private val networkNumberList: List<String> = (1..10).map { it.toString() }//网络编号
+    private val localAddressList: List<String> = (1..20).map { it.toString() }//本机地址
+    private val targetAddressList: List<String> = (1..20).map { it.toString() }//目标地址
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -346,7 +346,7 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询信息出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -363,7 +363,7 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 

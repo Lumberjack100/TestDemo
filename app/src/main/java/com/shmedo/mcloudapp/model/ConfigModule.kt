@@ -204,11 +204,13 @@ class SensorConfigModule(
     desc: String = "传感器参数配置",
     resID: Int = R.drawable.ic_module_sensor_setting,
     navId: Int = 0,
+    isSupport: Boolean = true
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
     resID = resID,
     navId = navId,
+    isSupport = isSupport
 )
 // </editor-fold>
 
@@ -296,6 +298,7 @@ class MR702Remote485SilenceModule(
     resID = resID,
     navId = navId,
 )
+
 class MR702CleanClearAlarmModule(
     name: String = "清除消警",
     desc: String = "清除消警状态，恢复低等级阈值触发",
@@ -307,6 +310,7 @@ class MR702CleanClearAlarmModule(
     resID = resID,
     navId = navId,
 )
+
 class MR702RainSetZeroModule(
     name: String = "雨量置零",
     desc: String = "清除当前所有雨量统计",

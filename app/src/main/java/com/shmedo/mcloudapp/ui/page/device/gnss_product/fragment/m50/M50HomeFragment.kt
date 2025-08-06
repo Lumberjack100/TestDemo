@@ -98,7 +98,6 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
     override fun BindingViewHolder.processOtherItemViewBind(itemViewType: Int) {
         if (itemViewType == R.layout.item_m50_measure_data) {
             val binding = getBinding<ItemM50MeasureDataBinding>()
-            val measureDataItem = getModel<M50MeasureDataItem>()
 
             // 设置数据绑定参数
             binding.setVariable(BR.m, measureDataItem)
@@ -375,9 +374,6 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
                     ?: AppContants.PLACE_HOLDER_VALUE
                 val zDisplacement = resultMap["z_value"]?.let { "$it mm" }
                     ?: AppContants.PLACE_HOLDER_VALUE
-
-                val measureDataItem =
-                    binding.rvModule.bindingAdapter.getModel<M50MeasureDataItem>(0)
 
                 // 检查是否包含时间信息
                 if (resultMap.containsKey("date")) {

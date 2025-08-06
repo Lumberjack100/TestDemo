@@ -81,23 +81,17 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        radioChannelList =
-            if (productType == ProductType.GNSS_M_5) (45015..46915 step 100).map { (it.toFloat() / 100).toString() + "MHz" }
-            else (45115..47015 step 100).map { (it.toFloat() / 100).toString() + "MHz" }
+        radioChannelList = (45115..47015 step 100).map { (it.toFloat() / 100).toString() + "MHz" }
 
-        transmitPowerList =
-            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_5)
+        transmitPowerList = if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_1)
                 (0..22).map { it.toString() }
             else
                 (10..22).map { it.toString() }
 
-        airSpeedList =
-            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_5)
+        airSpeedList = if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_1)
                 (0..2).map { it.toString() }
             else
                 (1..3).map { it.toString() }
-
-        mStates.isSupportSwitch.set(productType == ProductType.GNSS_M_5)
 
         resetDefaultParams()
 
@@ -113,15 +107,6 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
                 mStates.sendChannel.set(radioChannelList[6])//发送默认 6 即 456.15MHz
                 mStates.transmitPower.set(transmitPowerList.last())//发射功率 [0~22] 默认22
                 mStates.airSpeed.set(airSpeedList[1])//空中速率  [0~2] 默认1
-            }
-
-            ProductType.GNSS_M_5 -> {//M50 载波频率以 450.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
-                mStates.isOpened.set(false)
-                mStates.rtcmChannel.set(radioChannelList[0])//RTCM数据频点
-                mStates.receiveChannel.set(radioChannelList[0])//接收
-                mStates.sendChannel.set(radioChannelList[0])//发送
-                mStates.transmitPower.set(transmitPowerList.last())//发射功率   22
-                mStates.airSpeed.set(airSpeedList[0])//空中速率  0
             }
 
             else -> {

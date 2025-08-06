@@ -109,4 +109,7 @@ data class CommonCurrentStateInfo(
     var initAngle: String = IOTConstants.NULL_KEY,//x、y、z初始角度
     var angle: String = IOTConstants.NULL_KEY,//x、y、z 当前角度
     var acc: String = IOTConstants.NULL_KEY,//x、y、z 加速度
+
+    @Json(name = "product_time")
+    var productTime: String = IOTConstants.NULL_KEY, //生产日期 250801
 )
