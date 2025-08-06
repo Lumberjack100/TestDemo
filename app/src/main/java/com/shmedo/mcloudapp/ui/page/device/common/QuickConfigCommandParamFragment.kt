@@ -5,10 +5,12 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.linear
+import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -35,6 +37,12 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
+/**
+ * @author：gonghe
+ * @time: 2025/8/6
+ * @desc: 快速配置设备指令参数，一键下发
+ *
+ */
 class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentQuickConfigCommandParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
@@ -113,6 +121,56 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                     return@launchWithViewLifecycle
                 }
 
+                if (cmdOrderInfo.cmdOrderInfos.isNotEmpty()) {
+                    val groupList = mutableListOf<Any>()
+
+                    cmdOrderInfo.cmdOrderInfos.forEachIndexed { index, commandInfo ->
+                        if (index != 0) {
+                            groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                        }
+                        groupList.add(DeviceStatusInfoGroupItem(commandInfo.note))
+                        if (commandInfo.cmdParaInfos.isNotEmpty()) {
+                            commandInfo.cmdParaInfos.forEachIndexed { index, commandParam ->
+                                when (commandParam.fieldType) {
+                                    "字符" -> {
+                                        groupList.add(
+                                            QuickConfigCommandParamEditItem(
+                                                cmdChnName = commandParam.cmdChnName,
+                                                cmdEngName = commandParam.cmdEngName,
+                                                value = commandParam.defaultValue,
+                                                bgResId = if (index == commandInfo.cmdParaInfos.lastIndex) R.drawable.shape_common_click_item_bottom_corner_4 else R.drawable.layer_common_click_item_with_divider
+                                            )
+                                        )
+                                    }
+
+                                    "选择" -> {
+                                        val tempList = commandParam.fieldValueInfos?.toMutableList()
+                                            ?: mutableListOf()
+                                        val tempMap: Map<String, String> =
+                                            tempList.associate { it.value to it.display }
+                                        groupList.add(
+                                            QuickConfigCommandParamChooseItem(
+                                                cmdChnName = commandParam.cmdChnName,
+                                                cmdEngName = commandParam.cmdEngName,
+                                                displayValue = tempMap[commandParam.defaultValue]
+                                                    ?: tempList.firstOrNull()?.display ?: "",
+                                                cmdValue = commandParam.defaultValue,
+                                                fieldValueInfos = tempList,
+                                                bgResId = if (index == commandInfo.cmdParaInfos.lastIndex) R.drawable.shape_common_click_item_bottom_corner_4 else R.drawable.layer_common_click_item_with_divider
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    groupList.add(GapItem(height = ConvertUtils.dp2px(60f)))
+                    groupList.add(ParamSubmitButtonItem(btnText = "确定"))
+
+                    binding.recyclerView.models = groupList
+                }
+
             } catch (e: Exception) {
                 Timber.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
@@ -128,30 +186,38 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     override fun handleCommandResponse(cmdStr: String) {
-        TODO("Not yet implemented")
+        if (!isCommunicationExecuting()) {
+            Toaster.show("配置完成")
+        }
     }
 
     /**
      *
      */
     private fun onChooseItemClick(item: QuickConfigCommandParamChooseItem) {
-        val tempList = item.fieldValueInfos.map { it.value }
-        val selectedIndex = tempList.indexOf(item.value)
+        // 将显示名称映射到值的 Map
+        val tempMap: Map<String, String> =
+            item.fieldValueInfos.associate { it.display to it.value }
+        // 获取显示名称列表用于弹窗展示
+        val displayList = item.fieldValueInfos.map { it.display }
+        val selectedIndex = displayList.indexOf(item.displayValue)
+
         XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
         XPopup.Builder(context)
             .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
             .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
             .enableDrag(false)
             .asBottomList(
-                "", tempList.toTypedArray(),
+                "", displayList.toTypedArray(),
                 null, selectedIndex,
-                { position, text ->
-                    item.refreshValue(text)
+                { position, displayName ->
+                    // 根据选择的显示名称获取对应的值
+                    val selectedValue = tempMap[displayName] ?: ""
+                    item.refreshValue(displayName, selectedValue)
                 }, 0, R.layout.custom_xpopup_adapter_text_center
             )
             .show()
     }
-
 
     /**
      * 点击事件处理
@@ -162,6 +228,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun onResume() {
         super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
+        initImmersionBar(binding.llToolbar.toolbar, isKeyboardEnable = true)
     }
 }

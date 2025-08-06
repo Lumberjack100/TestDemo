@@ -12,7 +12,6 @@ data class QuickConfigCommandParamEditItem(
     val cmdChnName: String = "",
     val cmdEngName: String = "",
     var value: String = "",
-    var defaultValue: String = "",
     val inputHint: String = "请输入",
     val inputLengthFilter: Int = 20,
     val inputEnable: Boolean = true,

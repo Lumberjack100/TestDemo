@@ -23,7 +23,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             style="@style/Common_ClickableItem_Value_Style"
-            android:text="@{m.value}"
+            android:text="@{m.displayValue}"
             tools:drawableEndCompat="@drawable/ic_arrow_down"
             tools:text="雷达物位计" />
 

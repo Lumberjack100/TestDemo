@@ -12,14 +12,15 @@ import com.shmedo.mcloudapp.R
 data class QuickConfigCommandParamChooseItem(
     val cmdChnName: String = "",
     val cmdEngName: String = "",
-    var value: String = "",
-    var defaultValue: String = "",
-    val fieldValueInfos: MutableList<FieldValueInfo> = arrayListOf(),
+    var displayValue: String = "",
+    var cmdValue: String = "",
+    val fieldValueInfos: MutableList<FieldValueInfo> = mutableListOf(),
     val bgResId: Int = R.drawable.layer_common_click_item_with_divider
 ) : BaseObservable() {
 
-    fun refreshValue(value: String) {
-        this.value = value
+    fun refreshValue(displayValue: String, cmdValue: String) {
+        this.displayValue = displayValue
+        this.cmdValue = cmdValue
         notifyChange()
     }
 }
