@@ -32,18 +32,19 @@ import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentAdvancedSettingBinding
 import com.shmedo.mcloudapp.databinding.ItemAdvancedSettingBinding
 import com.shmedo.mcloudapp.extensions.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.AdvancedSettingItem
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.collector_product.dialog.SyncInstallationLocationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.request.LocationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.AdvancedSettingViewModel
@@ -59,20 +60,26 @@ import timber.log.Timber
 import java.util.Locale
 
 /**
- * 创建者：gonghe
- * 创建时间：2024/5/17
- * 描述： 系统配置页面
+ * @author：gonghe
+ * @time: 2025/1/23
+ * @desc: 系统配置页面
+ *
+ * 优化特点：
+ * 1. 继承自 OptimizedBaseIOTDeviceFragment，使用新的通信架构
+ * 2. 使用 sendCommandSequence 统一指令发送
+ * 3. 在 handleCommandResponse 中统一处理所有响应
+ * 4. 简化错误处理逻辑，利用基类的统一错误处理
+ * 5. 保持原有业务逻辑和功能不变
  */
-open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
-    protected lateinit var binding: FragmentAdvancedSettingBinding
+class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentAdvancedSettingBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: AdvancedSettingViewModel by viewModels()
     private val locationViewModel: LocationViewModel by activityViewModel()
     private val iotParseManager: IOTParserManager by inject()
     private val mdParseManager: MDParserManager by inject()
 
-    private var gcjLatLng: BDLocation? = null //当前定位经纬度,中国国测局地理坐标（GCJ-02）
-
+    private var gcjLatLng: BDLocation? = null // 当前定位经纬度，中国国测局地理坐标（GCJ-02）
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -212,13 +219,12 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
      * 是否需要同步位置
      */
     private fun isNeedSyncLocation(): Boolean {
-//        return communicateWay is BleConnect &&
-//                (productType == ProductType.LR200
-//                        || productType == ProductType.LB20S
-//                        || productType == ProductType.U_R_1
-//                        || productType == ProductType.U_I_1)
-
-
+        // TODO: 根据需要启用相应的设备类型
+        // return communicateWay is BleConnect &&
+        //         (productType == ProductType.LR200
+        //                 || productType == ProductType.LB20S
+        //                 || productType == ProductType.U_R_1
+        //                 || productType == ProductType.U_I_1)
         return false
     }
 
@@ -235,12 +241,10 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
      * 是否支持监测数据导出
      */
     private fun isMonitoringDataExportEnabled(): Boolean {
-        // 支持监测数据导出的设备类型
-//        return productType == ProductType.COLLECTOR_R_1
-//                || productType == ProductType.DAS
-//                || productType == ProductType.GNSS_M_5
-
-
+        // TODO: 根据需要启用相应的设备类型
+        // return productType == ProductType.COLLECTOR_R_1
+        //         || productType == ProductType.DAS
+        //         || productType == ProductType.GNSS_M_5
         return false
     }
 
@@ -256,12 +260,12 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
     override fun createObserver() {
         super.createObserver()
         if (isNeedSyncLocation()) {
-            //观察定位信息
+            // 观察定位信息
             launchAndRepeatWithViewLifecycle(minActiveState = Lifecycle.State.STARTED) {
                 locationViewModel.locationState.collectLatest { bdLocation ->
                     if (gcjLatLng == null || gcjLatLng!!.latitude == 0.0 || gcjLatLng!!.longitude == 0.0) {
                         gcjLatLng = bdLocation
-                        //将GCJ-02火星坐标转换为WGS-84世界标准地理坐标
+                        // 将GCJ-02火星坐标转换为WGS-84世界标准地理坐标
                         val mWgsLatLng = JZLocationConverter.gcj02ToWgs84(
                             CustomLatLng(
                                 bdLocation.latitude,
@@ -289,29 +293,22 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    protected open fun processItemClick(item: AdvancedSettingItem) {
-        if (isBleDisconnected()) {
+    private fun processItemClick(item: AdvancedSettingItem) {
+        if (!isDeviceConnected()) {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }
+
         when (item.type) {
             AdvancedSettingItem.Type.REBOOT -> {
                 showMessage("确定重启吗？", "温馨提示", "确定", {
-                    if (isBleDas()) {
-                        dasBleReboot()
-                    } else {
-                        reboot()
-                    }
+                    executeReboot()
                 }, "取消")
             }
 
             AdvancedSettingItem.Type.RESET -> {
                 showMessage("确定恢复出厂设置吗？", "温馨提示", "确定", {
-                    if (isBleDas()) {
-                        dasBleRestoreFactory()
-                    } else {
-                        restoreFactory()
-                    }
+                    executeReset()
                 }, "取消")
             }
 
@@ -331,7 +328,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
 
             AdvancedSettingItem.Type.OFFSET_INITIALIZATION -> {
                 showMessage("确定进行告警偏移初始化吗？", "温馨提示", "确定", {
-                    offsetInitialization()
+                    executeOffsetInitialization()
                 }, "取消")
             }
 
@@ -347,7 +344,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
 
             AdvancedSettingItem.Type.STANDBY -> {
                 showMessage("确定进入仓储模式吗？", "温馨提示", "确定", {
-                    setStandByMode()
+                    executeStandByMode()
                 }, "取消")
             }
 
@@ -360,14 +357,14 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
                     bleDevice
                 ).apply {
                     putString("deviceSn", deviceInfo.deviceToken)
-                    putString("apiKey", deviceInfo.apikey) // 实际使用时需要从配置中获取
+                    putString("apiKey", deviceInfo.apikey)
                 }
                 nav().safeNavigate(R.id.action_global_to_monitoringDataExportFragment, bundle)
             }
 
-            AdvancedSettingItem.Type.FORMAT_DATA_STORAGE -> {//格式化数据存储功能
+            AdvancedSettingItem.Type.FORMAT_DATA_STORAGE -> {
                 showMessage("确定格式化数据吗？", "温馨提示", "确定", {
-                    formatDataStorage()
+                    executeFormatDataStorage()
                 }, "取消")
             }
 
@@ -375,266 +372,262 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = "出错了：$errMsg",
-            isShowErrMsg = true,
-            isMessageDialog = true
-        )
-    }
+    // ==================== 指令执行方法 ====================
 
     /**
-     * 4G 下发指令响应超时
+     * 执行重启指令
      */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
-            errMsg = errMsg
-        )
-    }
-
-    override fun setResultData(cmdStr: String) {
+    private fun executeReboot() {
         if (isBleDas()) {
-            handleDasBleCommandResult(cmdStr)
+            val command = MDCommandUtil.getCommand(MDCommandType.REBOOT_DEVICE, "1")
+            sendCommandSequence(
+                commands = listOf(command),
+                config = CommandSequenceConfig(
+                    loadingMessage = StringUtils.getString(R.string.processing),
+                    errorConfig = ErrorConfig.dialogConfig()
+                )
+            )
         } else {
-            handleCommandResult(cmdStr)
+            rebootDevice(
+                config = CommandSequenceConfig(
+                    loadingMessage = StringUtils.getString(R.string.processing),
+                    errorConfig = ErrorConfig.dialogConfig()
+                )
+            )
         }
     }
 
-    private fun handleDasBleCommandResult(cmdStr: String) {
-        when (MDCommandUtil.extractCommandType(cmdStr)) {
-            MDCommandType.REBOOT_DEVICE -> {//
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = StringUtils.getString(R.string.reboot_failed)
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
-                        }
-                    }
-                }
-            }
-
-            MDCommandType.RESTORE_FACTORY_SETTING -> {
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = StringUtils.getString(R.string.reset_failed)
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show(StringUtils.getString(R.string.device_reset_tip))
-                        }
-                    }
-                }
-            }
-
-            else -> {
-                cancelNearbyCommunicationTimeoutJob()
-            }
+    /**
+     * 执行恢复出厂设置指令
+     */
+    private fun executeReset() {
+        if (isBleDas()) {
+            val command = MDCommandUtil.getCommand(MDCommandType.RESTORE_FACTORY_SETTING)
+            sendCommandSequence(
+                commands = listOf(command),
+                config = CommandSequenceConfig(
+                    loadingMessage = StringUtils.getString(R.string.processing),
+                    errorConfig = ErrorConfig.dialogConfig()
+                )
+            )
+        } else {
+            restoreFactory(
+                config = CommandSequenceConfig(
+                    loadingMessage = StringUtils.getString(R.string.processing),
+                    errorConfig = ErrorConfig.dialogConfig()
+                )
+            )
         }
     }
 
-    private fun handleCommandResult(cmdStr: String) {
+    /**
+     * 执行告警偏移初始化
+     */
+    private fun executeOffsetInitialization() {
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_SENSOR_INITIAL,
+            "method=1&type=gnss"
+        )
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
+    }
+
+    /**
+     * 执行设置安装位置
+     */
+    private fun executeSetInstallationLocation() {
+        val command = if (productType == ProductType.U_R_1 || productType == ProductType.U_I_1) {
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_RAW, "content=##9161${mStates.location.get()}"
+            )
+        } else {
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_INSTALL_LOCATION,
+                "lat=${mStates.latitude.get()}&lng=${mStates.longitude.get()}"
+            )
+        }
+
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
+    }
+
+    /**
+     * 执行一键仓储模式
+     */
+    private fun executeStandByMode() {
+        val command = MDCommandUtil.getCommand(
+            MDCommandType.LOW_ENERGY, MDLowEnergyModel.STANDBY.toString()
+        )
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
+    }
+
+    /**
+     * 执行格式化数据存储
+     */
+    private fun executeFormatDataStorage() {
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_FORMAT_DATA_STORAGE, "type=1")
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
+    }
+
+    // ==================== 响应处理 ====================
+
+    /**
+     * 处理指令响应 - 统一处理所有指令的响应
+     */
+    override fun handleCommandResponse(cmdStr: String) {
+        // 处理 IOT 指令响应
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_SET_INSTALL_LOCATION -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "同步安装位置出错"
-                        handleFailureResult(errMsg)
-                        return
+                        val errMsg = "同步安装位置出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
-
                     else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("同步安装位置成功")
-                        }
+                        Toaster.show("同步安装位置成功")
                     }
                 }
             }
 
             IOTCommandType.MD_RAW -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "同步安装位置出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
-
                     else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("同步安装位置成功")
-                        }
+                        Toaster.show("同步安装位置成功")
                     }
                 }
             }
 
             IOTCommandType.MD_SET_SENSOR_INITIAL -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "初始化失败: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
-
                     else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("初始化完成")
-                        }
+                        Toaster.show("初始化完成")
                     }
                 }
             }
 
-            IOTCommandType.REBOOT -> {//重启设备
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+            IOTCommandType.REBOOT -> {
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = StringUtils.getString(R.string.reboot_failed) + result.message
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
-
                     else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
-                        }
+                        Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
                     }
                 }
             }
 
             IOTCommandType.RESET -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg =
-                            StringUtils.getString(R.string.reset_failed) + result.message
-                        handleFailureResult(errMsg)
-                        return
+                        val errMsg = StringUtils.getString(R.string.reset_failed) + result.message
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
-
                     else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show(StringUtils.getString(R.string.device_reset_tip))
-                        }
+                        Toaster.show(StringUtils.getString(R.string.device_reset_tip))
                     }
                 }
             }
 
             IOTCommandType.MD_FORMAT_DATA_STORAGE -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "格式化数据出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
-
                     else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("格式化数据成功")
-                        }
+                        Toaster.show("格式化数据成功")
                     }
                 }
             }
 
             else -> {
+                // 处理 MD 指令响应
                 when (MDCommandUtil.extractCommandType(cmdStr)) {
-                    MDCommandType.LOW_ENERGY -> {//
-                        when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    MDCommandType.REBOOT_DEVICE -> {
+                        val result = mdParseManager.parse<String>(cmdStr)
+                        when (result) {
+                            is MDCommandResult.Failure -> {
+                                val errMsg = StringUtils.getString(R.string.reboot_failed)
+                                handleFailureResult(errMsg, isMessageDialog = true)
+                            }
+                            else -> {
+                                Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
+                            }
+                        }
+                    }
+
+                    MDCommandType.RESTORE_FACTORY_SETTING -> {
+                        val result = mdParseManager.parse<String>(cmdStr)
+                        when (result) {
+                            is MDCommandResult.Failure -> {
+                                val errMsg = StringUtils.getString(R.string.reset_failed)
+                                handleFailureResult(errMsg, isMessageDialog = true)
+                            }
+                            else -> {
+                                Toaster.show(StringUtils.getString(R.string.device_reset_tip))
+                            }
+                        }
+                    }
+
+                    MDCommandType.LOW_ENERGY -> {
+                        val result = mdParseManager.parse<String>(cmdStr)
+                        when (result) {
                             is MDCommandResult.Failure -> {
                                 val errMsg = "设置仓储模式出错!"
-                                handleFailureResult(errMsg)
-                                return
+                                handleFailureResult(errMsg, isMessageDialog = true)
                             }
-
                             else -> {
-                                sendCommandFromCmdList {
-                                    Toaster.show("设置仓储模式成功")
-                                }
+                                Toaster.show("设置仓储模式成功")
                             }
                         }
                     }
 
                     else -> {
-                        cancelNearbyCommunicationTimeoutJob()
+                        Timber.d("未处理的指令类型: $cmdStr")
                     }
                 }
             }
         }
     }
 
-    private fun dasBleReboot() {
-        commandItems.clear()
-        val command =
-            MDCommandUtil.getCommand(
-                MDCommandType.REBOOT_DEVICE,
-                "1"
-            )
-        commandItems.add(command)
-
-        Timber.d("发送保存配置重启设备指令===%s", command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    private fun dasBleRestoreFactory() {
-        commandItems.clear()
-        val command = MDCommandUtil.getCommand(MDCommandType.RESTORE_FACTORY_SETTING)
-        commandItems.add(command)
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    private fun offsetInitialization() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_SENSOR_INITIAL,
-            "method=1&type=gnss"
-        )
-        commandItems.add(command)
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
+    // ==================== 定位和弹窗相关 ====================
 
     /**
      * 显示同步安装位置弹窗
@@ -651,14 +644,14 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
 
                 override fun onConfirmClick() {
                     locationViewModel.stopLocation()
-                    setInstallationLocation()
+                    executeSetInstallationLocation()
                 }
             })
         XPopup.Builder(context)
-            .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
-            .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
+            .dismissOnBackPressed(false)
+            .dismissOnTouchOutside(false)
             .enableDrag(false)
-            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+            .isDestroyOnDismiss(true)
             .asCustom(popupView)
             .show()
 
@@ -667,49 +660,8 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         mStates.refreshingLocation.set(true)
     }
 
-    private fun setInstallationLocation() {
-        commandItems.clear()
-        val command =
-            if (productType == ProductType.U_R_1 || productType == ProductType.U_I_1)
-                IOTCommandUtil.getCommand(
-                    IOTCommandType.MD_RAW, "content=##9161${mStates.location.get()}"
-                )
-            else IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_INSTALL_LOCATION,
-                "lat=${mStates.latitude.get()}&lng=${mStates.longitude.get()}"
-            )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
+    // ==================== 权限相关 ====================
 
-    /**
-     * 打开/关闭设备低功耗模式
-     */
-    private fun setStandByMode() {
-        commandItems.clear()
-        val command = MDCommandUtil.getCommand(
-            MDCommandType.LOW_ENERGY, MDLowEnergyModel.STANDBY.toString()
-        )
-        commandItems.add(command)
-        Timber.d("打开设备低功耗模式指令===%s", command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 格式化数据存储
-     */
-    private fun formatDataStorage() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_FORMAT_DATA_STORAGE, "type=1")
-        commandItems.add(command)
-
-        Timber.d("格式化数据存储指令===%s", command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    //<editor-fold desc="权限申请">
     /**
      * 检查是否打开系统位置服务，如果开启了，接着检查是否授予 APP 定位权限
      */
@@ -724,23 +676,15 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
     private val locationSettingLauncher = registerForActivityResult<Intent, ActivityResult>(
         ActivityResultContracts.StartActivityForResult()
     ) { _: ActivityResult? ->
-//        TODO 打开位置开关后只返回 RESULT_CANCELED，不知什么原因
-//        if (result.getResultCode() == Activity.RESULT_OK) {
-//            checkPermissionForLocation();
-//        }
         checkPermissionForLocation()
     }
 
     private fun checkPermissionForLocation() {
         XXPermissions.with(this)
-            // 申请多个权限
             .permission(PermissionHelper.foregroundLocationPermissions)
             // 设置权限请求拦截器（局部设置）
             .interceptor(PermissionInterceptor())
-            // 设置不触发错误检测机制（局部设置）
-            //.unchecked()
             .request(object : OnPermissionCallback {
-
                 override fun onGranted(
                     grantedPermissions: MutableList<String>,
                     allGranted: Boolean
@@ -752,7 +696,6 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
                 }
             })
     }
-    // </editor-fold>
 
     override fun onResume() {
         super.onResume()

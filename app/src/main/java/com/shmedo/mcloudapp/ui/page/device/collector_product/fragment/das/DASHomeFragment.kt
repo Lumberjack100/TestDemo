@@ -2,14 +2,9 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import android.util.Log
 import com.blankj.utilcode.util.ConvertUtils
-import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
-import com.shmedo.core.commonlib.utils.AppContants
-import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.md_cmd.assemble.entity.das.AuthenticationEntity
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
@@ -24,10 +19,11 @@ import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CollectorConfigModule
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
@@ -41,26 +37,37 @@ import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
-import kotlinx.coroutines.flow.debounce
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceHomeFragment
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.nio.charset.StandardCharsets
 
 /**
- * 创建者：gonghe
- * 创建时间：2024/5/7
- * 描述： 物联网采集器(DAS) - 支持4G和蓝牙两种通讯方式
+ * @author：gonghe
+ * @time: 2025/7/28
+ * @desc: 物联网采集器(DAS)设备主页
+ *
+ * 优化特点：
+ * 1. 继承自 OptimizedBaseDeviceHomeFragment，使用新的通信架构
+ * 2. 统一的错误处理策略
+ * 3. 响应驱动的指令执行
+ * 4. 支持4G和蓝牙两种通讯方式
+ * 5. 完整的蓝牙认证流程
  */
-class DASHomeFragment : BaseDeviceHomeFragment() {
+class DASHomeFragment : OptimizedBaseDeviceHomeFragment() {
     private val mdParseManager: MDParserManager by inject()
-
     private var collectorModel = ""
 
     override fun initData() {
         super.initData()
+        setupDeviceLogos()
+    }
+
+    /**
+     * 设置设备Logo资源
+     */
+    private fun setupDeviceLogos() {
         if (deviceInfo.productName.startsWith("MR701")) {
             mHeadStates.productErrorResId.set(R.drawable.device_logo_mr701_old_error)
             mHeadStates.productAlarmResId.set(R.drawable.device_logo_mr701_old_alarm)
@@ -90,6 +97,8 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
 
     override fun initModuleData() {
         val groupList = mutableListOf<Any>()
+
+        // 设备信息模块
         groupList.add(DeviceStatusInfoGroupItem("设备信息"))
         groupList.add(
             ConfigModuleTree(
@@ -100,18 +109,21 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_dasBaseInfoFragment
                     ).toUnified(),
+
                     CommonModule(
                         name = "网络信息",
                         resID = R.drawable.ic_module_net_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_dasNetInfoFragment
                     ).toUnified(),
+
                     CommonModule(
                         name = "传感信息",
                         resID = R.drawable.ic_module_state_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_dasSensorInfoFragment
                     ).toUnified(),
+
                     CommonModule(
                         name = "位置信息",
                         resID = R.drawable.ic_module_location_info,
@@ -123,8 +135,11 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
         )
 
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+
+        // 设备配置模块
         groupList.add(DeviceStatusInfoGroupItem("设备配置"))
         val configModuleTree = ConfigModuleTree()
+
         configModuleTree.configModules.add(
             CollectorConfigModule(
                 name = "采集配置",
@@ -132,13 +147,18 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                 navId = R.id.action_global_to_dasCollectorSettingFragment
             ).toUnified()
         )
+
         configModuleTree.configModules.add(
             DataCenterModule(
                 name = "链路配置",
                 resID = R.drawable.ic_module_datacenter_new,
-                navId = if (communicateWay is NetPlatformConnect) R.id.action_global_to_dasDataCenterHomeFragment else R.id.action_global_to_bleDasDataCenterHomeFragment
+                navId = if (communicateWay is NetPlatformConnect)
+                    R.id.action_global_to_dasDataCenterHomeFragment
+                else
+                    R.id.action_global_to_bleDasDataCenterHomeFragment
             ).toUnified()
         )
+
         if (communicateWay is NetPlatformConnect) {
             configModuleTree.configModules.add(
                 CommonModule(
@@ -148,6 +168,7 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                 ).toUnified()
             )
         }
+
         configModuleTree.configModules.add(
             SensorConfigModule(
                 name = "传感配置",
@@ -155,6 +176,7 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                 navId = R.id.action_global_to_dasSensorHomeFragment
             ).toUnified()
         )
+
         configModuleTree.configModules.add(
             CommonModule(
                 name = "时间校准",
@@ -162,6 +184,7 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                 navId = R.id.action_global_to_time_calibration
             ).toUnified()
         )
+
         configModuleTree.configModules.add(
             CommonModule(
                 name = "系统配置",
@@ -169,6 +192,7 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                 navId = R.id.action_global_to_advancedSettingFragment
             ).toUnified()
         )
+
         if (communicateWay is BleConnect) {
             configModuleTree.configModules.add(
                 CommandDebugConfigModule(
@@ -204,10 +228,7 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                     deviceInfo,
                     bleDevice,
                 )
-                nav().safeNavigate(
-                    configModule.navId,
-                    bundle
-                )
+                nav().safeNavigate(configModule.navId, bundle)
             }
 
             is SensorConfigModule -> {//传感器配置
@@ -218,10 +239,7 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                     deviceInfo,
                     bleDevice,
                 )
-                nav().safeNavigate(
-                    configModule.navId,
-                    bundle
-                )
+                nav().safeNavigate(configModule.navId, bundle)
             }
 
             is CommandDebugConfigModule -> {//指令下发
@@ -235,29 +253,38 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                 nav().safeNavigate(configModule.navId, bundle)
             }
 
-
             else -> {
                 super.processOtherItemClick(configModule)
             }
         }
     }
 
-    override fun onBleDeviceReady() {
-        setAuthenticateWay()
+    /**
+     * 设备准备就绪，可以接收通信数据
+     */
+    override fun onDeviceReadyForCommunicationData() {
+        // 蓝牙连接成功后，开始认证流程
+        if (communicateWay is BleConnect) {
+            setAuthenticateWay()
+        }
     }
 
     /**
-     * 蓝牙连接成功,发送认证方式
+     * 蓝牙连接成功，发送认证方式
      */
     private fun setAuthenticateWay() {
-        commandItems.clear()
         val entity = AuthenticationEntity(deviceInfo.deviceToken, "0")
         val command =
             MDCommandUtil.getCommand(MDCommandType.AUTHENTICATION_CONFIG, entity.toCommandString())
-        commandItems.add(command)
 
-        Timber.d("设置认证类型指令===%s", command)
-        sendCommandFromCmdList(isStartTimeoutJob = false)
+        Timber.d("设置认证类型指令===$command")
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false,
+                errorConfig = ErrorConfig.silentConfig()
+            )
+        )
     }
 
     /**
@@ -281,11 +308,15 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                 val strEncrypt = HexUtils.bytesToHexString(byteEncrypt!!)!!
                 val command =
                     "##222,${deviceInfo.deviceToken},0,${strEncrypt.uppercase()}${MDConstants.COMMAND_FOOTER}"
-                Timber.d("设备登录验证指令===%s", command)
 
-                commandItems.clear()
-                commandItems.add(command)
-                sendCommandFromCmdList(isStartTimeoutJob = false)
+                Timber.d("设备登录验证指令===$command")
+                sendCommandSequence(
+                    commands = listOf(command),
+                    config = CommandSequenceConfig(
+                        showLoadingDialog = false,
+                        errorConfig = ErrorConfig.silentConfig()
+                    )
+                )
             }
         } catch (e: Exception) {
             Timber.e(e)
@@ -297,21 +328,26 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
      * 查询 DAS 设备的配置参数信息
      */
     private fun queryBleDASConfigInfo() {
-        commandItems.clear()
+        val command = MDCommandUtil.getCommand(MDCommandType.BASE_CONFIG)
 
-        val command =
-            MDCommandUtil.getCommand(MDCommandType.BASE_CONFIG)
-        commandItems.add(command)
-
-        Timber.d("获取基础配置信息指令===%s", command)
-        sendCommandFromCmdList(isStartTimeoutJob = false)
+        Timber.d("获取基础配置信息指令===$command")
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false,
+                errorConfig = ErrorConfig.silentConfig()
+            )
+        )
     }
 
-    override fun setResultData(cmdStr: String) {
-        if (communicateWay == BleConnect) {
-            handleBleCommandResult(cmdStr)
-        } else {
+    /**
+     * 处理指令响应 - 重写父类方法处理DAS特定的指令
+     */
+    override fun handleCommandResponse(cmdStr: String) {
+        if (communicateWay is NetPlatformConnect) {
             handle4GCommandResult(cmdStr)
+        } else {
+            handleBleCommandResult(cmdStr)
         }
     }
 
@@ -320,29 +356,9 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
      */
     private fun handle4GCommandResult(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "设备查找出错: ${result.message}"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            showDialogFragment(FindDeviceBeepDialog.Companion.TAG) {
-                                FindDeviceBeepDialog.Companion.newInstance(productType)
-                            }
-                        }
-                    }
-                }
-            }
-
             else -> {
-                processOtherCmdResult(
-                    IOTCommandUtil.extractCommandType(cmdStr),
-                    cmdStr
-                )
+                // 其他4G指令交给父类处理
+                super.handleCommandResponse(cmdStr)
             }
         }
     }
@@ -351,8 +367,6 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
      * 处理蓝牙通讯指令结果
      */
     private fun handleBleCommandResult(cmdStr: String) {
-        updateLastCommunicationTime()
-
         when (MDCommandUtil.extractCommandType(cmdStr)) {
             MDCommandType.AUTHENTICATION_CONFIG -> {
                 val result = mdParseManager.parse<AuthenticationInfo>(
@@ -361,9 +375,7 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        setAuthenticateWay()//重新认证
-                        return
+                        setAuthenticateWay() // 重新认证
                     }
 
                     is MDCommandResult.Success -> {
@@ -380,9 +392,7 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        setAuthenticateWay()//重新认证
-                        return
+                        setAuthenticateWay() // 重新认证
                     }
 
                     is MDCommandResult.Success -> {
@@ -390,8 +400,6 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                         if (authenticationInfo.result == "1") {
                             onAuthenticateResult(true)
                         } else {
-                            Toaster.show("设备认证失败!")
-                            bleViewModel.disconnect()
                             onAuthenticateResult(false)
                         }
                     }
@@ -407,7 +415,6 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                     is MDCommandResult.Failure -> {
                         val errMsg = "查询基础配置信息出错"
                         handleFailureResult(errMsg)
-                        return
                     }
 
                     is MDCommandResult.Success -> {
@@ -422,45 +429,47 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                         val errMsg = "位置同步失败"
                         Timber.e(errMsg)
                         // 自动同步失败时不显示错误提示，静默处理
-                        cancelNearbyCommunicationTimeoutJob()
                         isLocationSyncInProgress = false
-                        return
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
-                            Timber.d("位置自动同步成功")
-                            isLocationSyncInProgress = false
-                            locationViewModel.stopLocation()
-                        }
+                        Timber.d("位置自动同步成功")
+                        isLocationSyncInProgress = false
+                        locationViewModel.stopLocation()
                     }
                 }
             }
 
             else -> {
                 if (cmdStr.contains("Please verify the equipment.")) {
-                    Toaster.show("设备认证失败!")
-                    bleViewModel.disconnect()
                     onAuthenticateResult(false)
-
                 } else if (cmdStr.contains("Equipment Verify OK.")) {
                     onAuthenticateResult(true)
-
                 } else {
-
+                    // 其他蓝牙指令交给父类处理
+                    super.handleCommandResponse(cmdStr)
                 }
             }
         }
     }
 
+    /**
+     * 认证结果处理
+     */
     private fun onAuthenticateResult(isSuccess: Boolean) {
-        cancelNearbyCommunicationTimeoutJob()
+        dismissLoadingDialog()
         if (isSuccess) {
             queryBleDASConfigInfo()
             autoSyncLocationIfNeeded()
+        } else {
+            Toaster.show("设备认证失败!")
+            bleViewModel.disconnect()
         }
     }
 
+    /**
+     * 初始化基础配置信息
+     */
     private fun initBaseConfigInfo(info: DasBaseConfigInfo) {
         try {
             collectorModel = info.collectorModel
@@ -470,21 +479,19 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
         }
     }
 
-    override fun setupHeartbeat() {
-        launchWithViewLifecycle {
-            lastCommunicationTime
-                .debounce(AppContants.Communication.DELAY_BLE_HEART_BEAT)  // 30秒无更新触发
-                .collect { lastUpdateTime ->
-                    val updateTime =
-                        TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
-                    // 仅当设备连接并且需要发送心跳时，才发送心跳包
-                    if (mHeadStates.isConnected.get()) {
-                        Timber.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
-                        val command = MDCommandUtil.getCommand(MDCommandType.HEART_BEAT)
-                        Timber.d("发送心跳包指令: $command")
-                        sendBleCommand(command)
-                    }
-                }
-        }
+    /**
+     * 重写心跳指令发送方法 - DAS设备使用MD指令
+     */
+    override fun sendHeartbeatCommand() {
+        val command = MDCommandUtil.getCommand(MDCommandType.HEART_BEAT)
+        Timber.d("发送心跳包指令: $command")
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false,
+                errorConfig = ErrorConfig.silentConfig(),
+                timeout = 5000L
+            )
+        )
     }
-}
+} 
