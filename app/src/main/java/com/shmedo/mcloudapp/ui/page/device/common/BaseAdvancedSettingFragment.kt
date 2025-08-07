@@ -151,7 +151,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
             )
         }
 
-        if ((communicateWay is NetPlatformConnect) && productType != ProductType.COLLECTOR_G_0) {
+        if ((communicateWay is NetPlatformConnect) && productType != ProductType.COLLECTOR_G_0 && productType != ProductType.U_L_1) {
             moduleList.add(
                 AdvancedSettingItem(
                     "固件升级",
