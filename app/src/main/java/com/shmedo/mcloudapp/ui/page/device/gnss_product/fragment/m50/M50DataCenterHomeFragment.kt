@@ -84,10 +84,9 @@ class M50DataCenterHomeFragment : OptimizedBaseDataCenterHomeFragment() {
     override fun BindingViewHolder.processOtherItemViewBind(itemViewType: Int) {
         if (itemViewType == R.layout.item_data_reporting_period) {
             val binding = getBinding<ItemDataReportingPeriodBinding>()
-            val item = getModel<DataReportingPeriodItem>()
 
             // 设置数据绑定参数
-            binding.setVariable(BR.m, item)
+            binding.setVariable(BR.m, dataReportingPeriodItem)
             binding.setVariable(BR.click, ClickProxy())
             binding.executePendingBindings()
         }

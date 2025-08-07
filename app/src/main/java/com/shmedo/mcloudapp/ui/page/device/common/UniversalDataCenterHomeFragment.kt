@@ -23,8 +23,10 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.databinding.ItemBeidouDataTransmissionBinding
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BeidouDataTransmissionItem
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
@@ -38,9 +40,8 @@ import com.shmedo.mcloudapp.model.ParamSubmitButtonItem
  * @desc: 通用数据中心列表页面 - 支持4G和蓝牙两种通讯方式
  *
  */
-class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
-    private var beidouDataTransmissionItem: BeidouDataTransmissionItem =
-        BeidouDataTransmissionItem()
+class UniversalDataCenterHomeFragment : OptimizedBaseDataCenterHomeFragment() {
+    private var beidouDataTransmissionItem: BeidouDataTransmissionItem = BeidouDataTransmissionItem()
 
     /**
      * 是否需要配置上报间隔
@@ -68,19 +69,12 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
             groupList.add(beidouDataTransmissionItem)
             groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
         }
+
         groupList.addAll(getAdapterData())
 
         if (isNeedReportInterval()) {
-            groupList.add(
-                GapItem(
-                    height = ConvertUtils.dp2px(60f)
-                )
-            )
-            groupList.add(
-                ParamSubmitButtonItem(
-                    btnText = "确定",
-                )
-            )
+            groupList.add(GapItem(height = ConvertUtils.dp2px(60f)))
+            groupList.add(ParamSubmitButtonItem(btnText = "确定"))
         }
 
         binding.recyclerView.bindingAdapter.models = groupList
@@ -89,55 +83,59 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
     override fun BindingViewHolder.processOtherItemViewBind(itemViewType: Int) {
         if (itemViewType == R.layout.item_beidou_data_transmission) {
             val binding = getBinding<ItemBeidouDataTransmissionBinding>()
-            val beidouItem = getModel<BeidouDataTransmissionItem>()
 
             // 设置数据绑定参数
-            binding.setVariable(BR.m, beidouItem)
+            binding.setVariable(BR.m, beidouDataTransmissionItem)
             binding.executePendingBindings()
         }
     }
-
-    override fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        super.isTargetCommandType(commandType)
-                || (commandType == IOTCommandType.MD_GET_DATA_REPORT_TIME)
-                || (commandType == IOTCommandType.MD_SET_DATA_REPORT_TIME)
-
 
     override fun getNavigationActionId(): Int {
         return R.id.action_global_dataCenterParamFragment
     }
 
     override fun queryData() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
         //获取上报时间信息
         if (isNeedReportInterval()) {
             val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TIME)
-            commandItems.add(command)
+            commands.add(command)
         }
 
         for (i in 1..centerNum) {
             val entity = CenterNumberEntity(i.toString())
             val command =
                 IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
-            commandItems.add(command)
+            commands.add(command)
         }
 
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig(
+                    strategy = ErrorHandlingStrategy.Dialog
+                )
+            )
+        )
     }
 
     override fun handleFragmentResult(bundle: Bundle) {
         val centerNumber =
             bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
 
-        commandItems.clear()
         val entity = CenterNumberEntity(centerNumber.toString())
         val command =
             IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
-        commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.loading))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.loading),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun initSaveCommand() {
@@ -145,7 +143,6 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
             showMessageDialog("请输入上报间隔!")
             return
         }
-        commandItems.clear()
 
         val entity = DasDataReportEntity(
             report_intv = beidouDataTransmissionItem.getReportIntervalStr()
@@ -154,13 +151,19 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
             IOTCommandType.MD_SET_DATA_REPORT_TIME,
             entity.toCommandString()
         )
-        commandItems.add(command)
+        val commands = mutableListOf<String>()
+        commands.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DATA_REPORT_TIME -> {
                 val result = iotParseManager.parse<DasDataReportInfo>(
@@ -175,9 +178,6 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initDataReportTime(result.data)
                     }
                 }
@@ -196,9 +196,6 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initDataCenterStatus(result.data)
                     }
                 }
@@ -213,7 +210,8 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        // 保存成功，检查是否还有指令需要执行
+                        if (!isCommunicationExecuting()) {
                             processNavigateUp()
                         }
                     }
@@ -221,7 +219,6 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
             }
         }
     }
