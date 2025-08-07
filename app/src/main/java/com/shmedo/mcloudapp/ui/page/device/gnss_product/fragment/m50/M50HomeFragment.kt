@@ -37,8 +37,8 @@ import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.M50MeasureDataItem
 import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceHomeFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
@@ -617,7 +617,7 @@ class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
         }
 
         override fun onTakePhotoClick() {
-            if (!isDeviceConnected() && communicateWay is BleConnect) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
