@@ -7,18 +7,16 @@ import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.BindingAdapter.BindingViewHolder
-import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.linear
+import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
-import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
@@ -32,21 +30,26 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.ParamSubmitButtonItem
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 
 /**
  * @author：gonghe
- * @time: 2025/1/12
- * @desc: 数据中心列表页面抽象基类 - 支持4G和蓝牙两种通讯方式
+ * @time: 2025/7/26
+ * @desc: 使用优化架构的数据中心列表页面抽象基类
+ *
+ * 优化特点：
+ * 1. 继承自 OptimizedBaseIOTDeviceFragment，使用新的通信架构
+ * 2. 统一的错误处理策略
+ * 3. 响应驱动的指令执行
+ * 4. 支持4G和蓝牙两种通讯方式
  */
-abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
+abstract class BaseDataCenterHomeFragment : OptimizedBaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentUniversalDataCenterHomeBinding
     protected val toolbarViewModel: ToolbarViewModel by viewModels()
     protected val iotParseManager: IOTParserManager by inject()
     protected var centerNum = 0 // 数据链路数量
-
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -74,14 +77,13 @@ abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 return@onRefresh
             }
             queryData()
         }
     }
-
 
     private fun initAdapter() {
         binding.recyclerView.linear().setup { rv ->
@@ -118,7 +120,7 @@ abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
             R.id.btn_submit.onClick {
                 KeyboardUtils.hideSoftInput(binding.root)
-                if (isBleDisconnected()) {
+                if (!isDeviceConnected() ) {
                     Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                     return@onClick
                 }
@@ -136,7 +138,7 @@ abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
     }
 
     protected open fun initRecyclerViewAdapterData() {
-        binding.recyclerView.bindingAdapter.models = getAdapterData()
+        binding.recyclerView.models = getAdapterData()
     }
 
     /**
@@ -151,7 +153,7 @@ abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
     }
 
     protected open fun initSaveCommand() {
-
+        // 子类实现具体的保存逻辑
     }
 
     override fun createObserver() {
@@ -163,67 +165,6 @@ abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
-    }
-
-    protected open fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.MD_GET_DEVICE_STATUS)
-                || (commandType == IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS)
-                || (commandType == IOTCommandType.MD_GET_DATA_CENTER_STATUS)
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
-    }
-
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage,
-            errMsg = errMsg
-        )
     }
 
     protected fun getAdapterData(): MutableList<Any> {
@@ -268,7 +209,6 @@ abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
         binding.refreshLayout.autoRefresh()
     }
 
-    // 可以被重写的方法
     /**
      * 获取点击代理，子类可以重写以提供自定义的点击处理逻辑
      */

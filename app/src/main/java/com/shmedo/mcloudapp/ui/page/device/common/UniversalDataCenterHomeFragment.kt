@@ -56,7 +56,7 @@ import timber.log.Timber
  * 1. 简单上报间隔配置
  * 2. 复杂上报周期配置 - 支持定时定点和固定间隔两种模式
  */
-class UniversalDataCenterHomeFragment : OptimizedBaseDataCenterHomeFragment() {
+class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
     // 简单模式数据模型 - 用于其他产品类型
     private var beidouDataTransmissionItem: BeidouDataTransmissionItem =
         BeidouDataTransmissionItem()

@@ -13,7 +13,7 @@ import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
-import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDataCenterHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -24,7 +24,7 @@ import timber.log.Timber
  * @desc: 一体式雷达水位/泥位计数据中心列表页面 - 支持4G和蓝牙两种通讯方式
  *
  */
-class UDDataCenterHomeFragment : OptimizedBaseDataCenterHomeFragment() {
+class UDDataCenterHomeFragment : BaseDataCenterHomeFragment() {
     override fun getNavigationActionId(): Int {
         return R.id.action_global_to_dataCenterParamFragment
     }
