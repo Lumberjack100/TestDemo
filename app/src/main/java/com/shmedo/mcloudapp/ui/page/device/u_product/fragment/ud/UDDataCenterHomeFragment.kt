@@ -8,9 +8,12 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDataCenterHomeFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -21,20 +24,27 @@ import timber.log.Timber
  * @desc: 一体式雷达水位/泥位计数据中心列表页面 - 支持4G和蓝牙两种通讯方式
  *
  */
-class UDDataCenterHomeFragment : BaseDataCenterHomeFragment() {
+class UDDataCenterHomeFragment : OptimizedBaseDataCenterHomeFragment() {
     override fun getNavigationActionId(): Int {
         return R.id.action_global_to_dataCenterParamFragment
     }
 
     override fun queryData() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
+        commands.add(IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "method=1"))
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "method=1")
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig(
+                    strategy = ErrorHandlingStrategy.Dialog
+                )
+            )
+        )
     }
 
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DEVICE_STATUS -> {
                 val result = iotParseManager.parse<String>(
@@ -49,16 +59,12 @@ class UDDataCenterHomeFragment : BaseDataCenterHomeFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initDataCenterStatus(result.data)
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
             }
         }
     }
