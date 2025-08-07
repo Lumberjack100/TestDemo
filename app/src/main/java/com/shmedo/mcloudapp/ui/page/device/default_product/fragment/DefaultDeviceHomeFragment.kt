@@ -18,14 +18,14 @@ import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/3/8
  * 描述： TODO
  */
-class DefaultDeviceHomeFragment : OptimizedBaseDeviceHomeFragment() {
+class DefaultDeviceHomeFragment : BaseDeviceHomeFragment() {
 
     override fun initData() {
         super.initData()

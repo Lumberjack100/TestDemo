@@ -39,7 +39,7 @@ import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -60,7 +60,7 @@ import timber.log.Timber
  * 4. 保持原有的M20S特定业务逻辑不变
  * 5. 支持4G和蓝牙两种通讯方式
  */
-class M20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
+class M20SHomeFragment : BaseDeviceHomeFragment() {
 
     private var measureDataItem: M50MeasureDataItem = M50MeasureDataItem()
     private var abnormalInfoJob: Job? = null

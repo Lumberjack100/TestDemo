@@ -38,7 +38,7 @@ import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.nio.charset.StandardCharsets
@@ -55,7 +55,7 @@ import java.nio.charset.StandardCharsets
  * 4. 支持4G和蓝牙两种通讯方式
  * 5. 完整的蓝牙认证流程
  */
-class DASHomeFragment : OptimizedBaseDeviceHomeFragment() {
+class DASHomeFragment : BaseDeviceHomeFragment() {
     private val mdParseManager: MDParserManager by inject()
     private var collectorModel = ""
 

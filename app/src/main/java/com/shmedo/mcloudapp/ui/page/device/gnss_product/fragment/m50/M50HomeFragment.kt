@@ -39,7 +39,7 @@ import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
-import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -59,7 +59,7 @@ import timber.log.Timber
  * 3. 响应驱动的指令执行
  * 4. 支持4G和蓝牙两种通讯方式
  */
-class M50HomeFragment : OptimizedBaseDeviceHomeFragment() {
+class M50HomeFragment : BaseDeviceHomeFragment() {
 
     private var measureDataItem: M50MeasureDataItem = M50MeasureDataItem()
     private var abnormalInfoJob: Job? = null
