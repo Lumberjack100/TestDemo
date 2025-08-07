@@ -9,9 +9,10 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
@@ -23,15 +24,15 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.OneClickSilenceModule
 import com.shmedo.mcloudapp.model.toUnified
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceHomeFragment
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/5/7
  * 描述： 无线预警广播(LB20S)(江苏赛立科技有限公司)
  */
-class LB20SHomeFragment : BaseDeviceHomeFragment() {
+class LB20SHomeFragment : OptimizedBaseDeviceHomeFragment() {
     override fun initData() {
         super.initData()
         mHeadStates.productErrorResId.set(R.drawable.device_logo_lb20s_error)
@@ -53,18 +54,21 @@ class LB20SHomeFragment : BaseDeviceHomeFragment() {
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_lB20SBaseInfoFragment
                     ).toUnified(),
+
                     CommonModule(
                         name = "网络信息",
                         resID = R.drawable.ic_module_net_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_lB20SNetInfoFragment
                     ).toUnified(),
+
                     CommonModule(
                         name = "状态信息",
                         resID = R.drawable.ic_module_state_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_lB20SStatusInfoFragment
                     ).toUnified(),
+
                     CommonModule(
                         name = "位置信息",
                         resID = R.drawable.ic_module_location_info,
@@ -156,13 +160,18 @@ class LB20SHomeFragment : BaseDeviceHomeFragment() {
 
             is OneClickSilenceModule -> {
                 showMessage("是否立即关闭语音播报？", "温馨提示", "确定", {
-                    commandItems.clear()
+                    val commands = mutableListOf<String>()
                     val command =
                         IOTCommandUtil.getCommand(IOTCommandType.SET_VOICE_BROADCAST_VOLUME_OFF)
-                    commandItems.add(command)
+                    commands.add(command)
 
-                    showLoadingDialog(StringUtils.getString(R.string.processing))
-                    sendCommandFromCmdList(isStartTimeoutJob = true)
+                    sendCommandSequence(
+                        commands = commands,
+                        config = CommandSequenceConfig(
+                            loadingMessage = StringUtils.getString(R.string.processing),
+                            errorConfig = ErrorConfig.dialogConfig()
+                        )
+                    )
                 }, "取消")
             }
 
@@ -172,92 +181,8 @@ class LB20SHomeFragment : BaseDeviceHomeFragment() {
         }
     }
 
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.SET_VOICE_BROADCAST_VOLUME_OFF -> {
-                super.doCmdResponseResultError(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = true,
-                    isMessageDialog = true
-                )
-            }
-
-            else -> {
-                super.doCmdResponseResultError(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
-                    isMessageDialog = isMessageDialog
-                )
-            }
-        }
-    }
-
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.SET_VOICE_BROADCAST_VOLUME_OFF -> {
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = true,
-                    isMessageDialog = true
-                )
-            }
-
-            else -> {
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
-                    isMessageDialog = isMessageDialog
-                )
-            }
-        }
-    }
-
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.SET_VOICE_BROADCAST_VOLUME_OFF -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = true,
-                    isMessageDialog = true,
-                    errMsg = errMsg
-                )
-            }
-
-            else -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = isShowErrMsg,
-                    isMessageDialog = isMessageDialog,
-                    errMsg = errMsg
-                )
-            }
-        }
-    }
-
-    override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {
-        when (commandType) {
             IOTCommandType.SET_VOICE_BROADCAST_VOLUME_OFF -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
@@ -267,15 +192,14 @@ class LB20SHomeFragment : BaseDeviceHomeFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("已关闭语音播报")
-                        }
+                        Toaster.show("已关闭语音播报")
                     }
                 }
             }
 
             else -> {
-
+                // 其他指令交给父类处理
+                super.handleCommandResponse(cmdStr)
             }
         }
     }

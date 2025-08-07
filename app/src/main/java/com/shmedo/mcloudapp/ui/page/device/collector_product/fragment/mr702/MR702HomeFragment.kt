@@ -14,15 +14,15 @@ import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.toUnified
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceHomeFragment
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/5/7
  * 描述： 遥测终端机(MR702)配置主页 - 支持4G和蓝牙两种通讯方式
  */
-class MR702HomeFragment : BaseDeviceHomeFragment() {
+class MR702HomeFragment : OptimizedBaseDeviceHomeFragment() {
 
     override fun initData() {
         super.initData()

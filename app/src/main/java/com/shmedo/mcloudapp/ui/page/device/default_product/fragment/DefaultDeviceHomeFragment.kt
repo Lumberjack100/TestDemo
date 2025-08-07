@@ -17,15 +17,15 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.model.toUnified
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceHomeFragment
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/3/8
  * 描述： TODO
  */
-class DefaultDeviceHomeFragment : BaseDeviceHomeFragment() {
+class DefaultDeviceHomeFragment : OptimizedBaseDeviceHomeFragment() {
 
     override fun initData() {
         super.initData()
@@ -73,18 +73,21 @@ class DefaultDeviceHomeFragment : BaseDeviceHomeFragment() {
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_defaultBaseInfoFragment
                     ).toUnified(),
+
                     CommonModule(
                         name = "网络信息",
                         resID = R.drawable.ic_module_net_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_defaultNetInfoFragment
                     ).toUnified(),
+
                     CommonModule(
                         name = "状态信息",
                         resID = R.drawable.ic_module_state_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_defaultStatusInfoFragment
                     ).toUnified(),
+
                     CommonModule(
                         name = "位置信息",
                         resID = R.drawable.ic_module_location_info,
