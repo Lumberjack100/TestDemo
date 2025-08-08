@@ -38,8 +38,8 @@ import com.shmedo.mcloudapp.model.M50MeasureDataItem
 import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -274,7 +274,7 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
             config = CommandSequenceConfig(
                 showLoadingDialog = false,
                 errorConfig = ErrorConfig.silentConfig(), // 状态查询失败不显示错误
-                enableBusinessParseFailureInterrupt = false // 不启用业务层解析失败中断功能，中断后续指令执行
+                enableBusinessParseFailureInterrupt = false // 不启用业务层解析失败中断功能，保持后续指令执行
             )
         )
     }
