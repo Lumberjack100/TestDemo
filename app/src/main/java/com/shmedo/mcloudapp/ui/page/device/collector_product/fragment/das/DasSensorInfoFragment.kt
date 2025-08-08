@@ -23,12 +23,14 @@ import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyleFragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -40,7 +42,7 @@ import timber.log.Timber
  * @desc: 物联网采集器(DAS)传感器信息 - 支持4G和蓝牙两种通讯方式
  *
  */
-class DasSensorInfoFragment : BaseDeviceStatusInfoStyleFragment() {
+class DasSensorInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
     private var isBleMode = false
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -66,24 +68,30 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoStyleFragment() {
      * 4G通讯模式查询信息
      */
     private fun query4GInfo() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
         var command =
             IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_SUB_SENSOR_STATUS)
-        commandItems.add(command)
+        commands.add(command)
 
         command =
             IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_SENSOR_STATUS, "index=0")
-        commandItems.add(command)
+        commands.add(command)
 
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     /**
      * 蓝牙通讯模式查询信息
      */
     private fun queryBleInfo() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
         /**
          * 查询设备状态2:##042\r\n<br/>
@@ -110,12 +118,12 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoStyleFragment() {
          */
         var command =
             MDCommandUtil.getCommand(MDCommandType.QUERY_DAS_STATUS_2)
-        commandItems.add(command)
+        commands.add(command)
 
         //查询倾角计信息
         command =
             MDCommandUtil.getCommand(MDCommandType.QUERY_INCLINOMETER_INFO)
-        commandItems.add(command)
+        commands.add(command)
 
         /**
          * 获取主传感器状态:##043\r\n<br/>
@@ -130,15 +138,19 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoStyleFragment() {
          */
         command =
             MDCommandUtil.getCommand(MDCommandType.QUERY_DAS_STATUS_3)
-        commandItems.add(command)
+        commands.add(command)
 
 
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
-    override fun isTargetCommandType(commandType: IOTCommandType): Boolean = true
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         if (isBleMode) {
             handleBleCommandResult(cmdStr)
         } else {
@@ -160,13 +172,9 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoStyleFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询辅传感器状态出错: ${result.message}"
                         handleFailureResult(errMsg)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         init4GInternalSensorData(result.data)
                     }
                 }
@@ -181,20 +189,15 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoStyleFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询扩展传感器状态出错: ${result.message}"
                         handleFailureResult(errMsg)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         init4GExternalSensorData(result.data)
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
             }
         }
     }
@@ -447,13 +450,9 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoStyleFragment() {
                     is MDCommandResult.Failure -> {
                         val errMsg = "查询信息出错"
                         handleFailureResult(errMsg)
-                        return
                     }
 
                     is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initBleDeviceStatus(result.data)
                     }
                 }
@@ -468,13 +467,9 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoStyleFragment() {
                     is MDCommandResult.Failure -> {
                         val errMsg = "查询倾角计信息出错"
                         handleFailureResult(errMsg)
-                        return
                     }
 
                     is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initBleInclinometerInfo(result.data)
                     }
                 }
@@ -489,20 +484,15 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoStyleFragment() {
                     is MDCommandResult.Failure -> {
                         val errMsg = "查询扩展传感器状态出错"
                         handleFailureResult(errMsg)
-                        return
                     }
 
                     is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initBleExternalSensorData(result.data)
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
             }
         }
     }

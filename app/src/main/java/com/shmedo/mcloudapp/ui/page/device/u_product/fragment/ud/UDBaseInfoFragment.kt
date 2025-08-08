@@ -11,12 +11,14 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoTextSwitcherItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyleFragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import com.shmedo.mcloudapp.utils.UDDeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +33,7 @@ import timber.log.Timber
  * 创建时间：2024/8/28
  * 描述： 一体式雷达水位/泥位计基本信息
  */
-class UDBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
+class UDBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
     private var abnormalInfoJob: Job? = null
 
     private var textSwitcherItem: DeviceStatusInfoTextSwitcherItem? = null
@@ -41,13 +43,21 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
         binding.llToolbar.toolbar.title = "基本信息"
     }
 
+
     override fun queryStatusInfo() {
         abnormalInfoJob?.cancel()
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "method=0")
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        commands.add(command)
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun <T> initStatusInfo(content: T) {

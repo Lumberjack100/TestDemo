@@ -65,8 +65,8 @@
 
     <fragment
         android:id="@+id/dataCenterHomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50DataCenterHomeFragment"
-        android:label="M50DataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment"
+        android:label="UniversalDataCenterHomeFragment"
         tools:layout="@layout/fragment_universal_data_center_home" />
 
     <fragment

@@ -62,7 +62,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
  * 指令发送配置
  */
 data class SendConfig(
-    val responseTimeoutMs: Long = 5000,        // 等待指令响应超时时间（毫秒）
+    val responseTimeoutMs: Long = 15000,        // 等待指令响应超时时间（毫秒）
 )
 
 /**

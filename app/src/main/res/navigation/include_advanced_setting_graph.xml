@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/advancedSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.common.BaseAdvancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.AdvancedSettingFragment"
         android:label="BaseAdvancedSettingFragment"
         tools:layout="@layout/fragment_advanced_setting" />
 

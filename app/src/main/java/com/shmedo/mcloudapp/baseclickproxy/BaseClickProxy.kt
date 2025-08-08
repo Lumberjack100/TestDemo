@@ -39,6 +39,10 @@ open class BaseClickProxy {
 
     }
 
+    open fun onMeasureDataClick() {
+
+    }
+
     open fun onTakePhotoClick() {
 
     }

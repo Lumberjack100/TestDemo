@@ -375,7 +375,7 @@ class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
             val method = resultMap["method"] ?: ""
             val type = resultMap["type"] ?: ""
 
-            if (method == "0") { // 轮询测得的初始值
+            if (method == "0") {
                 // 已经有数据，处理倾角初始值
                 if (resultMap.containsKey("xAxis") && resultMap.containsKey("yAxis") && resultMap.containsKey(
                         "zAxis"
@@ -384,6 +384,7 @@ class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                     if (!isOnRefresh) {
                         dismissLoadingDialog(measureInitialValueLoadingDialogId)
                         showMessageDialog("初始值更新成功")
+
                     } else {
                         isOnRefresh = false
                     }
@@ -391,7 +392,6 @@ class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                     val xAxis = resultMap["xAxis"] ?: ""
                     val yAxis = resultMap["yAxis"] ?: ""
                     val zAxis = resultMap["zAxis"] ?: ""
-
                     mStates.xInitialAngle.set(xAxis.formatDoubleValue("", 3))
                     mStates.yInitialAngle.set(yAxis.formatDoubleValue("", 3))
                     mStates.zInitialAngle.set(zAxis.formatDoubleValue("", 3))
@@ -401,6 +401,7 @@ class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                     return
                 }
 
+                // 无数据，启动轮询
                 if (!isOnRefresh) {
                     // 更新倾角初始值模式下，继续轮询测得的初始值
                     startQueryMeasureResultJob(type)
@@ -408,10 +409,11 @@ class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
                     // 刷新模式
                     isOnRefresh = false
                 }
-            } else { // 更新初始值指令
+
+            } else {
+                // 更新初始值
                 clearQueryMeasureResultTimeoutJob()
-                // 更新倾角初始值模式下，开始轮询测得的初始值
-                startQueryMeasureResultJob(type)
+                startQueryMeasureResultJob(type)// 更新倾角初始值模式下，开始轮询测得的初始值
             }
         } catch (e: Exception) {
             Timber.e(e)

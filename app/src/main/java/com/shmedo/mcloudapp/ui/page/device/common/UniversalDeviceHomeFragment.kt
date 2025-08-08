@@ -41,7 +41,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
 
-@Deprecated("This class is deprecated", ReplaceWith("NewUniversalBaseDeviceHomeFragment or OptimizedBaseDeviceHomeFragment"))
+@Deprecated("This class is deprecated", ReplaceWith("OptimizedBaseDeviceHomeFragment"))
 abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentUniversalDeviceHomeBinding
     protected val toolbarViewModel: ToolbarViewModel by viewModels()

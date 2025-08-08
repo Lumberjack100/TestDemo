@@ -57,7 +57,7 @@ sealed class DeviceError(open val message: String, open val cause: Throwable? = 
      * 指令超时错误
      */
     data class Timeout(val command: String, val timeoutMs: Long) :
-        DeviceError("响应超时: $command (${timeoutMs}ms)")
+        DeviceError("设备未响应")
 
     /**
      * 设备解析错误

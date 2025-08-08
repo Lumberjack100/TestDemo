@@ -73,18 +73,21 @@ class DefaultDeviceHomeFragment : BaseDeviceHomeFragment() {
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_defaultBaseInfoFragment
                     ).toUnified(),
+
                     CommonModule(
                         name = "网络信息",
                         resID = R.drawable.ic_module_net_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_defaultNetInfoFragment
                     ).toUnified(),
+
                     CommonModule(
                         name = "状态信息",
                         resID = R.drawable.ic_module_state_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_defaultStatusInfoFragment
                     ).toUnified(),
+
                     CommonModule(
                         name = "位置信息",
                         resID = R.drawable.ic_module_location_info,

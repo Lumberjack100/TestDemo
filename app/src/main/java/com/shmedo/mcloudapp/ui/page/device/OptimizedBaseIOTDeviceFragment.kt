@@ -183,7 +183,6 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
      */
     protected fun rebootDevice(
         config: CommandSequenceConfig = CommandSequenceConfig(
-            timeout = 15_000L,
             errorConfig = ErrorConfig.dialogConfig()
         ),
         callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks()
@@ -201,7 +200,6 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
      */
     protected open fun restoreFactory(
         config: CommandSequenceConfig = CommandSequenceConfig(
-            timeout = 15_000L,
             errorConfig = ErrorConfig.dialogConfig()
         ),
         callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks()

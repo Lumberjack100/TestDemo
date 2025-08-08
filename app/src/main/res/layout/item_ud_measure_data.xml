@@ -11,7 +11,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDHomeFragment.UDClickProxy" />
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat

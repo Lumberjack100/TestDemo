@@ -32,14 +32,19 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.baseclickproxy.DoubleClickListener
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.DeviceError
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentUniversalDeviceHomeNewBinding
 import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
@@ -48,7 +53,7 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.UnifiedDeviceModule
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.LocationViewModel
@@ -72,11 +77,18 @@ import timber.log.Timber
 import java.util.Locale
 
 /**
- * 创建者：gonghe
- * 创建时间：2025/6/9
- * 描述： 通用设备配置主页面抽象基类 - 支持4G和蓝牙两种通讯方式
+ * @author：gonghe
+ * @time: 2025/7/25
+ * @desc: 使用优化架构的通用设备配置主页面抽象基类
+ *
+ * 优化特点：
+ * 1. 使用新的通信架构DeviceCommunicationManager，代码更简洁
+ * 2. 统一的错误处理策略
+ * 3. 响应驱动的指令执行
+ * 4. 保持原有的复杂业务逻辑不变
+ * 5. 支持4G和蓝牙两种通讯方式
  */
-abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
+abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentUniversalDeviceHomeNewBinding
     protected val toolbarViewModel: ToolbarViewModel by viewModels()
     protected val mHeadStates: CommonDeviceHomeViewModel by viewModels()
@@ -92,7 +104,6 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     private var lastOnlineStatus: Boolean = false//在线状态
     private var deviceStatusCheckJob: Job? = null
-
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -126,7 +137,8 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
     private fun initDeviceLogoDoubleClickListener() {
         binding.llDeviceInfo.ivDeviceLogo.setOnClickListener(object : DoubleClickListener() {
             override fun onDoubleClick(v: View) {
-                if (isBleDisconnected() || isNetDisconnected()) {
+                if (!isDeviceConnected()) {
+                    Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                     return
                 }
                 searchDevice()
@@ -147,22 +159,70 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
         initModuleData()
     }
 
-    override fun onConnectionStateChanged(isConnected: Boolean) {
-        mHeadStates.isConnected.set(isConnected)
-        if (isConnected) {
-            mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
+    override fun onDeviceConnecting() {
+        showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
+    }
+
+    /**
+     * 设备连接状态回调
+     */
+    override fun onDeviceConnected() {
+        mHeadStates.isConnected.set(true)
+        mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
+
+        if (communicateWay is BleConnect) {
             mHeadStates.iotPlatformStateText.set("蓝牙已连接")
             toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
-
+            onDeviceReadyForCommunicationData()
         } else {
-            mHeadStates.productLogoResId.set(mHeadStates.productOfflineResId.get())
-            mHeadStates.iotPlatformStateText.set("蓝牙已断开")
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-
-            mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
+            mHeadStates.iotPlatformStateText.set("米度平台在线")
+            onDeviceReadyForCommunicationData()
         }
 
-        //刷新模块状态
+        refreshModuleStatus(true)
+    }
+
+    override fun onDeviceDisconnected() {
+        dismissLoadingDialog()
+        mHeadStates.isConnected.set(false)
+        mHeadStates.productLogoResId.set(mHeadStates.productOfflineResId.get())
+
+        if (communicateWay is BleConnect) {
+            mHeadStates.iotPlatformStateText.set("蓝牙已断开")
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
+        } else {
+            mHeadStates.iotPlatformStateText.set("米度平台离线")
+        }
+
+        mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
+        refreshModuleStatus(false)
+    }
+
+    override fun onDeviceConnectionError(error: DeviceError) {
+        dismissLoadingDialog()
+    }
+
+    /**
+     * 设备准备就绪，可以接收通信数据
+     */
+    open fun onDeviceReadyForCommunicationData() {
+        dismissLoadingDialog()
+        queryStatusInfo()
+        // 自动同步位置（如果需要）
+        autoSyncLocationIfNeeded()
+    }
+
+    /**
+     * 查询设备状态信息
+     */
+    open fun queryStatusInfo() {
+        // 子类可重写此方法实现具体的状态查询逻辑
+    }
+
+    /**
+     * 刷新模块状态
+     */
+    private fun refreshModuleStatus(isConnected: Boolean) {
         binding.rvModule.models?.forEach { item ->
             if (item is ConfigModuleTree) {
                 item.configModules.forEach { functionModule ->
@@ -230,20 +290,16 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun processSubModuleItemClick(module: DeviceFunctionModule) {
-        if (isBleDisconnected()) {
+        if (!isDeviceConnected()) {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }
-        when (module) {
-            else -> {
-                processOtherItemClick(module)
-            }
-        }
+        processOtherItemClick(module)
     }
 
     protected open fun processOtherItemClick(configModule: DeviceFunctionModule) {
         if (configModule.navId != 0) {
-            val bundle = BaseIOTDeviceFragment.newBundleArguments(
+            val bundle = OptimizedBaseIOTDeviceFragment.newBundleArguments(
                 productType,
                 communicateWay,
                 deviceInfo,
@@ -259,157 +315,27 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-        //4G 模式下，直接查询设备工作模式
-        if (communicateWay is NetPlatformConnect) {
-            onNetPlatformReady()
-        } else {
+        //蓝牙模式下，开始连接设备
+        if (communicateWay is BleConnect) {
             bleViewModel.launch(bleDevice!!)
         }
     }
 
-    private fun onNetPlatformReady() {
-        lastOnlineStatus = deviceInfo.onlineStatus
-        if (deviceInfo.onlineStatus) {
-            mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
-            mHeadStates.iotPlatformStateText.set("米度平台在线")
-            queryStatusInfo()
-        } else {
-            mHeadStates.productLogoResId.set(mHeadStates.productOfflineResId.get())
-            mHeadStates.iotPlatformStateText.set("米度平台离线")
-
-            mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
-        }
-        //刷新模块状态
-        binding.rvModule.models?.forEach { item ->
-            if (item is ConfigModuleTree) {
-                item.configModules.forEach { functionModule ->
-                    functionModule.refreshStatus(deviceInfo.onlineStatus)
-                }
-            }
-        }
-    }
-
-    override fun onBleDeviceReady() {
-        super.onBleDeviceReady()
-        queryStatusInfo()
-        // 自动同步位置（如果需要）
-        autoSyncLocationIfNeeded()
-    }
-
-    open fun queryStatusInfo() {
-
-    }
-
     /**
-     * 4G 下发指令响应失败
+     * 处理指令响应 - 统一的指令响应处理
      */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                super.doCmdResponseResultError(
-                    cmdStr = cmdStr,
-                    errMsg = "设备查找出错: $errMsg",
-                    isShowErrMsg = true,
-                    isMessageDialog = true
-                )
-            }
-
-            else -> {
-                super.doCmdResponseResultError(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = false,
-                    isMessageDialog = isMessageDialog
-                )
-            }
-        }
-    }
-
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = true,
-                    isMessageDialog = true
-                )
-            }
-
-            else -> {
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = false,
-                    isMessageDialog = isMessageDialog
-                )
-            }
-        }
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = true,
-                    isMessageDialog = true,
-                    errMsg = errMsg
-                )
-            }
-
-            else -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = false,
-                    isMessageDialog = isMessageDialog,
-                    errMsg = errMsg
-                )
-            }
-        }
-    }
-
-    override fun setResultData(cmdStr: String) {
-        updateLastCommunicationTime()
-
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_SEARCH_DEVICE -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设备查找出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
-                            showDialogFragment(FindDeviceBeepDialog.TAG) {
-                                FindDeviceBeepDialog.newInstance(productType)
-                            }
+                        showDialogFragment(FindDeviceBeepDialog.TAG) {
+                            FindDeviceBeepDialog.newInstance(productType)
                         }
                     }
                 }
@@ -420,60 +346,58 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                processOtherCmdResult(
-                    IOTCommandUtil.extractCommandType(cmdStr),
-                    cmdStr
-                )
             }
         }
     }
 
-    protected open fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {}
-
     override fun createObserver() {
         super.createObserver()
-        if (communicateWay is NetPlatformConnect) {
-            checkDeviceOnlineStatus()
-        } else {
-            setupHeartbeat()
-        }
 
-        // 观察定位信息
-        if (isNeedAutoSyncLocation()) {
-            // 观察位置服务错误状态
-            launchAndRepeatWithViewLifecycle(minActiveState = Lifecycle.State.STARTED) {
-                locationViewModel.locationErrorState.collectLatest { error ->
-                    Timber.w("位置服务错误: ${error.message}")
-                    // 如果是自动同步过程中的错误，停止同步
-                    if (isLocationSyncInProgress) {
-                        isLocationSyncInProgress = false
-                    }
+        // 根据通信方式设置不同的观察者
+        setupCommunicationObservers()
+
+        // 设置蓝牙通信时间更新观察者
+        setupBleCommunicationObserver()
+
+        // 设置位置同步相关观察者
+        setupLocationObservers()
+    }
+
+    /**
+     * 设置通信方式相关的观察者
+     */
+    private fun setupCommunicationObservers() {
+        when (communicateWay) {
+            is NetPlatformConnect -> {
+                checkDeviceOnlineStatus()
+            }
+
+            is BleConnect -> {
+                setupHeartbeat()
+            }
+
+            else -> {}
+        }
+    }
+
+    /**
+     * 设置蓝牙通信时间更新观察者
+     */
+    private fun setupBleCommunicationObserver() {
+        launchWithViewLifecycle {
+            try {
+                bleViewModel.commandData.collect { commandData ->
+                    updateLastCommunicationTime()
                 }
+            } catch (e: Exception) {
+                Timber.e(e, "蓝牙通信观察者异常")
             }
         }
     }
 
     /**
-     * 设置心跳检查
+     * 检查设备在线状态
      */
-    protected open fun setupHeartbeat() {
-        launchWithViewLifecycle {
-            lastCommunicationTime
-                .debounce(AppContants.Communication.DELAY_BLE_HEART_BEAT)  //20秒无更新触发
-                .collect { lastUpdateTime ->
-                    val updateTime =
-                        TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
-                    //仅当设备连接并且需要发送心跳时，才发送心跳包
-                    if (mHeadStates.isConnected.get()) {
-                        Timber.Forest.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
-                        val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
-                        Timber.Forest.d("发送心跳包指令: $command")
-                        sendBleCommand(command)
-                    }
-                }
-        }
-    }
-
     private fun checkDeviceOnlineStatus() {
         // 取消现有的job
         deviceStatusCheckJob?.cancel()
@@ -487,15 +411,57 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                     }?.let { deviceDetailInfo ->
                         // 如果设备在线状态发生变化，更新UI
                         if (deviceDetailInfo.deviceInfo.onlineStatus != lastOnlineStatus) {
-                            onNetPlatformReady()
+                            lastOnlineStatus = deviceInfo.onlineStatus
+                            if (deviceInfo.onlineStatus) {
+                                onDeviceConnected()
+                            } else {
+                                onDeviceDisconnected()
+                            }
                         }
                     }
                 } catch (e: Exception) {
-                    Timber.Forest.e(e)
+                    Timber.e(e)
                 }
                 delay(AppContants.Communication.DELAY_CHECK_DEVICE_ONLINE_STATUS)
             }
         }
+    }
+
+    /**
+     * 设置心跳检查
+     */
+    protected open fun setupHeartbeat() {
+        launchWithViewLifecycle {
+            lastCommunicationTime
+                .debounce(AppContants.Communication.DELAY_BLE_HEART_BEAT)  //蓝牙连接心跳包发送间隔
+                .collect { lastUpdateTime ->
+                    // 检查设备是否连接
+                    if (!isDeviceConnected()) {
+                        Timber.v("设备未连接，跳过心跳包发送")
+                        return@collect
+                    }
+
+                    // 计算距离上次通信的时间
+                    val timeSinceLastCommunication = System.currentTimeMillis() - lastUpdateTime
+                    val updateTime = TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
+                    Timber.d("准备发送心跳包 - 距离上次通信: ${timeSinceLastCommunication}ms, 上次通信时间: $updateTime")
+
+                    // 发送心跳包指令
+                    sendHeartbeatCommand()
+                }
+        }
+    }
+
+    protected open fun sendHeartbeatCommand() {
+        val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false,
+                errorConfig = ErrorConfig.silentConfig(),
+                timeout = 5000L  // 心跳包使用较短的超时时间
+            )
+        )
     }
 
     override fun onResume() {
@@ -508,11 +474,40 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
         super.onDestroy()
         deviceStatusCheckJob?.cancel()
         deviceStatusCheckJob = null
-        // 不要在这里停止位置服务，因为 LocationViewModel 是 Activity 级别的
-        // locationViewModel.stopLocation()
     }
 
     //<editor-fold desc="自动位置同步相关">
+    /**
+     * 设置位置同步相关的观察者
+     */
+    private fun setupLocationObservers() {
+        if (!isNeedAutoSyncLocation()) {
+            return
+        }
+
+        // 观察位置服务错误状态
+        launchAndRepeatWithViewLifecycle(minActiveState = Lifecycle.State.STARTED) {
+            try {
+                locationViewModel.locationErrorState.collectLatest { error ->
+                    Timber.w("位置服务错误: ${error.message}")
+                    handleLocationServiceError()
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "位置服务观察者异常")
+            }
+        }
+    }
+
+    /**
+     * 处理位置服务错误
+     */
+    private fun handleLocationServiceError() {
+        if (isLocationSyncInProgress) {
+            Timber.d("位置同步过程中发生错误，停止同步")
+            isLocationSyncInProgress = false
+        }
+    }
+
     /**
      * 判断是否需要自动同步位置
      */
@@ -523,7 +518,6 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                         || productType == ProductType.BHY
                         || productType == ProductType.LB20S
                         || productType == ProductType.LR200
-
                         || productType == ProductType.COLLECTOR_R_1
                         || productType == ProductType.COLLECTOR_R_2
                         || productType == ProductType.DAS
@@ -650,11 +644,9 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
      * 执行位置同步
      */
     private fun performLocationSync() {
-        if (isBleDisconnected()) {
+        if (!isDeviceConnected()) {
             return
         }
-
-        commandItems.clear()
         val command = when (productType) {
             ProductType.U_I_1,
             ProductType.U_R_1,
@@ -676,12 +668,15 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
             }
         }
 
-        commandItems.add(command)
-
         Timber.d("自动同步位置指令: $command")
-        sendCommandFromCmdList(isStartTimeoutJob = false)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false,
+                errorConfig = ErrorConfig.silentConfig()
+            )
+        )
     }
-    //</editor-fold>
 
     private fun handleLocationSyncResult(cmdStr: String) {
         when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
@@ -689,18 +684,15 @@ abstract class BaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 val errMsg = "位置同步失败: ${result.message}"
                 Timber.e(errMsg)
                 // 自动同步失败时不显示错误提示，静默处理
-                cancelNearbyCommunicationTimeoutJob()
                 isLocationSyncInProgress = false
             }
 
             else -> {
-                sendCommandFromCmdList {
-                    Timber.d("位置自动同步成功")
-                    isLocationSyncInProgress = false
-                    locationViewModel.stopLocation()
-                }
+                Timber.d("位置自动同步成功")
+                isLocationSyncInProgress = false
+                locationViewModel.stopLocation()
             }
         }
     }
     //</editor-fold>
-}
+} 
