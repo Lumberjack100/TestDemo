@@ -13,12 +13,14 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyleFragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +32,7 @@ import timber.log.Timber
  * 创建时间：2024/9/19
  * 描述： 自组网报警网关基本信息
  */
-class GWBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
+class GWBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
     private val STATION_NODE_NUM = 10
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -39,20 +41,28 @@ class GWBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
     }
 
     override fun queryStatusInfo() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
+
         var command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_GET_DEVICE_STATUS
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_GET_TERMINAL_ID
         )
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        commands.add(command)
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DEVICE_STATUS -> {
                 val result = iotParseManager.parse<String>(
@@ -67,11 +77,7 @@ class GWBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        val content: String = result.data
-                        initBaseInfo(content)
+                        initBaseInfo(result.data)
                     }
                 }
             }
@@ -89,16 +95,12 @@ class GWBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initTerminalIds(result.data)
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
             }
         }
     }
