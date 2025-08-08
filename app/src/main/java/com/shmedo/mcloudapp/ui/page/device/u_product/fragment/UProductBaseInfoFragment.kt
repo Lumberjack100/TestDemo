@@ -11,13 +11,15 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoTextSwitcherItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyleFragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +29,19 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class UProductBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
+/**
+ * 创建者：gonghe
+ * 创建时间：2025/5/30
+ * 描述： U产品基本信息
+ * 
+ * 优化特点：
+ * 1. 继承自 OptimizedBaseDeviceStatusInfoStyleFragment，使用新的通信架构
+ * 2. 统一的错误处理策略
+ * 3. 响应驱动的指令执行
+ * 4. 保持原有的U产品特定业务逻辑不变（包括异常信息轮播功能）
+ * 5. 支持4G和蓝牙两种通讯方式
+ */
+class UProductBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
     private var abnormalInfoJob: Job? = null
 
     private var textSwitcherItem: DeviceStatusInfoTextSwitcherItem? = null
@@ -40,11 +54,18 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
 
     override fun queryStatusInfo() {
         abnormalInfoJob?.cancel()
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        commands.add(command)
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun <T> initStatusInfo(content: T) {
@@ -125,7 +146,7 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
 
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
-                Timber.Forest.e(e)
+                Timber.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
