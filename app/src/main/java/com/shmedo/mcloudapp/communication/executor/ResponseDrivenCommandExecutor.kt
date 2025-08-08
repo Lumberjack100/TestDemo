@@ -101,6 +101,7 @@ class ResponseDrivenCommandExecutor(
                     is CommandResult.Success -> {
                         // 检查是否是最后一条指令
                         if (index == commands.size - 1) {
+                            Timber.i("指令序列执行完成，成功${getSuccessCount()}条，失败${getErrorCount()}条")
                             isExecuting.set(false)
                             callbacks.onComplete.invoke(executionResults.toList())
                         }
@@ -120,6 +121,9 @@ class ResponseDrivenCommandExecutor(
                             // 保持原有逻辑：只是回调，不检查返回值
                             callbacks.onSuccess?.invoke(result)
                         }
+                        //最后一条指令,返回
+                        if (index == commands.size - 1) return
+
                         // 继续执行下一条指令
                     }
 
@@ -205,7 +209,7 @@ class ResponseDrivenCommandExecutor(
     fun cancelExecution() {
         currentExecutionJob?.cancel()
         isExecuting.set(false)
-        Timber.i("指令序列执行已取消")
+        Timber.i("清理指令序列执行 Job")
     }
 
     /**
