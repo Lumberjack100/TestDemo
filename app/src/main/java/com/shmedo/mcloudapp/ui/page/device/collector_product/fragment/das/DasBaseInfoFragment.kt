@@ -22,11 +22,14 @@ import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyleFragment
+import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import timber.log.Timber
 
@@ -36,126 +39,96 @@ import timber.log.Timber
  * @desc: 物联网采集器(DAS)基本信息 - 支持4G和蓝牙两种通讯方式
  *
  */
-class DasBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
-    private var isBleMode = false
+class DasBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         binding.llToolbar.toolbar.title = "基本信息"
     }
 
-    override fun initData() {
-        super.initData()
-        // 判断通讯方式
-        isBleMode = communicateWay == BleConnect
-    }
-
     override fun queryStatusInfo() {
-        if (isBleMode) {
-            queryBleInfo()
+        val commands = mutableListOf<String>()
+        if (communicateWay is BleConnect) {
+            /**
+             * 查询设备状态1: ##041\r\n <br/>
+             * 应答: $$041,(1),(2),(3),(4),(5),(6)\r\n <br/>
+             * （1）SN号 <br/>
+             * （2）IMEI号 <br/>
+             * （3）SIM卡号 <br/>
+             * （4）启动代码1 <br/>
+             * （5）启动代码2 <br/>
+             * （6）信号强度，1~11为1格信号，12~18为2格信号，19~25为3格信号，26~31为4格信号 <br/>
+             */
+            commands.add(MDCommandUtil.getCommand(MDCommandType.QUERY_DAS_STATUS_1))
+            /**
+             * 获取版本信息 ##040\r\n <br/>
+             * 应答: $$040,(1),(2),(3)\r\n<br/>
+             * (1)“产品序列号”<br/>
+             * (2)“固件版本号”<br/>
+             * (3)“生产日期”<br/>
+             */
+            commands.add(MDCommandUtil.getCommand(MDCommandType.VERSION_MESSAGE))
+            /**
+             * 获取信号强度 ##014\r\n<br/>
+             * 应答:$$014,(1),(2) ,(3),(4) ,(5),(6) ,(7),(8), (9),(10) \r\n<br/>
+             * (1)：信号值<br/>
+             * (2)：GPS定位搜星数目<br/>
+             * (3)：启动代码<br/>
+             * (4)：重启代码<br/>
+             * (5)：sim卡ccid<br/>
+             * (6)：设备内部温度<br/>
+             * (7)：设备内部电池电压<br/>
+             * (8)：设备外部电压<br/>
+             * (9)：运营商类型<br/>
+             * (10)：网络制式<br/>
+             */
+            commands.add(MDCommandUtil.getCommand(MDCommandType.SYSTEM_RUN_STATE))
+            /**
+             * 查询设备状态2:##042\r\n<br/>
+             * $$042,(1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(15),(16),(17),(18)\r\n<br/>
+             * （1）SN号<br/>
+             * （2）经度<br/>
+             * （3）纬度<br/>
+             * （4）设备内部电压<br/>
+             * （5）设备外部电压<br/>
+             * （6）太阳能控制器状态<br/>
+             * （7）太阳能板电压<br/>
+             * （8）电池电压<br/>
+             * （9）日发电量<br/>
+             * （10）日耗电量<br/>
+             * （11）机箱内部温湿度状态<br/>
+             * （12）机箱内部温度<br/>
+             * （13）机箱内部湿度<br/>
+             * （14）机箱外部温湿度状态<br/>
+             * （15）机箱外部温度<br/>
+             * （16）机箱外部湿度<br/>
+             * （17）开关量类型，1：雨量计，2：关闭，3：断线报警器<br/>
+             * （18）降雨量或断线报警器状态(1:断开，0：闭合)<br/>
+             * 示例：$$042,150000L,0.000000,0.000000,8.4,11.9,0,1.1,11.9,0.0,0.0,0,23.1,35.9,0,23.8,35.1,2,0.0<br/>
+             */
+            commands.add(MDCommandUtil.getCommand(MDCommandType.QUERY_DAS_STATUS_2))
         } else {
-            query4GInfo()
+            // 4G 指令序列
+            commands.add(IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_DEVICE_BASE))
+            commands.add(
+                IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS)
+            )
         }
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false,
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
-    /**
-     * 4G通讯模式查询信息
-     */
-    private fun query4GInfo() {
-        commandItems.clear()
-
-        var command = IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_DEVICE_BASE)
-        commandItems.add(command)
-
-        command =
-            IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS)
-        commandItems.add(command)
-
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 蓝牙通讯模式查询信息
-     */
-    private fun queryBleInfo() {
-        commandItems.clear()
-
-        /**
-         * 查询设备状态1: ##041\r\n <br/>
-         * 应答: $$041,(1),(2),(3),(4),(5),(6)\r\n <br/>
-         * （1）SN号 <br/>
-         * （2）IMEI号 <br/>
-         * （3）SIM卡号 <br/>
-         * （4）启动代码1 <br/>
-         * （5）启动代码2 <br/>
-         * （6）信号强度，1~11为1格信号，12~18为2格信号，19~25为3格信号，26~31为4格信号 <br/>
-         */
-        var command = MDCommandUtil.getCommand(MDCommandType.QUERY_DAS_STATUS_1)
-        commandItems.add(command)
-
-        /**
-         * 获取版本信息 ##040\r\n <br/>
-         * 应答: $$040,(1),(2),(3)\r\n<br/>
-         * (1)“产品序列号”<br/>
-         * (2)“固件版本号”<br/>
-         * (3)“生产日期”<br/>
-         */
-        command = MDCommandUtil.getCommand(MDCommandType.VERSION_MESSAGE)
-        commandItems.add(command)
-
-        /**
-         * 获取信号强度 ##014\r\n<br/>
-         * 应答:$$014,(1),(2) ,(3),(4) ,(5),(6) ,(7),(8), (9),(10) \r\n<br/>
-         * (1)：信号值<br/>
-         * (2)：GPS定位搜星数目<br/>
-         * (3)：启动代码<br/>
-         * (4)：重启代码<br/>
-         * (5)：sim卡ccid<br/>
-         * (6)：设备内部温度<br/>
-         * (7)：设备内部电池电压<br/>
-         * (8)：设备外部电压<br/>
-         * (9)：运营商类型<br/>
-         * (10)：网络制式<br/>
-         */
-        command = MDCommandUtil.getCommand(MDCommandType.SYSTEM_RUN_STATE)
-        commandItems.add(command)
-
-        /**
-         * 查询设备状态2:##042\r\n<br/>
-         * $$042,(1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(15),(16),(17),(18)\r\n<br/>
-         * （1）SN号<br/>
-         * （2）经度<br/>
-         * （3）纬度<br/>
-         * （4）设备内部电压<br/>
-         * （5）设备外部电压<br/>
-         * （6）太阳能控制器状态<br/>
-         * （7）太阳能板电压<br/>
-         * （8）电池电压<br/>
-         * （9）日发电量<br/>
-         * （10）日耗电量<br/>
-         * （11）机箱内部温湿度状态<br/>
-         * （12）机箱内部温度<br/>
-         * （13）机箱内部湿度<br/>
-         * （14）机箱外部温湿度状态<br/>
-         * （15）机箱外部温度<br/>
-         * （16）机箱外部湿度<br/>
-         * （17）开关量类型，1：雨量计，2：关闭，3：断线报警器<br/>
-         * （18）降雨量或断线报警器状态(1:断开，0：闭合)<br/>
-         * 示例：$$042,150000L,0.000000,0.000000,8.4,11.9,0,1.1,11.9,0.0,0.0,0,23.1,35.9,0,23.8,35.1,2,0.0<br/>
-         */
-        command = MDCommandUtil.getCommand(MDCommandType.QUERY_DAS_STATUS_2)
-        commandItems.add(command)
-
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    override fun isTargetCommandType(commandType: IOTCommandType): Boolean = true
-
-    override fun setResultData(cmdStr: String) {
-        if (isBleMode) {
-            handleBleCommandResult(cmdStr)
-        } else {
+    override fun handleCommandResponse(cmdStr: String) {
+        if (communicateWay is NetPlatformConnect) {
             handle4GCommandResult(cmdStr)
+        } else {
+            handleBleCommandResult(cmdStr)
         }
     }
 
@@ -173,13 +146,9 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询基本信息出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         init4GBaseInfo(result.data)
                     }
                 }
@@ -194,22 +163,98 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询温湿度状态出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         init4GTemperatureAndHumidityStatus(result.data)
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+
             }
         }
+    }
+
+    /**
+     * 处理蓝牙通讯指令结果
+     */
+    private fun handleBleCommandResult(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.QUERY_DAS_STATUS_1 -> {//##041\r\n：查询设备状态1
+                val result = mdParseManager.parse<DeviceStatusInfoOne>(
+                    cmdStr,
+                    MDCommandType.QUERY_DAS_STATUS_1
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询基本信息出错"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    is MDCommandResult.Success -> {
+                        initBleDeviceStatus1(result.data)
+                    }
+                }
+            }
+
+            MDCommandType.VERSION_MESSAGE -> {//##040\r\n：获取版本信息
+                val result = mdParseManager.parse<VersionMessageInfo>(
+                    cmdStr,
+                    MDCommandType.VERSION_MESSAGE
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询版本信息出错"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    is MDCommandResult.Success -> {
+                        initBleDeviceStatus2(result.data)
+                    }
+                }
+            }
+
+            MDCommandType.SYSTEM_RUN_STATE -> {//##014\r\n：获取信号强度
+                val result = mdParseManager.parse<SystemRunStateInfo>(
+                    cmdStr,
+                    MDCommandType.SYSTEM_RUN_STATE
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询运行状态出错"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    is MDCommandResult.Success -> {
+                        initBleDeviceStatus3(result.data)
+                    }
+                }
+            }
+
+            MDCommandType.QUERY_DAS_STATUS_2 -> {//##042\r\n：查询设备状态2
+                val result = mdParseManager.parse<DeviceStatusInfoTwo>(
+                    cmdStr,
+                    MDCommandType.QUERY_DAS_STATUS_2
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询信息出错"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    is MDCommandResult.Success -> {
+                        initBleDeviceStatus4(result.data)
+                    }
+                }
+            }
+
+            else -> {
+                // 忽略无关指令
+            }
+        }
+
     }
 
     private fun init4GBaseInfo(baseInfo: DasBaseInfo) {
@@ -239,7 +284,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
             DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                 groupList,
                 name = "外部电压",
-                value = baseInfo.outvolt.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
+                value = baseInfo.outvolt.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                 unit = "V"
             )
             val batteryCapacity =
@@ -329,100 +374,6 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
         }
     }
 
-    /**
-     * 处理蓝牙通讯指令结果
-     */
-    private fun handleBleCommandResult(cmdStr: String) {
-        when (MDCommandUtil.extractCommandType(cmdStr)) {
-            MDCommandType.QUERY_DAS_STATUS_1 -> {//##041\r\n：查询设备状态1
-                val result = mdParseManager.parse<DeviceStatusInfoOne>(
-                    cmdStr,
-                    MDCommandType.QUERY_DAS_STATUS_1
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "查询基本信息出错"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        initBleDeviceStatus1(result.data)
-                    }
-                }
-            }
-
-            MDCommandType.VERSION_MESSAGE -> {//##040\r\n：获取版本信息
-                val result = mdParseManager.parse<VersionMessageInfo>(
-                    cmdStr,
-                    MDCommandType.VERSION_MESSAGE
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "查询版本信息出错"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        initBleDeviceStatus2(result.data)
-                    }
-                }
-            }
-
-            MDCommandType.SYSTEM_RUN_STATE -> {//##014\r\n：获取信号强度
-                val result = mdParseManager.parse<SystemRunStateInfo>(
-                    cmdStr,
-                    MDCommandType.SYSTEM_RUN_STATE
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "查询运行状态出错"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        initBleDeviceStatus3(result.data)
-                    }
-                }
-            }
-
-            MDCommandType.QUERY_DAS_STATUS_2 -> {//##042\r\n：查询设备状态2
-                val result = mdParseManager.parse<DeviceStatusInfoTwo>(
-                    cmdStr,
-                    MDCommandType.QUERY_DAS_STATUS_2
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "查询信息出错"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        initBleDeviceStatus4(result.data)
-                    }
-                }
-            }
-
-            else -> {
-                cancelNearbyCommunicationTimeoutJob()
-            }
-        }
-    }
 
     private fun initBleDeviceStatus1(info: DeviceStatusInfoOne) {
         try {
@@ -478,16 +429,15 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoStyleFragment() {
             DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                 groupList,
                 name = "外部电压",
-                value = info.externalVoltage.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
+                value = info.externalVoltage.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                 unit = "V"
             )
 
-            val batteryCapacity =
-                info.batteryVoltage.replace("%", "").toDoubleOrNull() ?: Double.MAX_VALUE
             DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                 groupList,
                 name = "内部电量",
-                value = info.batteryVoltage.replace("%", "").ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                value = info.batteryVoltage.replace("%", "")
+                    .ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                 unit = "%",
                 isBottomItem = true
             )
