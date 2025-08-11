@@ -228,7 +228,6 @@ class UProductCommonHomeFragment : BaseDeviceHomeFragment() {
                 name = "时间校准",
                 resID = R.drawable.ic_module_time_calibration_new,
                 navId = R.id.action_global_to_time_calibration,
-                isSupport = productType != ProductType.U_L_1
             ).toUnified()
         )
 
@@ -237,7 +236,6 @@ class UProductCommonHomeFragment : BaseDeviceHomeFragment() {
                 name = "系统配置",
                 resID = R.drawable.ic_module_system_setting,
                 navId = R.id.action_global_to_advancedSettingFragment,
-                isSupport = productType != ProductType.U_L_1
             ).toUnified()
         )
 

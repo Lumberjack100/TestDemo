@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.ui.page.device.common.DeviceReplacementFragment.ClickProxy" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
+<!--            <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical"-->
+<!--                android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"-->
+<!--                android:paddingTop="@dimen/page_content_container_padding_top_12"-->
+<!--                android:paddingBottom="@dimen/page_content_container_padding_bottom_100">-->
+
+<!--                <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                    style="@style/Common_EditItem_Layout_Style"-->
+<!--                    android:background="@drawable/shape_common_click_item_top_corner_4">-->
+
+<!--                    <View-->
+<!--                        android:layout_width="3dp"-->
+<!--                        android:layout_height="14dp"-->
+<!--                        android:background="@color/black" />-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_GroupItem_Title_Style"-->
+<!--                        android:layout_marginStart="@dimen/dimen_size_8"-->
+<!--                        android:text="旧设备信息" />-->
+
+<!--                </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+<!--                <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                    style="@style/Common_ClickableItem_Layout_Style"-->
+<!--                    android:background="@drawable/layer_common_click_item_with_divider">-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_ClickableItem_Title_Style"-->
+<!--                        android:text="旧设备SN号" />-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_ClickableItem_Value_Style"-->
+<!--                        android:drawableEnd="@null"-->
+<!--                        android:text="@{stateVM.receiveChannel}"-->
+<!--                        tools:text="2400007UD2" />-->
+<!--                </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+<!--                <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                    style="@style/Common_ClickableItem_Layout_Style"-->
+<!--                    android:background="@drawable/layer_common_click_item_with_divider">-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_ClickableItem_Title_Style"-->
+<!--                        android:text="固件版本号" />-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_ClickableItem_Value_Style"-->
+<!--                        android:drawableEnd="@null"-->
+<!--                        android:text="@{stateVM.receiveChannel}"-->
+<!--                        tools:text="2400007UD2" />-->
+<!--                </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+<!--                <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@drawable/shape_common_click_item_bottom_corner_4"-->
+<!--                    android:orientation="vertical">-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_ClickableItem_Title_Style"-->
+<!--                        android:layout_marginStart="@dimen/page_content_item_padding_horizontal_16"-->
+<!--                        android:layout_marginTop="@dimen/dimen_size_10"-->
+<!--                        android:text="监测数据类型" />-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginVertical="@dimen/dimen_size_12"-->
+<!--                        android:layout_marginStart="@dimen/page_content_item_padding_horizontal_16"-->
+<!--                        android:text="@{stateVM.companyIntro}"-->
+<!--                        android:textColor="@color/sub_title_text_color_black_60"-->
+<!--                        android:textSize="@dimen/page_content_item_text_size_14"-->
+<!--                        tools:text="加速度计、设备报警、倾角计" />-->
+<!--                </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+<!--                <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                    style="@style/Common_EditItem_Layout_Style"-->
+<!--                    android:background="@drawable/shape_common_click_item_top_corner_4">-->
+
+<!--                    <View-->
+<!--                        android:layout_width="3dp"-->
+<!--                        android:layout_height="14dp"-->
+<!--                        android:background="@color/black" />-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_GroupItem_Title_Style"-->
+<!--                        android:layout_marginStart="@dimen/dimen_size_8"-->
+<!--                        android:text="新设备信息" />-->
+
+<!--                </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+<!--                <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                    style="@style/Common_ClickableItem_Layout_Style"-->
+<!--                    onClickWithDebouncing="@{()->click.onToggleAdvancedClick()}"-->
+<!--                    android:background="@drawable/layer_common_click_item_with_divider">-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_ClickableItem_Title_Style"-->
+<!--                        android:text="*新设备SN号" />-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_ClickableItem_Value_Style"-->
+<!--                        android:text="@{stateVM.receiveChannel}"-->
+<!--                        tools:text="请选择" />-->
+<!--                </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+<!--                <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                    style="@style/Common_ClickableItem_Layout_Style"-->
+<!--                    android:background="@drawable/layer_common_click_item_with_divider">-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_ClickableItem_Title_Style"-->
+<!--                        android:text="*固件版本号" />-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_ClickableItem_Value_Style"-->
+<!--                        android:drawableEnd="@null"-->
+<!--                        android:text="@{stateVM.receiveChannel}"-->
+<!--                        tools:text="选择完成设备自动填入" />-->
+<!--                </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+<!--                <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@drawable/layer_common_click_item_with_divider"-->
+<!--                    android:orientation="vertical">-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_ClickableItem_Title_Style"-->
+<!--                        android:layout_marginStart="@dimen/page_content_item_padding_horizontal_16"-->
+<!--                        android:layout_marginTop="@dimen/dimen_size_10"-->
+<!--                        android:text="*监测数据类型" />-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginVertical="@dimen/dimen_size_12"-->
+<!--                        android:layout_marginStart="@dimen/page_content_item_padding_horizontal_16"-->
+<!--                        android:text="@{stateVM.companyIntro}"-->
+<!--                        android:textColor="@color/sub_title_text_color_black_60"-->
+<!--                        android:textSize="@dimen/page_content_item_text_size_14"-->
+<!--                        tools:text="选择完成设备自动填入" />-->
+<!--                </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+<!--                <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@drawable/shape_common_click_item_bottom_corner_4"-->
+<!--                    android:orientation="vertical">-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_ClickableItem_Title_Style"-->
+<!--                        android:layout_marginStart="@dimen/page_content_item_padding_horizontal_16"-->
+<!--                        android:layout_marginTop="@dimen/dimen_size_10"-->
+<!--                        android:text="*是否同步旧设备配置信息到新设备" />-->
+
+<!--                    <com.kyleduo.switchbutton.SwitchButton-->
+<!--                        style="@style/SwitchButton_Item_Button_Style"-->
+<!--                        android:layout_marginVertical="@dimen/dimen_size_12"-->
+<!--                        android:layout_marginStart="@dimen/page_content_item_padding_horizontal_16"-->
+<!--                        android:checked="@={stateVM.isCenterOpened}"-->
+<!--                        app:kswAnimationDuration="100"-->
+<!--                        app:kswBackDrawable="@drawable/sl_switchbutton_back"-->
+<!--                        app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />-->
+
+<!--                </androidx.appcompat.widget.LinearLayoutCompat>-->
+<!--                <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                    style="@style/Common_EditItem_Layout_Style"-->
+<!--                    android:background="@drawable/shape_common_click_item_top_corner_4">-->
+
+<!--                    <View-->
+<!--                        android:layout_width="3dp"-->
+<!--                        android:layout_height="14dp"-->
+<!--                        android:background="@color/black" />-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_GroupItem_Title_Style"-->
+<!--                        android:layout_marginStart="@dimen/dimen_size_8"-->
+<!--                        android:text="设备故障信息" />-->
+
+<!--                </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+<!--                <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                    style="@style/Common_ClickableItem_Layout_Style"-->
+<!--                    onClickWithDebouncing="@{()->click.onToggleAdvancedClick()}"-->
+<!--                    android:background="@drawable/layer_common_click_item_with_divider">-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_ClickableItem_Title_Style"-->
+<!--                        android:text="*故障类型" />-->
+
+<!--                    <com.google.android.material.textview.MaterialTextView-->
+<!--                        style="@style/Common_ClickableItem_Value_Style"-->
+<!--                        android:text="@{stateVM.receiveChannel}"-->
+<!--                        tools:text="请选择" />-->
+<!--                </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+
+
+<!--                <com.google.android.material.button.MaterialButton-->
+<!--                    android:id="@+id/btn_confirm"-->
+<!--                    style="@style/SubmitButton_Style"-->
+<!--                    onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"-->
+<!--                    android:layout_marginTop="@dimen/summit_button_margin_top_20"-->
+<!--                    android:text="@string/button_sure_text" />-->
+
+<!--            </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+        </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

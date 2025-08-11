@@ -7,12 +7,12 @@ package com.shmedo.mcloudapp.model
  */
 data class AdvancedSettingItem(
     val name: String = "",
-    val type: Type = Type.FIRMWARE
+    val type: Type = Type.FIRMWARE_UPGRADE
 ) {
     sealed class Type {
 
-        //固件
-        data object FIRMWARE : Type()
+        //固件升级
+        data object FIRMWARE_UPGRADE : Type()
 
         //偏移初始化
         data object OFFSET_INITIALIZATION : Type()
@@ -37,6 +37,9 @@ data class AdvancedSettingItem(
 
         //格式化数据存储
         data object FORMAT_DATA_STORAGE : Type()
+
+        //更换设备
+        data object REPLACE_DEVICE : Type()
     }
 }
 

@@ -22,10 +22,12 @@
     <string name="unknown_error">发生未知错误</string>
     <string name="fetch_data_failed">获取数据失败</string>
     <string name="login_button_text">登录</string>
-    <string name="sure_button_text">确认</string>
-    <string name="cancel_button_text">取消</string>
-    <string name="save_button_text">保存</string>
-    <string name="exit_button_text">退出</string>
+    <string name="button_send_text">发送</string>
+    <string name="button_save_text">保存</string>
+    <string name="button_reset_text">恢复默认配置</string>
+    <string name="button_sure_text">确定</string>
+    <string name="button_cancel_text">取消</string>
+    <string name="button_exit_text">退出</string>
     <string name="error_occurred">不好意思App翻车了。\n请拿已复制好的错误日志去啪啪啪得打作者的脸</string>
     <string name="crash_error_activity_error_occurred_explanation">发生了意外错误。\n给您带来的不便深感抱歉。</string>
 
@@ -111,9 +113,6 @@
     <string name="water_level3_hint">请输入0~100000之间数值</string>
     <string name="alarm_play_time_hint">请输入10~300之间数值</string>
     <string name="alarm_play_gap_hint">请输入5~300之间数值</string>
-    <string name="button_send_text">发送</string>
-    <string name="button_save_text">保存</string>
-    <string name="button_reset_text">恢复默认配置</string>
 
     <string name="ps_prompt_image_content">是否保存图片至手机？</string>
     <string name="ps_prompt_video_content">是否保存视频至手机？</string>

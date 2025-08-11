@@ -130,16 +130,6 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
     private fun initAdapterData() {
         val moduleList: MutableList<AdvancedSettingItem> = mutableListOf()
 
-        // 添加监测数据导出功能
-        if (communicateWay is BleConnect && isMonitoringDataExportEnabled()) {
-            moduleList.add(
-                AdvancedSettingItem(
-                    "监测数据导出",
-                    AdvancedSettingItem.Type.MONITORING_DATA_EXPORT,
-                )
-            )
-        }
-
         if (isNeedSyncLocation()) {
             moduleList.add(
                 AdvancedSettingItem(
@@ -158,11 +148,11 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
             )
         }
 
-        if ((communicateWay is NetPlatformConnect) && productType != ProductType.COLLECTOR_G_0 && productType != ProductType.U_L_1) {
+        if (communicateWay is NetPlatformConnect && isSupportFirmwareUpgrade()) {
             moduleList.add(
                 AdvancedSettingItem(
                     "固件升级",
-                    AdvancedSettingItem.Type.FIRMWARE,
+                    AdvancedSettingItem.Type.FIRMWARE_UPGRADE,
                 )
             )
         }
@@ -193,15 +183,6 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
         }
 
         if (communicateWay is BleConnect) {
-            if (productType != ProductType.COLLECTOR_G_0) {
-                moduleList.add(
-                    AdvancedSettingItem(
-                        "远程调试",
-                        AdvancedSettingItem.Type.REMOTE_DEBUG,
-                    )
-                )
-            }
-
             if (productType == ProductType.U_I_1) {
                 moduleList.add(
                     AdvancedSettingItem(
@@ -210,9 +191,48 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                     )
                 )
             }
+
+            // 添加监测数据导出功能
+            if (isSupportMonitoringDataExport()) {
+                moduleList.add(
+                    AdvancedSettingItem(
+                        "监测数据导出",
+                        AdvancedSettingItem.Type.MONITORING_DATA_EXPORT,
+                    )
+                )
+            }
+
+            if (productType != ProductType.COLLECTOR_G_0) {
+                moduleList.add(
+                    AdvancedSettingItem(
+                        "远程调试",
+                        AdvancedSettingItem.Type.REMOTE_DEBUG,
+                    )
+                )
+            }
+        }
+
+        if (isSupportReplace()) {
+            moduleList.add(
+                AdvancedSettingItem(
+                    "更换设备",
+                    AdvancedSettingItem.Type.REPLACE_DEVICE,
+                )
+            )
         }
 
         binding.recyclerview.models = moduleList
+    }
+
+    /**
+     * 是否支持监测数据导出
+     */
+    private fun isSupportMonitoringDataExport(): Boolean {
+        // TODO: 根据需要启用相应的设备类型
+        // return productType == ProductType.COLLECTOR_R_1
+        //         || productType == ProductType.DAS
+        //         || productType == ProductType.GNSS_M_5
+        return false
     }
 
     /**
@@ -237,16 +257,15 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                 || productType == ProductType.GNSS_M_2
     }
 
+
     /**
-     * 是否支持监测数据导出
+     * 是否支持固件升级
      */
-    private fun isMonitoringDataExportEnabled(): Boolean {
-        // TODO: 根据需要启用相应的设备类型
-        // return productType == ProductType.COLLECTOR_R_1
-        //         || productType == ProductType.DAS
-        //         || productType == ProductType.GNSS_M_5
-        return false
+    private fun isSupportFirmwareUpgrade(): Boolean {
+        return productType != ProductType.U_L_1
+                && productType != ProductType.COLLECTOR_G_0
     }
+
 
     /**
      * 是否支持格式化数据存储
@@ -255,6 +274,15 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
         return productType == ProductType.GNSS_M_1
                 || productType == ProductType.GNSS_M_2
                 || productType == ProductType.GNSS_M_5
+    }
+
+    /**
+     * 是否支持更换新设备
+     */
+    private fun isSupportReplace(): Boolean {
+        return false
+//        return productType != ProductType.U_L_1
+//                && productType != ProductType.COLLECTOR_G_0
     }
 
     override fun createObserver() {
@@ -312,7 +340,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                 }, "取消")
             }
 
-            AdvancedSettingItem.Type.FIRMWARE -> {
+            AdvancedSettingItem.Type.FIRMWARE_UPGRADE -> {
                 val bundle = newBundleArguments(
                     productType,
                     communicateWay,
@@ -366,6 +394,13 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                 showMessage("确定格式化数据吗？", "温馨提示", "确定", {
                     executeFormatDataStorage()
                 }, "取消")
+            }
+
+            AdvancedSettingItem.Type.REPLACE_DEVICE -> {
+                val bundle = DeviceReplacementFragment.newBundleArguments(
+                    deviceInfo
+                )
+                nav().safeNavigate(R.id.action_global_to_deviceReplacementFragment, bundle)
             }
 
             else -> {}
@@ -506,6 +541,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                         val errMsg = "同步安装位置出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
                     }
+
                     else -> {
                         Toaster.show("同步安装位置成功")
                     }
@@ -519,6 +555,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                         val errMsg = "同步安装位置出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
                     }
+
                     else -> {
                         Toaster.show("同步安装位置成功")
                     }
@@ -532,6 +569,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                         val errMsg = "初始化失败: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
                     }
+
                     else -> {
                         Toaster.show("初始化完成")
                     }
@@ -545,6 +583,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                         val errMsg = StringUtils.getString(R.string.reboot_failed) + result.message
                         handleFailureResult(errMsg, isMessageDialog = true)
                     }
+
                     else -> {
                         Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
                     }
@@ -558,6 +597,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                         val errMsg = StringUtils.getString(R.string.reset_failed) + result.message
                         handleFailureResult(errMsg, isMessageDialog = true)
                     }
+
                     else -> {
                         Toaster.show(StringUtils.getString(R.string.device_reset_tip))
                     }
@@ -571,6 +611,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                         val errMsg = "格式化数据出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
                     }
+
                     else -> {
                         Toaster.show("格式化数据成功")
                     }
@@ -587,6 +628,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                                 val errMsg = StringUtils.getString(R.string.reboot_failed)
                                 handleFailureResult(errMsg, isMessageDialog = true)
                             }
+
                             else -> {
                                 Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
                             }
@@ -600,6 +642,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                                 val errMsg = StringUtils.getString(R.string.reset_failed)
                                 handleFailureResult(errMsg, isMessageDialog = true)
                             }
+
                             else -> {
                                 Toaster.show(StringUtils.getString(R.string.device_reset_tip))
                             }
@@ -613,6 +656,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                                 val errMsg = "设置仓储模式出错!"
                                 handleFailureResult(errMsg, isMessageDialog = true)
                             }
+
                             else -> {
                                 Toaster.show("设置仓储模式成功")
                             }
