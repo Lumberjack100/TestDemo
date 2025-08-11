@@ -33,17 +33,18 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentDataCenterParamBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DataCenterParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
@@ -53,10 +54,17 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2025/6/20
- * @desc: 通用数据中心参数配置页面 - 支持4G和蓝牙两种通讯方式
+ * @desc: 优化后的通用数据中心参数配置页面 - 支持4G和蓝牙两种通讯方式
  *
+ * 优化特点：
+ * 1. 使用新的通信架构，代码更简洁
+ * 2. 统一的错误处理策略
+ * 3. 响应驱动的指令执行
+ * 4. 保持原有的复杂业务逻辑不变
+ * 5. 支持多种数据协议配置（MQTT、TCP-C、SL651、NTRIP、HTTP）
+ * 6. 支持多种平台类型选择
  */
-class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
+class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDataCenterParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: DataCenterParamViewModel by viewModels()
@@ -101,7 +109,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 return@onRefresh
             }
@@ -311,7 +319,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -324,7 +332,6 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun closeDataServer() {
-        commandItems.clear()
         val entity = DataCenterParamEntity(
             centerid = statusItem.centerid.toString(),
             addr = "",
@@ -334,13 +341,17 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_DATA_CENTER_PARAM,
             entity.toCommandString()
         )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     private fun initSaveCommand() {
-        commandItems.clear()
         if (mStates.centerServerAddress.get().isEmpty()) {
             showMessageDialog("请输入链路地址!")
             return
@@ -432,9 +443,14 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_DATA_CENTER_PARAM,
             entity.toCommandString()
         )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun lazyLoadData() {
@@ -442,76 +458,22 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryData() {
-        commandItems.clear()
-
         val entity = CenterNumberEntity(statusItem.centerid.toString())
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_PARAM, entity)
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
 
-    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.MD_GET_DATA_CENTER_PARAM)
-                || (commandType == IOTCommandType.MD_SET_DATA_CENTER_PARAM)
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig() // 查询失败显示Dialog
+            )
         )
     }
 
     /**
-     * 4G 下发指令响应超时
+     * 处理指令响应
      */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage,
-            errMsg = errMsg
-        )
-    }
-
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DATA_CENTER_PARAM -> {
                 val result = iotParseManager.parse<DataCenterInfo>(
@@ -522,13 +484,9 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询链路参数出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         try {
                             initDataCenterParam(result.data)
                         } catch (e: Exception) {
@@ -540,23 +498,22 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.MD_SET_DATA_CENTER_PARAM -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置链路参数出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting())
                             processNavigateUp()
-                        }
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+                Timber.d("未处理的指令类型: ${IOTCommandUtil.extractCommandType(cmdStr)}")
             }
         }
     }

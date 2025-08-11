@@ -100,7 +100,7 @@
                 android:onClick="@{()->click.onCancelClick()}"
                 android:paddingHorizontal="@dimen/dimen_size_12"
                 android:paddingVertical="@dimen/dimen_size_5"
-                android:text="@string/cancel_button_text"
+                android:text="@string/button_cancel_text"
                 android:textColor="@color/sub_title_text_color_black_60"
                 android:textSize="@dimen/text_size_13"
                 app:backgroundTint="@color/white"

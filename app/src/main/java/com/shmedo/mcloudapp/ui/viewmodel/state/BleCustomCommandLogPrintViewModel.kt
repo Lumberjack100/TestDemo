@@ -25,10 +25,6 @@ class BleCustomCommandLogPrintViewModel : ViewModel() {
     private val _logItems = MutableResult<List<DebugCmdLogInfo>>()
     val logItems: Result<List<DebugCmdLogInfo>> = _logItems
 
-    // Command generation events
-    private val _commandsToSend = MutableResult<List<String>>()
-    val commandsToSend: Result<List<String>> = _commandsToSend
-
     private val currentLogList = mutableListOf<DebugCmdLogInfo>()
 
     enum class DebugMode(val displayName: String) {
@@ -168,9 +164,5 @@ class BleCustomCommandLogPrintViewModel : ViewModel() {
         }
         
         return commands
-    }
-
-    fun requestSendCommands(commands: List<String>) {
-        _commandsToSend.value = commands
     }
 }

@@ -33,6 +33,8 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseCommandLogPrintClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentBleCustomCommandLogPrintBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -42,7 +44,7 @@ import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleCustomCommandLogPrintViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.Dispatchers
@@ -59,7 +61,7 @@ import java.util.Locale
  * @desc: 蓝牙通讯下自定义指令调试打印输出
  *
  */
-class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
+class BleCustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleCustomCommandLogPrintBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: BleCustomCommandLogPrintViewModel by viewModels()
@@ -143,9 +145,22 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 
     override fun createObserver() {
         super.createObserver()
+        setupBleCommunicationObserver()
         observeLogItems()
         setFragmentResultListener(FRAGMENT_BUILTIN_COMMAND_SELECTED_REQUEST_KEY) { _, bundle ->
             handleFragmentResult(bundle)
+        }
+    }
+
+    private fun setupBleCommunicationObserver() {
+        launchWithViewLifecycle {
+            try {
+                bleViewModel.commandData.collect { commandData ->
+                    mStates.addLog(commandData.response, ColorUtils.getColor(R.color.receive_data_color))
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "蓝牙通信观察者异常")
+            }
         }
     }
 
@@ -159,15 +174,6 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
                 }
             } catch (e: Exception) {
                 Timber.e(e, "更新日志列表失败")
-            }
-        }
-
-        // 观察需要发送的指令
-        mStates.commandsToSend.observe(viewLifecycleOwner) { commands ->
-            if (commands.isNotEmpty()) {
-                commandItems.clear()
-                commandItems.addAll(commands)
-                sendCommandFromCmdList()
             }
         }
     }
@@ -277,7 +283,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     private fun handleSendCommand() {
         try {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -300,17 +306,19 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             return false
         }
 
-//        if (!mStates.validateCommand(command)) {
-//            Toaster.show("指令格式不正确，请以 \$cmd=、## 开头或包含 md_raw")
-//            return false
-//        }
-
         return true
     }
 
     private fun executeCommand(command: String) {
         mStates.addLog(command)
-        sendBleCommand(command)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false,
+                errorConfig = ErrorConfig.silentConfig(), // 失败不显示错误
+                enableBusinessParseFailureInterrupt = false // 不启用业务层解析失败中断功能，保持后续指令执行
+            )
+        )
     }
 
     private fun updateDebugMode(mode: BleCustomCommandLogPrintViewModel.DebugMode) {
@@ -323,21 +331,21 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             }
             mStates.addLogBatch(logsToAdd)
 
-            mStates.requestSendCommands(commands)
+            sendCommandSequence(
+                commands = commands,
+                config = CommandSequenceConfig(
+                    showLoadingDialog = false,
+                    errorConfig = ErrorConfig.silentConfig(), // 失败不显示错误
+                    enableBusinessParseFailureInterrupt = false // 不启用业务层解析失败中断功能，保持后续指令执行
+                )
+            )
         } catch (e: Exception) {
             Timber.e(e, "更新调试模式失败")
             Toaster.show("设置调试模式失败")
         }
     }
 
-    override fun setResultData(cmdStr: String) {
-        try {
-            mStates.addLog(cmdStr, ColorUtils.getColor(R.color.receive_data_color))
-            sendCommandFromCmdList()
-        } catch (e: Exception) {
-            Timber.e(e, "处理返回数据失败")
-        }
-    }
+    override fun handleCommandResponse(cmdStr: String) {}
 
     private fun addMenu() {
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
