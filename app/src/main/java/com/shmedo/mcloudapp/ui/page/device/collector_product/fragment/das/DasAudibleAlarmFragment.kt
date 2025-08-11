@@ -79,7 +79,7 @@ class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
             if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 return@onRefresh
             }
             queryAlarmData()
@@ -128,7 +128,7 @@ class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        fun onSubmitClick() {
+        override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))

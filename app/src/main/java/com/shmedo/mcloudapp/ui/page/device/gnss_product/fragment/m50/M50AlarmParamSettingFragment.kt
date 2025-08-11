@@ -26,13 +26,14 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentM50AlarmParamSettingBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.M50AlarmParamSettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.Dispatchers
@@ -44,8 +45,14 @@ import timber.log.Timber
  * @author：gonghe
  * @time: 2025/1/22
  * @desc: 一体式自供电 GNSS 接收机(M50)报警参数设置
+ * 
+ * 优化特点：
+ * 1. 使用新的通信架构，代码更简洁
+ * 2. 统一的错误处理策略
+ * 3. 响应驱动的指令执行
+ * 4. 保持原有的复杂业务逻辑不变
  */
-class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
+class M50AlarmParamSettingFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM50AlarmParamSettingBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: M50AlarmParamSettingViewModel by viewModels()
@@ -69,9 +76,7 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }
-        registerOnBackPressedDispatcher {
-            handleBackByCheckDataModified()
-        }
+        registerOnBackPressedDispatcher { handleBackByCheckDataModified() }
         initRefresh()
     }
 
@@ -79,8 +84,8 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+            if (!isDeviceConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 return@onRefresh
             }
             queryData()
@@ -91,7 +96,7 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         super.initData()
         initTitles()
         resetDefaultParams()
-        //添加这行来保存初始状态
+        // 保存初始状态
         mStates.saveInitialState()
     }
 
@@ -133,113 +138,144 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         mStates.fourthAlarmThreshold.set("100")
     }
 
-    inner class ClickProxy : BaseClickProxy() {
-        /**
-         * 选择监测点编号
-         */
-        fun onMonitorPointChooseClick() {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-
-            XPopup.Builder(requireContext())
-                .asBottomList(
-                    "监测点编号",
-                    monitorPointList.toTypedArray()
-                ) { position, text ->
-                    mStates.monitorPoint.set(text)
-                }.show()
-        }
-
-        /**
-         * 一级报警测试
-         */
-        fun onTestFirstAlarmClick() {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-            initTestAlarmCommand(1)
-        }
-
-        /**
-         * 二级报警测试
-         */
-        fun onTestSecondAlarmClick() {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-            initTestAlarmCommand(2)
-        }
-
-        /**
-         * 三级报警测试
-         */
-        fun onTestThirdAlarmClick() {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-            initTestAlarmCommand(3)
-        }
-
-        /**
-         * 四级报警测试
-         */
-        fun onTestFourthAlarmClick() {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-            initTestAlarmCommand(4)
-        }
-
-        /**
-         * 恢复默认配置
-         */
-        fun onResetClick() {
-            resetDefaultParams()
-        }
-
-        override fun onSubmitButtonClick() {
-            KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-            initSaveCommand()
-        }
+    override fun lazyLoadData() {
+        binding.refreshLayout.autoRefresh()
     }
 
-    private fun initTestAlarmCommand(level: Int) {
-        commandItems.clear()
+    /**
+     * 查询数据
+     */
+    private fun queryData() {
+        val commands = listOf(
+            // 获取设备状态，用于检查电台模块状态
+            IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS),
+            // 获取报警控制参数
+            IOTCommandUtil.getCommand(IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL),
+            // 获取报警间隔参数
+            IOTCommandUtil.getCommand(IOTCommandType.MD_GET_ALRAM_BROADCAST_REPORT_INTERVAL),
+            // 获取报警阈值参数
+            IOTCommandUtil.getCommand(IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE)
+        )
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig() // 查询失败显示Dialog
+            )
+        )
+    }
+
+    /**
+     * 报警测试
+     */
+    private fun testAlarm(level: Int) {
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_TEST_ALRAM_BROADCAST,
             "level=$level"
         )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
-    private fun initSaveCommand() {
+    /**
+     * 保存配置
+     */
+    private fun saveConfiguration() {
+        // 数据验证
+        if (!validateInputData()) {
+            return
+        }
+
+        val commands = mutableListOf<String>()
+
+        // M50 设备报警启用开关关闭时处理
+        if (mStates.isRadioEnable.get() && !mStates.isOpened.get()) {
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
+                "sw=0"
+            )
+            commands.add(command)
+        }
+
+        // 报警启用开关打开时，才发送报警信息设置指令
+        if (mStates.isRadioEnable.get() && mStates.isOpened.get()) {
+            val monitorPointEntity = AlarmMonitorPointEntity(
+                sw = "1",
+                monitorpoint = mStates.monitorPoint.get(),
+                cnt = mStates.broadcastTimes.get(),
+                level1 = mStates.firstAlarmVoice.get(),
+                level2 = mStates.secondAlarmVoice.get(),
+                level3 = mStates.thirdAlarmVoice.get(),
+                level4 = mStates.fourthAlarmVoice.get()
+            )
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
+                monitorPointEntity.toCommandString()
+            )
+            commands.add(command)
+        }
+
+        // 设置报警间隔
+        val reportIntervalEntity = AlarmReportIntervalEntity(
+            level1 = mStates.firstAlarmReportInterval.get(),
+            level2 = mStates.secondAlarmReportInterval.get(),
+            level3 = mStates.thirdAlarmReportInterval.get(),
+            level4 = mStates.fourthAlarmReportInterval.get()
+        )
+        val reportIntervalCommand = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_ALRAM_BROADCAST_REPORT_INTERVAL,
+            reportIntervalEntity.toCommandString()
+        )
+        commands.add(reportIntervalCommand)
+
+        // 设置报警阈值
+        val triggerValueEntity = AlarmTriggerValueEntity(
+            devlevel1 = mStates.firstAlarmThreshold.get(),
+            devlevel2 = mStates.secondAlarmThreshold.get(),
+            devlevel3 = mStates.thirdAlarmThreshold.get(),
+            devlevel4 = mStates.fourthAlarmThreshold.get()
+        )
+        val triggerValueCommand = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE,
+            triggerValueEntity.toCommandString()
+        )
+        commands.add(triggerValueCommand)
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
+    }
+
+    /**
+     * 数据验证逻辑 - 提取为独立方法提高可读性
+     */
+    private fun validateInputData(): Boolean {
         // 数据验证
         if (mStates.isRadioEnable.get() && mStates.isOpened.get()) {
             if (mStates.broadcastTimes.get().isEmpty()) {
                 showMessageDialog("请输入播报次数!")
-                return
+                return false
             }
             try {
                 val value = mStates.broadcastTimes.get().toInt()
                 if (value < 0 || value > 255) {
                     showMessageDialog("播报次数范围[0,255]!")
-                    return
+                    return false
                 }
             } catch (ex: Exception) {
                 showMessageDialog("请输入正确的播报次数!")
-                return
+                return false
             }
 
             // 验证语音编号
@@ -253,17 +289,17 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             for ((name, value) in voiceFields) {
                 if (value.isEmpty()) {
                     showMessageDialog("请输入$name!")
-                    return
+                    return false
                 }
                 try {
                     val intValue = value.toInt()
                     if (intValue < 1 || intValue > 255) {
                         showMessageDialog("${name}范围[1,255]!")
-                        return
+                        return false
                     }
                 } catch (ex: Exception) {
                     showMessageDialog("请输入正确的$name!")
-                    return
+                    return false
                 }
             }
         }
@@ -279,13 +315,13 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         for ((name, value) in intervalFields) {
             if (value.isEmpty()) {
                 showMessageDialog("请输入$name!")
-                return
+                return false
             }
             try {
                 value.toInt()
             } catch (ex: Exception) {
                 showMessageDialog("请输入正确的$name!")
-                return
+                return false
             }
         }
 
@@ -300,153 +336,23 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         for ((name, value) in thresholdFields) {
             if (value.isEmpty()) {
                 showMessageDialog("请输入$name!")
-                return
+                return false
             }
             try {
                 value.toDouble()
             } catch (ex: Exception) {
                 showMessageDialog("请输入正确的$name!")
-                return
+                return false
             }
         }
 
-        commandItems.clear()
-
-        // M50 设备报警启用开关关闭时处理
-        if (mStates.isRadioEnable.get()&&!mStates.isOpened.get()) {
-            val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
-                "sw=0"
-            )
-            commandItems.add(command)
-        }
-
-        //报警启用开关打开时，才发送报警信息设置指令
-        if (mStates.isRadioEnable.get()&&mStates.isOpened.get()) {
-            val monitorPointEntity = AlarmMonitorPointEntity(
-                sw = "1",
-                monitorpoint = mStates.monitorPoint.get(),
-                cnt = mStates.broadcastTimes.get(),
-                level1 = mStates.firstAlarmVoice.get(),
-                level2 = mStates.secondAlarmVoice.get(),
-                level3 = mStates.thirdAlarmVoice.get(),
-                level4 = mStates.fourthAlarmVoice.get()
-            )
-            val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
-                monitorPointEntity.toCommandString()
-            )
-            commandItems.add(command)
-        }
-
-        // 设置报警间隔
-        val reportIntervalEntity = AlarmReportIntervalEntity(
-            level1 = mStates.firstAlarmReportInterval.get(),
-            level2 = mStates.secondAlarmReportInterval.get(),
-            level3 = mStates.thirdAlarmReportInterval.get(),
-            level4 = mStates.fourthAlarmReportInterval.get()
-        )
-        val reportIntervalCommand = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_ALRAM_BROADCAST_REPORT_INTERVAL,
-            reportIntervalEntity.toCommandString()
-        )
-        commandItems.add(reportIntervalCommand)
-
-        // 设置报警阈值
-        val triggerValueEntity = AlarmTriggerValueEntity(
-            devlevel1 = mStates.firstAlarmThreshold.get(),
-            devlevel2 = mStates.secondAlarmThreshold.get(),
-            devlevel3 = mStates.thirdAlarmThreshold.get(),
-            devlevel4 = mStates.fourthAlarmThreshold.get()
-        )
-        val triggerValueCommand = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE,
-            triggerValueEntity.toCommandString()
-        )
-        commandItems.add(triggerValueCommand)
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
-    }
-
-    private fun queryData() {
-        commandItems.clear()
-
-        // 获取设备状态，用于检查电台模块状态
-        var command = IOTCommandUtil.getCommand(
-            IOTCommandType.QUERY_DEVICE_STATUS
-        )
-        commandItems.add(command)
-
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL
-        )
-        commandItems.add(command)
-
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_ALRAM_BROADCAST_REPORT_INTERVAL
-        )
-        commandItems.add(command)
-
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE
-        )
-        commandItems.add(command)
-
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.QUERY_DEVICE_STATUS)
-                || (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL)
-                || (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_REPORT_INTERVAL)
-                || (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE)
-                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL)
-                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_REPORT_INTERVAL)
-                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE)
-                || (commandType == IOTCommandType.MD_TEST_ALRAM_BROADCAST)
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
+        return true
     }
 
     /**
-     * 4G 下发指令响应超时
+     * 处理指令响应
      */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
-    }
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
                 val result = iotParseManager.parse<String>(
@@ -457,13 +363,9 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询设备状态出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initDeviceStatusInfo(result.data)
                     }
                 }
@@ -478,13 +380,9 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询语音参数出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initAlarmMonitorPointData(result.data)
                     }
                 }
@@ -499,13 +397,9 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询报警间隔出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initAlarmReportIntervalData(result.data)
                     }
                 }
@@ -520,84 +414,75 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询报警阈值出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initAlarmTriggerValueData(result.data)
                     }
                 }
             }
 
             IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置语音参数出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting())
                             processNavigateUp()
-                        }
                     }
                 }
             }
 
             IOTCommandType.MD_SET_ALRAM_BROADCAST_REPORT_INTERVAL -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置报警间隔出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting())
                             processNavigateUp()
-                        }
                     }
                 }
             }
 
             IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置报警阈值出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting())
                             processNavigateUp()
-                        }
                     }
                 }
             }
 
             IOTCommandType.MD_TEST_ALRAM_BROADCAST -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "报警测试出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("报警测试成功")
-                        }
+                        Toaster.show("报警测试成功")
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+                Timber.d("未处理的指令类型: ${IOTCommandUtil.extractCommandType(cmdStr)}")
             }
         }
     }
@@ -630,6 +515,9 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    /**
+     * 初始化报警监测点数据
+     */
     private fun initAlarmMonitorPointData(info: AlarmMonitorPointInfo) {
         try {
             mStates.isOpened.set(info.sw == "1")
@@ -640,7 +528,7 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             mStates.thirdAlarmVoice.set(info.level3)
             mStates.fourthAlarmVoice.set(info.level4)
 
-            //添加这行来保存初始状态
+            // 添加这行来保存初始状态
             mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
@@ -648,6 +536,9 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    /**
+     * 初始化报警间隔数据
+     */
     private fun initAlarmReportIntervalData(info: AlarmReportIntervalInfo) {
         try {
             mStates.firstAlarmReportInterval.set(info.level1)
@@ -655,7 +546,7 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             mStates.thirdAlarmReportInterval.set(info.level3)
             mStates.fourthAlarmReportInterval.set(info.level4)
 
-            //添加这行来保存初始状态
+            // 添加这行来保存初始状态
             mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
@@ -674,11 +565,94 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             if (info.devlevel3.isNotEmpty()) mStates.thirdAlarmThreshold.set(info.devlevel3)
             if (info.devlevel4.isNotEmpty()) mStates.fourthAlarmThreshold.set(info.devlevel4)
 
-            //添加这行来保存初始状态
+            // 添加这行来保存初始状态
             mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    /**
+     * 点击事件处理
+     */
+    inner class ClickProxy : BaseClickProxy() {
+        /**
+         * 选择监测点编号
+         */
+        fun onMonitorPointChooseClick() {
+            if (!isDeviceConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+
+            XPopup.Builder(requireContext())
+                .asBottomList(
+                    "监测点编号",
+                    monitorPointList.toTypedArray()
+                ) { position, text ->
+                    mStates.monitorPoint.set(text)
+                }.show()
+        }
+
+        /**
+         * 一级报警测试
+         */
+        fun onTestFirstAlarmClick() {
+            if (!isDeviceConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            testAlarm(1)
+        }
+
+        /**
+         * 二级报警测试
+         */
+        fun onTestSecondAlarmClick() {
+            if (!isDeviceConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            testAlarm(2)
+        }
+
+        /**
+         * 三级报警测试
+         */
+        fun onTestThirdAlarmClick() {
+            if (!isDeviceConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            testAlarm(3)
+        }
+
+        /**
+         * 四级报警测试
+         */
+        fun onTestFourthAlarmClick() {
+            if (!isDeviceConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            testAlarm(4)
+        }
+
+        /**
+         * 恢复默认配置
+         */
+        fun onResetClick() {
+            resetDefaultParams()
+        }
+
+        override fun onSubmitButtonClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
+            if (!isDeviceConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            saveConfiguration()
         }
     }
 
@@ -694,4 +668,4 @@ class M50AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
     }
-}
+} 

@@ -32,19 +32,19 @@
         android:id="@+id/udBaseInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDBaseInfoFragment"
         android:label="UDBaseInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/udNetInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDNetInfoFragment"
         android:label="UDNetInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/udSensorInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDStatusInfoFragment"
         android:label="UDSensorInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/commonLocationInfoFragment"

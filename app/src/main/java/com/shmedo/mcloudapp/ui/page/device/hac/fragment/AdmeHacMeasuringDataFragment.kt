@@ -46,7 +46,7 @@ import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.hac.dialog.HacConfigNumberBottomDialog
-import com.shmedo.mcloudapp.ui.viewmodel.request.AdmeConfigViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.request.ProductConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeHacMeasuringDataViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.utils.IOTRegexContants
@@ -58,7 +58,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeHacMeasuringDataBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: AdmeHacMeasuringDataViewModel by viewModels()
-    private val admeConfigViewModel: AdmeConfigViewModel by viewModel()
+    private val productConfigViewModel: ProductConfigViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 
     private val settlementMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_settlement_method) }
@@ -102,7 +102,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
             if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 return@onRefresh
             }
             queryParamData()
@@ -150,7 +150,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
 
             launchWithViewLifecycle {
                 try {
-                    admeConfigViewModel.queryAllAreaID(projectNum)?.let { areaList ->
+                    productConfigViewModel.queryADMEAllAreaID(projectNum)?.let { areaList ->
                         areaNumList.clear()
                         areaNumList.addAll(areaList)
                     }
@@ -171,7 +171,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
 
             launchWithViewLifecycle {
                 try {
-                    admeConfigViewModel.queryAllHoleNumber(
+                    productConfigViewModel.queryADMEAllHoleNumber(
                         mStates.projectNum.get(),
                         areaNum
                     )?.let { holeList ->
@@ -195,7 +195,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
             launchWithViewLifecycle {
                 try {
                     //加载孔号配置信息
-                    admeConfigViewModel.queryConfigByHoleNumber(
+                    productConfigViewModel.queryADMEConfigInfoByHoleNumber(
                         mStates.projectNum.get(),
                         mStates.areaNum.get(),
                         holeNum
@@ -214,13 +214,13 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
         launchWithViewLifecycle {
             try {
                 //1、加载设备配置信息
-                admeConfigViewModel.queryConfigByDeviceSN(deviceInfo.deviceToken)
+                productConfigViewModel.queryADMEConfigInfoBySN(deviceInfo.deviceToken)
                     ?.let { configInfo ->
                         handleConfigInfo(configInfo)
                     }
 
                 //2、加载项目编号列表
-                admeConfigViewModel.queryAllProjectID()?.let { projectIds ->
+                productConfigViewModel.queryADMEAllProjectID()?.let { projectIds ->
                     projectNumList.clear()
                     projectNumList.addAll(projectIds)
                 }
@@ -231,7 +231,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                     )
                 ) {
                     mStates.projectNum.set(lastConfigProjectNum)
-                    admeConfigViewModel.queryAllAreaID(lastConfigProjectNum)?.let { areaList ->
+                    productConfigViewModel.queryADMEAllAreaID(lastConfigProjectNum)?.let { areaList ->
                         areaNumList.clear()
                         areaNumList.addAll(areaList)
                     }
@@ -240,7 +240,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                 //4、如果有已配置的区域号，加载对应的孔号列表
                 if (lastConfigAreaNum.isNotEmpty() && areaNumList.contains(lastConfigAreaNum)) {
                     mStates.areaNum.set(lastConfigAreaNum)
-                    admeConfigViewModel.queryAllHoleNumber(lastConfigProjectNum, lastConfigAreaNum)
+                    productConfigViewModel.queryADMEAllHoleNumber(lastConfigProjectNum, lastConfigAreaNum)
                         ?.let { holeList ->
                             holeNumList.clear()
                             holeNumList.addAll(holeList)
@@ -474,7 +474,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                     "decentralizationWaitingTime" to mStates.decentralizationWaitingTime.get()
                 )
                 val configJson = MoshiUtil.toJson(configMap)
-                admeConfigViewModel.manageConfig(
+                productConfigViewModel.manageADMEConfig(
                     deviceInfo.deviceToken,
                     mStates.projectNum.get(),
                     mStates.areaNum.get(),

@@ -7,15 +7,13 @@ import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
-import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.URCurrentStateInfo
-import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -27,18 +25,10 @@ import timber.log.Timber
  * @desc:  一体式雨量计传感器状态
  *
  */
-class URProductStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+class URProductStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         binding.llToolbar.toolbar.title = "状态信息"
-    }
-
-    override fun queryStatusInfo() {
-        commandItems.clear()
-
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun <T> initStatusInfo(content: T) {

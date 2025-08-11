@@ -61,7 +61,7 @@
                             android:background="@color/black" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_GroupItem_Title_Style2"
+                            style="@style/Common_GroupItem_Title_Style"
                             android:layout_marginStart="@dimen/dimen_size_8"
                             android:text="移动网络" />
 
@@ -134,14 +134,14 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_reset"
-                        style="@style/ResetButton_Style2"
+                        style="@style/ResetButton_Style"
                         android:layout_marginTop="@dimen/reset_button_margin_top_50"
                         android:onClick="@{()->click.onResetClick()}"
                         android:text="@string/button_reset_text" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_confirm"
-                        style="@style/SubmitButton_Style2"
+                        style="@style/SubmitButton_Style"
                         onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
                         android:layout_marginTop="@dimen/summit_button_margin_top_20"
                         android:enabled="@{stateVM.isDataModified}"

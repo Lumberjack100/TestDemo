@@ -1,37 +1,27 @@
 package com.shmedo.mcloudapp.ui.viewmodel.request
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
-import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.data.repository.DeviceManageRepositoryImp
 import com.shmedo.core.data.repository.LoggerRepositoryImp
-import com.shmedo.core.data.repository.NetDataRepository
 import com.shmedo.core.model.CloudDeviceData
-import com.shmedo.core.model.DeviceDebugAddress
 import com.shmedo.core.model.DeviceDetailInfo
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.core.model.DeviceSensorBasicInfo
 import com.shmedo.core.model.DeviceStatisticInfo
 import com.shmedo.core.model.FirmWareInfo
-import com.shmedo.core.model.ProductInfo
-import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.lib.network.response.PageList
 import com.shmedo.lib.network.response.ResponseStatus
 import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.lib.network.util.BaseURL
-import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.model.HoverHeaderModel
-import com.shmedo.mcloudapp.model.SingleSelectionItem
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -55,11 +45,6 @@ class DeviceRequestViewModel(
     private val _deviceStatisticInfoResult = MutableResult<DataResult<DeviceStatisticInfo>>()
     val deviceStatisticInfoResult: Result<DataResult<DeviceStatisticInfo>> =
         _deviceStatisticInfoResult
-
-    private val _allProductTabResultFlow: MutableSharedFlow<DataResult<List<SingleSelectionItem>>> =
-        MutableSharedFlow()
-    val allProductTabResultFlow = _allProductTabResultFlow.asSharedFlow()
-
 
     private val _deviceListResult = MutableResult<DataResult<List<DeviceInfo>>>()
     val deviceListResult: Result<DataResult<List<DeviceInfo>>> =
@@ -119,94 +104,6 @@ class DeviceRequestViewModel(
         }
     }
 
-    fun getAllProductTabList(companyID: Int, isHasListSuperInfoPermission: Boolean = false) {
-        viewModelScope.launch {
-            val pageSize = 100
-            val tempList = mutableListOf<ProductInfo>()
-            val filterList = mutableListOf<SingleSelectionItem>()
-
-            val responseStatus = ResponseStatus().apply {
-                isSuccess = true
-                responseCode = "0"
-                source = ResultSource.NETWORK
-            }
-
-            try {
-                var currentPage = 1 // Start with the first page
-
-                while (true) { // Keep fetching pages until there are no more pages left
-                    val jsonObjectRequest = JSONObject().apply {
-                        if (!isHasListSuperInfoPermission)
-                            put("companyID", companyID)
-                        put("pageSize", pageSize)
-                        put("currentPage", currentPage)
-                    }
-
-                    val data: PageList<ProductInfo>? = withContext(Dispatchers.IO) {
-                        try {
-                            deviceManageRepositoryImp.queryProductList(
-                                jsonObjectRequest.toString(),
-                                isHasListSuperInfoPermission
-                            )
-                        } catch (error: Throwable) {
-                            Timber.e(error)
-                            addLogItem(
-                                CommonMMKVOwner.appLogSessionId,
-                                Log.ERROR,
-                                error.errorMsg
-                            )
-                            responseStatus.apply {
-                                isSuccess = false
-                                errorMessage = error.errorMsg
-                            }
-                            null
-                        }
-                    }
-
-                    data?.currentPageData?.let { tempList.addAll(it) }
-
-                    if (data == null || currentPage >= data.totalPage) {
-                        // Break if data is null or we've reached the last page
-                        break
-                    }
-                    currentPage++
-                }
-
-                if (responseStatus.isSuccess) {
-                    filterList.apply {
-                        clear()
-                        add(SingleSelectionItem(name = "全部产品", checked = true))
-
-                        tempList.filter { product ->
-                            product.deviceNum > 0  // Filter out products with 0 devices
-                        }.sortedBy { it.productName }
-                            .mapTo(this) { product ->
-                                SingleSelectionItem(
-                                    name = product.productName,
-                                    extValue = product.id.toString()
-                                )
-                            }
-                    }
-                }
-
-                _allProductTabResultFlow.emit(
-                    DataResult(
-                        result = if (responseStatus.isSuccess) filterList else null,
-                        responseStatus = responseStatus,
-                        totalCount = filterList.size
-                    )
-                )
-            } catch (error: Throwable) {
-                Timber.e(error)
-                addLogItem(CommonMMKVOwner.appLogSessionId, Log.ERROR, error.errorMsg)
-                responseStatus.apply {
-                    isSuccess = false
-                    errorMessage = error.errorMsg
-                }
-                _allProductTabResultFlow.emit(DataResult(responseStatus = responseStatus))
-            }
-        }
-    }
 
     /**
      * 分页查询设备列表
@@ -524,29 +421,6 @@ class DeviceRequestViewModel(
         )
     }
 
-    suspend fun getRemoteDeviceLogin(
-        deviceSn: String,
-        deviceKey: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): DeviceDebugAddress? {
-        val jsonObjectRequest = JSONObject()//接口请求参数
-        jsonObjectRequest.put("appKey", BuildConfig.AMS_APP_KEY)
-        jsonObjectRequest.put("appSecret", BuildConfig.AMS_APP_SECRET)
-        jsonObjectRequest.put("deviceSn", deviceSn)
-        jsonObjectRequest.put("deviceKey", deviceKey)
-        jsonObjectRequest.put("reCreate", false)
-
-        return NetDataRepository.instance.getRemoteDebugDeviceServerInfo(jsonObjectRequest.toString()) { error: Throwable ->
-            handleError(
-                MutableResult<DataResult<Unit>>(),
-                error,
-                "${BaseURL.AMS_CONFIG_ADDRESS.baseUrl}/DeviceLogin"
-            )
-            onCatch?.invoke(error)
-        }
-    }
-
-
     //<editor-fold desc="获取传感器数据">
     suspend fun queryDeviceSensor(
         deviceToken: String = "",
@@ -671,49 +545,6 @@ class DeviceRequestViewModel(
                     responseCode = "0"
                     source = ResultSource.NETWORK
                 }, totalCount = totalCount, totalPage = totalPage
-            )
-        )
-    }
-
-    /**
-     * 分页查询设备文件
-     */
-    fun queryDeviceFileListWithPage(
-        deviceToken: String = "",
-        begin: String = "",
-        end: String = "",
-        currentPage: Int = 1,
-        pageSize: Int = 100,
-    ) = viewModelScope.launch(Dispatchers.IO) {
-        val remoteResult = deviceManageRepositoryImp.queryDeviceFileListWithPage(
-            deviceToken = deviceToken,
-            begin = begin,
-            end = end,
-            fileType = "1",
-            orderType = "1",
-            currentPage = currentPage,
-            pageSize = pageSize
-        ) { error ->
-            handleError(
-                _sensorDataListResult,
-                error,
-                methodUrl = "${BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl}/QueryDeviceFilePage"
-            )
-        } ?: return@launch
-
-        val dataList: MutableList<Any> =
-            remoteResult.currentPageData?.toMutableList() ?: arrayListOf()
-        if (currentPage == 1 && dataList.isNotEmpty()) {
-            dataList.add(0, HoverHeaderModel())
-        }
-        _sensorDataListResult.postValue(
-            DataResult(
-                dataList,
-                responseStatus = ResponseStatus().apply {
-                    isSuccess = true
-                    responseCode = "0"
-                    source = ResultSource.NETWORK
-                }, totalPage = remoteResult.totalPage, totalCount = remoteResult.totalCount
             )
         )
     }

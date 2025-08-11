@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
@@ -24,6 +23,8 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentM50SensorConfigBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.formatDoubleValue
@@ -31,10 +32,9 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.M50SensorConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.Job
@@ -47,26 +47,26 @@ import timber.log.Timber
  * @time: 2024/6/10
  * @desc: 一体式自供电 GNSS 接收机(M50)倾斜触发配置页面
  *
+ * 优化特点：
+ * 1. 使用新的通信架构，代码更简洁
+ * 2. 统一的错误处理策略
+ * 3. 响应驱动的指令执行
+ * 4. 保持原有的复杂业务逻辑不变
  */
-class M50SensorConfigFragment : BaseIOTDeviceFragment() {
+class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM50SensorConfigBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: M50SensorConfigViewModel by activityViewModels()
+    private val mStates: M50SensorConfigViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
+    // 状态管理
     private var isOnRefresh = false//是否刷新状态
-
     private var queryMeasureResultTimeoutJob: Job? = null
-    private var repeatPollNum = 0 //重复轮询次数
+    private var repeatPollNum = 0//重复轮询次数
     private var measureInitialValueLoadingDialogId = ""
 
-
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(
-            R.layout.fragment_m50_sensor_config,
-            BR.stateVM,
-            mStates
-        )
+        return DataBindingConfig(R.layout.fragment_m50_sensor_config, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
@@ -77,9 +77,7 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }
-        registerOnBackPressedDispatcher {
-            handleBackByCheckDataModified()
-        }
+        registerOnBackPressedDispatcher { handleBackByCheckDataModified() }
         initRefresh()
     }
 
@@ -87,8 +85,8 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+            if (!isDeviceConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 return@onRefresh
             }
             queryData()
@@ -106,51 +104,98 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
         mStates.xCurrentAngle.set("")
         mStates.yCurrentAngle.set("")
         mStates.zCurrentAngle.set("")
-
         mStates.xInitialAngle.set("")
         mStates.yInitialAngle.set("")
         mStates.zInitialAngle.set("")
-
         mStates.xOffsetAngle.set("")
         mStates.yOffsetAngle.set("")
         mStates.zOffsetAngle.set("")
-
         mStates.isTriggerEnable.set(false)
         mStates.angleTrigger.set("")
     }
 
-    inner class ClickProxy : BaseClickProxy() {
-
-        /**
-         * 更新倾角初始值
-         */
-        fun onUpdateTiltInitialValueClick() {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-            measureInitialValue("1", "2")
-        }
-
-        override fun onSubmitButtonClick() {
-            KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-            initSaveCommand()
-        }
+    override fun lazyLoadData() {
+        binding.refreshLayout.autoRefresh()
     }
 
-    private fun initSaveCommand() {
-        commandItems.clear()
+    /**
+     * 查询数据 - 使用实时回调
+     */
+    private fun queryData() {
+        isOnRefresh = true
 
+        val commands = listOf(
+            //获取当前角度值，通过遥测获取，物模型103_1
+            IOTCommandUtil.getCommand(IOTCommandType.SAMPLE),
+            //获取初始角度值
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_SENSOR_INITIAL,
+                UDInitialValueEntity(method = "0", type = "2").toCommandString()
+            ),
+            //获取倾斜触发功能开关状态
+            IOTCommandUtil.getCommand(IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL),
+            //获取角度触发值
+            IOTCommandUtil.getCommand(IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE)
+        )
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig(), // 状态查询失败显示Dialog
+                enableBusinessParseFailureInterrupt = true // 启用业务层解析失败中断功能
+            )
+        )
+    }
+
+    /**
+     * 更新倾角初始值
+     */
+    private fun measureInitialValue(method: String, type: String) {
+        val entity = UDInitialValueEntity(method = method, type = type)
         val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_SENSOR_INITIAL,
+            entity.toCommandString()
+        )
+
+        // 显示特殊的加载对话框（用于更新初始值）
+        if (method == "1") {
+            measureInitialValueLoadingDialogId =
+                showLoadingWithUUID(StringUtils.getString(R.string.processing))
+        } else {
+            Timber.d("查询更新初始值结果轮询次数：$repeatPollNum")
+        }
+
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 已经显示特殊的加载对话框了
+                errorConfig = ErrorConfig.customConfig { errorMsg ->
+                    dismissLoadingDialog(measureInitialValueLoadingDialogId)
+                    if (command.contains("method=1")) {
+                        showMessageDialog("更新倾角初始值出错: $errorMsg")
+                    } else {
+                        showMessageDialog("查询倾角初始值出错: $errorMsg")
+                    }
+                }
+            )
+        )
+    }
+
+    /**
+     * 保存配置
+     */
+    private fun saveConfiguration() {
+        val commands = mutableListOf<String>()
+
+        // 设置倾斜触发开关
+        val alarmSwitchCommand = IOTCommandUtil.getCommand(
             IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
             if (mStates.isTriggerEnable.get()) "memsAlarmSw=1" else "memsAlarmSw=0"
         )
-        commandItems.add(command)
+        commands.add(alarmSwitchCommand)
 
+        // 如果启用触发，设置触发值
         if (mStates.isTriggerEnable.get()) {
             if (mStates.angleTrigger.get().isEmpty()) {
                 showMessageDialog("请输入角度触发值!")
@@ -162,191 +207,24 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
                 IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE,
                 triggerValueEntity.toCommandString()
             )
-            commandItems.add(triggerValueCommand)
+            commands.add(triggerValueCommand)
         }
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    private fun measureInitialValue(method: String, type: String) {
-        commandItems.clear()
-
-        val entity = UDInitialValueEntity(
-            method = method,
-            type = type,
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
         )
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_SENSOR_INITIAL,
-            entity.toCommandString()
-        )
-        commandItems.add(command)
-
-        if (method == "1") {
-            measureInitialValueLoadingDialogId =
-                showLoadingWithUUID(StringUtils.getString(R.string.processing))
-        } else {
-            Timber.d("查询更新初始值结果轮询次数：$repeatPollNum")
-        }
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
-    }
-
-    private fun queryData() {
-        isOnRefresh = true
-        commandItems.clear()
-
-        //获取当前角度值，通过遥测获取，物模型103_1
-        var command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE)
-        commandItems.add(command)
-
-        //获取初始角度值
-        val entity = UDInitialValueEntity(
-            method = "0",
-            type = "2",
-        )
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_SENSOR_INITIAL,
-            entity.toCommandString()
-        )
-        commandItems.add(command)
-
-        //获取倾斜触发功能开关状态
-        command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL)
-        commandItems.add(command)
-
-        //获取角度触发值
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE
-        )
-        commandItems.add(command)
-
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.SAMPLE)
-                || (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL)
-                || (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE)
-                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL)
-                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE)
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_SET_SENSOR_INITIAL -> {
-                dismissLoadingDialog(measureInitialValueLoadingDialogId)
-                if (cmdStr.contains("method=0")) {
-                    super.doCmdResponseResultError(
-                        cmdStr = cmdStr,
-                        errMsg = "查询测量信息出错: $errMsg",
-                        isShowErrMsg = true,
-                        isMessageDialog = true
-                    )
-                } else {
-                    super.doCmdResponseResultError(
-                        cmdStr = cmdStr,
-                        errMsg = "更新倾角初始值指令下发出错: $errMsg",
-                        isShowErrMsg = true,
-                        isMessageDialog = true
-                    )
-                }
-            }
-
-            else -> {
-                super.doCmdResponseResultError(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = isShowMessage,
-                    isMessageDialog = isShowMessage
-                )
-            }
-        }
     }
 
     /**
-     * 4G 下发指令响应超时
+     * 处理指令响应
      */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_SET_SENSOR_INITIAL -> {
-                dismissLoadingDialog(measureInitialValueLoadingDialogId)
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = true,
-                    isMessageDialog = true
-                )
-            }
-
-            else -> {
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = isShowMessage,
-                    isMessageDialog = isShowMessage
-                )
-            }
-        }
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_SET_SENSOR_INITIAL -> {
-                dismissLoadingDialog(measureInitialValueLoadingDialogId)
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = true,
-                    isMessageDialog = true,
-                    errMsg = errMsg
-                )
-            }
-
-            else -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = isShowMessage,
-                    isMessageDialog = isShowMessage,
-                    errMsg = errMsg
-                )
-            }
-        }
-    }
-
-    override fun setResultData(cmdStr: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.SAMPLE -> { // 召测
+            IOTCommandType.SAMPLE -> {//处理遥测响应（当前角度值）
                 val result = iotParseManager.parse<String>(
                     cmdStr,
                     IOTCommandType.SAMPLE
@@ -359,26 +237,26 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initCurrentAngle(result.data)
                     }
                 }
             }
 
             IOTCommandType.MD_SET_SENSOR_INITIAL -> {
-                val result = iotParseManager.parse<Map<String, String>>(
-                    cmdStr,
-                    IOTCommandType.MD_SET_SENSOR_INITIAL
-                )
+                val result =
+                    iotParseManager.parse<Map<String, String>>(
+                        cmdStr,
+                        IOTCommandType.MD_SET_SENSOR_INITIAL
+                    )
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         dismissLoadingDialog(measureInitialValueLoadingDialogId)
-                        val errMsg =
-                            if (cmdStr.contains("method=0")) "查询测量信息出错: ${result.message}" else "更新倾角初始值出错: ${result.message}"
+                        val errMsg = if (cmdStr.contains("method=1")) {
+                            "更新倾角初始值出错: ${result.message}"
+                        } else {
+                            "查询倾角初始值出错: ${result.message}"
+                        }
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
@@ -396,13 +274,9 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询参数出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initTriggerEnableData(result.data)
                     }
                 }
@@ -417,52 +291,46 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询参数出错: ${result.message}"
                         handleFailureResult(errMsg)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initAngleTrigger(result.data)
                     }
                 }
             }
 
-            IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL -> {//
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+            IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL -> {
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting())
                             processNavigateUp()
-                        }
                     }
                 }
             }
 
-            IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE -> {//
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+            IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE -> {
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting())
                             processNavigateUp()
-                        }
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+                Timber.d("未处理的指令类型: ${IOTCommandUtil.extractCommandType(cmdStr)}")
             }
         }
     }
@@ -506,7 +374,8 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
         try {
             val method = resultMap["method"] ?: ""
             val type = resultMap["type"] ?: ""
-            if (method == "0") {//轮询测得的初始值
+
+            if (method == "0") {
                 // 已经有数据，处理倾角初始值
                 if (resultMap.containsKey("xAxis") && resultMap.containsKey("yAxis") && resultMap.containsKey(
                         "zAxis"
@@ -514,43 +383,37 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
                 ) {
                     if (!isOnRefresh) {
                         dismissLoadingDialog(measureInitialValueLoadingDialogId)
-                        cancelNearbyCommunicationTimeoutJob()
                         showMessageDialog("初始值更新成功")
+
                     } else {
                         isOnRefresh = false
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                     }
 
                     val xAxis = resultMap["xAxis"] ?: ""
                     val yAxis = resultMap["yAxis"] ?: ""
                     val zAxis = resultMap["zAxis"] ?: ""
-
                     mStates.xInitialAngle.set(xAxis.formatDoubleValue("", 3))
                     mStates.yInitialAngle.set(yAxis.formatDoubleValue("", 3))
                     mStates.zInitialAngle.set(zAxis.formatDoubleValue("", 3))
 
-                    //处理角度偏移值：当前角度值减去初始角度值
+                    // 处理角度偏移值：当前角度值减去初始角度值
                     calculateOffsetAngles()
                     return
                 }
 
+                // 无数据，启动轮询
                 if (!isOnRefresh) {
-                    //更新倾角初始值模式下，轮询测得的初始值
-                    cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog = false)
+                    // 更新倾角初始值模式下，继续轮询测得的初始值
                     startQueryMeasureResultJob(type)
                 } else {
-                    //刷新模式
+                    // 刷新模式
                     isOnRefresh = false
-                    sendCommandFromCmdList {
-                        binding.refreshLayout.finish()
-                    }
                 }
 
-            } else {//更新初始值指令
+            } else {
+                // 更新初始值
                 clearQueryMeasureResultTimeoutJob()
-                startQueryMeasureResultJob(type)
+                startQueryMeasureResultJob(type)// 更新倾角初始值模式下，开始轮询测得的初始值
             }
         } catch (e: Exception) {
             Timber.e(e)
@@ -616,26 +479,55 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
         mStates.saveInitialState()
     }
 
+    /**
+     * 启动查询测量结果轮询任务
+     */
     private fun startQueryMeasureResultJob(type: String) {
-        //启动一个新的协程作为超时Job
         queryMeasureResultTimeoutJob?.cancel()
         queryMeasureResultTimeoutJob = launchWithViewLifecycle {
             if (repeatPollNum >= REPEAT_POLL_NUM) {
                 dismissLoadingDialog(measureInitialValueLoadingDialogId)
-                cancelNearbyCommunicationTimeoutJob()
                 showMessageDialog("更新倾角初始值失败，请稍后重试")
                 return@launchWithViewLifecycle
             }
-            delay(AppContants.Communication.DELAY_5000_MILLIS) //延迟 timeMillis 秒
+            delay(AppContants.Communication.DELAY_5000_MILLIS)
             repeatPollNum++
             measureInitialValue("0", type)
         }
     }
 
+    /**
+     * 清理查询测量结果超时任务
+     */
     private fun clearQueryMeasureResultTimeoutJob() {
         repeatPollNum = 0
         queryMeasureResultTimeoutJob?.cancel()
         queryMeasureResultTimeoutJob = null
+    }
+
+    /**
+     * 点击事件处理
+     */
+    inner class ClickProxy : BaseClickProxy() {
+        /**
+         * 更新倾角初始值
+         */
+        fun onUpdateTiltInitialValueClick() {
+            if (!isDeviceConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            measureInitialValue("1", "2")
+        }
+
+        override fun onSubmitButtonClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
+            if (!isDeviceConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            saveConfiguration()
+        }
     }
 
     override fun handleBackByCheckDataModified() {
@@ -649,6 +541,11 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    override fun onDestroy() {
+        clearQueryMeasureResultTimeoutJob()
+        super.onDestroy()
     }
 
     companion object {

@@ -571,8 +571,13 @@ enum class IOTCommandType(val value: String) {
     MD_GET_LF_ZERO_VALUE("md_getlfzerovalue"),
     MD_SET_LF_ZERO_VALUE("md_setlfzerovalue"),
 
-    /** 米度一体式裂缝计初始化 */
-    LF_MD_SET_INITIAL_VALUE("md_setlfinitial"),
+    /** 获取裂缝初始值 */
+    LF_MD_GET_INITIAL_VALUE("md_getlfinitial"),
+    /** 手动设置裂缝初始值 */
+    LF_MD_MANUAL_SET_INITIAL_VALUE("md_setlfinitial"),
+
+    /** 自动设置裂缝初始值 */
+    LF_MD_AUTO_SET_INITIAL_VALUE("md_setlfinitialauto"),
 
     /** 关闭语音播报 */
     SET_VOICE_BROADCAST_VOLUME_OFF("volumeoff"),

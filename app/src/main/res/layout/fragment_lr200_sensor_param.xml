@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200SensorParamFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lr200.LR200SensorParamFragment.ClickProxy" />
 
     </data>
 

@@ -202,8 +202,8 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "UL1",
-        productName = "一体式裂缝计",
-        productToken = "BHY3S-LF",
+        productName = "北斗林木生长监测终端",
+        productToken = "LR100-BD",
         description = ""
     ),
 

@@ -31,7 +31,8 @@ import com.shmedo.lib.tcp.TcpConnectClosed
 import com.shmedo.lib.tcp.TcpConnectError
 import com.shmedo.lib.tcp.TcpConnectedResult
 import com.shmedo.lib.tcp.TcpIdleResult
-import com.shmedo.lib.tcp.TcpSuccessResult
+import com.shmedo.lib.tcp.TcpSuccessDataResult
+import com.shmedo.lib.tcp.TcpSuccessRawDataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseCommandLogPrintClickProxy
@@ -41,7 +42,7 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.request.ProductConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.TcpViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.TcpDebugViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -67,9 +68,10 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: TcpDebugViewModel by viewModels()
     private val tcpViewModel: TcpViewModel by viewModel()
-    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
+    private val productConfigViewModel: ProductConfigViewModel by viewModel()
 
     private var isIotCmd = true
+    private var isRawMode = true // 是否为原始模式（不使用分隔符）
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -99,7 +101,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
     }
 
     private fun setupRecyclerView() {
-        binding.recyclerview.setup { rv ->
+        binding.recyclerview.setup {
             addType<DebugCmdLogInfo>(R.layout.item_debug_cmd_log)
         }
     }
@@ -151,7 +153,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
 
             launchWithViewLifecycle {
                 try {
-                    val deviceDebugAddress = deviceRequestViewModel.getRemoteDeviceLogin(
+                    val deviceDebugAddress = productConfigViewModel.getRemoteDeviceLogin(
                         deviceSn = deviceInfo.deviceToken,
                         deviceKey = deviceInfo.apikey.ifEmpty { "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9" },
                     ) { error: Throwable ->
@@ -183,12 +185,20 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
 
     private fun initializeTcpClient(serverAddr: String, serverPort: Int) {
         try {
-            tcpViewModel.initTcpClient(
-                serverAddr,
-                serverPort,
-                false,
-                MDConstants.COMMAND_FOOTER
-            )
+            if (isRawMode) {
+                // 原始模式：不使用分隔符
+                tcpViewModel.initTcpClientRawMode(serverAddr, serverPort)
+                addLog("已启用原始模式（无分隔符）", ColorUtils.getColor(R.color.title_text_color))
+            } else {
+                // 传统模式：使用分隔符
+                tcpViewModel.initTcpClient(
+                    serverAddr,
+                    serverPort,
+                    false,
+                    MDConstants.COMMAND_FOOTER
+                )
+                addLog("已启用传统模式（使用分隔符）", ColorUtils.getColor(R.color.title_text_color))
+            }
 
             launchWithViewLifecycle {
                 withContext(Dispatchers.IO) {
@@ -231,11 +241,17 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
                         handleTcpConnected()
                     }
 
-                    is TcpSuccessResult -> {
+                    is TcpSuccessDataResult -> {
                         val data = state.data
                         if (data.isNotEmpty()) {
-                            Timber.d("Received TCP Message:$data")
                             handleReceiveMsgFromTCPServer(data)
+                        }
+                    }
+
+                    is TcpSuccessRawDataResult -> {
+                        val data = state.data
+                        if (data.isNotEmpty()) {
+                            handleReceiveRawDataFromTCPServer(data)
                         }
                     }
 
@@ -309,12 +325,14 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
                             ColorUtils.getColor(R.color.error_FF4400)
                         )
                     }
+
                     ConnectionState.Disconnected.Reason.NOT_SUPPORTED -> {
                         addLog(
                             "蓝牙连接失败, reason: device missing service",
                             ColorUtils.getColor(R.color.error_FF4400)
                         )
                     }
+
                     else -> {
                         addLog(
                             "蓝牙连接断开, reason: ${state.reason}",
@@ -373,6 +391,28 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
     }
 
     /**
+     * 处理原始 TCP 数据，通过蓝牙转发给设备
+     */
+    private fun handleReceiveRawDataFromTCPServer(data: ByteArray) {
+        try {
+            if (data.isEmpty()) return
+
+            val dataStr = String(data, Charsets.UTF_8)
+            addLog("Raw TCP: $dataStr", ColorUtils.getColor(R.color.receive_data_color))
+
+            if (isBleDisconnected()) {
+                addLog("蓝牙连接已断开", ColorUtils.getColor(R.color.error_FF4400))
+                return
+            }
+
+            // 直接转发原始字节数据到 BLE
+            sendBleCommand(dataStr)
+        } catch (e: Exception) {
+            Timber.e(e, "处理原始TCP数据失败")
+        }
+    }
+
+    /**
      * 处理设备响应内容，通过 TCP 转发给远程调试客户端
      */
     private fun handleBleResponseContentFromDevice(cmdStr: String) {
@@ -383,7 +423,15 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
                 addLog("TCP 连接已断开", ColorUtils.getColor(R.color.error_FF4400))
                 return
             }
-            tcpViewModel.sendMsgToServer(cmdStr)
+
+            if (isRawMode) {
+                // 原始模式：发送字节数据
+                val data = cmdStr.toByteArray(Charsets.UTF_8)
+                tcpViewModel.sendRawDataToServer(data)
+            } else {
+                // 传统模式：发送字符串
+                tcpViewModel.sendMsgToServer(cmdStr)
+            }
         } catch (e: Exception) {
             Timber.e(e, "转发蓝牙响应失败")
         }
@@ -394,22 +442,24 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
 
     private fun showMoreMenu() {
         try {
+            val rawModeText = if (isRawMode) "切换到分隔符模式" else "切换到原始模式"
             val menuItems = if (bleViewModel.isConnected()) {
                 arrayOf<String>(
                     "清空日志",
                     "分享日志",
+                    rawModeText,
                     "打开debug模式",
                     "打开info模式",
                     "关闭debug模式",
                     "测试"
                 )
             } else {
-                arrayOf<String>("蓝牙重连", "清空日志", "分享日志")
+                arrayOf<String>("蓝牙重连", "清空日志", "分享日志", rawModeText)
             }
 
             BottomMenu.show(menuItems)
                 .setMessage("")
-                .setOnMenuItemClickListener { dialog, text, index ->
+                .setOnMenuItemClickListener { _, text, _ ->
                     handleMenuItemClick(text as String)
                     false
                 }
@@ -433,6 +483,10 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
                     shareLogToFile()
                 }
 
+                "切换到原始模式", "切换到分隔符模式" -> {
+                    toggleRawMode()
+                }
+
                 "打开debug模式" -> {
                     setDebugMode()
                 }
@@ -452,6 +506,31 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
         } catch (e: Exception) {
             Timber.e(e, "处理菜单点击失败")
             Toaster.show("操作失败")
+        }
+    }
+
+    /**
+     * 切换原始模式
+     */
+    private fun toggleRawMode() {
+        try {
+            isRawMode = !isRawMode
+            val modeText = if (isRawMode) "原始模式" else "分隔符模式"
+            addLog("已切换到$modeText", ColorUtils.getColor(R.color.title_text_color))
+
+            // 如果TCP已连接，需要断开重连以应用新模式
+            if (tcpViewModel.isConnected()) {
+                addLog("正在重连以应用新模式...", ColorUtils.getColor(R.color.title_text_color))
+                launchWithViewLifecycle {
+                    tcpViewModel.disconnect()
+                    // 等待断开
+                    kotlinx.coroutines.delay(1000)
+                    establishTcpConnection()
+                }
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "切换模式失败")
+            Toaster.show("切换模式失败")
         }
     }
 

@@ -24,6 +24,8 @@ import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentFirmwareUpgradeBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
@@ -32,7 +34,7 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.BleConnect
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.FirmwareUpgradeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -45,7 +47,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  * @desc: 固件升级
  *
  */
-class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
+class FirmwareUpgradeFragment : OptimizedBaseIOTDeviceFragment() {
     private val binding: FragmentFirmwareUpgradeBinding by lazy { getBinding() as FragmentFirmwareUpgradeBinding }
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: FirmwareUpgradeViewModel by viewModels()
@@ -88,7 +90,7 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
             R.id.item.onClick {
                 val firmWareInfo = getModel<FirmWareInfo>()
                 showMessage("确定下载升级此固件吗？", "温馨提示", "确定", {
-                    if (isBleDisconnected()) {
+                    if (!isDeviceConnected()) {
                         Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                         return@showMessage
                     }
@@ -172,13 +174,20 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
                     size = firmWareInfo.fwSize.toString(),
                     md5 = firmWareInfo.fwMd5
                 )
-                commandItems.clear()
+                val commands = mutableListOf<String>()
                 val command = IOTCommandUtil.getCommand(
                     IOTCommandType.MD_UPGRADE,
                     entity.toCommandString()
                 )
-                commandItems.add(command)
-                sendCommandFromCmdList(isStartTimeoutJob = true)
+                commands.add(command)
+
+                sendCommandSequence(
+                    commands = commands,
+                    config = CommandSequenceConfig(
+                        showLoadingDialog = false,
+                        errorConfig = ErrorConfig.dialogConfig()
+                    )
+                )
 
             } else {
                 val msgID = deviceRequestViewModel.applyFirmwareUpgrade(
@@ -194,7 +203,7 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_UPGRADE -> {
                 val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
@@ -206,7 +215,7 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("设备即将进行固件升级，请稍后查看升级结果")
                         }
                     }
@@ -214,7 +223,6 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
             }
         }
     }

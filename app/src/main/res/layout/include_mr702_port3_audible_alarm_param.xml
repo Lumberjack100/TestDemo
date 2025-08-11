@@ -33,8 +33,8 @@
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isOpened}"
                 android:hint="请输入"
-                android:text="@={stateVM.duration}"
                 android:inputType="number"
+                android:text="@={stateVM.duration}"
                 app:lengthFilter="@{5}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -53,8 +53,8 @@
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isOpened}"
                 android:hint="请输入"
-                android:text="@={stateVM.interval}"
                 android:inputType="number"
+                android:text="@={stateVM.interval}"
                 app:lengthFilter="@{5}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -78,9 +78,22 @@
                 tools:text="高" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <com.google.android.material.textview.MaterialTextView
-            style="@style/Common_GroupItem_Title_Style"
-            android:text="降雨量报警阈值" />
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/Common_EditItem_Layout_Style"
+            android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+            android:background="@drawable/shape_common_click_item_top_corner_4">
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="14dp"
+                android:background="@color/black" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/Common_GroupItem_Title_Style"
+                android:layout_marginStart="@dimen/dimen_size_8"
+                android:text="降雨量报警阈值" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/Common_EditItem_Layout_Style"
@@ -122,7 +135,7 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/Common_EditItem_Layout_Style"
-            android:background="@drawable/layer_common_click_item_with_divider">
+            android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
@@ -139,9 +152,22 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <com.google.android.material.textview.MaterialTextView
-            style="@style/Common_GroupItem_Title_Style"
-            android:text="水位报警阈值" />
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/Common_EditItem_Layout_Style"
+            android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+            android:background="@drawable/shape_common_click_item_top_corner_4">
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="14dp"
+                android:background="@color/black" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/Common_GroupItem_Title_Style"
+                android:layout_marginStart="@dimen/dimen_size_8"
+                android:text="水位报警阈值" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/Common_EditItem_Layout_Style"
@@ -156,8 +182,8 @@
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isOpened}"
-                android:text="@={stateVM.waterTriggerValueLevel1}"
                 android:inputType="number"
+                android:text="@={stateVM.waterTriggerValueLevel1}"
                 app:lengthFilter="@{6}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -175,15 +201,15 @@
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isOpened}"
-                android:text="@={stateVM.waterTriggerValueLevel2}"
                 android:inputType="number"
+                android:text="@={stateVM.waterTriggerValueLevel2}"
                 app:lengthFilter="@{6}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/Common_EditItem_Layout_Style"
-            android:background="@drawable/layer_common_click_item_with_divider">
+            android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
@@ -194,8 +220,8 @@
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isOpened}"
-                android:text="@={stateVM.waterTriggerValueLevel3}"
                 android:inputType="number"
+                android:text="@={stateVM.waterTriggerValueLevel3}"
                 app:lengthFilter="@{6}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>

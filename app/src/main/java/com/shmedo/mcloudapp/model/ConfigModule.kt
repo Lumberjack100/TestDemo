@@ -9,13 +9,42 @@ import com.shmedo.mcloudapp.R
  * 创建时间:  2020/8/27 <br></br>
  * 描述：   配置模块
  */
-data class ConfigModule(
-    val functionModule: DeviceFunctionModule
+data class ConfigModuleTree(
+    val configModules: MutableList<UnifiedDeviceModule> = arrayListOf(),
 )
 
-data class ConfigModuleTree(
-    val configModules: MutableList<ConfigModule> = arrayListOf(),
-)
+
+// 1. 添加包装器
+data class UnifiedDeviceModule(
+    val module: DeviceFunctionModule
+) : BaseObservable() {
+
+    // 代理所有属性
+    val name: String get() = module.name
+    val desc: String get() = module.desc
+    val resID: Int get() = module.resID
+    val iconSize: Int get() = module.iconSize
+    val navId: Int get() = module.navId
+    val isConnected: Boolean get() = module.isConnected
+    val isSupport: Boolean get() = module.isSupport
+
+    // 代理所有方法
+    fun refreshStatus(state: Boolean) {
+        module.refreshStatus(state)
+        notifyChange()
+    }
+
+    fun refreshSupport(state: Boolean) {
+        module.refreshSupport(state)
+        notifyChange()
+    }
+
+    fun isModuleAvailable(): Boolean = module.isModuleAvailable()
+}
+
+// 2. 扩展函数
+fun DeviceFunctionModule.toUnified() = UnifiedDeviceModule(this)
+fun MutableList<DeviceFunctionModule>.toUnifiedList() = map { it.toUnified() }.toMutableList()
 
 sealed class DeviceFunctionModule(
     val name: String = "",
@@ -175,11 +204,13 @@ class SensorConfigModule(
     desc: String = "传感器参数配置",
     resID: Int = R.drawable.ic_module_sensor_setting,
     navId: Int = 0,
+    isSupport: Boolean = true
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
     resID = resID,
     navId = navId,
+    isSupport = isSupport
 )
 // </editor-fold>
 
@@ -267,6 +298,7 @@ class MR702Remote485SilenceModule(
     resID = resID,
     navId = navId,
 )
+
 class MR702CleanClearAlarmModule(
     name: String = "清除消警",
     desc: String = "清除消警状态，恢复低等级阈值触发",
@@ -278,6 +310,7 @@ class MR702CleanClearAlarmModule(
     resID = resID,
     navId = navId,
 )
+
 class MR702RainSetZeroModule(
     name: String = "雨量置零",
     desc: String = "清除当前所有雨量统计",

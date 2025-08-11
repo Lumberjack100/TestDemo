@@ -12,13 +12,15 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRBaseInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRCommunicationData
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDeviceInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import timber.log.Timber
 /**
@@ -27,7 +29,7 @@ import timber.log.Timber
  * @desc: 遥测终端机网络信息
  *
  */
-class MR702NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+class MR702NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -35,30 +37,59 @@ class MR702NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     }
 
     override fun queryStatusInfo() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
+        
+        // 查询设备基本信息（page=1, label=1）
+        val entity1 = MRDeviceInfoEntity(pages = 1, label = 1)
+        val command1 = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO, entity1)
+        commands.add(command1)
 
-        var entity = MRDeviceInfoEntity(pages = 1, label = 1)
-        var command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO, entity)
-        commandItems.add(command)
+        // 查询设备通信数据（page=2, label=1）
+        val entity2 = MRDeviceInfoEntity(pages = 2, label = 1)
+        val command2 = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO, entity2)
+        commands.add(command2)
 
-        entity = MRDeviceInfoEntity(pages = 2, label = 1)
-        command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO, entity)
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
-    override fun <T> initStatusInfo(content: T) {
-        val mRDeviceInfo: MRDeviceInfo = content as MRDeviceInfo
-        if (mRDeviceInfo.pages == "1" && mRDeviceInfo.label == "1") {
-            initBaseInfo(mRDeviceInfo.baseInfo)
-        } else if (mRDeviceInfo.pages == "2" && mRDeviceInfo.label == "1") {
-            initCommunicationInfo(mRDeviceInfo.communicationData)
+    override fun handleCommandResponse(cmdStr: String) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO -> {
+                val result = iotParseManager.parse<MRDeviceInfo>(
+                    cmdStr,
+                    IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询状态出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+                    is IOTCommandResult.Success -> {
+                        val deviceInfo = result.data
+                        if (deviceInfo.pages == "1" && deviceInfo.label == "1") {
+                            initBaseInfo(deviceInfo.baseInfo)
+                        } else if (deviceInfo.pages == "2" && deviceInfo.label == "1") {
+                            initCommunicationInfo(deviceInfo.communicationData)
+                        }
+                    }
+                }
+            }
+            
+            else -> {
+                // 其他指令类型忽略
+            }
         }
     }
 
     private fun initBaseInfo(stateInfo: MRBaseInfo) {
-        launchWithViewLifecycle {
-            try {
+        try {
                 val groupList = mutableListOf<Any>()
 
                 groupList.add(DeviceStatusInfoGroupItem("数据网络"))
@@ -91,12 +122,10 @@ class MR702NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 Timber.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
-        }
     }
 
     private fun initCommunicationInfo(communicationData: MRCommunicationData) {
-        launchWithViewLifecycle {
-            try {
+        try {
                 val groupList = mutableListOf<Any>()
 
                 groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
@@ -181,7 +210,6 @@ class MR702NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 Timber.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
-        }
     }
 
 }

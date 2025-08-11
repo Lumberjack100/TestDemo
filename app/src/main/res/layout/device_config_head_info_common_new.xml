@@ -32,7 +32,7 @@
             tools:src="@drawable/device_logo_gt600" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dimen_size_8"
             android:orientation="vertical">
@@ -91,7 +91,6 @@
                     app:defaultTextSize="@dimen/text_size_11"
                     app:deviceStatusCode="@{stateVM.deviceStatusCode}"
                     app:errorTextColor="@color/error_FF4400"
-                    app:maxEms="7"
                     app:needBackground="true" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>

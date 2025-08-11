@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.model.QuickConfigCommandParamChooseItem" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/item"
+        style="@style/Common_ClickableItem_Layout_Style"
+        bgResId="@{m.bgResId}"
+        tools:background="@drawable/layer_common_click_item_with_divider">
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/Common_ClickableItem_Title_Style"
+            android:text='@{m.cmdChnName}'
+            tools:text="传感器类型" />
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/Common_ClickableItem_Value_Style"
+            android:text="@{m.displayValue}"
+            tools:drawableEndCompat="@drawable/ic_arrow_down"
+            tools:text="雷达物位计" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

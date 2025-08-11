@@ -10,22 +10,22 @@ import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
-import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
+import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/3/8
  * 描述： TODO
  */
-class DefaultDeviceHomeFragment : NewUniversalBaseDeviceHomeFragment() {
+class DefaultDeviceHomeFragment : BaseDeviceHomeFragment() {
 
     override fun initData() {
         super.initData()
@@ -67,38 +67,33 @@ class DefaultDeviceHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         groupList.add(
             ConfigModuleTree(
                 configModules = arrayListOf(
-                    ConfigModule(
-                        CommonModule(
-                            name = "基本信息",
-                            resID = R.drawable.ic_module_basic_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_defaultBaseInfoFragment
-                        )
-                    ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "网络信息",
-                            resID = R.drawable.ic_module_net_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_defaultNetInfoFragment
-                        )
-                    ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "状态信息",
-                            resID = R.drawable.ic_module_state_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_defaultStatusInfoFragment
-                        )
-                    ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "位置信息",
-                            resID = R.drawable.ic_module_location_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_commonLocationInfoFragment
-                        )
-                    )
+                    CommonModule(
+                        name = "基本信息",
+                        resID = R.drawable.ic_module_basic_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_defaultBaseInfoFragment
+                    ).toUnified(),
+
+                    CommonModule(
+                        name = "网络信息",
+                        resID = R.drawable.ic_module_net_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_defaultNetInfoFragment
+                    ).toUnified(),
+
+                    CommonModule(
+                        name = "状态信息",
+                        resID = R.drawable.ic_module_state_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_defaultStatusInfoFragment
+                    ).toUnified(),
+
+                    CommonModule(
+                        name = "位置信息",
+                        resID = R.drawable.ic_module_location_info,
+                        iconSize = ConvertUtils.dp2px(34f),
+                        navId = R.id.action_global_to_commonLocationInfoFragment
+                    ).toUnified()
                 )
             )
         )
@@ -107,39 +102,31 @@ class DefaultDeviceHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         groupList.add(DeviceStatusInfoGroupItem("设备配置"))
         val configModuleTree = ConfigModuleTree()
         configModuleTree.configModules.add(
-            ConfigModule(
-                DataCenterModule(
-                    name = "链路配置",
-                    resID = R.drawable.ic_module_datacenter_new,
-                    navId = R.id.action_global_to_universalDataCenterHomeFragment
-                )
-            )
+            DataCenterModule(
+                name = "链路配置",
+                resID = R.drawable.ic_module_datacenter_new,
+                navId = R.id.action_global_to_universalDataCenterHomeFragment
+            ).toUnified()
         )
         configModuleTree.configModules.add(
-            ConfigModule(
-                TimeCalibrationModule(
-                    name = "时间校准",
-                    resID = R.drawable.ic_module_time_calibration_new,
-                    navId = R.id.action_global_to_time_calibration
-                )
-            )
+            TimeCalibrationModule(
+                name = "时间校准",
+                resID = R.drawable.ic_module_time_calibration_new,
+                navId = R.id.action_global_to_time_calibration
+            ).toUnified()
         )
         configModuleTree.configModules.add(
-            ConfigModule(
-                AdvancedSettingsModule(
-                    name = "系统配置",
-                    resID = R.drawable.ic_module_system_setting,
-                    navId = R.id.action_global_to_advancedSettingFragment
-                )
-            )
+            AdvancedSettingsModule(
+                name = "系统配置",
+                resID = R.drawable.ic_module_system_setting,
+                navId = R.id.action_global_to_advancedSettingFragment
+            ).toUnified()
         )
         if (communicateWay is BleConnect) {
             configModuleTree.configModules.add(
-                ConfigModule(
-                    CommandDebugConfigModule(
-                        resID = R.drawable.ic_module_cmd_debug_new,
-                    )
-                )
+                CommandDebugConfigModule(
+                    resID = R.drawable.ic_module_cmd_debug_new,
+                ).toUnified()
             )
         }
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="toolbarVM"
             type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
@@ -51,10 +51,10 @@
 
                 <RelativeLayout
                     android:id="@+id/userAvatarLayout"
+                    onClickWithDebouncing="@{()->click.onChangeAvatar()}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:foreground="?attr/selectableItemBackground"
-                    onClickWithDebouncing="@{()->click.onChangeAvatar()}"
                     android:padding="12dp"
                     app:drawable_radiusLT="@{6}"
                     app:drawable_radiusRT="@{6}"
@@ -225,15 +225,17 @@
 
         </androidx.core.widget.NestedScrollView>
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_Style"
+            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:layout_marginBottom="15dp"
-            onClickWithDebouncing="@{()->click.onSubmitClick()}"
             android:text="确定"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

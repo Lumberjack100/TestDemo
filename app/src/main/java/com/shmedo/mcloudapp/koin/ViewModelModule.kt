@@ -17,7 +17,7 @@
 package com.shmedo.mcloudapp.koin
 
 
-import com.shmedo.mcloudapp.ui.viewmodel.request.AdmeConfigViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.request.ProductConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.AppUpdateViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
@@ -38,7 +38,7 @@ val viewModelModule = module {
     viewModelOf(::AppUpdateViewModel)
     viewModelOf(::DeviceRequestViewModel)
     viewModelOf(::RequestSearchViewModel)
-    viewModelOf(::AdmeConfigViewModel)
+    viewModelOf(::ProductConfigViewModel)
     viewModelOf(::LocationViewModel)
     viewModelOf(::BleViewModel)
     viewModelOf(::TcpViewModel)

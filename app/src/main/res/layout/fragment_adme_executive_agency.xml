@@ -541,14 +541,14 @@
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_Style"
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
             visible="@{stateVM.isEditable }"
-            android:layout_marginTop="0dp"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:layout_marginBottom="15dp"
-            android:text="保存"
+            android:text="@string/button_save_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

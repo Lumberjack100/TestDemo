@@ -16,7 +16,7 @@
 
 package com.shmedo.core.data.koin
 
-import com.shmedo.core.data.repository.AdmeConfigRepositoryImp
+import com.shmedo.core.data.repository.ProductConfigRepositoryImp
 import com.shmedo.core.data.repository.AppUpdateRepositoryImp
 import com.shmedo.core.data.repository.DeviceInteractiveRepositoryImp
 import com.shmedo.core.data.repository.DeviceManageRepositoryImp
@@ -33,7 +33,7 @@ val repositoryModule = module {
     singleOf(::AppUpdateRepositoryImp)
     singleOf(::DeviceManageRepositoryImp)
     singleOf(::DeviceInteractiveRepositoryImp)
-    singleOf(::AdmeConfigRepositoryImp)
+    singleOf(::ProductConfigRepositoryImp)
     singleOf(::MonitoringDataRepository)
     singleOf(::BuiltinCommandRepository)
 

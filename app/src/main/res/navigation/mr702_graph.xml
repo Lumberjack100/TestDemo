@@ -7,6 +7,7 @@
 
     <include app:graph="@navigation/include_time_calibration_graph" />
     <include app:graph="@navigation/include_advanced_setting_graph" />
+    <include app:graph="@navigation/include_quick_config_cmd_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
 
 
@@ -20,19 +21,19 @@
         android:id="@+id/mR702BaseInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702BaseInfoFragment"
         android:label="MR702BaseInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/mR702NetInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702NetInfoFragment"
         android:label="MR702NetInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/mR702StatusInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702StatusInfoFragment"
         android:label="MR702StatusInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style2" />
+        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
         android:id="@+id/commonLocationInfoFragment"
@@ -334,5 +335,12 @@
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
+    <action
+        android:id="@+id/action_global_to_quickConfigCommandParam"
+        app:destination="@id/quick_config_cmd_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
 
 </navigation>

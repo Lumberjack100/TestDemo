@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/quick_config_cmd_graph"
+    app:startDestination="@id/quickConfigCommandParamFragment">
+
+    <fragment
+        android:id="@+id/quickConfigCommandParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.QuickConfigCommandParamFragment"
+        android:label="QuickConfigCommandParamFragment"
+        tools:layout="@layout/fragment_quick_config_command_param" />
+
+</navigation>

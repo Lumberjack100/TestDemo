@@ -12,19 +12,21 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import timber.log.Timber
 
 /**
  * @author：gonghe
  * @time: 2025/7/18
- * @desc: 一体式自供电 GNSS 接收机(M50)运行信息
+ * @desc: 优化的一体式自供电 GNSS 接收机(M50)运行信息
  *
  */
-class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -32,22 +34,26 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     }
 
     override fun queryStatusInfo() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
+        
+        // 查询设备状态
+        val statusCommand = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+        commands.add(statusCommand)
+        
+        // 召测数据（method=2）
+        val sampleCommand = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=2")
+        commands.add(sampleCommand)
 
-        var command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
-        commandItems.add(command)
-
-        command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=2")
-        commandItems.add(command)
-
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
-    override fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.QUERY_DEVICE_STATUS)
-                || (commandType == IOTCommandType.SAMPLE)
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
                 val result = iotParseManager.parse<String>(
@@ -60,24 +66,19 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
-
                     is IOTCommandResult.Success -> {
                         initRunningData1(result.data)
-                        //基站仅获取工作信息
+                        // 基站仅获取工作信息
                         if (result.data.contains("\"work_mode\":1")) {
-                            cancelNearbyCommunicationTimeoutJob()
-
-                        } else {
-                            //测站：除了获取工作信息即可，还需要获取数据解算和初始坐标信息
-                            sendCommandFromCmdList {
-                                binding.refreshLayout.finish()
-                            }
+                            finishCommunication()
                         }
+                        // 测站：除了获取工作信息即可，还需要获取数据解算和初始坐标信息
+                        // 这些信息会在SAMPLE指令响应中处理
                     }
                 }
             }
-
-            IOTCommandType.SAMPLE -> { // 召测
+            
+            IOTCommandType.SAMPLE -> {
                 val result = iotParseManager.parse<String>(
                     cmdStr,
                     IOTCommandType.SAMPLE
@@ -88,20 +89,16 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
-
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         if (cmdStr.contains("method=2")) {
                             initRunningData2(result.data)
                         }
                     }
                 }
             }
-
+            
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+                // 其他指令类型忽略
             }
         }
     }
@@ -116,6 +113,7 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             binding.refreshLayout.showContent()
             val groupList = mutableListOf<Any>()
 
+            // 工作信息
             groupList.add(DeviceStatusInfoGroupItem("工作信息"))
             DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                 groupList,
@@ -146,7 +144,6 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     else -> AppContants.PLACE_HOLDER_VALUE
                 }
             )
-
             DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                 groupList,
                 name = "卫星数量",
@@ -168,6 +165,7 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             if (resultMap.isEmpty()) return
             val groupList = mutableListOf<Any>()
 
+            // 数据解算
             groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
             groupList.add(DeviceStatusInfoGroupItem("数据解算"))
             DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -229,7 +227,7 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     "base-not-ready" -> "基站未就绪"
                     "initialing" -> "初始化中"
                     "calculating" -> "解算中"
-                    "not-licensed" -> " 板卡未注册"
+                    "not-licensed" -> "板卡未注册"
                     "not-define-stat" -> "未定"
                     else -> AppContants.PLACE_HOLDER_VALUE
                 }
@@ -242,6 +240,7 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 isBottomItem = true
             )
 
+            // 初始坐标
             groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
             groupList.add(DeviceStatusInfoGroupItem("初始坐标"))
             val initCompletionTime =
@@ -277,7 +276,7 @@ class M50RunningInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     }
                 }
 
-
+            // 使用bindingAdapter添加数据，避免重复刷新
             binding.recyclerview.bindingAdapter.apply {
                 mutable.addAll(groupList)
                 notifyItemRangeInserted(itemCount, groupList.size)

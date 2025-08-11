@@ -22,18 +22,19 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentChongqingRadioSettingsBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ChongQingRadioSettingsViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
+class ChongQingRadioSettingsFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentChongqingRadioSettingsBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: ChongQingRadioSettingsViewModel by viewModels()
@@ -68,8 +69,8 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+            if (!isDeviceConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 return@onRefresh
             }
             queryData()
@@ -216,7 +217,7 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -265,7 +266,8 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请输入测站 10 编号!")
             return
         }
-        commandItems.clear()
+        val commands = mutableListOf<String>()
+
         val entity = RadioCommunicateEntity(
             rxchl = radioChannelList.indexOf(mStates.receiveChannel.get()).toString(),
             txchl = radioChannelList.indexOf(mStates.sendChannel.get()).toString(),
@@ -280,7 +282,7 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_RADIO_CTRL,
             entity.toCommandString()
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
             IOTCommandType.MD_DEL_TERMINAL_ID,
@@ -290,7 +292,7 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
                 IOTCommandType.MD_DEL_TERMINAL_ID,
                 "type=0"
             )
-        commandItems.add(command)
+        commands.add(command)
 
         command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
             IOTCommandType.MD_SET_TERMINAL_ID,
@@ -300,12 +302,14 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
                 IOTCommandType.MD_SET_TERMINAL_ID,
                 "id=${mStates.telemetryStationNode1.get()},${mStates.telemetryStationNode2.get()},${mStates.telemetryStationNode3.get()},${mStates.telemetryStationNode4.get()},${mStates.telemetryStationNode5.get()},${mStates.telemetryStationNode6.get()},${mStates.telemetryStationNode7.get()},${mStates.telemetryStationNode8.get()},${mStates.telemetryStationNode9.get()},${mStates.telemetryStationNode10.get()}"
             )
-        commandItems.add(command)
+        commands.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(
-            isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_25000_MILLIS
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
         )
     }
 
@@ -314,7 +318,8 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryData() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
+
         //devicetype  添加且赋值为1时，表示配置自组网网关
         var command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
             IOTCommandType.MD_GET_RADIO_CTRL, "devicetype=1"
@@ -322,83 +327,25 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
             IOTCommandUtil.getCommand(
                 IOTCommandType.MD_GET_RADIO_CTRL
             )
-        commandItems.add(command)
+        commands.add(command)
 
         command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
             IOTCommandType.MD_GET_TERMINAL_ID, "type=1"
         ) else IOTCommandUtil.getCommand(
             IOTCommandType.MD_GET_TERMINAL_ID
         )
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
+        commands.add(command)
 
-    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.MD_GET_RADIO_CTRL)
-                || (commandType == IOTCommandType.MD_GET_TERMINAL_ID)
-                || (commandType == IOTCommandType.MD_SET_RADIO_CTRL)
-                || (commandType == IOTCommandType.MD_DEL_TERMINAL_ID)
-                || (commandType == IOTCommandType.MD_SET_TERMINAL_ID)
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig()
+            )
         )
     }
 
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage,
-            errMsg = errMsg
-        )
-    }
-
-
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_RADIO_CTRL -> {
                 val result = iotParseManager.parse<RadioCommunicateInfo>(
@@ -408,14 +355,10 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询电台参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initRadioData(result.data)
                     }
                 }
@@ -429,14 +372,10 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询测站节点信息出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initTerminalIds(result.data)
                     }
                 }
@@ -446,15 +385,13 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置电台参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
                         android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                            sendCommandFromCmdList {
+                            if (!isCommunicationExecuting())
                                 Toaster.show("数据保存成功")
-                            }
                         }, AppContants.Communication.DELAY_10000_MILLIS)
                     }
                 }
@@ -464,14 +401,12 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "删除终端 ID 出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting())
                             Toaster.show("数据保存成功")
-                        }
                     }
                 }
             }
@@ -480,18 +415,17 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置终端 ID 出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList { processNavigateUp() }
+                        if (!isCommunicationExecuting())
+                            processNavigateUp()
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
             }
         }
     }

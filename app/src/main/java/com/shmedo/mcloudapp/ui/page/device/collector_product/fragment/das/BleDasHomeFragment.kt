@@ -40,12 +40,14 @@ import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CollectorConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
-import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.DataCenterModule
+import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.RebootModule
 import com.shmedo.mcloudapp.model.RunningStatusModule
 import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.model.TelemetryDataModule
+import com.shmedo.mcloudapp.model.UnifiedDeviceModule
+import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleDasHomeFragmentViewModel
@@ -118,10 +120,10 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                     false
                 )
             )
-            addType<ConfigModule>(R.layout.item_device_config_module)
+            addType<UnifiedDeviceModule>(R.layout.item_device_config_module)
             R.id.item.onClick {
-                val module = getModel<ConfigModule>()
-                processItemClick(module)
+                val unifiedModule = getModel<UnifiedDeviceModule>()
+                processItemClick(unifiedModule.module)
             }
         }
     }
@@ -208,12 +210,12 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun processItemClick(module: ConfigModule) {
+    private fun processItemClick(functionModule: DeviceFunctionModule) {
         if (isBleDisconnected()) {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }
-        when (module.functionModule) {
+        when (functionModule) {
             is TelemetryDataModule -> {//召测
                 doTelemetryCmd()
             }
@@ -225,7 +227,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             }
 
             is CollectorConfigModule -> {//采集器配置
-                if (module.functionModule.navId != 0) {
+                if (functionModule.navId != 0) {
                     val bundle = DasCollectorSettingFragment.Companion.newBundleArguments(
                         mStates.collectorModel.get(),
                         productType,
@@ -234,14 +236,14 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                         bleDevice,
                     )
                     nav().safeNavigate(
-                        module.functionModule.navId,
+                        functionModule.navId,
                         bundle
                     )
                 }
             }
 
             is SensorConfigModule -> {//传感器配置
-                if (module.functionModule.navId != 0) {
+                if (functionModule.navId != 0) {
                     val bundle = DasSensorHomeFragment.Companion.newBundleArguments(
                         mStates.collectorModel.get(),
                         productType,
@@ -250,14 +252,14 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                         bleDevice,
                     )
                     nav().safeNavigate(
-                        module.functionModule.navId,
+                        functionModule.navId,
                         bundle
                     )
                 }
             }
 
             else -> {
-                if (module.functionModule.navId != 0) {
+                if (functionModule.navId != 0) {
                     val bundle = newBundleArguments(
                         productType,
                         communicateWay,
@@ -265,7 +267,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                         bleDevice
                     )
                     nav().safeNavigate(
-                        module.functionModule.navId,
+                        functionModule.navId,
                         bundle
                     )
                 }
@@ -561,40 +563,36 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun updateConfigModuleData() {
-        val moduleList = arrayListOf<ConfigModule>()
+        val moduleList = arrayListOf<UnifiedDeviceModule>()
         moduleList.add(
-            ConfigModule(
-                RunningStatusModule(
-                    name = "关于设备",
-                    desc = "设备基本信息、运行数据",
-                    resID = R.drawable.ic_device_running_info,
-                    navId = R.id.action_global_to_dasSensorInfoFragment
-                )
-            )
+            RunningStatusModule(
+                name = "关于设备",
+                desc = "设备基本信息、运行数据",
+                resID = R.drawable.ic_device_running_info,
+                navId = R.id.action_global_to_dasSensorInfoFragment
+            ).toUnified()
         )
         moduleList.add(
-            ConfigModule(
-                CommonModule(
-                    name = "时间校准",
-                    resID = R.drawable.ic_module_time_calibration_new,
-                    navId = R.id.action_global_to_time_calibration
-                )
-            )
+            CommonModule(
+                name = "时间校准",
+                resID = R.drawable.ic_module_time_calibration_new,
+                navId = R.id.action_global_to_time_calibration
+            ).toUnified()
         )
         moduleList.add(
-            ConfigModule(TelemetryDataModule())
+            TelemetryDataModule().toUnified()
         )
         moduleList.add(
-            ConfigModule(RebootModule())
+            RebootModule().toUnified()
         )
         moduleList.add(
-            ConfigModule(CollectorConfigModule(navId = R.id.action_global_to_dasNetInfoFragment))
+            CollectorConfigModule(navId = R.id.action_global_to_dasNetInfoFragment).toUnified()
         )
         moduleList.add(
-            ConfigModule(DataCenterModule(navId = R.id.action_global_to_bleDasDataCenterHomeFragment))
+            DataCenterModule(navId = R.id.action_global_to_bleDasDataCenterHomeFragment).toUnified()
         )
         moduleList.add(
-            ConfigModule(SensorConfigModule(navId =0))
+            SensorConfigModule(navId = 0).toUnified()
         )
         binding.rvModule.models = moduleList
     }

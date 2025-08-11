@@ -97,6 +97,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRWirelessNetParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UD485SerialPortInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UDCORSParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UDRainGaugeSerialPortInfoParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.ULInitialParamParser
 
 /**
  * 创建者：gonghe
@@ -205,6 +206,7 @@ object IOTParserRegistry {
         UDRainGaugeSerialPortInfoParser(),
         SensorInitialParser(),
         LR200ZeroValueParser(),
+        ULInitialParamParser(),
         GNSSRawDataParser(),
         ModuleParamParser(),
     )

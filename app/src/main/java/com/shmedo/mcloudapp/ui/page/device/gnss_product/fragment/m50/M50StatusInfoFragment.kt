@@ -14,7 +14,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,7 +25,7 @@ import timber.log.Timber
  * 创建时间：2024/9/19
  * 描述：  一体式自供电 GNSS 接收机(M50)状态信息
  */
-class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+class M50StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -52,9 +52,9 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList,
                     name = "光伏板电压",
                     value = if (solarVoltage == 0.0) "0" else stateInfo.solarVoltage.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
-                    textColorRes = if (solarVoltage >= 9) 0 else ColorUtils.getColor(
+                    textColorRes = if (solarVoltage < 9) ColorUtils.getColor(
                         R.color.warn_FF9D00
-                    ),
+                    ) else 0,
                     unit = "V"
                 )
 
@@ -64,9 +64,9 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "外部电压",
                     value = if (externalVoltage == 0.0) "0" else stateInfo.externalVoltage.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     unit = "V",
-                    textColorRes = if (solarVoltage >= 12) 0 else ColorUtils.getColor(
+                    textColorRes = if (externalVoltage > 0 && externalVoltage < 11) ColorUtils.getColor(
                         R.color.warn_FF9D00
-                    ),
+                    ) else 0,
                     isBottomItem = true
                 )
 
@@ -77,12 +77,12 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
-                        name = "状态" ,
+                        name = "状态",
                         value = when (batteryInfo.batteryStatus) {
                             "0" -> "放电中"
                             "1" -> "充电中"
                             "2" -> "空闲"
-                            "-1" -> "异常"
+                            "-1" -> "故障"
                             else -> AppContants.PLACE_HOLDER_VALUE
                         },
                         textColorRes = if (batteryInfo.batteryStatus == "-1") ColorUtils.getColor(
@@ -106,9 +106,9 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         name = "电量",
                         value = batteryInfo.batteryCapacity.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                         unit = "%",
-                        textColorRes = if (batteryCapacity > 20) 0 else ColorUtils.getColor(
+                        textColorRes = if (batteryCapacity < 20) ColorUtils.getColor(
                             R.color.warn_FF9D00
-                        ),
+                        ) else 0,
                     )
 
                     val batteryTemp = batteryInfo.batteryTemp.toDoubleOrNull() ?: Double.MAX_VALUE
@@ -116,9 +116,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         groupList,
                         name = "温度",
                         value = batteryInfo.batteryTemp.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
-                        textColorRes = if ((batteryTemp > -20 && batteryTemp < 80) || batteryTemp == Double.MAX_VALUE) 0 else ColorUtils.getColor(
-                            R.color.warn_FF9D00
-                        ),
+                        textColorRes = 0,
                         unit = "℃",
                     )
 
@@ -128,9 +126,9 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         groupList,
                         name = "健康度",
                         value = batteryInfo.batteryHealth.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
-                        textColorRes = if (batteryHealth > 70) 0 else ColorUtils.getColor(
+                        textColorRes = if (batteryHealth < 80) ColorUtils.getColor(
                             R.color.warn_FF9D00
-                        ),
+                        ) else 0,
                         unit = "%",
                         isBottomItem = index == batteryInfoList.size - 1
                     )

@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200InitialValueFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lr200.LR200InitialValueFragment.ClickProxy" />
 
     </data>
 
@@ -89,13 +89,13 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_Style"
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            android:layout_marginTop="0dp"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:layout_marginBottom="50dp"
-            android:text="保存"
+            android:text="@string/button_save_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

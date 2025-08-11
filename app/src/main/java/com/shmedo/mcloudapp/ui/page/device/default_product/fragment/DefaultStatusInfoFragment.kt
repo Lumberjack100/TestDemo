@@ -14,7 +14,7 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
+import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -24,8 +24,15 @@ import timber.log.Timber
  * 创建者：gonghe
  * 创建时间：2024/9/19
  * 描述： 状态信息
+ * 
+ * 优化特点：
+ * 1. 继承自 OptimizedBaseDeviceStatusInfoStyleFragment，使用新的通信架构
+ * 2. 统一的错误处理策略
+ * 3. 响应驱动的指令执行
+ * 4. 保持原有的Default产品特定业务逻辑不变
+ * 5. 支持4G和蓝牙两种通讯方式
  */
-class DefaultStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+class DefaultStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -98,7 +105,7 @@ class DefaultStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     if (stateInfo.self_check.uppercase().indexOf("SCL") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
-                            name = "加速度计",
+                            name = "倾角加速度模块",
                             value = if (stateInfo.self_check.uppercase()
                                     .indexOf("SCL:0") == -1
                             ) "正常" else "故障",
@@ -182,7 +189,7 @@ class DefaultStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     if (stateInfo.self_check.uppercase().indexOf("MEMS") != -1) {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
-                            name = "倾角计模块",
+                            name = "倾角加速度模块",
                             value = if (stateInfo.self_check.uppercase()
                                     .indexOf("MEMS:0") == -1
                             ) "正常" else "故障",
@@ -213,7 +220,7 @@ class DefaultStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 binding.recyclerview.models = groupList
 
             } catch (e: Exception) {
-                Timber.Forest.e(e)
+                Timber.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }

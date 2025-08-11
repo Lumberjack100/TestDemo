@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol" />
+
+        <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.DataCenterPlatform" />
 
         <variable
             name="toolbarVM"
@@ -206,7 +209,7 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onGuangdongWaterPlatformStationTypeChooseClick()}"
-                        visible='@{stateVM.platformType.equals("广东水文平台")}'
+                        visible='@{stateVM.platformType.equals(DataCenterPlatform.GUANGDONG_WATER_PLATFORM.getPlatName())}'
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
@@ -429,9 +432,9 @@
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                android:inputType="number"
                                 android:text="@={stateVM.password}"
-                                app:lengthFilter="@{5}" />
+                                app:inputTypeFilter='@{"0123456789ABCDEF"}'
+                                app:lengthFilter="@{16}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -622,7 +625,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_reset"
-                        style="@style/ResetButton_Style2"
+                        style="@style/ResetButton_Style"
                         android:layout_marginTop="@dimen/reset_button_margin_top_50"
                         android:enabled="@{stateVM.isEditable }"
                         android:onClick="@{()->click.onResetButtonClick()}"
@@ -630,7 +633,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_confirm"
-                        style="@style/SubmitButton_Style2"
+                        style="@style/SubmitButton_Style"
                         onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
                         android:layout_marginTop="@dimen/summit_button_margin_top_20"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isDataModified}"
