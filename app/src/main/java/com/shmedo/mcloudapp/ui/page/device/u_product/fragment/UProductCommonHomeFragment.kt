@@ -2,8 +2,11 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment
 
 import android.util.Log
 import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.StringUtils
+import com.drake.brv.BindingAdapter.BindingViewHolder
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
+import com.hjq.toast.Toaster
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -13,9 +16,12 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.URCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
+import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.databinding.ItemUlMeasureDataBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNullKey
@@ -91,6 +97,17 @@ class UProductCommonHomeFragment : BaseDeviceHomeFragment() {
             }
         }
         mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
+    }
+
+    override fun BindingViewHolder.processOtherItemViewBind(itemViewType: Int) {
+        if (itemViewType == R.layout.item_ul_measure_data) {
+            val binding = getBinding<ItemUlMeasureDataBinding>()
+
+            // 设置数据绑定参数
+            binding.setVariable(BR.m, ulMeasureDataItem)
+            binding.setVariable(BR.click, ClickProxy())
+            binding.executePendingBindings()
+        }
     }
 
     override fun initModuleData() {
@@ -684,6 +701,24 @@ class UProductCommonHomeFragment : BaseDeviceHomeFragment() {
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    inner class ClickProxy : BaseClickProxy() {
+        override fun onSampleDataClick() {
+            if (!isDeviceConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+
+            val command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE)
+            sendCommandSequence(
+                commands = listOf(command),
+                config = CommandSequenceConfig(
+                    loadingMessage = StringUtils.getString(R.string.processing),
+                    errorConfig = ErrorConfig.dialogConfig()
+                )
+            )
         }
     }
 }
