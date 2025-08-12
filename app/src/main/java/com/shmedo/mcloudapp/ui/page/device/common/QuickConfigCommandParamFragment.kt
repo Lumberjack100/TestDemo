@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.common
 import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextUtils
 import android.util.Log
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
@@ -23,6 +24,12 @@ import com.huawei.hms.hmsscankit.ScanUtil
 import com.huawei.hms.ml.scan.HmsScan
 import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.luck.picture.lib.basic.PictureSelector
+import com.luck.picture.lib.config.PictureMimeType
+import com.luck.picture.lib.config.SelectMimeType
+import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.interfaces.OnResultCallbackListener
+import com.luck.picture.lib.utils.MediaUtils
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
@@ -57,6 +64,10 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.CommandExecutionProgress
 import com.shmedo.mcloudapp.ui.viewmodel.state.ExecutionStatus
 import com.shmedo.mcloudapp.ui.viewmodel.state.QuickConfigCommandParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.utils.image.GlideEngine
+import com.shmedo.mcloudapp.utils.image.ImageFileCompressEngine
+import com.shmedo.mcloudapp.utils.image.MeOnCameraInterceptListener
+import com.shmedo.mcloudapp.utils.image.MeSandboxFileEngine
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -106,6 +117,11 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             when (menuItem.itemId) {
                 R.id.action_scan_qr -> {
                     startQRCodeScan()
+                    true
+                }
+
+                R.id.action_open_gallery -> {
+                    openGallery()
                     true
                 }
 
@@ -163,13 +179,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         }
     }
 
-    override fun handleCommandResponse(cmdStr: String) {
-        // 实现命令响应处理逻辑
-        if (!isCommunicationExecuting()) {
-            Toaster.show("配置完成")
-        }
-    }
-
     private fun initAdapter() {
         binding.recyclerView.linear().setup {
             addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group)
@@ -219,14 +228,10 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         // 如果有默认配置URL，可以在这里加载
-        // 例如：测试时可以自动加载某个配置
-        // handleScanResult("http://ams4.shmedo.com:22000/api/v1/GetCmdOrdersBySn/medotest")
-
 //        loadTestConfig()
     }
 
-    // ==================== 二维码扫描功能 ====================
-
+    //<editor-fold desc="二维码扫描、图片识别功能">
     /**
      * 启动二维码扫描
      */
@@ -257,6 +262,117 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
+     * 打开相册选择二维码图片
+     */
+    private fun openGallery() {
+        PictureSelector.create(context)
+            .openGallery(SelectMimeType.ofImage())
+            .setImageEngine(GlideEngine.createGlideEngine())
+            .setCompressEngine(ImageFileCompressEngine())
+            .setSandboxFileEngine(MeSandboxFileEngine())
+            .setCameraInterceptListener(MeOnCameraInterceptListener())
+            .isDisplayCamera(false)
+            .isWithSelectVideoImage(false)
+            .isMaxSelectEnabledMask(false)
+            .setMaxSelectNum(1)
+            .setMaxVideoSelectNum(0)
+            .forResult(MeOnResultCallbackListener())
+    }
+
+    /**
+     * 选择结果
+     */
+    private inner class MeOnResultCallbackListener : OnResultCallbackListener<LocalMedia> {
+        override fun onResult(result: ArrayList<LocalMedia>) {
+            analyticalSelectResults(result)
+        }
+
+        override fun onCancel() {
+            Toaster.show("图片选取失败")
+        }
+    }
+
+    /**
+     * 处理选择结果
+     */
+    private fun analyticalSelectResults(result: ArrayList<LocalMedia>) {
+        try {
+            if (result.isEmpty()) {
+                Toaster.show("未选择有效图片")
+                return
+            }
+
+            val media = result[0]
+            if (media.width == 0 || media.height == 0) {
+                if (PictureMimeType.isHasImage(media.mimeType)) {
+                    val imageExtraInfo = MediaUtils.getImageSize(context, media.path)
+                    media.width = imageExtraInfo.width
+                    media.height = imageExtraInfo.height
+                }
+            }
+            // 日志记录（可选）
+            Timber.d("处理图片: ${media.fileName}, 尺寸: ${media.width}x${media.height}")
+
+            val path = if (TextUtils.isEmpty(media.compressPath)) {
+                media.sandboxPath
+            } else {
+                media.compressPath
+            }
+
+            if (TextUtils.isEmpty(path)) {
+                Toaster.show("获取图片路径失败")
+                return
+            }
+
+            // 显示处理中提示
+            showLoadingDialog("正在识别二维码...")
+
+            // 在后台线程处理图片
+            launchWithViewLifecycle {
+                try {
+                    // 1. 转换为 Bitmap
+                    val bitmap = ScanUtil.compressBitmap(mActivity, path)
+
+                    if (bitmap == null) {
+                        dismissLoadingDialog()
+                        Toaster.show("图片处理失败")
+                        return@launchWithViewLifecycle
+                    }
+
+                    // 2. 配置可选项
+                    val options = HmsScanAnalyzerOptions.Creator()
+                        .setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE)
+                        .setPhotoMode(true) // 设置Bitmap扫码模式为图片扫码
+                        .create()
+
+                    val hmsScans = ScanUtil.decodeWithBitmap(mActivity, bitmap, options)
+
+                    dismissLoadingDialog()
+
+                    // 处理扫码结果
+                    if (hmsScans != null && hmsScans.isNotEmpty() &&
+                        hmsScans[0] != null && !TextUtils.isEmpty(hmsScans[0]?.originalValue)
+                    ) {
+                        val originalValue = hmsScans[0]!!.originalValue
+                        Timber.d("相册二维码识别结果：$originalValue")
+                        handleScanResult(originalValue)
+                    } else {
+                        Toaster.show("图片中未识别到有效的二维码")
+                    }
+                } catch (e: Exception) {
+                    dismissLoadingDialog()
+                    Timber.e(e, "图片二维码识别失败")
+                    Toaster.show("二维码识别失败: ${e.message}")
+                }
+            }
+
+        } catch (e: Exception) {
+            Timber.e(e, "处理选择结果失败")
+            Toaster.show("处理图片失败")
+        }
+    }
+
+    /**
      * 处理扫码结果
      */
     private fun handleScanResult(qrCodeUrl: String) {
@@ -284,9 +400,9 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     private fun extractVerificationSuffix(url: String): String? {
         return url.substringAfterLast("/").takeIf { it.isNotBlank() }
     }
+    // </editor-fold>
 
     // ==================== 配置数据获取 ====================
-
     /**
      * 获取指令配置
      */
@@ -305,13 +421,13 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                 val cmdOrderInfo = productConfigViewModel.getDeviceGetCmdOrdersBySn(
                     verificationSuffix = verificationSuffix,
                     param = params
-                )
+                ) { error: Throwable ->
+                    showError("获取配置信息失败 ${error.message}")
+                }
 
                 if (cmdOrderInfo != null) {
                     Timber.i("配置获取成功: ${cmdOrderInfo.productName}")
                     mStates.cmdOrderInfo.value = cmdOrderInfo
-                } else {
-                    showError("获取配置信息失败")
                 }
 
             } catch (e: Exception) {
@@ -645,6 +761,13 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
 //                delay(1500)
 //                nav().navigateUp()
 //            }
+        }
+    }
+
+    override fun handleCommandResponse(cmdStr: String) {
+        // 实现命令响应处理逻辑
+        if (!isCommunicationExecuting()) {
+            Toaster.show("配置完成")
         }
     }
 
