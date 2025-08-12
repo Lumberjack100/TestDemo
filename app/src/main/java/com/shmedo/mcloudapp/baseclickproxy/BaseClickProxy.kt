@@ -39,6 +39,13 @@ open class BaseClickProxy {
 
     }
 
+    /**
+     * 遥测
+     */
+    open fun onSampleDataClick() {
+
+    }
+
     open fun onMeasureDataClick() {
 
     }

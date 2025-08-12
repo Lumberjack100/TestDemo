@@ -37,9 +37,9 @@ import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.M50MeasureDataItem
 import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -621,7 +621,7 @@ class M20SHomeFragment : BaseDeviceHomeFragment() {
          * 跳转到位置信息页面
          */
         override fun onGotoLocationClick() {
-            if (!isDeviceConnected() && communicateWay is BleConnect) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -637,7 +637,7 @@ class M20SHomeFragment : BaseDeviceHomeFragment() {
         }
 
         override fun onTakePhotoClick() {
-            if (!isDeviceConnected() && communicateWay is BleConnect) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
