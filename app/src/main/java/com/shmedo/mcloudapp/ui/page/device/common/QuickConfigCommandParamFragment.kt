@@ -222,7 +222,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         // 例如：测试时可以自动加载某个配置
         // handleScanResult("http://ams4.shmedo.com:22000/api/v1/GetCmdOrdersBySn/medotest")
 
-        loadTestConfig()
+//        loadTestConfig()
     }
 
     // ==================== 二维码扫描功能 ====================
