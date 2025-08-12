@@ -2,11 +2,14 @@ package com.shmedo.mcloudapp.ui.page.device.common
 
 import android.app.Activity
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.KeyboardUtils
+import com.blankj.utilcode.util.ResourceUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.linear
@@ -22,9 +25,9 @@ import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
-import com.shmedo.core.model.CmdParaInfo
+import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.model.CmdParamInfo
 import com.shmedo.core.model.DeviceCmdOrderInfo
-import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -34,6 +37,7 @@ import com.shmedo.mcloudapp.communication.model.CommandSequenceCallbacks
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentQuickConfigCommandParamBinding
+import com.shmedo.mcloudapp.databinding.ItemQuickConfigCommandParamEditBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -55,8 +59,6 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.QuickConfigCommandParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
-import kotlinx.coroutines.delay
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -77,7 +79,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: QuickConfigCommandParamViewModel by viewModels()
     private val productConfigViewModel: ProductConfigViewModel by viewModel()
-    private val iotParseManager: IOTParserManager by inject()
 
     // 进度对话框
     private var progressDialog: BasePopupView? = null
@@ -137,7 +138,8 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         ) { result: CustomActivityResult ->
             if (result.resultCode == Activity.RESULT_OK &&
                 result.requestCode == PermissionHelper.REQUEST_CODE_QUICK_CONFIG_SCAN &&
-                result.data != null) {
+                result.data != null
+            ) {
                 val obj: HmsScan? = result.data.getParcelableExtra<HmsScan>(ScanUtil.RESULT)
                 if (obj == null) {
                     Toaster.show("扫码结果为空")
@@ -175,6 +177,25 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             addType<QuickConfigCommandParamEditItem>(R.layout.item_quick_config_command_param_edit)
             addType<GapItem>(R.layout.item_device_status_info_gap)
             addType<ParamSubmitButtonItem>(R.layout.item_param_summit_button)
+            onBind {
+                when (itemViewType) {
+                    R.layout.item_quick_config_command_param_edit -> {
+                        val item = getModel<QuickConfigCommandParamEditItem>()
+                        val itemBinding = getBinding<ItemQuickConfigCommandParamEditBinding>()
+                        // 新增：监听 EditText 输入变化
+                        itemBinding.etValue.doAfterTextChanged { text: Editable? ->
+                            if (text.isNullOrEmpty()) {
+                                return@doAfterTextChanged
+                            }
+                            val newValue = text.toString()
+                            mStates.parameterValues[item.cmdEngName] = newValue
+                            Timber.d("参数更新: ${item.cmdEngName} = $newValue")
+                        }
+                    }
+
+                    else -> {}
+                }
+            }
 
             R.id.item.onClick {
                 when (itemViewType) {
@@ -200,6 +221,8 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         // 如果有默认配置URL，可以在这里加载
         // 例如：测试时可以自动加载某个配置
         // handleScanResult("http://ams4.shmedo.com:22000/api/v1/GetCmdOrdersBySn/medotest")
+
+        loadTestConfig()
     }
 
     // ==================== 二维码扫描功能 ====================
@@ -308,27 +331,21 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     private fun buildConfigurationUI(cmdOrderInfo: DeviceCmdOrderInfo) {
         val uiItems = mutableListOf<Any>()
 
-        // 合并并排序所有指令
-        val allCommands = mergeAndSortCommands(cmdOrderInfo)
-
-        Timber.d("构建UI: 共${allCommands.size}条指令")
+        // 合并并排序动态指令
+        val commandItems = mergeAndSortDynamicCommands(cmdOrderInfo)
 
         // 构建UI项
-        allCommands.forEachIndexed { index, cmdItem ->
+        commandItems.forEachIndexed { index, cmdItem ->
             if (index > 0) {
                 uiItems.add(GapItem(height = ConvertUtils.dp2px(12f)))
             }
 
-            // 添加分组标题
-            val groupTitle = cmdItem.note.ifBlank {
-                "指令 #${cmdItem.orderIndex + 1}"
-            }
-
+            // 添加分组标题项
             uiItems.add(
-                DeviceStatusInfoGroupItem(groupTitle)
+                DeviceStatusInfoGroupItem(cmdItem.note)
             )
 
-            // 添加参数配置UI
+            // 添加参数配置项
             if (!cmdItem.isFixed && cmdItem.parameters.isNotEmpty()) {
                 addParameterItems(uiItems, cmdItem)
             }
@@ -344,12 +361,12 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     /**
      * 合并和排序指令
      */
-    private fun mergeAndSortCommands(cmdOrderInfo: DeviceCmdOrderInfo): List<CommandItem> {
-        val allCommands = mutableListOf<CommandItem>()
+    private fun mergeAndSortDynamicCommands(cmdOrderInfo: DeviceCmdOrderInfo): List<CommandItem> {
+        val commandItems = mutableListOf<CommandItem>()
 
         // 添加可配置指令
-        cmdOrderInfo.cmdOrderInfos.forEach { cmdOrder ->
-            allCommands.add(
+        cmdOrderInfo.dynamicCmds.forEach { cmdOrder ->
+            commandItems.add(
                 CommandItem(
                     command = cmdOrder.cmdOrder,
                     orderIndex = cmdOrder.orderIndex,
@@ -361,7 +378,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         }
 
         // 按orderIndex排序
-        return allCommands.sortedBy { it.orderIndex }
+        return commandItems.sortedBy { it.orderIndex }
     }
 
     /**
@@ -383,11 +400,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                         value = param.defaultValue,
                         bgResId = bgResId
                     )
-                    // 监听输入变化
-//                    editItem.onValueChanged = { value ->
-//                        mStates.parameterValues[param.cmdEngName] = value
-//                        Timber.d("参数更新: ${param.cmdEngName} = $value")
-//                    }
                     // 设置默认值
                     mStates.parameterValues[param.cmdEngName] = param.defaultValue
                     uiItems.add(editItem)
@@ -396,7 +408,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                 "选择" -> {
                     val fieldValues = param.fieldValueInfos?.toMutableList()
                         ?: mutableListOf()
-
                     val valueMap = fieldValues.associate { it.value to it.display }
 
                     val chooseItem = QuickConfigCommandParamChooseItem(
@@ -459,8 +470,8 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     private fun validateParameters(): Boolean {
         val cmdOrderInfo = mStates.cmdOrderInfo.value ?: return false
 
-        cmdOrderInfo.cmdOrderInfos.forEach { cmdOrder ->
-            cmdOrder.cmdParaInfos.forEach { param ->
+        cmdOrderInfo.dynamicCmds.forEach { dynamicCmdInfo ->
+            dynamicCmdInfo.cmdParaInfos.forEach { param ->
                 val value = mStates.parameterValues[param.cmdEngName]
                 if (value.isNullOrBlank() && param.fieldType == "字符") {
                     Toaster.show("请填写${param.cmdChnName}")
@@ -485,18 +496,18 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         }
 
         // 处理可配置指令
-        cmdOrderInfo.cmdOrderInfos.forEach { cmdOrder ->
-            var processedCommand = cmdOrder.cmdOrder
+        cmdOrderInfo.dynamicCmds.forEach { dynamicCmdInfo ->
+            var processedCommand = dynamicCmdInfo.cmdOrder
 
             // 替换参数占位符
-            cmdOrder.cmdParaInfos.forEach { param ->
+            dynamicCmdInfo.cmdParaInfos.forEach { param ->
                 val paramKey = "{${param.cmdEngName}}"
                 val paramValue = mStates.parameterValues[param.cmdEngName]
                     ?: param.defaultValue
                 processedCommand = processedCommand.replace(paramKey, paramValue)
             }
 
-            commands.add(cmdOrder.orderIndex to processedCommand)
+            commands.add(dynamicCmdInfo.orderIndex to processedCommand)
         }
 
         // 按orderIndex排序并提取指令
@@ -519,7 +530,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             return
         }
 
-        Timber.i("准备执行指令序列: ${commands.size}条")
+        Timber.d("一键配置执行指令序列: ${commands.size}条")
         commands.forEachIndexed { index, cmd ->
             Timber.d("指令[$index]: $cmd")
         }
@@ -529,9 +540,8 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
 
         // 配置执行参数
         val config = CommandSequenceConfig(
-            timeout = 10000L,
-            stopOnFirstError = false, // 不要在第一个错误时停止
             showLoadingDialog = false, // 使用自定义进度对话框
+            stopOnFirstCmdError = false, // 不要在第一个错误时停止
             enableBusinessParseFailureInterrupt = false, // 不中断执行
             errorConfig = ErrorConfig.toastConfig()
         )
@@ -631,10 +641,10 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         // 全部成功时返回
         if (successCount == totalCount) {
             Toaster.show("配置成功")
-            launchWithViewLifecycle {
-                delay(1500)
-                nav().navigateUp()
-            }
+//            launchWithViewLifecycle {
+//                delay(1500)
+//                nav().navigateUp()
+//            }
         }
     }
 
@@ -746,6 +756,25 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         dismissProgressDialog()
         mStates.clearData()
     }
+
+    fun loadTestConfig() {
+        launchWithViewLifecycle {
+            try {
+                val localConfigInfo =
+                    ResourceUtils.readAssets2String("test_quick_config_cmd.json")
+                val cmdOrderInfo = MoshiUtil.fromJson<DeviceCmdOrderInfo>(localConfigInfo)
+
+                if (cmdOrderInfo != null) {
+                    Timber.i("配置获取成功: ${cmdOrderInfo.productName}")
+                    mStates.cmdOrderInfo.value = cmdOrderInfo
+                } else {
+                    showError("获取配置信息失败")
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+    }
 }
 
 // ==================== 数据模型定义 ====================
@@ -758,7 +787,7 @@ data class CommandItem(
     val orderIndex: Int,
     val isFixed: Boolean,
     val note: String,
-    val parameters: List<CmdParaInfo> = emptyList()
+    val parameters: List<CmdParamInfo> = emptyList()
 )
 
 /**

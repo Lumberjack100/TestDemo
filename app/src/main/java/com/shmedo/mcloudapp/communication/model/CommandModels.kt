@@ -133,10 +133,10 @@ data class CommandConfig(
 data class CommandSequenceConfig(
     val timeout: Long = AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
     val delayBeforeSend: Long = 0L,
-    val stopOnFirstError: Boolean = true,
     val showLoadingDialog: Boolean = true,
     val loadingMessage: String = "处理中...",
     val errorConfig: ErrorConfig = ErrorConfig.toastConfig(),
+    val stopOnFirstCmdError: Boolean = true,// 是否在执行第一条指令遇到错误时停止后续指令执行
     /**
      * 是否启用业务层解析失败中断功能
      * 当启用时，如果 handleCommandResponse 抛出异常，会中断后续指令执行

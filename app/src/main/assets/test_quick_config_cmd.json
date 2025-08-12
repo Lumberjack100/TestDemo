@@ -1,0 +1,71 @@
+{
+  "productName": "MR702-遥测终端机",
+  "productId": 554,
+  "createTime": "2025-08-04 16:48:46",
+  "lastModifyDateTime": "2025-08-04 16:35:50",
+  "cmdOrderInfos": [
+    {
+      "note": "GNSS采样率",
+      "cmdOrder": "$cmd=md_setgnssraw&obs={obs}",
+      "orderIndex": 1,
+      "cmdParaInfos": [
+        {
+          "cmdChnName": "采样率",
+          "cmdEngName": "obs",
+          "defaultValue": "1",
+          "fieldType": "选择",
+          "fieldValueInfos": [
+            {
+              "display": "1秒",
+              "value": "1"
+            },
+            {
+              "display": "5秒",
+              "value": "5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "note": "设备上报配置",
+      "cmdOrder": "$cmd=md_mrsetreporttype&type={type}&interval={interval}&basis=8",
+      "orderIndex": 3,
+      "cmdParaInfos": [
+        {
+          "cmdChnName": "上报时间间隔(分)",
+          "cmdEngName": "interval",
+          "defaultValue": "30",
+          "fieldType": "字符",
+          "fieldValueInfos": null
+        },
+        {
+          "cmdChnName": "上报方式",
+          "cmdEngName": "type",
+          "defaultValue": "1",
+          "fieldType": "选择",
+          "fieldValueInfos": [
+            {
+              "display": "定时定点上报",
+              "value": "1"
+            },
+            {
+              "display": "固定间隔上报",
+              "value": "2"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "fixedCmds": [
+    {
+      "cmd": "$cmd=getstatus",
+      "orderIndex": 0
+    },
+    {
+      "cmd": "$cmd=md_setmoduleparam&altitude_angle=15",
+      "orderIndex": 2
+    }
+  ]
+}
