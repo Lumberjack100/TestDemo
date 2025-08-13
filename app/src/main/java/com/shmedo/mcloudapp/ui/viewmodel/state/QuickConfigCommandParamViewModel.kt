@@ -13,16 +13,20 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
  * @desc: 管理配置数据、参数值和执行进度状态
  */
 class QuickConfigCommandParamViewModel : ViewModel() {
-    val emptyContent = NonNullObservableField(true)//
-
     // 配置数据
     val cmdOrderInfo = MutableLiveData<DeviceCmdOrderInfo?>()
 
+    // 空内容标识
+    val emptyContent = NonNullObservableField(true)
+    
     // 参数值映射（key: cmdEngName, value: 用户输入值）
     val parameterValues = mutableMapOf<String, String>()
     
     // 执行进度
-    val executionProgress = MutableLiveData<CommandExecutionProgress>()
+    val executionProgress = MutableLiveData<EnhancedCommandExecutionProgress>()
+    
+    // 执行结果记录（用于导出）
+    val executionResults = mutableListOf<CommandExecutionResult>()
 
     /**
      * 清理数据
@@ -31,17 +35,53 @@ class QuickConfigCommandParamViewModel : ViewModel() {
         cmdOrderInfo.value = null
         parameterValues.clear()
         executionProgress.value = null
+        executionResults.clear()
     }
 }
 
 /**
- * 指令执行进度
+ * 增强版指令执行进度
+ */
+data class EnhancedCommandExecutionProgress(
+    val currentIndex: Int,      // 当前执行到第几条
+    val totalCount: Int,         // 总共多少条指令
+    val currentCommand: String,  // 当前执行的指令
+    val status: ExecutionStatus, // 执行状态
+    val successCount: Int = 0,   // 成功数量
+    val failedCount: Int = 0,    // 失败数量
+    val startTime: Long = 0L,    // 开始时间
+    val executionHistory: List<CommandExecutionItem> = emptyList() // 执行历史
+)
+
+/**
+ * 单个指令执行详情
+ */
+data class CommandExecutionItem(
+    val command: String,
+    val status: ExecutionStatus,
+    val response: String,
+    val errorMessage: String? = null,
+    val executionTime: Long = 0L
+)
+
+/**
+ * 指令执行进度（保持向后兼容）
  */
 data class CommandExecutionProgress(
     val currentIndex: Int,      // 当前执行到第几条
     val totalCount: Int,         // 总共多少条指令
     val currentCommand: String,  // 当前执行的指令
     val status: ExecutionStatus  // 执行状态
+)
+
+/**
+ * 指令执行结果（用于Excel导出）
+ */
+data class CommandExecutionResult(
+    val command: String,
+    val response: String,
+    val success: Boolean,
+    val timestamp: Long = System.currentTimeMillis()
 )
 
 /**

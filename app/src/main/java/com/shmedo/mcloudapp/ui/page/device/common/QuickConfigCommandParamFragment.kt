@@ -1,6 +1,8 @@
 package com.shmedo.mcloudapp.ui.page.device.common
 
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -9,9 +11,11 @@ import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.KeyboardUtils
+import com.blankj.utilcode.util.PathUtils
 import com.blankj.utilcode.util.ResourceUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
+import com.blankj.utilcode.util.UriUtils
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -37,9 +41,12 @@ import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentQuickConfigCommandParamBinding
 import com.shmedo.mcloudapp.databinding.ItemQuickConfigCommandParamEditBinding
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CustomActivityResult
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
@@ -47,13 +54,16 @@ import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.ParamSubmitButtonItem
 import com.shmedo.mcloudapp.model.QuickConfigCommandParamChooseItem
 import com.shmedo.mcloudapp.model.QuickConfigCommandParamEditItem
-import com.shmedo.mcloudapp.ui.dialog.CommandExecutionProgressDialog
+import com.shmedo.mcloudapp.ui.dialog.SimplifiedExecutionProgressDialog
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.ProductConfigViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.CommandExecutionProgress
+import com.shmedo.mcloudapp.ui.viewmodel.state.CommandExecutionItem
+import com.shmedo.mcloudapp.ui.viewmodel.state.CommandExecutionResult
+import com.shmedo.mcloudapp.ui.viewmodel.state.EnhancedCommandExecutionProgress
 import com.shmedo.mcloudapp.ui.viewmodel.state.ExecutionStatus
 import com.shmedo.mcloudapp.ui.viewmodel.state.QuickConfigCommandParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.utils.CommandExcelExporter
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -78,7 +88,8 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     private val productConfigViewModel: ProductConfigViewModel by viewModel()
 
     // 进度对话框
-    private var progressDialog: BasePopupView? = null
+    private var simplifiedProgressDialog: BasePopupView? = null
+    private var simplifiedDialogInstance: SimplifiedExecutionProgressDialog? = null
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -154,9 +165,10 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             }
         }
 
-        // 观察执行进度
+        // 观察执行进度 - 现在使用简化版进度对话框
         mStates.executionProgress.observe(viewLifecycleOwner) { progress ->
-            updateProgressDialog(progress)
+            // 简化版进度对话框在executeConfiguration中直接更新
+            // updateProgressDialog(progress) // 已弃用旧的进度对话框
         }
     }
 
@@ -522,8 +534,11 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             Timber.d("指令[$index]: $cmd")
         }
 
-        // 显示进度对话框
-        showExecutionProgressDialog(commands.size)
+        // 清空之前的执行结果
+        mStates.executionResults.clear()
+
+        // 显示简化版进度对话框
+        showSimplifiedProgressDialog(commands.size)
 
         // 配置执行参数
         val config = CommandSequenceConfig(
@@ -533,174 +548,57 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             errorConfig = ErrorConfig.toastConfig()
         )
 
-        // 记录执行结果
-        val executionResults = mutableListOf<CommandExecutionResult>()
-
         // 执行指令序列
         sendCommandSequence(
             commands = commands,
             config = config,
             callbacks = CommandSequenceCallbacks(
                 onSuccess = { result ->
-                    // 更新进度
-                    val currentIndex = executionResults.size + 1
-                    mStates.executionProgress.value = CommandExecutionProgress(
-                        currentIndex = currentIndex,
-                        totalCount = commands.size,
-                        currentCommand = result.command,
-                        status = ExecutionStatus.SUCCESS
-                    )
-
                     // 记录成功结果
-                    executionResults.add(
-                        CommandExecutionResult(
-                            command = result.command,
-                            response = result.responseData,
-                            success = true
-                        )
+                    val executionResult = CommandExecutionResult(
+                        command = result.command,
+                        response = result.responseData,
+                        success = true
                     )
-
+                    mStates.executionResults.add(executionResult)
+                    
+                    // 更新进度
+                    updateSimplifiedProgress(commands.size)
+                    
                     addDeviceLogItem(
                         Log.INFO,
-                        "[$currentIndex/${commands.size}] 成功: ${result.command}"
+                        "[${mStates.executionResults.size}/${commands.size}] 成功: ${result.command}"
                     )
                     true // 继续执行
                 },
                 onComplete = { results ->
-                    handleExecutionComplete(results, executionResults)
+                    handleSimplifiedExecutionComplete(results)
                 },
                 onError = { error, command ->
                     // 记录失败结果
-                    val currentIndex = executionResults.size + 1
-                    executionResults.add(
-                        CommandExecutionResult(
-                            command = command,
-                            response = error.message,
-                            success = false
-                        )
+                    val executionResult = CommandExecutionResult(
+                        command = command,
+                        response = error.message ?: "未知错误",
+                        success = false
                     )
-
-                    mStates.executionProgress.value = CommandExecutionProgress(
-                        currentIndex = currentIndex,
-                        totalCount = commands.size,
-                        currentCommand = command,
-                        status = ExecutionStatus.ERROR
-                    )
-
+                    mStates.executionResults.add(executionResult)
+                    
+                    // 更新进度
+                    updateSimplifiedProgress(commands.size)
+                    
                     addDeviceLogItem(
                         Log.ERROR,
-                        "[$currentIndex/${commands.size}] 失败: $command, ${error.message}"
+                        "[${mStates.executionResults.size}/${commands.size}] 失败: $command, ${error.message}"
                     )
                 }
             )
         )
     }
 
-    /**
-     * 处理执行完成
-     */
-    private fun handleExecutionComplete(
-        results: List<CommandResult>,
-        executionResults: List<CommandExecutionResult>
-    ) {
-        dismissProgressDialog()
 
-        val successCount = results.count { it is CommandResult.Success }
-        val totalCount = results.size
 
-        mStates.executionProgress.value = CommandExecutionProgress(
-            currentIndex = totalCount,
-            totalCount = totalCount,
-            currentCommand = "",
-            status = ExecutionStatus.COMPLETED
-        )
+    override fun handleCommandResponse(cmdStr: String) {}
 
-        Timber.i("执行完成: 成功$successCount/$totalCount")
-
-        // 显示结果汇总
-        showExecutionSummaryDialog(successCount, totalCount, executionResults)
-
-        // 保存配置历史
-        if (successCount > 0) {
-            saveConfigurationHistory()
-        }
-
-        // 全部成功时返回
-        if (successCount == totalCount) {
-//            Toaster.show("配置成功")
-//            launchWithViewLifecycle {
-//                delay(1500)
-//                nav().navigateUp()
-//            }
-        }
-    }
-
-    override fun handleCommandResponse(cmdStr: String) {
-        // 实现命令响应处理逻辑
-//        if (!isCommunicationExecuting()) {
-//            Toaster.show("配置完成")
-//        }
-    }
-
-    /**
-     * 显示执行进度对话框
-     */
-    private fun showExecutionProgressDialog(totalCount: Int) {
-        progressDialog = XPopup.Builder(context)
-            .dismissOnTouchOutside(false)
-            .dismissOnBackPressed(false)
-            .asCustom(
-                CommandExecutionProgressDialog(
-                    context = requireContext(),
-                    totalCount = totalCount
-                )
-            )
-        progressDialog?.show()
-    }
-
-    /**
-     * 更新进度对话框
-     */
-    private fun updateProgressDialog(progress: CommandExecutionProgress) {
-        (progressDialog as? CommandExecutionProgressDialog)?.updateProgress(progress)
-    }
-
-    /**
-     * 关闭进度对话框
-     */
-    private fun dismissProgressDialog() {
-        progressDialog?.dismiss()
-        progressDialog = null
-    }
-
-    /**
-     * 显示执行结果汇总
-     */
-    private fun showExecutionSummaryDialog(
-        successCount: Int,
-        totalCount: Int,
-        results: List<CommandExecutionResult>
-    ) {
-        val message = buildString {
-            appendLine("执行完成")
-            appendLine("成功: $successCount/$totalCount")
-            appendLine()
-
-            if (results.any { !it.success }) {
-                appendLine("失败指令:")
-                results.filter { !it.success }.forEach { result ->
-                    appendLine("• ${result.command.take(50)}")
-                    appendLine("  错误: ${result.response}")
-                }
-            }
-        }
-
-        showMessageDialog(
-            title = "执行结果",
-            message = message,
-            positiveButtonText = "确定"
-        )
-    }
 
     /**
      * 保存配置历史
@@ -749,9 +647,184 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         initImmersionBar(binding.llToolbar.toolbar, isKeyboardEnable = true)
     }
 
+    /**
+     * 显示简化版执行进度对话框
+     */
+    private fun showSimplifiedProgressDialog(totalCount: Int) {
+        val dialog = SimplifiedExecutionProgressDialog(
+            context = requireContext(),
+            totalCount = totalCount,
+            deviceSn = deviceInfo.deviceToken,
+            onExportExcel = {
+                // 导出Excel
+                exportExecutionResultsToExcel()
+            },
+            onClose = {
+                // 关闭对话框
+                Timber.d("用户关闭进度对话框")
+            }
+        )
+        
+        simplifiedDialogInstance = dialog
+        simplifiedProgressDialog = XPopup.Builder(context)
+            .dismissOnTouchOutside(false)
+            .dismissOnBackPressed(false)
+            .asCustom(dialog)
+        
+        simplifiedProgressDialog?.show()
+    }
+
+    /**
+     * 更新简化版进度
+     */
+    private fun updateSimplifiedProgress(totalCommands: Int) {
+        val results = mStates.executionResults
+        val currentCommand = results.lastOrNull()?.command ?: ""
+        
+        val progress = EnhancedCommandExecutionProgress(
+            currentIndex = results.size,
+            totalCount = totalCommands,
+            currentCommand = currentCommand,
+            status = if (results.isEmpty()) ExecutionStatus.PENDING else ExecutionStatus.EXECUTING,
+            successCount = results.count { it.success },
+            failedCount = results.count { !it.success },
+            startTime = System.currentTimeMillis(),
+            executionHistory = results.map { result ->
+                CommandExecutionItem(
+                    command = result.command,
+                    status = if (result.success) ExecutionStatus.SUCCESS else ExecutionStatus.ERROR,
+                    response = result.response,
+                    errorMessage = if (!result.success) result.response else null
+                )
+            }
+        )
+        
+        mStates.executionProgress.value = progress
+        simplifiedDialogInstance?.updateProgress(progress)
+    }
+
+    /**
+     * 处理简化版执行完成
+     */
+    private fun handleSimplifiedExecutionComplete(results: List<CommandResult>) {
+        val executionResults = mStates.executionResults
+        val successCount = executionResults.count { it.success }
+        val totalCount = executionResults.size
+        
+        // 更新为完成状态
+        val finalProgress = EnhancedCommandExecutionProgress(
+            currentIndex = totalCount,
+            totalCount = totalCount,
+            currentCommand = "",
+            status = ExecutionStatus.COMPLETED,
+            successCount = successCount,
+            failedCount = totalCount - successCount,
+            startTime = System.currentTimeMillis(),
+            executionHistory = executionResults.map { result ->
+                CommandExecutionItem(
+                    command = result.command,
+                    status = if (result.success) ExecutionStatus.SUCCESS else ExecutionStatus.ERROR,
+                    response = result.response,
+                    errorMessage = if (!result.success) result.response else null
+                )
+            }
+        )
+        
+        mStates.executionProgress.value = finalProgress
+        simplifiedDialogInstance?.updateProgress(finalProgress)
+        
+        Timber.i("执行完成: 成功$successCount/$totalCount")
+        
+        // 保存配置历史
+        if (successCount > 0) {
+            saveConfigurationHistory()
+        }
+    }
+
+    /**
+     * 导出执行结果到Excel
+     */
+    private fun exportExecutionResultsToExcel() {
+        launchWithViewLifecycle {
+            try {
+                showLoadingDialog("正在导出Excel...")
+                
+                val results = mStates.executionResults
+                if (results.isEmpty()) {
+                    Toaster.show("没有可导出的数据")
+                    return@launchWithViewLifecycle
+                }
+                
+                // 获取输出目录
+                val outputDir = java.io.File(PathUtils.getExternalAppFilesPath(), "export")
+                if (!outputDir.exists()) {
+                    outputDir.mkdirs()
+                }
+                
+                // 导出Excel
+                val file = CommandExcelExporter.exportToExcel(
+                    results = results,
+                    deviceSn = deviceInfo.deviceToken,
+                    outputDir = outputDir
+                )
+                
+                if (file != null) {
+                    // 显示导出成功对话框
+                    showExportSuccessDialog(file)
+                } else {
+                    Toaster.show("导出失败")
+                }
+                
+            } catch (e: Exception) {
+                Timber.e(e, "导出Excel失败")
+                Toaster.show("导出失败：${e.message}")
+            } finally {
+                dismissLoadingDialog()
+            }
+        }
+    }
+
+    /**
+     * 显示导出成功对话框
+     */
+    private fun showExportSuccessDialog(file: java.io.File) {
+        val uri = UriUtils.file2Uri(file)
+        
+        showMessage(
+            title = "导出成功",
+            message = "Excel文件已导出成功！\n文件路径：${file.absolutePath}",
+            positiveButtonText = "分享文件",
+            positiveAction = {
+                shareFile(uri)
+            },
+            negativeButtonText = "确定"
+        )
+    }
+
+    /**
+     * 分享文件
+     */
+    private fun shareFile(uri: Uri) {
+        try {
+            val shareIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                putExtra(Intent.EXTRA_SUBJECT, "指令配置结果")
+                putExtra(Intent.EXTRA_TEXT, "请查收指令配置结果Excel文件")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            
+            startActivity(Intent.createChooser(shareIntent, "分享配置结果"))
+        } catch (e: Exception) {
+            Timber.e(e, "分享文件失败")
+            Toaster.show("分享失败：${e.message}")
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        dismissProgressDialog()
+        simplifiedProgressDialog?.dismiss()
         mStates.clearData()
     }
 
@@ -788,15 +861,7 @@ data class CommandItem(
     val parameters: List<CmdParamInfo> = emptyList()
 )
 
-/**
- * 指令执行结果（内部使用）
- */
-data class CommandExecutionResult(
-    val command: String,
-    val response: String,
-    val success: Boolean,
-    val timestamp: Long = System.currentTimeMillis()
-)
+
 
 /**
  * 配置历史记录

@@ -5,54 +5,7 @@
     android:viewportWidth="24"
     android:viewportHeight="24"
     android:tint="?attr/colorOnSurface">
-    
-    <!-- 外部框架 -->
-    <path
-        android:fillColor="@android:color/transparent"
-        android:strokeColor="@android:color/white"
-        android:strokeWidth="2"
-        android:pathData="M3,3 L9,3 L9,9 L3,9 Z" />
-    
-    <path
-        android:fillColor="@android:color/transparent"
-        android:strokeColor="@android:color/white"
-        android:strokeWidth="2"
-        android:pathData="M15,3 L21,3 L21,9 L15,9 Z" />
-    
-    <path
-        android:fillColor="@android:color/transparent"
-        android:strokeColor="@android:color/white"
-        android:strokeWidth="2"
-        android:pathData="M3,15 L9,15 L9,21 L3,21 Z" />
-    
-    <!-- 内部小方块 -->
     <path
         android:fillColor="@android:color/white"
-        android:pathData="M5,5 L7,5 L7,7 L5,7 Z" />
-    
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M17,5 L19,5 L19,7 L17,7 Z" />
-    
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M5,17 L7,17 L7,19 L5,19 Z" />
-    
-    <!-- 右下角数据点 -->
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M12,12 L14,12 L14,14 L12,14 Z" />
-    
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M16,12 L18,12 L18,14 L16,14 Z" />
-    
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M12,16 L14,16 L14,18 L12,18 Z" />
-    
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M18,16 L20,16 L20,18 L18,18 Z" />
-    
+        android:pathData="M9.5,6.5v3h-3v-3H9.5M11,5H5v6h6V5L11,5zM9.5,14.5v3h-3v-3H9.5M11,13H5v6h6V13L11,13zM17.5,6.5v3h-3v-3H17.5M19,5h-6v6h6V5L19,5zM13,13h1.5v1.5H13V13zM14.5,14.5H16V16h-1.5V14.5zM16,13h1.5v1.5H16V13zM13,16h1.5v1.5H13V16zM14.5,17.5H16V19h-1.5V17.5zM16,16h1.5v1.5H16V16zM17.5,14.5H19V16h-1.5V14.5zM17.5,17.5H19V19h-1.5V17.5zM22,7h-2V4h-3V2h5V7zM22,22v-5h-2v3h-3v2H22zM2,22h5v-2H4v-3H2V22zM2,2v5h2V4h3V2H2z"/>
 </vector>
