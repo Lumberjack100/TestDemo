@@ -9,7 +9,7 @@ import android.view.animation.DecelerateInterpolator
 import androidx.core.content.ContextCompat
 import com.lxj.xpopup.core.CenterPopupView
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.DialogSimplifiedExecutionProgressBinding
+import com.shmedo.mcloudapp.databinding.DialogCommandExecutionProgressBinding
 import com.shmedo.mcloudapp.ui.viewmodel.state.EnhancedCommandExecutionProgress
 import com.shmedo.mcloudapp.ui.viewmodel.state.ExecutionStatus
 import timber.log.Timber
@@ -19,27 +19,25 @@ import timber.log.Timber
  * 
  * @author: gonghe
  * @time: 2025/1/13
- * @desc: 提供精简的进度展示和结果导出功能
+ * @desc: 提供进度展示和结果导出功能
  */
-class SimplifiedExecutionProgressDialog(
+class CommandExecutionProgressDialog(
     context: Context,
-    private val totalCount: Int,
-    private val deviceSn: String,
     private val onExportExcel: (() -> Unit)? = null,
     private val onClose: (() -> Unit)? = null
 ) : CenterPopupView(context) {
     
-    private lateinit var binding: DialogSimplifiedExecutionProgressBinding
+    private lateinit var binding: DialogCommandExecutionProgressBinding
     private var startTime = System.currentTimeMillis()
     private val timeUpdateHandler = Handler(Looper.getMainLooper())
     private var timeUpdateRunnable: Runnable? = null
     private var isCompleted = false
     
-    override fun getImplLayoutId(): Int = R.layout.dialog_simplified_execution_progress
+    override fun getImplLayoutId(): Int = R.layout.dialog_command_execution_progress
     
     override fun onCreate() {
         super.onCreate()
-        binding = DialogSimplifiedExecutionProgressBinding.bind(contentView)
+        binding = DialogCommandExecutionProgressBinding.bind(contentView)
         initViews()
         startTimeUpdater()
     }

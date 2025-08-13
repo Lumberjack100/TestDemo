@@ -22,9 +22,6 @@ class QuickConfigCommandParamViewModel : ViewModel() {
     // 参数值映射（key: cmdEngName, value: 用户输入值）
     val parameterValues = mutableMapOf<String, String>()
     
-    // 执行进度
-    val executionProgress = MutableLiveData<EnhancedCommandExecutionProgress>()
-    
     // 执行结果记录（用于导出）
     val executionResults = mutableListOf<CommandExecutionResult>()
 
@@ -34,7 +31,6 @@ class QuickConfigCommandParamViewModel : ViewModel() {
     fun clearData() {
         cmdOrderInfo.value = null
         parameterValues.clear()
-        executionProgress.value = null
         executionResults.clear()
     }
 }
@@ -62,16 +58,6 @@ data class CommandExecutionItem(
     val response: String,
     val errorMessage: String? = null,
     val executionTime: Long = 0L
-)
-
-/**
- * 指令执行进度（保持向后兼容）
- */
-data class CommandExecutionProgress(
-    val currentIndex: Int,      // 当前执行到第几条
-    val totalCount: Int,         // 总共多少条指令
-    val currentCommand: String,  // 当前执行的指令
-    val status: ExecutionStatus  // 执行状态
 )
 
 /**

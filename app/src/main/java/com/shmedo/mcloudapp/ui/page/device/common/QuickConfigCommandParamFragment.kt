@@ -54,7 +54,7 @@ import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.ParamSubmitButtonItem
 import com.shmedo.mcloudapp.model.QuickConfigCommandParamChooseItem
 import com.shmedo.mcloudapp.model.QuickConfigCommandParamEditItem
-import com.shmedo.mcloudapp.ui.dialog.SimplifiedExecutionProgressDialog
+import com.shmedo.mcloudapp.ui.dialog.CommandExecutionProgressDialog
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.ProductConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandExecutionItem
@@ -88,8 +88,8 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     private val productConfigViewModel: ProductConfigViewModel by viewModel()
 
     // 进度对话框
-    private var simplifiedProgressDialog: BasePopupView? = null
-    private var simplifiedDialogInstance: SimplifiedExecutionProgressDialog? = null
+    private var executionProgressDialog: BasePopupView? = null
+    private var executionProgressDialogInstance: CommandExecutionProgressDialog? = null
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -98,7 +98,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             toolbarViewModel
         )
             .addBindingParam(BR.stateVM, mStates)
-            .addBindingParam(BR.click, ClickProxy())
+            .addBindingParam(BR.click, BaseClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -163,12 +163,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             cmdOrderInfo?.let {
                 buildConfigurationUI(it)
             }
-        }
-
-        // 观察执行进度 - 现在使用简化版进度对话框
-        mStates.executionProgress.observe(viewLifecycleOwner) { progress ->
-            // 简化版进度对话框在executeConfiguration中直接更新
-            // updateProgressDialog(progress) // 已弃用旧的进度对话框
         }
     }
 
@@ -538,7 +532,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         mStates.executionResults.clear()
 
         // 显示简化版进度对话框
-        showSimplifiedProgressDialog(commands.size)
+        showSimplifiedProgressDialog()
 
         // 配置执行参数
         val config = CommandSequenceConfig(
@@ -596,29 +590,8 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
 
-
     override fun handleCommandResponse(cmdStr: String) {}
 
-
-    /**
-     * 保存配置历史
-     */
-    private fun saveConfigurationHistory() {
-        val cmdOrderInfo = mStates.cmdOrderInfo.value ?: return
-
-        // TODO: 保存到本地数据库或MMKV
-        val history = ConfigurationHistory(
-            deviceSn = deviceInfo.deviceToken,
-            productName = cmdOrderInfo.productName,
-            productId = cmdOrderInfo.productId,
-            parameters = mStates.parameterValues.toMap(),
-            timestamp = System.currentTimeMillis()
-        )
-
-        Timber.i("保存配置历史: $history")
-        // 可以使用 MMKV 或 Room 数据库保存
-        // CommonMMKVOwner.saveConfigHistory(history)
-    }
 
     /**
      * 显示错误信息
@@ -632,16 +605,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         )
     }
 
-    /**
-     * 点击事件处理
-     */
-    inner class ClickProxy : BaseClickProxy() {
-        fun onHistoryClick() {
-            // TODO: 显示历史配置
-            Toaster.show("历史配置功能开发中")
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar, isKeyboardEnable = true)
@@ -650,11 +613,9 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     /**
      * 显示简化版执行进度对话框
      */
-    private fun showSimplifiedProgressDialog(totalCount: Int) {
-        val dialog = SimplifiedExecutionProgressDialog(
+    private fun showSimplifiedProgressDialog() {
+        val dialog = CommandExecutionProgressDialog(
             context = requireContext(),
-            totalCount = totalCount,
-            deviceSn = deviceInfo.deviceToken,
             onExportExcel = {
                 // 导出Excel
                 exportExecutionResultsToExcel()
@@ -665,13 +626,15 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             }
         )
         
-        simplifiedDialogInstance = dialog
-        simplifiedProgressDialog = XPopup.Builder(context)
+        executionProgressDialogInstance = dialog
+        executionProgressDialog = XPopup.Builder(context)
             .dismissOnTouchOutside(false)
             .dismissOnBackPressed(false)
+            .enableDrag(false)
+            .customHostLifecycle(viewLifecycleOwner.lifecycle)
             .asCustom(dialog)
-        
-        simplifiedProgressDialog?.show()
+
+        executionProgressDialog?.show()
     }
 
     /**
@@ -698,9 +661,8 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                 )
             }
         )
-        
-        mStates.executionProgress.value = progress
-        simplifiedDialogInstance?.updateProgress(progress)
+
+        executionProgressDialogInstance?.updateProgress(progress)
     }
 
     /**
@@ -729,16 +691,10 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                 )
             }
         )
-        
-        mStates.executionProgress.value = finalProgress
-        simplifiedDialogInstance?.updateProgress(finalProgress)
+
+        executionProgressDialogInstance?.updateProgress(finalProgress)
         
         Timber.i("执行完成: 成功$successCount/$totalCount")
-        
-        // 保存配置历史
-        if (successCount > 0) {
-            saveConfigurationHistory()
-        }
     }
 
     /**
@@ -824,7 +780,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        simplifiedProgressDialog?.dismiss()
+        executionProgressDialog?.dismiss()
         mStates.clearData()
     }
 
@@ -859,17 +815,4 @@ data class CommandItem(
     val isFixed: Boolean,
     val note: String,
     val parameters: List<CmdParamInfo> = emptyList()
-)
-
-
-
-/**
- * 配置历史记录
- */
-data class ConfigurationHistory(
-    val deviceSn: String,
-    val productName: String,
-    val productId: Int,
-    val parameters: Map<String, String>,
-    val timestamp: Long
 )
