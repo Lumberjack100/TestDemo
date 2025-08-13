@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.viewmodel.state
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.shmedo.core.model.DeviceCmdOrderInfo
+import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 /**
  * 快速配置指令参数页面的 ViewModel
@@ -12,19 +13,16 @@ import com.shmedo.core.model.DeviceCmdOrderInfo
  * @desc: 管理配置数据、参数值和执行进度状态
  */
 class QuickConfigCommandParamViewModel : ViewModel() {
-    
     // 配置数据
     val cmdOrderInfo = MutableLiveData<DeviceCmdOrderInfo?>()
+    val uiItems = mutableListOf<Any>()
     
     // 参数值映射（key: cmdEngName, value: 用户输入值）
     val parameterValues = mutableMapOf<String, String>()
     
     // 执行进度
     val executionProgress = MutableLiveData<CommandExecutionProgress>()
-    
-    // 加载状态
-    val isLoading = MutableLiveData(false)
-    
+
     /**
      * 清理数据
      */
@@ -32,7 +30,6 @@ class QuickConfigCommandParamViewModel : ViewModel() {
         cmdOrderInfo.value = null
         parameterValues.clear()
         executionProgress.value = null
-        isLoading.value = false
     }
 }
 

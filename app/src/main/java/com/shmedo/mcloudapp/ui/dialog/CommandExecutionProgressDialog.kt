@@ -12,7 +12,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.ExecutionStatus
  * 指令执行进度对话框
  * 
  * @author: gonghe
- * @time: 2025/1/6
+ * @time: 2025/8/13
  * @desc: 显示指令执行的实时进度和状态
  */
 class CommandExecutionProgressDialog(
@@ -41,8 +41,8 @@ class CommandExecutionProgressDialog(
         progressBar.max = 100
         progressBar.progress = 0
         tvProgress.text = "0/$totalCount"
-        tvCurrentCommand.text = "准备执行..."
         tvStatus.text = "初始化"
+        tvCurrentCommand.text = "准备执行..."
     }
     
     /**

@@ -8,10 +8,4 @@
         android:title="扫描二维码"
         app:showAsAction="always" />
         
-    <item
-        android:id="@+id/action_open_gallery"
-        android:icon="@drawable/ic_gallery"
-        android:title="打开相册"
-        app:showAsAction="always" />
-        
 </menu>
