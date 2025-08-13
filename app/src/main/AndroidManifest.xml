@@ -91,7 +91,7 @@
         android:name=".MCloudApplication"
         android:allowBackup="true"
         android:allowNativeHeapPointerTagging="false"
-        android:enableOnBackInvokedCallback="true"
+        android:enableOnBackInvokedCallback="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"

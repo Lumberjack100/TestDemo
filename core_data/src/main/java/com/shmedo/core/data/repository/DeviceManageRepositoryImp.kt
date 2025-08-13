@@ -2,6 +2,7 @@ package com.shmedo.core.data.repository
 
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.model.CloudDeviceData
+import com.shmedo.core.model.DeviceBackupInfo
 import com.shmedo.core.model.DeviceDetailInfo
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.core.model.DeviceSensorBasicInfo
@@ -17,6 +18,7 @@ import org.json.JSONObject
 import rxhttp.toAwait
 import rxhttp.tryAwait
 import rxhttp.wrapper.param.RxHttp
+import rxhttp.wrapper.param.toAwaitResponse
 
 /**
  * 创建者：gonghe
@@ -46,7 +48,6 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         )
     }
 
-    //<editor-fold desc="产品接口">
     /**
      *  1. 查询用户在其所在的所有公司的产品列表，包含其所在公司的所有下级公司
      *  2. 分页查询产品列表
@@ -66,9 +67,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
             onCatch = onCatch
         )
     }
-    // </editor-fold>
 
-    //<editor-fold desc="设备接口">
     /**
      * 分页查询设备列表(默认排序是创建时间倒序)或者 查询系统所有设备列表(系统权限，预定义权限，不允许授予第三方)
      */
@@ -161,6 +160,20 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
     }
 
     /**
+     * 分页设备备份记录列表
+     */
+    suspend fun queryDeviceBackupListWithPage(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): PageList<DeviceBackupInfo>? =
+        RxHttp.postJson("/QueryDeviceBackup")
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addHeader("Authorization", AuthMMKVOwner.token)
+            .addAll(jsonParam)
+            .toAwaitResponse<PageList<DeviceBackupInfo>>()
+            .tryAwait(onCatch)
+
+    /**
      * 给一个设备应用一个备份
      */
     suspend fun applyBackup(
@@ -172,6 +185,25 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         return commonPostResponseString<String>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
             shortMethodUrl = "/ApplyBackup",
+            jsonParam = jsonParam,
+            headers = headers,
+            onCatch = onCatch
+        )
+    }
+
+    /**
+     * 更换设备
+     * 将拉旧设备的最新配置数据同步给新设备（如果老设备没有相关备份文件，就不同步），并且自动旧设备的传感器关联标识更改生成一个新的，新设备的传感器标识改成旧设备之前的传感器关联标识，旧设备的；并且将新设备自动加入到之前旧设备的相关分组中
+     */
+    suspend fun replaceDevice(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? {
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
+
+        return commonPostResponseString<String>(
+            baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
+            shortMethodUrl = "/ReplaceDevice",
             jsonParam = jsonParam,
             headers = headers,
             onCatch = onCatch
@@ -213,9 +245,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
             onCatch = onCatch
         )
     }
-    // </editor-fold>
 
-    //<editor-fold desc="设备传感器接口">
     /**
      * 查询查询设备下的传感器
      */
@@ -306,6 +336,20 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
     }
 
     /**
+     * 分页查询设备原始数据列表
+     */
+    suspend fun queryCloudDataExWithPage(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): PageList<CloudDeviceData>? =
+        RxHttp.postJson("/QueryCloudDataEx")
+            .setDomainIfAbsent(BaseURL.CLOUD_PLATFORM_DATA_ADDRESS.baseUrl)
+            .addHeader("Authorization", AuthMMKVOwner.token)
+            .addAll(jsonParam)
+            .toAwait(object : CloudPlatformApiResponseParser<PageList<CloudDeviceData>>() {})
+            .tryAwait(onCatch)
+
+    /**
      * 分页查询设备文件
      * @param deviceToken 设备编号
      * @param begin 开始时间
@@ -343,19 +387,4 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
             onCatch = onCatch
         )
     }
-    // </editor-fold>
-
-    /**
-     * 分页查询设备数据列表
-     */
-    suspend fun queryCloudDataExWithPage(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): PageList<CloudDeviceData>? =
-        RxHttp.postJson("/QueryCloudDataEx")
-            .setDomainIfAbsent(BaseURL.CLOUD_PLATFORM_DATA_ADDRESS.baseUrl)
-            .addHeader("Authorization", AuthMMKVOwner.token)
-            .addAll(jsonParam)
-            .toAwait(object : CloudPlatformApiResponseParser<PageList<CloudDeviceData>>() {})
-            .tryAwait(onCatch)
 }

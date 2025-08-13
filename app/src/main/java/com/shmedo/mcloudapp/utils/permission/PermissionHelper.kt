@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.extensions.showMessage
  */
 object PermissionHelper {
     const val REQUEST_CODE_SCAN = 0x1008
+    const val REQUEST_CODE_QUICK_CONFIG_SCAN = 0x1009  // 新增：快速配置专用扫码
     
     val foregroundLocationPermissions: Array<String>
         get() {

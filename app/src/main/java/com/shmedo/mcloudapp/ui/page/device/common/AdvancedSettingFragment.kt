@@ -280,9 +280,8 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
      * 是否支持更换新设备
      */
     private fun isSupportReplace(): Boolean {
-        return false
-//        return productType != ProductType.U_L_1
-//                && productType != ProductType.COLLECTOR_G_0
+        return productType != ProductType.U_L_1
+                && productType != ProductType.COLLECTOR_G_0
     }
 
     override fun createObserver() {

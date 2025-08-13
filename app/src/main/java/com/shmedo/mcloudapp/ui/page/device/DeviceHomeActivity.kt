@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -19,20 +20,23 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
+import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.model.CommunicateWay
+import com.shmedo.mcloudapp.model.CustomActivityResult
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DeviceHomeActivity : BaseActivity() {
     private lateinit var binding: ActivityDeviceHomeBinding
-    private lateinit var mStates: EmptyViewModel
-    private lateinit var logViewModel: LogViewModel
+    private lateinit var mMessenger: PageMessenger
+    private val mStates: EmptyViewModel by viewModels()
+    private val logViewModel: LogViewModel by viewModel()
 
     private var productType = ProductType.UnKnown
     private var communicateWay: CommunicateWay = NetPlatformConnect
@@ -41,8 +45,7 @@ class DeviceHomeActivity : BaseActivity() {
 
 
     override fun initViewModel() {
-        mStates = getActivityScopeViewModel()
-        logViewModel = getViewModel()
+        mMessenger = getAppViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -168,6 +171,12 @@ class DeviceHomeActivity : BaseActivity() {
             }
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        mMessenger.dispatchActivityResult(CustomActivityResult(requestCode, resultCode, data))
+    }
+
 
     override fun onDestroy() {
         // 清除 FLAG_KEEP_SCREEN_ON 标志

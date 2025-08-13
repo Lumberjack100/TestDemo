@@ -129,7 +129,7 @@ class ResponseDrivenCommandExecutor(
 
                     is CommandResult.Error -> {
                         Timber.e("指令执行失败: $command, 错误: ${result.error.message}")
-                        if (config.stopOnFirstError) {
+                        if (config.stopOnFirstCmdError) {
                             handleExecutionError(result.error, command, config, callbacks)
                             return
                         }
@@ -140,7 +140,7 @@ class ResponseDrivenCommandExecutor(
                     is CommandResult.Timeout -> {
                         Timber.e("指令超时: $command")
                         val timeoutError = DeviceError.Timeout(command, result.timeoutMs)
-                        if (config.stopOnFirstError) {
+                        if (config.stopOnFirstCmdError) {
                             handleExecutionError(timeoutError, command, config, callbacks)
                             return
                         }

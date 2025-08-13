@@ -1,13 +1,14 @@
 package com.shmedo.core.model
 
 import android.os.Parcelable
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2024/11/26 <br/>
- * 描述：    设备命令订单信息
+ * 描述：    设备配置指令序列信息
  */
 @Parcelize
 @JsonClass(generateAdapter = true)
@@ -16,28 +17,29 @@ data class DeviceCmdOrderInfo(
     val productId: Int = 0,
     val createTime: String = "",
     val lastModifyDateTime: String = "",
-    val cmdOrderInfos: List<CmdOrderInfo> = listOf(),
-    val fixedCmds: List<FixedCmd> = listOf()
+    @Json(name = "cmdOrderInfos")
+    val dynamicCmds: List<DynamicCmdInfo> = listOf(),
+    val fixedCmds: List<FixedCmdInfo> = listOf()
 ) : Parcelable
 
 /**
- * 命令订单信息
+ * 动态参数指令信息
  */
 @Parcelize
 @JsonClass(generateAdapter = true)
-data class CmdOrderInfo(
+data class DynamicCmdInfo(
     val note: String = "",
     val cmdOrder: String = "",
     val orderIndex: Int = 0,
-    val cmdParaInfos: List<CmdParaInfo> = listOf()
+    val cmdParaInfos: List<CmdParamInfo> = listOf()
 ) : Parcelable
 
 /**
- * 命令参数信息
+ * 指令参数信息
  */
 @Parcelize
 @JsonClass(generateAdapter = true)
-data class CmdParaInfo(
+data class CmdParamInfo(
     val cmdChnName: String = "", // 中文名称
     val cmdEngName: String = "", // 英文名称
     val defaultValue: String = "", // 默认值
@@ -56,11 +58,11 @@ data class FieldValueInfo(
 ) : Parcelable
 
 /**
- * 固定命令
+ * 固定参数指令信息
  */
 @Parcelize
 @JsonClass(generateAdapter = true)
-data class FixedCmd(
+data class FixedCmdInfo(
     val cmd: String = "",
     val orderIndex: Int = 0
 ) : Parcelable
