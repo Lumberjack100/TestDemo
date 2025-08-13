@@ -209,7 +209,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         // 如果有默认配置URL，可以在这里加载
-//        loadTestConfig()
+        loadTestConfig()
     }
 
     //<editor-fold desc="二维码扫描、图片识别功能">
@@ -315,7 +315,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
      * 构建配置UI
      */
     private fun buildConfigurationUI(cmdOrderInfo: DeviceCmdOrderInfo) {
-        mStates.uiItems.clear()
+        val uiItems = mutableListOf<Any>()
 
         // 合并并排序动态指令
         val commandItems = mergeAndSortDynamicCommands(cmdOrderInfo)
@@ -323,25 +323,26 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         // 构建UI项
         commandItems.forEachIndexed { index, cmdItem ->
             if (index > 0) {
-                mStates.uiItems.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                uiItems.add(GapItem(height = ConvertUtils.dp2px(12f)))
             }
 
             // 添加分组标题项
-            mStates.uiItems.add(
+            uiItems.add(
                 DeviceStatusInfoGroupItem(cmdItem.note)
             )
 
             // 添加参数配置项
             if (!cmdItem.isFixed && cmdItem.parameters.isNotEmpty()) {
-                addParameterItems( mStates.uiItems, cmdItem)
+                addParameterItems(uiItems, cmdItem)
             }
         }
 
         // 添加提交按钮
-        mStates.uiItems.add(GapItem(height = ConvertUtils.dp2px(60f)))
-        mStates.uiItems.add(ParamSubmitButtonItem(btnText = "一键配置"))
+        uiItems.add(GapItem(height = ConvertUtils.dp2px(60f)))
+        uiItems.add(ParamSubmitButtonItem(btnText = "一键配置"))
 
-        binding.recyclerView.models =  mStates.uiItems
+        mStates.emptyContent.set(uiItems.isEmpty())
+        binding.recyclerView.models = uiItems
     }
 
     /**
@@ -626,7 +627,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
 
         // 全部成功时返回
         if (successCount == totalCount) {
-            Toaster.show("配置成功")
+//            Toaster.show("配置成功")
 //            launchWithViewLifecycle {
 //                delay(1500)
 //                nav().navigateUp()

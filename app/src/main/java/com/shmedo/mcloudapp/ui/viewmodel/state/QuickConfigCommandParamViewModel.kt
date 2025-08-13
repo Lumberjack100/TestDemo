@@ -13,10 +13,11 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
  * @desc: 管理配置数据、参数值和执行进度状态
  */
 class QuickConfigCommandParamViewModel : ViewModel() {
+    val emptyContent = NonNullObservableField(true)//
+
     // 配置数据
     val cmdOrderInfo = MutableLiveData<DeviceCmdOrderInfo?>()
-    val uiItems = mutableListOf<Any>()
-    
+
     // 参数值映射（key: cmdEngName, value: 用户输入值）
     val parameterValues = mutableMapOf<String, String>()
     
