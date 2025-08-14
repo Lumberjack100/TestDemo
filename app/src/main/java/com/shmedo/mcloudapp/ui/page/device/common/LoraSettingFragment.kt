@@ -87,7 +87,7 @@ class LoraSettingFragment : OptimizedBaseIOTDeviceFragment() {
         mStates.isTargetAddressSupport.set(productType != ProductType.COLLECTOR_G_0)
 
         loraReceiveChannelList =
-            if (productType == ProductType.U_L_1 || productType == ProductType.U_D_1 || productType == ProductType.U_D_2)
+            if (productType == ProductType.U_L_1)
                 (47000..49900 step 100).map { (it.toFloat() / 100).toString() + "MHz" }
             else
                 (41000..42900 step 100).map { (it.toFloat() / 100).toString() + "MHz" }
