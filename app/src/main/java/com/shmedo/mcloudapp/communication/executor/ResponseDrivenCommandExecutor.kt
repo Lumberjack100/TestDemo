@@ -59,7 +59,7 @@ class ResponseDrivenCommandExecutor(
             return
         }
 
-        Timber.i("开始执行指令序列，共 ${commands.size} 条指令")
+        Timber.i("开始执行指令序列: 共 ${commands.size} 条指令")
 
         currentExecutionJob = scope.launch {
             try {

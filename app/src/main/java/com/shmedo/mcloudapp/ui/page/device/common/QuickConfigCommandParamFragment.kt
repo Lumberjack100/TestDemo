@@ -28,6 +28,7 @@ import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
+import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.core.model.CmdParamInfo
 import com.shmedo.core.model.DeviceCmdOrderInfo
 import com.shmedo.mcloudapp.BR
@@ -376,7 +377,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     private fun addParameterItems(uiItems: MutableList<Any>, cmdItem: CommandItem) {
         // 只处理动态参数（isVarData为true的参数）
         val dynamicParameters = cmdItem.parameters.filter { it.isVarData }
-        
+
         dynamicParameters.forEachIndexed { paramIndex, param ->
             val bgResId = if (paramIndex == dynamicParameters.lastIndex) {
                 R.drawable.shape_common_click_item_bottom_corner_4
@@ -532,8 +533,8 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         // 清空之前的执行结果
         mStates.executionResults.clear()
 
-        // 显示进度对话框
-        showCommandExecutionProgressDialog()
+        // 显示进度对话框，并在对话框准备好后初始化进度
+        showCommandExecutionProgressDialog(commands.size)
 
         // 配置执行参数
         val config = CommandSequenceConfig(
@@ -615,7 +616,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     /**
      * 显示指令执行进度对话框
      */
-    private fun showCommandExecutionProgressDialog() {
+    private fun showCommandExecutionProgressDialog(totalCommands: Int) {
         val dialog = CommandExecutionProgressDialog(
             context = requireContext(),
             onExportExcel = {
@@ -633,10 +634,62 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             .dismissOnTouchOutside(false)
             .dismissOnBackPressed(false)
             .enableDrag(false)
+            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
             .customHostLifecycle(viewLifecycleOwner.lifecycle)
+            .setPopupCallback(object : SimpleCallback() {
+                override fun onShow(popupView: BasePopupView?) {
+                    super.onShow(popupView)
+                    // 对话框显示完成后初始化进度
+                    initializeCommandExecutionProgress(totalCommands)
+                    // 延迟一帧确保 binding 完全初始化
+                    popupView?.post {
+                        updateExecutionStatusToStarted(totalCommands)
+                    }
+                }
+
+                override fun onDismiss(popupView: BasePopupView?) {
+                    super.onDismiss(popupView)
+                    executionProgressDialogInstance = null
+                    executionProgressDialog = null
+                }
+            })
             .asCustom(dialog)
 
         executionProgressDialog?.show()
+    }
+
+    /**
+     * 初始化指令执行进度，在开始执行时调用
+     */
+    private fun initializeCommandExecutionProgress(totalCommands: Int) {
+        val initialProgress = CommandExecutionProgress(
+            currentIndex = 0,
+            totalCount = totalCommands,
+            currentCommand = "准备执行指令序列...",
+            status = ExecutionStatus.PENDING,
+            successCount = 0,
+            failedCount = 0,
+            startTime = System.currentTimeMillis(),
+        )
+
+        executionProgressDialogInstance?.updateProgress(initialProgress)
+    }
+
+    /**
+     * 更新执行状态为开始执行
+     */
+    private fun updateExecutionStatusToStarted(totalCommands: Int) {
+        val startedProgress = CommandExecutionProgress(
+            currentIndex = 1,
+            totalCount = totalCommands,
+            currentCommand = "开始执行指令序列...",
+            status = ExecutionStatus.EXECUTING,
+            successCount = 0,
+            failedCount = 0,
+            startTime = System.currentTimeMillis(),
+        )
+
+        executionProgressDialogInstance?.updateProgress(startedProgress)
     }
 
     /**
@@ -646,11 +699,18 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         val executionResults = mStates.executionResults
         val currentCommand = executionResults.lastOrNull()?.command ?: ""
 
+        // 优化状态判断逻辑：如果有结果说明已经在执行了
+        val status = when {
+            executionResults.isEmpty() -> ExecutionStatus.PENDING
+            executionResults.size < totalCommands -> ExecutionStatus.EXECUTING
+            else -> ExecutionStatus.EXECUTING // 让完成状态由 handleCommandExecutionComplete 处理
+        }
+
         val progress = CommandExecutionProgress(
-            currentIndex = executionResults.size,
+            currentIndex = executionResults.size + 1,
             totalCount = totalCommands,
-            currentCommand = currentCommand,
-            status = if (executionResults.isEmpty()) ExecutionStatus.PENDING else ExecutionStatus.EXECUTING,
+            currentCommand = currentCommand.ifEmpty { "正在执行..." },
+            status = status,
             successCount = executionResults.count { it.success },
             failedCount = executionResults.count { !it.success },
             startTime = System.currentTimeMillis(),
@@ -679,8 +739,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         )
 
         executionProgressDialogInstance?.updateProgress(finalProgress)
-
-        Timber.i("执行完成: 成功$successCount/$totalCount")
     }
 
     /**
@@ -766,7 +824,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        executionProgressDialog?.dismiss()
         mStates.clearData()
     }
 
