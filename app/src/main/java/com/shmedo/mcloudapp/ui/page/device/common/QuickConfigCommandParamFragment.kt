@@ -12,8 +12,8 @@ import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.PathUtils
-import com.blankj.utilcode.util.ResourceUtils
 import com.blankj.utilcode.util.ScreenUtils
+import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.UriUtils
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
@@ -28,7 +28,6 @@ import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
-import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.model.CmdParamInfo
 import com.shmedo.core.model.DeviceCmdOrderInfo
 import com.shmedo.mcloudapp.BR
@@ -214,7 +213,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         // 如果有默认配置URL，可以在这里加载
-        loadTestConfig()
     }
 
     //<editor-fold desc="二维码扫描、图片识别功能">
@@ -783,24 +781,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         mStates.clearData()
     }
 
-    fun loadTestConfig() {
-        launchWithViewLifecycle {
-            try {
-                val localConfigInfo =
-                    ResourceUtils.readAssets2String("test_quick_config_cmd.json")
-                val cmdOrderInfo = MoshiUtil.fromJson<DeviceCmdOrderInfo>(localConfigInfo)
-
-                if (cmdOrderInfo != null) {
-                    Timber.i("配置获取成功: ${cmdOrderInfo.productName}")
-                    mStates.cmdOrderInfo.value = cmdOrderInfo
-                } else {
-                    showError("获取配置信息失败")
-                }
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
-        }
-    }
 }
 
 // ==================== 数据模型定义 ====================

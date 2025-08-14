@@ -99,11 +99,11 @@ class ResponseDrivenCommandExecutor(
                 // 处理结果
                 when (result) {
                     is CommandResult.Success -> {
+                        Timber.i("指令执行成功: $command")
+
                         // 检查是否是最后一条指令
                         if (index == commands.size - 1) {
-                            Timber.i("指令序列执行完成，成功${getSuccessCount()}条，失败${getErrorCount()}条")
                             isExecuting.set(false)
-                            callbacks.onComplete.invoke(executionResults.toList())
                         }
 
                         // 检查是否启用了业务层解析失败中断功能
@@ -121,9 +121,6 @@ class ResponseDrivenCommandExecutor(
                             // 保持原有逻辑：只是回调，不检查返回值
                             callbacks.onSuccess?.invoke(result)
                         }
-
-                        //最后一条指令,返回
-                        if (index == commands.size - 1) return
 
                         // 继续执行下一条指令
                     }
