@@ -121,6 +121,7 @@ class ResponseDrivenCommandExecutor(
                             // 保持原有逻辑：只是回调，不检查返回值
                             callbacks.onSuccess?.invoke(result)
                         }
+
                         //最后一条指令,返回
                         if (index == commands.size - 1) return
 
@@ -133,6 +134,8 @@ class ResponseDrivenCommandExecutor(
                             handleExecutionError(result.error, command, config, callbacks)
                             return
                         }
+
+                        callbacks.onError(result.error, command)
                         // 记录错误但继续执行
                         Timber.w("忽略错误，继续执行下一条指令")
                     }
@@ -144,6 +147,8 @@ class ResponseDrivenCommandExecutor(
                             handleExecutionError(timeoutError, command, config, callbacks)
                             return
                         }
+
+                        callbacks.onError(timeoutError, command)
                         Timber.w("忽略超时，继续执行下一条指令")
                     }
                 }
@@ -156,7 +161,7 @@ class ResponseDrivenCommandExecutor(
 
         } catch (e: Exception) {
             Timber.e(e, "指令序列执行异常")
-            val error = DeviceError.Unknown(e.message ?: "未知错误", e)
+            val error = DeviceError.Unknown("指令序列执行异常 ${e.message ?: ""}", e)
             handleExecutionError(error, "", config, callbacks)
         }
     }
@@ -183,7 +188,7 @@ class ResponseDrivenCommandExecutor(
         } catch (e: Exception) {
             Timber.e(e, "执行指令异常: $command")
             CommandResult.Error(
-                error = DeviceError.Unknown(e.message ?: "指令执行异常", e),
+                error = DeviceError.Unknown("执行指令异常 ${e.message ?: ""}", e),
                 command = command
             )
         }

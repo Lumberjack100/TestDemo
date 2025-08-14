@@ -146,8 +146,7 @@ class M50WorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
             config = CommandSequenceConfig(
                 showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
                 errorConfig = ErrorConfig(
-                    strategy = ErrorHandlingStrategy.Dialog,
-                    shouldDismissLoading = false
+                    strategy = ErrorHandlingStrategy.Dialog
                 )
             )
         )

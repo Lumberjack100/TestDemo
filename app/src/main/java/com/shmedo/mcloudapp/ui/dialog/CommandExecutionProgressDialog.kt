@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import com.lxj.xpopup.core.CenterPopupView
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.DialogCommandExecutionProgressBinding
-import com.shmedo.mcloudapp.ui.viewmodel.state.EnhancedCommandExecutionProgress
+import com.shmedo.mcloudapp.ui.viewmodel.state.CommandExecutionProgress
 import com.shmedo.mcloudapp.ui.viewmodel.state.ExecutionStatus
 import timber.log.Timber
 
@@ -73,7 +73,7 @@ class CommandExecutionProgressDialog(
     /**
      * 更新进度
      */
-    fun updateProgress(progress: EnhancedCommandExecutionProgress) {
+    fun updateProgress(progress: CommandExecutionProgress) {
         // 动画更新进度条
         val targetProgress = if (progress.totalCount > 0) {
             (progress.currentIndex * 100) / progress.totalCount
@@ -189,7 +189,7 @@ class CommandExecutionProgressDialog(
         }
     }
     
-    private fun onExecutionCompleted(progress: EnhancedCommandExecutionProgress) {
+    private fun onExecutionCompleted(progress: CommandExecutionProgress) {
         isCompleted = true
         
         // 停止时间更新

@@ -129,15 +129,15 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
             config = config,
             callbacks = CommandSequenceCallbacks(
                 onSuccess = { successResult ->
-                    // 根据配置决定是否启用业务层解析失败中断功能
+                    // 根据配置决定是否启用业务层指令响应内容解析失败中断功能
                     if (config.enableBusinessParseFailureInterrupt) {
                         // 启用了业务层解析失败中断功能
                         val shouldContinue = try {
                             handleCommandResponse(successResult.responseData)
-                            // 如果handleCommandResponse没有抛出异常，表示解析成功，继续指令序列执行
+                            // 如果handleCommandResponse没有抛出异常，表示响应内容解析成功，继续指令序列执行
                             true
                         } catch (e: Exception) {
-                            // 如果handleCommandResponse抛出异常，表示解析失败，中断指令序列执行
+                            // 如果handleCommandResponse抛出异常，表示响应内容解析失败，中断指令序列执行
                             Timber.e(e, "业务解析失败，中断指令序列执行")
                             false
                         }
@@ -147,6 +147,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
 
                         // 返回最终的控制决策：优先使用原始回调的结果，其次使用业务解析结果
                         originalResult ?: shouldContinue
+
                     } else {
                         // 保持原有逻辑：直接处理响应，不进行中断控制
                         try {
@@ -167,8 +168,10 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
                 },
                 onError = { error, command ->
                     addDeviceLogItem(Log.ERROR, "指令执行失败: $command, 错误: ${error.message}")
-                    // 统一的清理逻辑
-                    finishCommunication()
+                    if (config.stopOnFirstCmdError) {
+                        // 统一的清理逻辑
+                        finishCommunication()
+                    }
                     callbacks.onError(error, command)
                 }
             )

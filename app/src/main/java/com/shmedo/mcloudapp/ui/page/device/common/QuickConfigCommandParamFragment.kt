@@ -14,7 +14,6 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.PathUtils
 import com.blankj.utilcode.util.ResourceUtils
 import com.blankj.utilcode.util.ScreenUtils
-import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.UriUtils
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
@@ -58,8 +57,8 @@ import com.shmedo.mcloudapp.ui.dialog.CommandExecutionProgressDialog
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.ProductConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandExecutionItem
+import com.shmedo.mcloudapp.ui.viewmodel.state.CommandExecutionProgress
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandExecutionResult
-import com.shmedo.mcloudapp.ui.viewmodel.state.EnhancedCommandExecutionProgress
 import com.shmedo.mcloudapp.ui.viewmodel.state.ExecutionStatus
 import com.shmedo.mcloudapp.ui.viewmodel.state.QuickConfigCommandParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -531,14 +530,14 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         // 清空之前的执行结果
         mStates.executionResults.clear()
 
-        // 显示简化版进度对话框
-        showSimplifiedProgressDialog()
+        // 显示进度对话框
+        showCommandExecutionProgressDialog()
 
         // 配置执行参数
         val config = CommandSequenceConfig(
             showLoadingDialog = false, // 使用自定义进度对话框
-            stopOnFirstCmdError = false, // 不要在第一个错误时停止
-            enableBusinessParseFailureInterrupt = false, // 不中断执行
+            stopOnFirstCmdError = false, // 不要在第一个指令下发失败时停止
+            enableBusinessParseFailureInterrupt = false, // 指令响应内容解析出错后不中断后续指令执行
             errorConfig = ErrorConfig.toastConfig()
         )
 
@@ -555,10 +554,10 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                         success = true
                     )
                     mStates.executionResults.add(executionResult)
-                    
+
                     // 更新进度
-                    updateSimplifiedProgress(commands.size)
-                    
+                    updateCommandExecutionProgress(commands.size)
+
                     addDeviceLogItem(
                         Log.INFO,
                         "[${mStates.executionResults.size}/${commands.size}] 成功: ${result.command}"
@@ -566,7 +565,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                     true // 继续执行
                 },
                 onComplete = { results ->
-                    handleSimplifiedExecutionComplete(results)
+                    handleCommandExecutionComplete(results)
                 },
                 onError = { error, command ->
                     // 记录失败结果
@@ -576,10 +575,10 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                         success = false
                     )
                     mStates.executionResults.add(executionResult)
-                    
+
                     // 更新进度
-                    updateSimplifiedProgress(commands.size)
-                    
+                    updateCommandExecutionProgress(commands.size)
+
                     addDeviceLogItem(
                         Log.ERROR,
                         "[${mStates.executionResults.size}/${commands.size}] 失败: $command, ${error.message}"
@@ -611,9 +610,9 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 显示简化版执行进度对话框
+     * 显示指令执行进度对话框
      */
-    private fun showSimplifiedProgressDialog() {
+    private fun showCommandExecutionProgressDialog() {
         val dialog = CommandExecutionProgressDialog(
             context = requireContext(),
             onExportExcel = {
@@ -625,7 +624,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                 Timber.d("用户关闭进度对话框")
             }
         )
-        
+
         executionProgressDialogInstance = dialog
         executionProgressDialog = XPopup.Builder(context)
             .dismissOnTouchOutside(false)
@@ -638,21 +637,21 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 更新简化版进度
+     * 更新指令执行进度
      */
-    private fun updateSimplifiedProgress(totalCommands: Int) {
-        val results = mStates.executionResults
-        val currentCommand = results.lastOrNull()?.command ?: ""
-        
-        val progress = EnhancedCommandExecutionProgress(
-            currentIndex = results.size,
+    private fun updateCommandExecutionProgress(totalCommands: Int) {
+        val executionResults = mStates.executionResults
+        val currentCommand = executionResults.lastOrNull()?.command ?: ""
+
+        val progress = CommandExecutionProgress(
+            currentIndex = executionResults.size,
             totalCount = totalCommands,
             currentCommand = currentCommand,
-            status = if (results.isEmpty()) ExecutionStatus.PENDING else ExecutionStatus.EXECUTING,
-            successCount = results.count { it.success },
-            failedCount = results.count { !it.success },
+            status = if (executionResults.isEmpty()) ExecutionStatus.PENDING else ExecutionStatus.EXECUTING,
+            successCount = executionResults.count { it.success },
+            failedCount = executionResults.count { !it.success },
             startTime = System.currentTimeMillis(),
-            executionHistory = results.map { result ->
+            executionHistory = executionResults.map { result ->
                 CommandExecutionItem(
                     command = result.command,
                     status = if (result.success) ExecutionStatus.SUCCESS else ExecutionStatus.ERROR,
@@ -666,15 +665,15 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 处理简化版执行完成
+     * 处理执行完成
      */
-    private fun handleSimplifiedExecutionComplete(results: List<CommandResult>) {
+    private fun handleCommandExecutionComplete(results: List<CommandResult>) {
         val executionResults = mStates.executionResults
-        val successCount = executionResults.count { it.success }
         val totalCount = executionResults.size
-        
+        val successCount = executionResults.count { it.success }
+
         // 更新为完成状态
-        val finalProgress = EnhancedCommandExecutionProgress(
+        val finalProgress = CommandExecutionProgress(
             currentIndex = totalCount,
             totalCount = totalCount,
             currentCommand = "",
@@ -693,7 +692,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         )
 
         executionProgressDialogInstance?.updateProgress(finalProgress)
-        
+
         Timber.i("执行完成: 成功$successCount/$totalCount")
     }
 
@@ -704,33 +703,33 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         launchWithViewLifecycle {
             try {
                 showLoadingDialog("正在导出Excel...")
-                
+
                 val results = mStates.executionResults
                 if (results.isEmpty()) {
                     Toaster.show("没有可导出的数据")
                     return@launchWithViewLifecycle
                 }
-                
+
                 // 获取输出目录
                 val outputDir = java.io.File(PathUtils.getExternalAppFilesPath(), "export")
                 if (!outputDir.exists()) {
                     outputDir.mkdirs()
                 }
-                
+
                 // 导出Excel
                 val file = CommandExcelExporter.exportToExcel(
                     results = results,
                     deviceSn = deviceInfo.deviceToken,
                     outputDir = outputDir
                 )
-                
+
                 if (file != null) {
                     // 显示导出成功对话框
                     showExportSuccessDialog(file)
                 } else {
                     Toaster.show("导出失败")
                 }
-                
+
             } catch (e: Exception) {
                 Timber.e(e, "导出Excel失败")
                 Toaster.show("导出失败：${e.message}")
@@ -745,7 +744,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun showExportSuccessDialog(file: java.io.File) {
         val uri = UriUtils.file2Uri(file)
-        
+
         showMessage(
             title = "导出成功",
             message = "Excel文件已导出成功！\n文件路径：${file.absolutePath}",
@@ -770,7 +769,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                 putExtra(Intent.EXTRA_TEXT, "请查收指令配置结果Excel文件")
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
-            
+
             startActivity(Intent.createChooser(shareIntent, "分享配置结果"))
         } catch (e: Exception) {
             Timber.e(e, "分享文件失败")

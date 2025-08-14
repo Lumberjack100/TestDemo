@@ -38,7 +38,7 @@ class QuickConfigCommandParamViewModel : ViewModel() {
 /**
  * 增强版指令执行进度
  */
-data class EnhancedCommandExecutionProgress(
+data class CommandExecutionProgress(
     val currentIndex: Int,      // 当前执行到第几条
     val totalCount: Int,         // 总共多少条指令
     val currentCommand: String,  // 当前执行的指令
