@@ -177,9 +177,9 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
                 ).toUnified(),
 
                 CommonModule(
-                    name = "电台配置",
+                    name = "LORA配置",
                     resID = R.drawable.ic_module_lora_new,
-                    navId = R.id.action_global_to_udRadioParamFragment
+                    navId = R.id.action_global_to_loraSettingFragment
                 ).toUnified(),
 
                 CommonModule(

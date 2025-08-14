@@ -216,11 +216,11 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
                     navId = R.id.action_global_to_advancedSettingFragment
                 ).toUnified(),
 
-                CommonModule(
-                    name = "一键配置",
-                    resID = R.drawable.ic_module_equip_operation,
-                    navId = R.id.action_global_to_quickConfigCommandParam
-                ).toUnified(),
+//                CommonModule(
+//                    name = "一键配置",
+//                    resID = R.drawable.ic_module_equip_operation,
+//                    navId = R.id.action_global_to_quickConfigCommandParam
+//                ).toUnified(),
             )
         )
 
