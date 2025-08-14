@@ -357,7 +357,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         cmdOrderInfo.dynamicCmds.forEach { cmdOrder ->
             commandItems.add(
                 CommandItem(
-                    command = cmdOrder.cmdOrder,
+                    command = cmdOrder.cmd,
                     orderIndex = cmdOrder.orderIndex,
                     isFixed = false,
                     note = cmdOrder.note.ifBlank { "可配置指令" },
@@ -374,8 +374,11 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
      * 添加参数配置项
      */
     private fun addParameterItems(uiItems: MutableList<Any>, cmdItem: CommandItem) {
-        cmdItem.parameters.forEachIndexed { paramIndex, param ->
-            val bgResId = if (paramIndex == cmdItem.parameters.lastIndex) {
+        // 只处理动态参数（isVarData为true的参数）
+        val dynamicParameters = cmdItem.parameters.filter { it.isVarData }
+        
+        dynamicParameters.forEachIndexed { paramIndex, param ->
+            val bgResId = if (paramIndex == dynamicParameters.lastIndex) {
                 R.drawable.shape_common_click_item_bottom_corner_4
             } else {
                 R.drawable.layer_common_click_item_with_divider
@@ -460,7 +463,8 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         val cmdOrderInfo = mStates.cmdOrderInfo.value ?: return false
 
         cmdOrderInfo.dynamicCmds.forEach { dynamicCmdInfo ->
-            dynamicCmdInfo.cmdParaInfos.forEach { param ->
+            val dynamicParameters = dynamicCmdInfo.cmdParaInfos.filter { it.isVarData }
+            dynamicParameters.forEach { param ->
                 val value = mStates.parameterValues[param.cmdEngName]
                 if (value.isNullOrBlank() && param.fieldType == "字符") {
                     Toaster.show("请填写${param.cmdChnName}")
@@ -486,10 +490,11 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
 
         // 处理可配置指令
         cmdOrderInfo.dynamicCmds.forEach { dynamicCmdInfo ->
-            var processedCommand = dynamicCmdInfo.cmdOrder
+            var processedCommand = dynamicCmdInfo.cmd
 
+            val dynamicParameters = dynamicCmdInfo.cmdParaInfos.filter { it.isVarData }
             // 替换参数占位符
-            dynamicCmdInfo.cmdParaInfos.forEach { param ->
+            dynamicParameters.forEach { param ->
                 val paramKey = "{${param.cmdEngName}}"
                 val paramValue = mStates.parameterValues[param.cmdEngName]
                     ?: param.defaultValue

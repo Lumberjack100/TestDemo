@@ -23,13 +23,24 @@ data class DeviceCmdOrderInfo(
 ) : Parcelable
 
 /**
+ * 固定参数指令信息
+ */
+@Parcelize
+@JsonClass(generateAdapter = true)
+data class FixedCmdInfo(
+    val cmd: String = "",
+    val orderIndex: Int = 0
+) : Parcelable
+
+/**
  * 动态参数指令信息
  */
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class DynamicCmdInfo(
     val note: String = "",
-    val cmdOrder: String = "",
+    @Json(name = "cmdOrder")
+    val cmd: String = "",
     val orderIndex: Int = 0,
     val cmdParaInfos: List<CmdParamInfo> = listOf()
 ) : Parcelable
@@ -43,6 +54,7 @@ data class CmdParamInfo(
     val cmdChnName: String = "", // 中文名称
     val cmdEngName: String = "", // 英文名称
     val defaultValue: String = "", // 默认值
+    val isVarData: Boolean = false, // 是否动态参数
     val fieldType: String = "", // 字段类型：字符、选择等
     val fieldValueInfos: List<FieldValueInfo>? = null // 选择类型的可选值列表
 ) : Parcelable
@@ -55,14 +67,4 @@ data class CmdParamInfo(
 data class FieldValueInfo(
     val display: String = "", // 显示文本
     val value: String = "" // 实际值
-) : Parcelable
-
-/**
- * 固定参数指令信息
- */
-@Parcelize
-@JsonClass(generateAdapter = true)
-data class FixedCmdInfo(
-    val cmd: String = "",
-    val orderIndex: Int = 0
 ) : Parcelable
