@@ -36,7 +36,7 @@ class QuickConfigCommandParamViewModel : ViewModel() {
 }
 
 /**
- * 增强版指令执行进度
+ * 指令执行进度
  */
 data class CommandExecutionProgress(
     val currentIndex: Int,      // 当前执行到第几条
@@ -46,18 +46,6 @@ data class CommandExecutionProgress(
     val successCount: Int = 0,   // 成功数量
     val failedCount: Int = 0,    // 失败数量
     val startTime: Long = 0L,    // 开始时间
-    val executionHistory: List<CommandExecutionItem> = emptyList() // 执行历史
-)
-
-/**
- * 单个指令执行详情
- */
-data class CommandExecutionItem(
-    val command: String,
-    val status: ExecutionStatus,
-    val response: String,
-    val errorMessage: String? = null,
-    val executionTime: Long = 0L
 )
 
 /**
@@ -67,6 +55,7 @@ data class CommandExecutionResult(
     val command: String,
     val response: String,
     val success: Boolean,
+    val errorMessage: String? = null,
     val timestamp: Long = System.currentTimeMillis()
 )
 

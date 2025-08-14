@@ -55,7 +55,6 @@ import com.shmedo.mcloudapp.model.QuickConfigCommandParamEditItem
 import com.shmedo.mcloudapp.ui.dialog.CommandExecutionProgressDialog
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.ProductConfigViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.CommandExecutionItem
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandExecutionProgress
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandExecutionResult
 import com.shmedo.mcloudapp.ui.viewmodel.state.ExecutionStatus
@@ -569,8 +568,9 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                     // 记录失败结果
                     val executionResult = CommandExecutionResult(
                         command = command,
-                        response = error.message ?: "未知错误",
-                        success = false
+                        response = "",
+                        success = false,
+                        errorMessage = error.message
                     )
                     mStates.executionResults.add(executionResult)
 
@@ -649,14 +649,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             successCount = executionResults.count { it.success },
             failedCount = executionResults.count { !it.success },
             startTime = System.currentTimeMillis(),
-            executionHistory = executionResults.map { result ->
-                CommandExecutionItem(
-                    command = result.command,
-                    status = if (result.success) ExecutionStatus.SUCCESS else ExecutionStatus.ERROR,
-                    response = result.response,
-                    errorMessage = if (!result.success) result.response else null
-                )
-            }
         )
 
         executionProgressDialogInstance?.updateProgress(progress)
@@ -679,14 +671,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             successCount = successCount,
             failedCount = totalCount - successCount,
             startTime = System.currentTimeMillis(),
-            executionHistory = executionResults.map { result ->
-                CommandExecutionItem(
-                    command = result.command,
-                    status = if (result.success) ExecutionStatus.SUCCESS else ExecutionStatus.ERROR,
-                    response = result.response,
-                    errorMessage = if (!result.success) result.response else null
-                )
-            }
         )
 
         executionProgressDialogInstance?.updateProgress(finalProgress)
