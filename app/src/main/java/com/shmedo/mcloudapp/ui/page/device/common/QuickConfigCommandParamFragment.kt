@@ -544,6 +544,11 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             errorConfig = ErrorConfig.toastConfig()
         )
 
+        // 初始显示第一条指令开始执行
+        if (commands.isNotEmpty()) {
+            updateCommandExecutionProgress(commands.size, commands.first())
+        }
+        
         // 执行指令序列
         sendCommandSequence(
             commands = commands,
@@ -558,8 +563,14 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                     )
                     mStates.executionResults.add(executionResult)
 
-                    // 更新进度
-                    updateCommandExecutionProgress(commands.size)
+                    // 更新进度，如果还有下一条指令，则显示下一条指令
+                    val nextCommandIndex = mStates.executionResults.size
+                    val nextCommand = if (nextCommandIndex < commands.size) {
+                        commands[nextCommandIndex]
+                    } else {
+                        null
+                    }
+                    updateCommandExecutionProgress(commands.size, nextCommand)
 
                     addDeviceLogItem(
                         Log.INFO,
@@ -580,8 +591,14 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                     )
                     mStates.executionResults.add(executionResult)
 
-                    // 更新进度
-                    updateCommandExecutionProgress(commands.size)
+                    // 更新进度，如果还有下一条指令，则显示下一条指令
+                    val nextCommandIndex = mStates.executionResults.size
+                    val nextCommand = if (nextCommandIndex < commands.size) {
+                        commands[nextCommandIndex]
+                    } else {
+                        null
+                    }
+                    updateCommandExecutionProgress(commands.size, nextCommand)
 
                     addDeviceLogItem(
                         Log.ERROR,
@@ -680,7 +697,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun updateExecutionStatusToStarted(totalCommands: Int) {
         val startedProgress = CommandExecutionProgress(
-            currentIndex = 1,
+            currentIndex = 0,
             totalCount = totalCommands,
             currentCommand = "开始执行指令序列...",
             status = ExecutionStatus.EXECUTING,
@@ -694,10 +711,18 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
 
     /**
      * 更新指令执行进度
+     * @param totalCommands 总指令数量
+     * @param currentExecutingCommand 当前正在执行的指令（可选）
      */
-    private fun updateCommandExecutionProgress(totalCommands: Int) {
+    private fun updateCommandExecutionProgress(totalCommands: Int, currentExecutingCommand: String? = null) {
         val executionResults = mStates.executionResults
-        val currentCommand = executionResults.lastOrNull()?.command ?: ""
+        
+        // 优化 currentCommand 显示逻辑：优先显示正在执行的指令
+        val displayCommand = when {
+            !currentExecutingCommand.isNullOrEmpty() -> currentExecutingCommand
+            executionResults.size < totalCommands -> "准备执行下一条指令..."
+            else -> "执行中..."
+        }
 
         // 优化状态判断逻辑：如果有结果说明已经在执行了
         val status = when {
@@ -707,9 +732,9 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         }
 
         val progress = CommandExecutionProgress(
-            currentIndex = executionResults.size + 1,
+            currentIndex = executionResults.size,
             totalCount = totalCommands,
-            currentCommand = currentCommand.ifEmpty { "正在执行..." },
+            currentCommand = displayCommand,
             status = status,
             successCount = executionResults.count { it.success },
             failedCount = executionResults.count { !it.success },

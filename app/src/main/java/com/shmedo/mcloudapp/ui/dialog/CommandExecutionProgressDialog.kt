@@ -102,12 +102,14 @@ class CommandExecutionProgressDialog(
         // 更新当前指令显示
         updateCurrentCommand(progress.currentCommand)
         
+        Timber.d("进度更新: ${progress.currentIndex}/${progress.totalCount}, 当前指令: ${progress.currentCommand.take(50)}")
+        
         // 检查是否完成
         if (progress.status == ExecutionStatus.COMPLETED) {
             onExecutionCompleted(progress)
         }
         
-        Timber.d("进度更新: ${progress.currentIndex}/${progress.totalCount}, 状态: ${progress.status}")
+        // Timber.d 已经在上面调用了，这里不需要重复
     }
     
     private fun animateProgress(targetProgress: Int) {
@@ -154,17 +156,28 @@ class CommandExecutionProgressDialog(
         if (command.isNotEmpty()) {
             binding.cardCurrentCommand.visibility = View.VISIBLE
             
-            // 显示指令（最多显示100个字符）
-            val displayCommand = if (command.length > 100) {
-                binding.tvCurrentCommand.text = command.take(100) + "..."
-                binding.btnExpandCommand.visibility = View.VISIBLE
-                binding.tvCurrentCommand.tag = command // 保存完整指令
-                command.take(100) + "..."
-            } else {
-                binding.tvCurrentCommand.text = command
-                binding.btnExpandCommand.visibility = View.GONE
-                command
+            // 优化指令显示：根据指令类型显示不同的状态
+            when {
+                command.contains("准备执行") || command.contains("正在执行") -> {
+                    // 对于状态文本，直接显示
+                    binding.tvCurrentCommand.text = command
+                    binding.btnExpandCommand.visibility = View.GONE
+                }
+                command.length > 120 -> {
+                    // 对于长指令，显示缩略版本
+                    binding.tvCurrentCommand.text = command.take(120) + "..."
+                    binding.btnExpandCommand.visibility = View.VISIBLE
+                    binding.tvCurrentCommand.tag = command // 保存完整指令
+                }
+                else -> {
+                    // 短指令直接显示
+                    binding.tvCurrentCommand.text = command
+                    binding.btnExpandCommand.visibility = View.GONE
+                }
             }
+        } else {
+            // 如果没有指令，隐藏卡片
+            binding.cardCurrentCommand.visibility = View.GONE
         }
     }
     
