@@ -102,7 +102,7 @@ class DeviceCommunicationManager(
                 },
                 onError = { error, command ->
                     // 隐藏加载对话框
-                    if (config.showLoadingDialog && config.errorConfig.shouldDismissLoading) {
+                    if (config.showLoadingDialog && config.errorConfig.shouldDismissLoading && config.stopOnFirstCmdError) {
                         fragment.dismissLoadingDialog()
                     }
                     callbacks.onError(error, command)
@@ -116,8 +116,8 @@ class DeviceCommunicationManager(
      * 取消当前执行
      */
     fun cancelExecution() {
-        executor.cancelExecution()
         fragment.dismissLoadingDialog()
+        executor.cancelExecution()
     }
 
     /**

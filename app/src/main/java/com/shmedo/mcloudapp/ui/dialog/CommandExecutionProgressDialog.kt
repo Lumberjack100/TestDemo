@@ -7,10 +7,11 @@ import android.os.Looper
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import com.lxj.xpopup.core.CenterPopupView
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.DialogCommandExecutionProgressBinding
-import com.shmedo.mcloudapp.ui.viewmodel.state.EnhancedCommandExecutionProgress
+import com.shmedo.mcloudapp.ui.viewmodel.state.CommandExecutionProgress
 import com.shmedo.mcloudapp.ui.viewmodel.state.ExecutionStatus
 import timber.log.Timber
 
@@ -37,7 +38,7 @@ class CommandExecutionProgressDialog(
     
     override fun onCreate() {
         super.onCreate()
-        binding = DialogCommandExecutionProgressBinding.bind(contentView)
+        binding = DataBindingUtil.bind(popupImplView)!!
         initViews()
         startTimeUpdater()
     }
@@ -73,7 +74,12 @@ class CommandExecutionProgressDialog(
     /**
      * 更新进度
      */
-    fun updateProgress(progress: EnhancedCommandExecutionProgress) {
+    fun updateProgress(progress: CommandExecutionProgress) {
+        // 确保 binding 已初始化，避免 UninitializedPropertyAccessException
+        if (!::binding.isInitialized) {
+            Timber.w("Dialog binding not initialized yet, skipping progress update")
+            return
+        }
         // 动画更新进度条
         val targetProgress = if (progress.totalCount > 0) {
             (progress.currentIndex * 100) / progress.totalCount
@@ -105,6 +111,12 @@ class CommandExecutionProgressDialog(
     }
     
     private fun animateProgress(targetProgress: Int) {
+        // 再次确保 binding 已初始化
+        if (!::binding.isInitialized) {
+            Timber.w("Dialog binding not initialized in animateProgress, skipping")
+            return
+        }
+        
         val currentProgress = binding.progressBar.progress
         ValueAnimator.ofInt(currentProgress, targetProgress).apply {
             duration = 300
@@ -126,22 +138,6 @@ class CommandExecutionProgressDialog(
         }
         
         binding.statusIndicator.backgroundTintList = ContextCompat.getColorStateList(context, color)
-        
-        // 添加脉冲动画效果
-        if (status == ExecutionStatus.EXECUTING) {
-            binding.statusIndicator.animate()
-                .scaleX(1.2f)
-                .scaleY(1.2f)
-                .setDuration(300)
-                .withEndAction {
-                    binding.statusIndicator.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(300)
-                        .start()
-                }
-                .start()
-        }
     }
     
     private fun getStatusText(status: ExecutionStatus): String {
@@ -189,7 +185,7 @@ class CommandExecutionProgressDialog(
         }
     }
     
-    private fun onExecutionCompleted(progress: EnhancedCommandExecutionProgress) {
+    private fun onExecutionCompleted(progress: CommandExecutionProgress) {
         isCompleted = true
         
         // 停止时间更新
@@ -243,6 +239,13 @@ class CommandExecutionProgressDialog(
             }
             .start()
     }
+
+    private fun updateTimeDisplay() {
+        val elapsedTime = (System.currentTimeMillis() - startTime) / 1000
+        val minutes = elapsedTime / 60
+        val seconds = elapsedTime % 60
+        binding.tvElapsedTime.text = "已用时: ${String.format("%02d:%02d", minutes, seconds)}"
+    }
     
     private fun startTimeUpdater() {
         timeUpdateRunnable = object : Runnable {
@@ -260,13 +263,6 @@ class CommandExecutionProgressDialog(
         timeUpdateRunnable?.let { 
             timeUpdateHandler.removeCallbacks(it)
         }
-    }
-    
-    private fun updateTimeDisplay() {
-        val elapsedTime = (System.currentTimeMillis() - startTime) / 1000
-        val minutes = elapsedTime / 60
-        val seconds = elapsedTime % 60
-        binding.tvElapsedTime.text = "已用时: ${String.format("%02d:%02d", minutes, seconds)}"
     }
     
     override fun onDismiss() {
