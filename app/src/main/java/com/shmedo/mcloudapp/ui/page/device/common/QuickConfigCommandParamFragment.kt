@@ -101,7 +101,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentQuickConfigCommandParamBinding
-        binding.llToolbar.toolbar.title = "一键配置"
+        binding.llToolbar.toolbar.title = "一键快速配置参数"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             nav().navigateUp()
         }
