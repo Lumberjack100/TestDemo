@@ -534,7 +534,10 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         mStates.executionResults.clear()
 
         // 显示进度对话框，并在对话框准备好后初始化进度
-        showCommandExecutionProgressDialog(commands.size)
+        showCommandExecutionProgressDialog(
+            commands.size,
+            if (commands.isNotEmpty()) commands.first() else null
+        )
 
         // 配置执行参数
         val config = CommandSequenceConfig(
@@ -544,11 +547,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             errorConfig = ErrorConfig.toastConfig()
         )
 
-        // 初始显示第一条指令开始执行
-        if (commands.isNotEmpty()) {
-            updateCommandExecutionProgress(commands.size, commands.first())
-        }
-        
         // 执行指令序列
         sendCommandSequence(
             commands = commands,
@@ -633,7 +631,10 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     /**
      * 显示指令执行进度对话框
      */
-    private fun showCommandExecutionProgressDialog(totalCommands: Int) {
+    private fun showCommandExecutionProgressDialog(
+        totalCommands: Int,
+        currentExecutingCommand: String? = null
+    ) {
         val dialog = CommandExecutionProgressDialog(
             context = requireContext(),
             onExportExcel = {
@@ -660,7 +661,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                     initializeCommandExecutionProgress(totalCommands)
                     // 延迟一帧确保 binding 完全初始化
                     popupView?.post {
-                        updateExecutionStatusToStarted(totalCommands)
+                        updateCommandExecutionProgress(totalCommands, currentExecutingCommand)
                     }
                 }
 
@@ -693,30 +694,16 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 更新执行状态为开始执行
-     */
-    private fun updateExecutionStatusToStarted(totalCommands: Int) {
-        val startedProgress = CommandExecutionProgress(
-            currentIndex = 0,
-            totalCount = totalCommands,
-            currentCommand = "开始执行指令序列...",
-            status = ExecutionStatus.EXECUTING,
-            successCount = 0,
-            failedCount = 0,
-            startTime = System.currentTimeMillis(),
-        )
-
-        executionProgressDialogInstance?.updateProgress(startedProgress)
-    }
-
-    /**
      * 更新指令执行进度
      * @param totalCommands 总指令数量
      * @param currentExecutingCommand 当前正在执行的指令（可选）
      */
-    private fun updateCommandExecutionProgress(totalCommands: Int, currentExecutingCommand: String? = null) {
+    private fun updateCommandExecutionProgress(
+        totalCommands: Int,
+        currentExecutingCommand: String? = null
+    ) {
         val executionResults = mStates.executionResults
-        
+
         // 优化 currentCommand 显示逻辑：优先显示正在执行的指令
         val displayCommand = when {
             !currentExecutingCommand.isNullOrEmpty() -> currentExecutingCommand
