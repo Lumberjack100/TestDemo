@@ -12,8 +12,9 @@ import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hjq.permissions.OnPermissionCallback
-import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import com.hjq.permissions.permission.PermissionLists
+import com.hjq.permissions.permission.base.IPermission
 import com.hjq.toast.Toaster
 import com.huawei.hms.hmsscankit.ScanUtil
 import com.huawei.hms.ml.scan.HmsScan
@@ -111,7 +112,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                     return@observe
                 }
                 Timber.d("扫码结果：${obj.originalValue}")
-                scanResult(obj.originalValue)
+                handleScanResult(obj.originalValue)
             }
         }
         deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceInfo> ->
@@ -273,19 +274,24 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     //<editor-fold desc="扫码处理">
     private fun requestPermissionForBluetooth() {
         XXPermissions.with(this)
-            .permission(Permission.CAMERA)
+            .permission(PermissionLists.getCameraPermission())
+            .permission(PermissionLists.getReadMediaImagesPermission())
+            .permission(PermissionLists.getReadMediaVisualUserSelectedPermission())
             // 设置权限请求拦截器（局部设置）
             .interceptor(PermissionInterceptor())
             .request(object : OnPermissionCallback {
-                override fun onGranted(
-                    grantedPermissions: MutableList<String>, allGranted: Boolean
-                ) {
+                override fun onResult(
+                    grantedList: List<IPermission>, deniedList: List<IPermission>) {
+                    val allGranted = deniedList.isEmpty()
                     if (!allGranted) {
                         return
                     }
                     // 扫一扫
-                    val options = HmsScanAnalyzerOptions.Creator().setErrorCheck(true)
-                        .setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE).create()
+                    val options = HmsScanAnalyzerOptions.Creator()
+//                        .setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE)
+//                        .setViewType(1)
+                        .setErrorCheck(true)
+                        .create()
 
                     ScanUtil.startScan(
                         mActivity, PermissionHelper.REQUEST_CODE_SCAN, options
@@ -298,7 +304,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
      * https://cloud.shmedo.cn/mcloudapp/device?sn=189150L
      * @param result
      */
-    private fun scanResult(result: String) {
+    private fun handleScanResult(result: String) {
         var result = result
         if (TextUtils.isEmpty(result)) {
             showMessageDialog("米易通无法识别该二维码")

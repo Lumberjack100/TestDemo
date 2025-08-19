@@ -5,18 +5,15 @@ import android.content.Context
 import android.os.Build
 import android.text.TextUtils
 import androidx.appcompat.app.AppCompatActivity
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
-import com.blankj.utilcode.util.StringUtils
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.OnPermissionInterceptor
-import com.hjq.permissions.OnPermissionPageCallback
-import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import com.hjq.permissions.permission.PermissionGroups
+import com.hjq.permissions.permission.PermissionNames
+import com.hjq.permissions.permission.base.IPermission
 import com.hjq.toast.Toaster
 import com.shmedo.lib.core.R
-import timber.log.Timber
-
+import com.shmedo.mcloudapp.extensions.showWarn
 
 /**
  * 创建者:   gonghe <br/>
@@ -25,203 +22,278 @@ import timber.log.Timber
  */
 class PermissionInterceptor : OnPermissionInterceptor {
 
-//    override fun launchPermissionRequest(
-//        activity: Activity,
-//        allPermissions: MutableList<String>,
-//        callback: OnPermissionCallback?
-//    ) {
-//        val deniedPermissions: List<String> = XXPermissions.getDenied(activity, allPermissions)
-//        val message: String = StringUtils.getString(
-//            R.string.common_permission_message,
-//            PermissionNameConvert.getPermissionString(deniedPermissions)
-//        )
-//
-//        MessageDialog.show(
-//            StringUtils.getString(R.string.common_permission_description),
-//            message,
-//            StringUtils.getString(R.string.common_permission_granted)
-//        )
-//            .setOkButton { dialog, v ->
-//                super.launchPermissionRequest( activity,allPermissions,callback)
-//
-//                false
-//            }
-//    }
-
-
-    override fun grantedPermissionRequest(
+    override fun onRequestPermissionEnd(
         activity: Activity,
-        allPermissions: MutableList<String>,
-        grantedPermissions: MutableList<String>,
-        allGranted: Boolean,
+        skipRequest: Boolean,
+        requestList: List<IPermission>,
+        grantedList: List<IPermission>,
+        deniedList: List<IPermission>,
         callback: OnPermissionCallback?
     ) {
-        callback?.onGranted(grantedPermissions, allGranted)
-    }
+        callback?.onResult(grantedList, deniedList)
 
-    override fun deniedPermissionRequest(
-        activity: Activity,
-        allPermissions: MutableList<String>,
-        deniedPermissions: MutableList<String>,
-        doNotAskAgain: Boolean,
-        callback: OnPermissionCallback?
-    ) {
-        callback?.onDenied(deniedPermissions, doNotAskAgain)
-
-        if (doNotAskAgain) {
-            if (deniedPermissions.size == 1 && Permission.ACCESS_MEDIA_LOCATION == deniedPermissions[0]) {
-                Toaster.show(R.string.common_permission_media_location_hint_fail)
-                return
-            }
-            showPermissionSettingDialog(activity, allPermissions, deniedPermissions, callback)
+        if (deniedList.isEmpty()) {
             return
         }
 
-        if (deniedPermissions.size == 1) {
-            val deniedPermission = deniedPermissions[0]
-            val backgroundPermissionOptionLabel = getBackgroundPermissionOptionLabel(activity)
+        val doNotAskAgain = XXPermissions.isDoNotAskAgainPermissions(activity, deniedList)
+        val permissionHint = generatePermissionHint(activity, deniedList, doNotAskAgain)
 
-            if (Permission.ACCESS_BACKGROUND_LOCATION == deniedPermission) {
-                Toaster.show(
-                    StringUtils.getString(
-                        R.string.common_permission_background_location_fail_hint,
-                        backgroundPermissionOptionLabel
-                    )
-                )
-                return
-            }
-
-            if (Permission.BODY_SENSORS_BACKGROUND == deniedPermission) {
-                Toaster.show(
-                    StringUtils.getString(
-                        R.string.common_permission_background_sensors_fail_hint,
-                        backgroundPermissionOptionLabel
-                    )
-                )
-                return
-            }
+        if (!doNotAskAgain) {
+            // 如果没有勾选不再询问选项，就弹 Toast 提示给用户
+            Toaster.show(permissionHint)
+            return
         }
 
-        val permissionNames: List<String> =
-            PermissionNameConvert.permissionsToNames(deniedPermissions)
-        val message: String = if (permissionNames.isNotEmpty()) {
-            StringUtils.getString(
-                R.string.common_permission_fail_assign_hint,
-                PermissionNameConvert.listToString(permissionNames)
-            )
-        } else {
-            StringUtils.getString(R.string.common_permission_fail_hint)
-        }
-
-        Toaster.show(message)
-    }
-
-    override fun finishPermissionRequest(
-        activity: Activity,
-        allPermissions: MutableList<String>,
-        skipRequest: Boolean,
-        callback: OnPermissionCallback?
-    ) {
-        super.finishPermissionRequest(activity, allPermissions, skipRequest, callback)
+        // 如果勾选了不再询问选项，就弹 Dialog 引导用户去授权
+        showPermissionSettingDialog(activity, requestList, deniedList, callback, permissionHint)
     }
 
     private fun showPermissionSettingDialog(
-        activity: Activity?,
-        allPermissions: List<String>,
-        deniedPermissions: List<String>,
-        callback: OnPermissionCallback?
+        activity: Activity,
+        requestList: List<IPermission>,
+        deniedList: List<IPermission>,
+        callback: OnPermissionCallback?,
+        permissionHint: String
     ) {
-        if (activity == null || activity.isFinishing || activity.isDestroyed) {
+        if (activity.isFinishing || activity.isDestroyed) {
             return
         }
 
-        val permissionNames: List<String> =
-            PermissionNameConvert.permissionsToNames(deniedPermissions)
+        val dialogTitle = activity.getString(R.string.common_permission_alert)
+        val confirmButtonText = activity.getString(R.string.common_permission_go_to_authorization)
 
-        val message: String = if (permissionNames.isEmpty()) {
-            StringUtils.getString(R.string.common_permission_manual_fail_hint)
-        } else {
-            if (deniedPermissions.size == 1) {
-                val deniedPermission = deniedPermissions[0]
-                if (Permission.ACCESS_BACKGROUND_LOCATION == deniedPermission) {
-                    StringUtils.getString(
-                        R.string.common_permission_manual_assign_fail_background_location_hint,
-                        getBackgroundPermissionOptionLabel(activity)
-                    )
-                } else if (Permission.BODY_SENSORS_BACKGROUND == deniedPermission) {
-                    StringUtils.getString(
-                        R.string.common_permission_manual_assign_fail_background_sensors_hint,
-                        getBackgroundPermissionOptionLabel(activity)
-                    )
+        (activity as AppCompatActivity).showWarn(
+            dialogTitle,
+            permissionHint,
+            positiveButtonText = confirmButtonText,
+            positiveAction = {
+                XXPermissions.startPermissionActivity(activity, deniedList, object : OnPermissionCallback {
+                    override fun onResult(grantedList: List<IPermission>, deniedList: List<IPermission>) {
+                        val latestDeniedList = XXPermissions.getDeniedPermissions(activity, requestList)
+                        val allGranted = latestDeniedList.isEmpty()
+
+                        if (!allGranted) {
+                            // 递归显示对话框，让提示用户授权，只不过对话框是可取消的，用户不想授权了，随时可以点击返回键或者对话框蒙层来取消显示
+                            showPermissionSettingDialog(
+                                activity,
+                                requestList,
+                                latestDeniedList,
+                                callback,
+                                generatePermissionHint(activity, latestDeniedList, true)
+                            )
+                            return
+                        }
+
+                        // 用户全部授权了，回调成功给外层监听器，免得用户还要再发起权限申请
+                        callback?.onResult(requestList, latestDeniedList)
+                    }
+                })
+            })
+    }
+
+    /**
+     * 生成权限提示文案
+     */
+    private fun generatePermissionHint(
+        activity: Activity,
+        deniedList: List<IPermission>,
+        doNotAskAgain: Boolean
+    ): String {
+        val deniedPermissionCount = deniedList.size
+        var deniedLocationPermissionCount = 0
+        var deniedSensorsPermissionCount = 0
+        var deniedHealthPermissionCount = 0
+
+        for (deniedPermission in deniedList) {
+            val permissionGroup = deniedPermission.permissionGroup
+            if (TextUtils.isEmpty(permissionGroup)) {
+                continue
+            }
+            when (permissionGroup) {
+                PermissionGroups.LOCATION -> deniedLocationPermissionCount++
+                PermissionGroups.SENSORS -> deniedSensorsPermissionCount++
+                else -> if (XXPermissions.isHealthPermission(deniedPermission)) {
+                    deniedHealthPermissionCount++
                 }
             }
-            StringUtils.getString(
-                R.string.common_permission_manual_assign_fail_hint,
-                PermissionNameConvert.listToString(permissionNames)
+        }
+
+        if (deniedLocationPermissionCount == deniedPermissionCount && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (deniedLocationPermissionCount == 1) {
+                when {
+                    XXPermissions.equalsPermission(deniedList[0], PermissionNames.ACCESS_BACKGROUND_LOCATION) -> {
+                        return activity.getString(
+                            R.string.common_permission_fail_hint_1,
+                            activity.getString(R.string.common_permission_location_background),
+                            getBackgroundPermissionOptionLabel(activity)
+                        )
+                    }
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                            XXPermissions.equalsPermission(deniedList[0], PermissionNames.ACCESS_FINE_LOCATION) -> {
+                        // 如果请求的定位权限中，既包含了精确定位权限，又包含了模糊定位权限或者后台定位权限，
+                        // 但是用户只同意了模糊定位权限的情况或者后台定位权限，并没有同意精确定位权限的情况，就提示用户开启确切位置选项
+                        // 需要注意的是 Android 12 才将模糊定位权限和精确定位权限的授权选项进行分拆，之前的版本没有区分得那么仔细
+                        return activity.getString(
+                            R.string.common_permission_fail_hint_3,
+                            activity.getString(R.string.common_permission_location_fine),
+                            activity.getString(R.string.common_permission_location_fine_option)
+                        )
+                    }
+                }
+            } else {
+                if (XXPermissions.containsPermission(deniedList, PermissionNames.ACCESS_BACKGROUND_LOCATION)) {
+                    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                        XXPermissions.containsPermission(deniedList, PermissionNames.ACCESS_FINE_LOCATION)) {
+                        activity.getString(
+                            R.string.common_permission_fail_hint_2,
+                            activity.getString(R.string.common_permission_location),
+                            getBackgroundPermissionOptionLabel(activity),
+                            activity.getString(R.string.common_permission_location_fine_option)
+                        )
+                    } else {
+                        activity.getString(
+                            R.string.common_permission_fail_hint_1,
+                            activity.getString(R.string.common_permission_location),
+                            getBackgroundPermissionOptionLabel(activity)
+                        )
+                    }
+                }
+            }
+        } else if (deniedSensorsPermissionCount == deniedPermissionCount && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (deniedPermissionCount == 1) {
+                if (XXPermissions.equalsPermission(deniedList[0], PermissionNames.BODY_SENSORS_BACKGROUND)) {
+                    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+                        activity.getString(
+                            R.string.common_permission_fail_hint_1,
+                            activity.getString(R.string.common_permission_health_data_background),
+                            activity.getString(R.string.common_permission_health_data_background_option)
+                        )
+                    } else {
+                        activity.getString(
+                            R.string.common_permission_fail_hint_1,
+                            activity.getString(R.string.common_permission_body_sensors_background),
+                            getBackgroundPermissionOptionLabel(activity)
+                        )
+                    }
+                }
+            } else {
+                if (doNotAskAgain) {
+                    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+                        activity.getString(
+                            R.string.common_permission_fail_hint_1,
+                            activity.getString(R.string.common_permission_health_data),
+                            activity.getString(R.string.common_permission_allow_all_option)
+                        )
+                    } else {
+                        activity.getString(
+                            R.string.common_permission_fail_hint_1,
+                            activity.getString(R.string.common_permission_body_sensors),
+                            getBackgroundPermissionOptionLabel(activity)
+                        )
+                    }
+                }
+            }
+        } else if (deniedHealthPermissionCount == deniedPermissionCount && Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+            when (deniedPermissionCount) {
+                1 -> {
+                    when {
+                        XXPermissions.equalsPermission(deniedList[0], PermissionNames.READ_HEALTH_DATA_IN_BACKGROUND) -> {
+                            return activity.getString(
+                                R.string.common_permission_fail_hint_3,
+                                activity.getString(R.string.common_permission_health_data_background),
+                                activity.getString(R.string.common_permission_health_data_background_option)
+                            )
+                        }
+                        XXPermissions.equalsPermission(deniedList[0], PermissionNames.READ_HEALTH_DATA_HISTORY) -> {
+                            return activity.getString(
+                                R.string.common_permission_fail_hint_3,
+                                activity.getString(R.string.common_permission_health_data_past),
+                                activity.getString(R.string.common_permission_health_data_past_option)
+                            )
+                        }
+                    }
+                }
+                2 -> {
+                    when {
+                        XXPermissions.containsPermission(deniedList, PermissionNames.READ_HEALTH_DATA_HISTORY) &&
+                                XXPermissions.containsPermission(deniedList, PermissionNames.READ_HEALTH_DATA_IN_BACKGROUND) -> {
+                            return activity.getString(
+                                R.string.common_permission_fail_hint_3,
+                                activity.getString(R.string.common_permission_health_data_past) +
+                                        activity.getString(R.string.common_permission_and) +
+                                        activity.getString(R.string.common_permission_health_data_background),
+                                activity.getString(R.string.common_permission_health_data_past_option) +
+                                        activity.getString(R.string.common_permission_and) +
+                                        activity.getString(R.string.common_permission_health_data_background_option)
+                            )
+                        }
+                        XXPermissions.containsPermission(deniedList, PermissionNames.READ_HEALTH_DATA_HISTORY) -> {
+                            return activity.getString(
+                                R.string.common_permission_fail_hint_2,
+                                activity.getString(R.string.common_permission_health_data) +
+                                        activity.getString(R.string.common_permission_and) +
+                                        activity.getString(R.string.common_permission_health_data_past),
+                                activity.getString(R.string.common_permission_allow_all_option),
+                                activity.getString(R.string.common_permission_health_data_background_option)
+                            )
+                        }
+                        XXPermissions.containsPermission(deniedList, PermissionNames.READ_HEALTH_DATA_IN_BACKGROUND) -> {
+                            return activity.getString(
+                                R.string.common_permission_fail_hint_2,
+                                activity.getString(R.string.common_permission_health_data) +
+                                        activity.getString(R.string.common_permission_and) +
+                                        activity.getString(R.string.common_permission_health_data_background),
+                                activity.getString(R.string.common_permission_allow_all_option),
+                                activity.getString(R.string.common_permission_health_data_background_option)
+                            )
+                        }
+                    }
+                }
+                else -> {
+                    if (XXPermissions.containsPermission(deniedList, PermissionNames.READ_HEALTH_DATA_HISTORY) &&
+                        XXPermissions.containsPermission(deniedList, PermissionNames.READ_HEALTH_DATA_IN_BACKGROUND)) {
+                        return activity.getString(
+                            R.string.common_permission_fail_hint_2,
+                            activity.getString(R.string.common_permission_health_data) +
+                                    activity.getString(R.string.common_permission_and) +
+                                    activity.getString(R.string.common_permission_health_data_past) +
+                                    activity.getString(R.string.common_permission_and) +
+                                    activity.getString(R.string.common_permission_health_data_background),
+                            activity.getString(R.string.common_permission_allow_all_option),
+                            activity.getString(R.string.common_permission_health_data_past_option) +
+                                    activity.getString(R.string.common_permission_and) +
+                                    activity.getString(R.string.common_permission_health_data_background_option)
+                        )
+                    }
+                }
+            }
+            return activity.getString(
+                R.string.common_permission_fail_hint_1,
+                activity.getString(R.string.common_permission_health_data),
+                activity.getString(R.string.common_permission_allow_all_option)
             )
         }
-        (activity as AppCompatActivity).showWarn(
-            message,
-            "授权提醒",
-            positiveButtonText = "前往授权",
-            positiveAction = {
-                Timber.e("showPermissionSettingDialog positiveAction click")
 
-                // 如果是被永久拒绝就跳转到应用权限系统设置页面
-                XXPermissions.startPermissionActivity(
-                    activity, deniedPermissions, object : OnPermissionPageCallback {
-                        override fun onGranted() {
-                            callback?.onGranted(allPermissions, true)
-                        }
-
-                        override fun onDenied() {
-//                            showPermissionSettingDialog(
-//                                activity,
-//                                allPermissions,
-//                                XXPermissions.getDenied(activity, allPermissions),
-//                                callback
-//                            )
-                        }
-                    })
-            })
-
+        return activity.getString(
+            if (doNotAskAgain) R.string.common_permission_fail_assign_hint_1
+            else R.string.common_permission_fail_assign_hint_2,
+            PermissionConverter.getNickNamesByPermissions(activity, deniedList)
+        )
     }
 
     /**
      * 获取后台权限的《始终允许》选项的文案
      */
-    private fun getBackgroundPermissionOptionLabel(context: Context): String? {
-        var backgroundPermissionOptionLabel = ""
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            backgroundPermissionOptionLabel =
-                context.packageManager.backgroundPermissionOptionLabel.toString()
+    private fun getBackgroundPermissionOptionLabel(context: Context): String {
+        val packageManager = context.packageManager
+        if (packageManager != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val backgroundPermissionOptionLabel = packageManager.backgroundPermissionOptionLabel
+            if (!TextUtils.isEmpty(backgroundPermissionOptionLabel)) {
+                return backgroundPermissionOptionLabel.toString()
+            }
         }
-        if (TextUtils.isEmpty(backgroundPermissionOptionLabel)) {
-            backgroundPermissionOptionLabel =
-                context.getString(R.string.common_permission_background_default_option_label)
-        }
-        return backgroundPermissionOptionLabel
-    }
 
-    private fun AppCompatActivity.showWarn(
-        message: String,
-        title: String = "温馨提示",
-        positiveButtonText: String = "确定",
-        positiveAction: () -> Unit = {},
-        negativeButtonText: String = "",
-        negativeAction: () -> Unit = {}
-    ) {
-        MaterialDialog(this).cancelable(true).lifecycleOwner(this).show {
-            title(text = title)
-            message(text = message)
-            positiveButton(text = positiveButtonText) {
-                positiveAction.invoke()
-            }
-            if (negativeButtonText.isNotEmpty()) {
-                negativeButton(text = negativeButtonText) {
-                    negativeAction.invoke()
-                }
-            }
-        }
+        return context.getString(R.string.common_permission_allow_all_the_time_option)
     }
 }

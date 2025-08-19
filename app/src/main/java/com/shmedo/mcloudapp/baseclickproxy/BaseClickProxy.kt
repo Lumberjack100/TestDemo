@@ -33,6 +33,13 @@ open class BaseClickProxy {
     }
 
     /**
+     * 扫描二维码
+     */
+    open fun onScanQrCodeClick() {
+
+    }
+
+    /**
      * 跳转到位置信息页面
      */
     open fun onGotoLocationClick() {

@@ -19,8 +19,9 @@ import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.permissions.OnPermissionCallback
-import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import com.hjq.permissions.permission.PermissionLists
+import com.hjq.permissions.permission.base.IPermission
 import com.hjq.toast.Toaster
 import com.huawei.hms.hmsscankit.ScanUtil
 import com.huawei.hms.ml.scan.HmsScan
@@ -31,6 +32,7 @@ import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.core.model.CmdParamInfo
 import com.shmedo.core.model.DeviceCmdOrderInfo
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
@@ -44,7 +46,7 @@ import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CustomActivityResult
@@ -96,7 +98,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             toolbarViewModel
         )
             .addBindingParam(BR.stateVM, mStates)
-            .addBindingParam(BR.click, BaseClickProxy())
+            .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -213,6 +215,13 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         // 如果有默认配置URL，可以在这里加载
+//        handleScanResult("http://ams4.shmedo.com:22000/api/v1/GetCmdOrdersBySn/ea88e6798f9b9ad9c49b78b146411def")
+    }
+
+    inner class ClickProxy : BaseClickProxy() {
+        override fun onScanQrCodeClick() {
+            startQRCodeScan()
+        }
     }
 
     //<editor-fold desc="二维码扫描、图片识别功能">
@@ -221,13 +230,16 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun startQRCodeScan() {
         XXPermissions.with(this)
-            .permission(Permission.CAMERA)
+            .permission(PermissionLists.getCameraPermission())
+            .permission(PermissionLists.getReadMediaImagesPermission())
+            .permission(PermissionLists.getReadMediaVisualUserSelectedPermission())
             // 设置权限请求拦截器（局部设置）
             .interceptor(PermissionInterceptor())
             .request(object : OnPermissionCallback {
-                override fun onGranted(
-                    grantedPermissions: MutableList<String>, allGranted: Boolean
+                override fun onResult(
+                    grantedList: List<IPermission>, deniedList: List<IPermission>
                 ) {
+                    val allGranted = deniedList.isEmpty()
                     if (!allGranted) {
                         return
                     }
@@ -282,8 +294,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     private fun fetchCommandConfiguration(qrCodeUrl: String) {
         launchWithViewLifecycle {
             try {
-//                showLoadingDialog("正在获取配置信息...")
-
                 val verificationSuffix = extractVerificationSuffix(qrCodeUrl)
                     ?: throw IllegalArgumentException("无效的URL格式")
 
@@ -557,7 +567,8 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                     val executionResult = CommandExecutionResult(
                         command = result.command,
                         response = result.responseData,
-                        success = true
+                        success = !result.responseData.contains(IOTConstants.ERROR_FLAG),
+                        errorMessage = result.responseData
                     )
                     mStates.executionResults.add(executionResult)
 
@@ -754,16 +765,35 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 导出执行结果到Excel
+     * 导出执行结果到Excel - 重构后的安全实现
      */
     private fun exportExecutionResultsToExcel() {
+        // 状态检查：确保Fragment处于正常状态
+        if (!isAdded || isDetached || activity == null || activity?.isFinishing == true) {
+            Timber.w("Fragment不在活跃状态，取消Excel导出")
+            return
+        }
+
         launchWithViewLifecycle {
+            var loadingId: String? = null
             try {
-                showLoadingDialog("正在导出Excel...")
+                // 显示加载对话框，使用UUID避免冲突
+                loadingId = showLoadingWithUUID(
+                    message = "正在导出Excel...",
+                    isCancelable = false // Excel导出过程不允许取消
+                )
 
                 val results = mStates.executionResults
                 if (results.isEmpty()) {
-                    Toaster.show("没有可导出的数据")
+                    if (isAdded && !isDetached) {
+                        Toaster.show("没有可导出的数据")
+                    }
+                    return@launchWithViewLifecycle
+                }
+
+                // 状态检查：确保Fragment仍然活跃
+                if (!isAdded || isDetached || activity == null) {
+                    Timber.w("Fragment已销毁，停止Excel导出")
                     return@launchWithViewLifecycle
                 }
 
@@ -773,15 +803,20 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                     outputDir.mkdirs()
                 }
 
-                // 导出Excel
+                // 导出Excel（耗时操作）
                 val file = CommandExcelExporter.exportToExcel(
                     results = results,
                     deviceSn = deviceInfo.deviceToken,
                     outputDir = outputDir
                 )
 
+                // 最终状态检查：导出完成后再次检查Fragment状态
+                if (!isAdded || isDetached || activity?.isFinishing == true) {
+                    Timber.w("导出完成但Fragment已销毁，跳过UI更新")
+                    return@launchWithViewLifecycle
+                }
+
                 if (file != null) {
-                    // 显示导出成功对话框
                     showExportSuccessDialog(file)
                 } else {
                     Toaster.show("导出失败")
@@ -789,9 +824,20 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
 
             } catch (e: Exception) {
                 Timber.e(e, "导出Excel失败")
-                Toaster.show("导出失败：${e.message}")
+                // 只在Fragment活跃时显示错误信息
+                if (isAdded && !isDetached && activity?.isFinishing != true) {
+                    Toaster.show("导出失败：${e.message}")
+                }
             } finally {
-                dismissLoadingDialog()
+                // 安全地关闭Loading对话框
+                loadingId?.let { id ->
+                    try {
+                        // 使用具体的loadingId关闭，更精确
+                        dismissLoadingDialog(id)
+                    } catch (e: Exception) {
+                        Timber.w(e, "Failed to dismiss loading dialog: $id")
+                    }
+                }
             }
         }
     }
