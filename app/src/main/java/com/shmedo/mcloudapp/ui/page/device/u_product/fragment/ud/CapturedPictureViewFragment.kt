@@ -8,8 +8,8 @@ import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.blankj.utilcode.util.ConvertUtils
 import com.hjq.permissions.OnPermissionCallback
-import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import com.hjq.permissions.permission.PermissionLists
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.luck.picture.lib.adapter.PicturePreviewAdapter
@@ -24,8 +24,8 @@ import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.adapter.CustomPreviewAdapter
+import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.CapturedPictureViewViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
@@ -147,12 +147,14 @@ class CapturedPictureViewFragment : BaseFragment() {
         fun onDownloadImageClick() {
             //申请存储权限
             XXPermissions.with(this@CapturedPictureViewFragment)
-                .permission(Permission.MANAGE_EXTERNAL_STORAGE)
+                .permission(PermissionLists.getWriteExternalStoragePermission())
                 .interceptor(PermissionInterceptor())
-                .request(OnPermissionCallback { permissions, allGranted ->
+                .request(OnPermissionCallback { grantedList, deniedList ->
+                    val allGranted = deniedList.isEmpty()
                     if (!allGranted) {
                         return@OnPermissionCallback
                     }
+
                     saveImage()
                 })
         }

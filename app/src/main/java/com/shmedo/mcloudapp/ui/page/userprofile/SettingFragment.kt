@@ -3,8 +3,8 @@ package com.shmedo.mcloudapp.ui.page.userprofile
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.CleanUtils
-import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import com.hjq.permissions.permission.PermissionLists
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.mcloudapp.BR
@@ -66,9 +66,9 @@ class SettingFragment : BaseFragment() {
 
     private fun checkNotificationPermission() {
         mStates.isAllowNotification.set(
-            XXPermissions.isGranted(
+            XXPermissions.isGrantedPermission(
                 requireContext(),
-                Permission.POST_NOTIFICATIONS
+                PermissionLists.getPostNotificationsPermission()
             )
         )
     }
@@ -80,7 +80,7 @@ class SettingFragment : BaseFragment() {
         fun onMessageNotificationClick() {
             XXPermissions.startPermissionActivity(
                 this@SettingFragment,
-                Permission.POST_NOTIFICATIONS
+                PermissionLists.getPostNotificationsPermission()
             )
         }
 

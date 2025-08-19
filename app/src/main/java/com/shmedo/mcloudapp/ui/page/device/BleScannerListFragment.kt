@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.ui.page.device
 
-import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.os.Build
@@ -11,6 +10,8 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.XXPermissions
+import com.hjq.permissions.permission.PermissionLists
+import com.hjq.permissions.permission.base.IPermission
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.permission.BlePermissionNotAvailableReason
@@ -53,19 +54,6 @@ class BleScannerListFragment : BaseFragment() {
     private var discoveredBluetoothDevice: DiscoveredBluetoothDevice? = null
     private var isFilterNameByScanningQRCode = false//是否通过扫描设备二维码来过滤查找设备
     private var scanSearchDeviceTimeoutJob: Job? = null
-
-    /**
-     * 需要进行检测的权限数组
-     */
-    private val needPermissions by lazy {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-            arrayOf(
-                Manifest.permission.BLUETOOTH_SCAN,
-                Manifest.permission.BLUETOOTH_CONNECT
-            )
-        else
-            arrayOf()
-    }
 
     override fun initViewModel() {
         mMessenger = getAppViewModel()
@@ -261,34 +249,19 @@ class BleScannerListFragment : BaseFragment() {
 
     private fun requestPermissionForBluetooth() {
         XXPermissions.with(this)
-            .permission(needPermissions)
+            .permission(PermissionLists.getBluetoothScanPermission())
+            .permission(PermissionLists.getBluetoothConnectPermission())
             // 设置权限请求拦截器（局部设置）
             .interceptor(PermissionInterceptor())
             .request(object : OnPermissionCallback {
-                override fun onGranted(
-                    grantedPermissions: MutableList<String>,
-                    allGranted: Boolean
-                ) {
+                override fun onResult(
+                    grantedList: List<IPermission>, deniedList: List<IPermission>) {
+                    val allGranted = deniedList.isEmpty()
                     if (!allGranted) {
                         return
                     }
                     permissionViewModel.refreshBluetoothPermission()
                 }
-
-//                override fun onDenied(
-//                    permissions: MutableList<String>,
-//                    doNotAskAgain:Boolean
-//                ) {
-//                    if (doNotAskAgain) {
-//                        Timber.i("被永久拒绝授权，请手动授予通知栏权限")
-//                        // 如果是被永久拒绝就跳转到应用权限系统设置页面
-//                        XXPermissions.startPermissionActivity(
-//                            this@BleScannerListFragment,
-//                            permissions
-//                        )
-//                    }
-//                }
-
             })
     }
 

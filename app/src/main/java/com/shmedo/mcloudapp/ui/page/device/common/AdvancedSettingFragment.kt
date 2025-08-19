@@ -15,6 +15,8 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.XXPermissions
+import com.hjq.permissions.permission.PermissionLists
+import com.hjq.permissions.permission.base.IPermission
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -741,14 +743,14 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
 
     private fun checkPermissionForLocation() {
         XXPermissions.with(this)
-            .permission(PermissionHelper.foregroundLocationPermissions)
+            .permission(PermissionLists.getAccessCoarseLocationPermission())
+            .permission(PermissionLists.getAccessFineLocationPermission())
             // 设置权限请求拦截器（局部设置）
             .interceptor(PermissionInterceptor())
             .request(object : OnPermissionCallback {
-                override fun onGranted(
-                    grantedPermissions: MutableList<String>,
-                    allGranted: Boolean
-                ) {
+                override fun onResult(
+                    grantedList: List<IPermission>, deniedList: List<IPermission>) {
+                    val allGranted = deniedList.isEmpty()
                     if (!allGranted) {
                         return
                     }

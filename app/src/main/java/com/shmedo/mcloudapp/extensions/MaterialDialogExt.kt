@@ -73,6 +73,28 @@ fun Context.showDatePickerDialog(
     (dialog as BottomSheetDialog).behavior.isHideable = false
 }
 
+fun AppCompatActivity.showWarn(
+    title: String = "温馨提示",
+    message: String,
+    positiveButtonText: String = "确定",
+    positiveAction: () -> Unit = {},
+    negativeButtonText: String = "",
+    negativeAction: () -> Unit = {}
+) {
+    MaterialDialog(this).cancelable(true).lifecycleOwner(this).show {
+        title(text = title)
+        message(text = message)
+        positiveButton(text = positiveButtonText) {
+            positiveAction.invoke()
+        }
+        if (negativeButtonText.isNotEmpty()) {
+            negativeButton(text = negativeButtonText) {
+                negativeAction.invoke()
+            }
+        }
+    }
+}
+
 /**
  * @param message 显示对话框的内容 必填项
  * @param title 显示对话框的标题 默认 温馨提示

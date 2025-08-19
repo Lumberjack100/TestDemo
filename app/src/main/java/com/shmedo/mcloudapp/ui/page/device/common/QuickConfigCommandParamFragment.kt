@@ -19,8 +19,9 @@ import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.permissions.OnPermissionCallback
-import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import com.hjq.permissions.permission.PermissionLists
+import com.hjq.permissions.permission.base.IPermission
 import com.hjq.toast.Toaster
 import com.huawei.hms.hmsscankit.ScanUtil
 import com.huawei.hms.ml.scan.HmsScan
@@ -40,11 +41,9 @@ import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentQuickConfigCommandParamBinding
 import com.shmedo.mcloudapp.databinding.ItemQuickConfigCommandParamEditBinding
-import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CustomActivityResult
@@ -213,6 +212,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         // 如果有默认配置URL，可以在这里加载
+//        handleScanResult("http://ams4.shmedo.com:22000/api/v1/GetCmdOrdersBySn/ea88e6798f9b9ad9c49b78b146411def")
     }
 
     //<editor-fold desc="二维码扫描、图片识别功能">
@@ -221,13 +221,15 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun startQRCodeScan() {
         XXPermissions.with(this)
-            .permission(Permission.CAMERA)
+            .permission(PermissionLists.getCameraPermission())
+            .permission(PermissionLists.getReadMediaImagesPermission())
+            .permission(PermissionLists.getReadMediaVisualUserSelectedPermission())
             // 设置权限请求拦截器（局部设置）
             .interceptor(PermissionInterceptor())
             .request(object : OnPermissionCallback {
-                override fun onGranted(
-                    grantedPermissions: MutableList<String>, allGranted: Boolean
-                ) {
+                override fun onResult(
+                    grantedList: List<IPermission>, deniedList: List<IPermission>) {
+                    val allGranted = deniedList.isEmpty()
                     if (!allGranted) {
                         return
                     }
@@ -282,8 +284,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     private fun fetchCommandConfiguration(qrCodeUrl: String) {
         launchWithViewLifecycle {
             try {
-//                showLoadingDialog("正在获取配置信息...")
-
                 val verificationSuffix = extractVerificationSuffix(qrCodeUrl)
                     ?: throw IllegalArgumentException("无效的URL格式")
 
@@ -759,8 +759,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     private fun exportExecutionResultsToExcel() {
         launchWithViewLifecycle {
             try {
-                showLoadingDialog("正在导出Excel...")
-
                 val results = mStates.executionResults
                 if (results.isEmpty()) {
                     Toaster.show("没有可导出的数据")
@@ -790,8 +788,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             } catch (e: Exception) {
                 Timber.e(e, "导出Excel失败")
                 Toaster.show("导出失败：${e.message}")
-            } finally {
-                dismissLoadingDialog()
             }
         }
     }
