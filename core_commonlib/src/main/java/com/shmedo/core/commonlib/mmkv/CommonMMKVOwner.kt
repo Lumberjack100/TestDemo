@@ -17,6 +17,4 @@ object CommonMMKVOwner : MMKVOwner(mmapID = "common_settings") {
 
     var isCommandDebugMode by mmkvBool(default = false)//指令下发模式
 
-    var deviceRemoteConfigToken by mmkvString(default = "")//物联网设备远程配置服务 token
-
 }

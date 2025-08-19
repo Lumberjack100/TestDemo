@@ -65,8 +65,8 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     private val dataBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_bit) }
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
-    private val dataFormatList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_data_format) }
-    private val solutionMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_solution_method) }
+    private val dataFormatList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs485_sensor_data_format) }
+    private val solutionMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs485_sensor_solution_method) }
 
     private val activeColor: Int = ColorUtils.getColor(R.color.colorPrimary)
     private val normalColor: Int = ColorUtils.getColor(R.color.title_text_color)

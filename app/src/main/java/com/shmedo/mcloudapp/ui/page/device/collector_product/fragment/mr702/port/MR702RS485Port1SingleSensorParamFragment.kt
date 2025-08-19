@@ -58,7 +58,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
     private val dataBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_bit) }
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
-    private val dataFormatList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_data_format) }
+    private val dataFormatList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs485_sensor_data_format) }
     private val siteTypeList = mutableListOf("无", "测点", "参考点")
     private val calculateList = mutableListOf("不计算", "线性方程计算", "传感器联合计算")
 

@@ -198,10 +198,10 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             try {
                 val sensorConfigList: List<SensorModel> = MmkvCacheUtil.getMR702SensorConfigInfo()
                 sensorConfigList.forEach { sensorModel ->
-                    if (sensorModel.port == "485-1") {
+                    if (sensorModel.port == "RS485-1") {
                         mStates.configPort4851SensorIDToSensorModelMap[sensorModel.sensorID] =
                             sensorModel
-                    } else if (sensorModel.port == "485-2") {
+                    } else if (sensorModel.port == "RS485-2") {
                         mStates.configPort4852SensorIDToSensorModelMap[sensorModel.sensorID] =
                             sensorModel
                     }

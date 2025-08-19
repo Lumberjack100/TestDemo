@@ -316,8 +316,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             } catch (error: Exception) {
                 Timber.e(error, "获取配置失败")
                 showError("获取配置失败：${error.message}")
-            } finally {
-//                dismissLoadingDialog()
             }
         }
     }
@@ -626,7 +624,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
      * 显示错误信息
      */
     private fun showError(message: String) {
-        addDeviceLogItem(Log.ERROR, message)
         showMessageDialog(
             title = "温馨提示",
             message = message,

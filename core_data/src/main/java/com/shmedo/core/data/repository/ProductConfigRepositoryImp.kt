@@ -1,10 +1,10 @@
 package com.shmedo.core.data.repository
 
-import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.model.AdmeConfigInfo
 import com.shmedo.core.model.DeviceCmdOrderInfo
 import com.shmedo.core.model.DeviceDebugAddress
-import com.shmedo.core.model.MR702PortSensorConfig
+import com.shmedo.core.model.SensorModel
 import com.shmedo.lib.network.util.BaseURL
 import org.json.JSONObject
 import rxhttp.tryAwait
@@ -175,36 +175,6 @@ class ProductConfigRepositoryImp : BaseRepositoryImp() {
     }
     // </editor-fold>
 
-    //<editor-fold desc="米易通远程配置管理系统接口">
-    /**
-     * 获取App应用信息
-     */
-    suspend fun appRemoteConfigLogin(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): String? =
-        RxHttp.postJson("/auth/SignIn")
-            .setDomainIfAbsent(BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl)
-            .addAll(jsonParam)
-            .toAwaitResponse<String>()
-            .tryAwait(onCatch)
-
-    /**
-     * 获取 MR702 传感器远程配置信息
-     */
-    suspend fun queryMR702SensorConfigList(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): MR702PortSensorConfig? =
-        RxHttp.postJson("/config/QueryMR702SensorConfigList")
-            .setDomainIfAbsent(BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl)
-            .addHeader("Authorization", CommonMMKVOwner.deviceRemoteConfigToken)
-            .addAll(jsonParam)
-            .toAwaitResponse<MR702PortSensorConfig>()
-            .tryAwait(onCatch)
-
-    // </editor-fold>
-
     //<editor-fold desc="孙建伟通用配置接口">
     /**
      * 查询设备远程调试连接地址信息
@@ -219,8 +189,9 @@ class ProductConfigRepositoryImp : BaseRepositoryImp() {
             .toAwaitResponse<DeviceDebugAddress>()
             .tryAwait(onCatch)
 
-
-
+    /**
+     * 获取设备快速配置参数指令模版
+     */
     suspend fun getDeviceGetCmdOrdersBySn(
         verificationSuffix: String,
         param: Map<String, String>,
@@ -230,6 +201,20 @@ class ProductConfigRepositoryImp : BaseRepositoryImp() {
             .setDomainIfAbsent(BaseURL.AMS_CONFIG_ADDRESS.baseUrl)
             .addAll(param)
             .toAwaitResponse<DeviceCmdOrderInfo>()
+            .tryAwait(onCatch)
+
+    /**
+     * 获取 MR702 传感器远程配置信息
+     */
+    suspend fun queryMR702SensorConfigList(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): List<SensorModel>? =
+        RxHttp.postJson("/QueryDeviceTemplates")
+            .setDomainIfAbsent(BaseURL.AMS_CONFIG_ADDRESS.baseUrl)
+            .addHeader("Authorization", AuthMMKVOwner.token)
+            .addAll(jsonParam)
+            .toAwaitResponse<List<SensorModel>>()
             .tryAwait(onCatch)
 
     // </editor-fold>
