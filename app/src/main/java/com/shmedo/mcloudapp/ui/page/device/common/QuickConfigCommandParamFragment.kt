@@ -32,6 +32,7 @@ import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.core.model.CmdParamInfo
 import com.shmedo.core.model.DeviceCmdOrderInfo
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
@@ -41,9 +42,11 @@ import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentQuickConfigCommandParamBinding
 import com.shmedo.mcloudapp.databinding.ItemQuickConfigCommandParamEditBinding
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CustomActivityResult
@@ -228,7 +231,8 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             .interceptor(PermissionInterceptor())
             .request(object : OnPermissionCallback {
                 override fun onResult(
-                    grantedList: List<IPermission>, deniedList: List<IPermission>) {
+                    grantedList: List<IPermission>, deniedList: List<IPermission>
+                ) {
                     val allGranted = deniedList.isEmpty()
                     if (!allGranted) {
                         return
@@ -557,7 +561,8 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                     val executionResult = CommandExecutionResult(
                         command = result.command,
                         response = result.responseData,
-                        success = true
+                        success = !result.responseData.contains(IOTConstants.ERROR_FLAG),
+                        errorMessage = result.responseData
                     )
                     mStates.executionResults.add(executionResult)
 
@@ -759,6 +764,8 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     private fun exportExecutionResultsToExcel() {
         launchWithViewLifecycle {
             try {
+                showLoadingDialog("正在导出Excel...")
+
                 val results = mStates.executionResults
                 if (results.isEmpty()) {
                     Toaster.show("没有可导出的数据")
@@ -788,6 +795,8 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             } catch (e: Exception) {
                 Timber.e(e, "导出Excel失败")
                 Toaster.show("导出失败：${e.message}")
+            } finally {
+                dismissLoadingDialog()
             }
         }
     }
