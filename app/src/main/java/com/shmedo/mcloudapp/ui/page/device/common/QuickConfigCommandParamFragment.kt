@@ -98,7 +98,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             toolbarViewModel
         )
             .addBindingParam(BR.stateVM, mStates)
-            .addBindingParam(BR.click, BaseClickProxy())
+            .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -216,6 +216,12 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     override fun lazyLoadData() {
         // 如果有默认配置URL，可以在这里加载
 //        handleScanResult("http://ams4.shmedo.com:22000/api/v1/GetCmdOrdersBySn/ea88e6798f9b9ad9c49b78b146411def")
+    }
+
+    inner class ClickProxy : BaseClickProxy() {
+        override fun onScanQrCodeClick() {
+            startQRCodeScan()
+        }
     }
 
     //<editor-fold desc="二维码扫描、图片识别功能">
@@ -767,7 +773,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             Timber.w("Fragment不在活跃状态，取消Excel导出")
             return
         }
-        
+
         launchWithViewLifecycle {
             var loadingId: String? = null
             try {

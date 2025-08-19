@@ -50,6 +50,7 @@
 
         <include
             layout="@layout/info_empty_quick_cmd_items"
+            app:click="@{click}"
             visible="@{stateVM.emptyContent}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

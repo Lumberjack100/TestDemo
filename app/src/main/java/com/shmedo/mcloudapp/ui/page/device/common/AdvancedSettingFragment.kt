@@ -141,13 +141,6 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
             )
         }
 
-        moduleList.add(
-            AdvancedSettingItem(
-                "一键快速配置参数",
-                AdvancedSettingItem.Type.QUICK_CONFIG,
-            )
-        )
-
         if (isNeedOffsetInitialization()) {
             moduleList.add(
                 AdvancedSettingItem(
@@ -409,16 +402,6 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                     deviceInfo
                 )
                 nav().safeNavigate(R.id.action_global_to_deviceReplacementFragment, bundle)
-            }
-
-            AdvancedSettingItem.Type.QUICK_CONFIG -> {
-                val bundle = newBundleArguments(
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().safeNavigate(R.id.action_global_to_quickConfigCommandParam, bundle)
             }
 
             else -> {}
