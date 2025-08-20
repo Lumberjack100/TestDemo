@@ -93,13 +93,10 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.title = sensorItem.sensorName
 
         portHomeViewModel.configPort4851SensorIDToSensorModelMap[sensorItem.sensorID]?.let {
-            mStates.curSensorModel = it
+            mStates.defaultSensorModel = it
         }
-        mStates.isCustomSensor.set(mStates.curSensorModel.sensorID == "0")//是否自定义传感器
+        mStates.isCustomSensor.set(mStates.defaultSensorModel.sensorID == "0")//是否自定义传感器
 
-        mStates.modelName.set(mStates.curSensorModel.modelName)//物模型名称
-        mStates.modelToken.set(mStates.curSensorModel.modelToken)//物模型编号
-        mStates.address.set("1")//传感器地址,默认1
         resetDefaultParam()
     }
 
@@ -107,13 +104,22 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
      * 重置采集项
      */
     private fun resetDefaultParam() {
-        mStates.baudRate.set("9600")  //默认波特率
+        val siteTypeIndex = siteTypeList.indexOf(mStates.defaultSensorModel.stationType)
+        val defaultSiteType = if (siteTypeIndex in siteTypeList.indices) siteTypeList[siteTypeIndex] else siteTypeList[0]
+        val calculateIndex = calculateList.indexOf(mStates.defaultSensorModel.calcType)
+        val defaultCalculate = if (calculateIndex in calculateList.indices) calculateList[calculateIndex] else calculateList[0]
+
+        mStates.modelName.set(mStates.defaultSensorModel.modelName)//物模型名称
+        mStates.modelToken.set(mStates.defaultSensorModel.modelToken)//物模型编号
+        mStates.address.set(mStates.defaultSensorModel.collAddr)//传感器地址,默认1
+
+        mStates.baudRate.set(mStates.defaultSensorModel.baud)  //默认波特率
         mStates.dataBit.set(dataBitList[3])//默认数据位 8
         mStates.checkBit.set(checkBitList[0])//默认校验位 无
         mStates.stopBit.set(stopBitList[0])//默认停止位 1
 
-        mStates.siteType.set(siteTypeList[0])//站点类型 默认无
-        mStates.calculate.set(calculateList[0])//计算方式 默认不计算
+        mStates.siteType.set(defaultSiteType)//站点类型
+        mStates.calculate.set(defaultCalculate)//计算方式
         mStates.sensitivityK.set("1")//灵敏度K
         mStates.temperatureCorrectionCoefficientB.set("0")//温度修正系数 b
         mStates.powValue.set("1")//指数
@@ -123,75 +129,75 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
         mStates.initialMeasureValue.set("0")//初始测量值
         mStates.initialValue.set("0")//初始测量值
 
-        resetDefaultModelField1()
+        resetDefaultModelField()
     }
 
-    private fun resetDefaultModelField1() {
+    private fun resetDefaultModelField() {
         //采集项名称
         mStates.modelFieldName.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].fieldName
+                mStates.defaultSensorModel.modelFieldList[modelFieldIndex].fieldName
             else "采集项1"
         )
         //采集项单位
         mStates.modelFieldUnit.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].engUnit
+                mStates.defaultSensorModel.modelFieldList[modelFieldIndex].engUnit
             else ""
         )
         //水文标识
         mStates.hydrologicalIdentification.set(
             if (checkModelFieldList()) {
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].hydrologicalIdentification
+                mStates.defaultSensorModel.modelFieldList[modelFieldIndex].hydrologicalIdentification
             } else ""
         )
         //采集指令
         mStates.collectionInstructions.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].collectionInstructions
+                mStates.defaultSensorModel.modelFieldList[modelFieldIndex].collectionInstructions
             else ""
         )
         //倍率
         mStates.ratio.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].ratio
+                mStates.defaultSensorModel.modelFieldList[modelFieldIndex].ratio
             else "1"
         )
         //数据类型
         mStates.dataFormat.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].dataFormat
+                mStates.defaultSensorModel.modelFieldList[modelFieldIndex].dataFormat
             else dataFormatList[0]
         )
 
         //触发值
         mStates.triggerValue.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].triggerValue
+                mStates.defaultSensorModel.modelFieldList[modelFieldIndex].triggerValue
             else "0"
         )
         //上限值
         mStates.upperLimit.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].upperLimit
+                mStates.defaultSensorModel.modelFieldList[modelFieldIndex].upperLimit
             else "100"
         )
         //下限值
         mStates.lowerLimit.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].lowerLimit
+                mStates.defaultSensorModel.modelFieldList[modelFieldIndex].lowerLimit
             else "0"
         )
         //默认修正值 0
         mStates.correctValue.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].correctValue
+                mStates.defaultSensorModel.modelFieldList[modelFieldIndex].correctValue
             else "0"
         )
         //阈值次数 3
         mStates.ngateval.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].ngateval
+                mStates.defaultSensorModel.modelFieldList[modelFieldIndex].ngateval
             else "3"
         )
     }
@@ -560,7 +566,7 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
 
 
     private fun checkModelFieldList() =
-        mStates.curSensorModel.modelFieldList.isNotEmpty() && modelFieldIndex < mStates.curSensorModel.modelFieldList.size
+        mStates.defaultSensorModel.modelFieldList.isNotEmpty() && modelFieldIndex < mStates.defaultSensorModel.modelFieldList.size
 
     override fun onResume() {
         super.onResume()

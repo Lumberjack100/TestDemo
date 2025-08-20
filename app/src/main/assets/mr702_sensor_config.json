@@ -2,16 +2,21 @@
   {
     "port": "RS485-1",
     "sensorID": 0,
+    "productName": "MR702传感器",
     "sensorName": "自定义传感器",
-    "modelToken": "",
+    "modelToken": null,
     "modelName": "",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
-        "fieldName": "",
-        "engUnit": "",
-        "hydrologicalIdentification": "",
-        "collectionInstructions": "",
-        "ratio": "",
+        "fieldName": "0",
+        "engUnit": "0",
+        "hydrologicalIdentification": "00",
+        "collectionInstructions": "00",
+        "ratio": "1",
         "dataFormat": "浮点型ABCD",
         "dataKey": "14",
         "triggerValue": "10000",
@@ -24,9 +29,9 @@
     ],
     "id": 20,
     "createUserID": 1,
-    "createTime": "2025-08-17 22:35:42",
+    "createTime": "2025-08-20 09:36:04",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -35,6 +40,10 @@
     "sensorName": "MD-VWP数字渗压计",
     "modelToken": "214",
     "modelName": "水位",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "温度",
@@ -69,9 +78,9 @@
     ],
     "id": 21,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -80,6 +89,10 @@
     "sensorName": "单通道渗压采集器",
     "modelToken": "10066",
     "modelName": "振弦",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "模数",
@@ -114,9 +127,9 @@
     ],
     "id": 22,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -125,6 +138,10 @@
     "sensorName": "单通道渗流采集器",
     "modelToken": "228",
     "modelName": "量水堰",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "堰上水头",
@@ -159,9 +176,9 @@
     ],
     "id": 23,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -170,6 +187,10 @@
     "sensorName": "MD-SSY数字渗压计",
     "modelToken": "227",
     "modelName": "水位高程",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "水位高程",
@@ -189,9 +210,9 @@
     ],
     "id": 24,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -200,6 +221,10 @@
     "sensorName": "米度雷达水位计-1",
     "modelToken": "227",
     "modelName": "水位高程",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "水位高程",
@@ -219,9 +244,9 @@
     ],
     "id": 25,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -230,6 +255,10 @@
     "sensorName": "米度雷达水位计-2",
     "modelToken": "227",
     "modelName": "水位高程",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "水位高程",
@@ -249,9 +278,9 @@
     ],
     "id": 26,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -260,6 +289,10 @@
     "sensorName": "海川超声波流量计",
     "modelToken": "220",
     "modelName": "流量",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "瞬时流量",
@@ -279,9 +312,9 @@
     ],
     "id": 27,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -290,6 +323,10 @@
     "sensorName": "亿立能气泡水位计",
     "modelToken": "227",
     "modelName": "水位高程",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "水位高程",
@@ -309,9 +346,9 @@
     ],
     "id": 28,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -320,6 +357,10 @@
     "sensorName": "亿立能雷达水位计",
     "modelToken": "227",
     "modelName": "水位高程",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "水位高程",
@@ -339,9 +380,9 @@
     ],
     "id": 29,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -350,6 +391,10 @@
     "sensorName": "麦克投入式水位计",
     "modelToken": "227",
     "modelName": "水位高程",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "水位高程",
@@ -369,9 +414,9 @@
     ],
     "id": 30,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -380,6 +425,10 @@
     "sensorName": "中科水研雷达-水位",
     "modelToken": "227",
     "modelName": "水位高程",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "水位高程",
@@ -399,9 +448,9 @@
     ],
     "id": 31,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -410,6 +459,10 @@
     "sensorName": "航征雷达-水位",
     "modelToken": "227",
     "modelName": "水位高程",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "水位高程",
@@ -429,9 +482,9 @@
     ],
     "id": 32,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -440,6 +493,10 @@
     "sensorName": "航征雷达-瞬时流量",
     "modelToken": "220",
     "modelName": "瞬时流量",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "瞬时流量",
@@ -459,9 +516,9 @@
     ],
     "id": 33,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -470,6 +527,10 @@
     "sensorName": "葛南静力水准",
     "modelToken": "221",
     "modelName": "沉降仪",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "沉降变化量",
@@ -489,9 +550,9 @@
     ],
     "id": 34,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -500,6 +561,10 @@
     "sensorName": "苏州蛙视水质-水温",
     "modelToken": "230",
     "modelName": "水温",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "水温",
@@ -519,9 +584,9 @@
     ],
     "id": 35,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -530,6 +595,10 @@
     "sensorName": "苏州蛙视水质-溶解氧",
     "modelToken": "231",
     "modelName": "水质溶解氧",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "溶解氧",
@@ -549,9 +618,9 @@
     ],
     "id": 36,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -560,6 +629,10 @@
     "sensorName": "苏州蛙视水质-浊度",
     "modelToken": "10003",
     "modelName": "浊度",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "浊度",
@@ -579,9 +652,9 @@
     ],
     "id": 37,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -590,6 +663,10 @@
     "sensorName": "苏州蛙视水质-电导率",
     "modelToken": "232",
     "modelName": "水质电导率",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "电导率",
@@ -609,9 +686,9 @@
     ],
     "id": 38,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -620,6 +697,10 @@
     "sensorName": "苏州蛙视水质-PH",
     "modelToken": "10006",
     "modelName": "PH值",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "PH值",
@@ -639,9 +720,9 @@
     ],
     "id": 39,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -650,6 +731,10 @@
     "sensorName": "仁科多普勒流速仪-流速",
     "modelToken": "217",
     "modelName": "流速仪",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "瞬时流速",
@@ -669,9 +754,9 @@
     ],
     "id": 40,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -680,6 +765,10 @@
     "sensorName": "仁科多普勒流速仪-秒流量",
     "modelToken": "234",
     "modelName": "秒流量",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "秒流量",
@@ -699,9 +788,9 @@
     ],
     "id": 41,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -710,6 +799,10 @@
     "sensorName": "仁科多普勒流速仪-水温",
     "modelToken": "230",
     "modelName": "水温",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "水温",
@@ -729,9 +822,9 @@
     ],
     "id": 42,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -740,6 +833,10 @@
     "sensorName": "仁科多普勒流速仪-水位",
     "modelToken": "227",
     "modelName": "水位高程",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "水位高程",
@@ -759,9 +856,9 @@
     ],
     "id": 43,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -770,6 +867,10 @@
     "sensorName": "仁科多普勒流速仪-正累积流量",
     "modelToken": "233",
     "modelName": "累计流量",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "正累计流量",
@@ -789,9 +890,9 @@
     ],
     "id": 44,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -800,6 +901,10 @@
     "sensorName": "耘农微气象仪-气温",
     "modelToken": "218",
     "modelName": "气温",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "气温",
@@ -819,9 +924,9 @@
     ],
     "id": 45,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -830,6 +935,10 @@
     "sensorName": "耘农微气象仪-湿度",
     "modelToken": "10004",
     "modelName": "湿度",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "湿度",
@@ -849,9 +958,9 @@
     ],
     "id": 46,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -860,6 +969,10 @@
     "sensorName": "耘农微气象仪-气压",
     "modelToken": "6004",
     "modelName": "大气压强",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "气压",
@@ -879,9 +992,9 @@
     ],
     "id": 47,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -890,6 +1003,10 @@
     "sensorName": "耘农微气象仪-风速",
     "modelToken": "6005",
     "modelName": "风速",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "风速",
@@ -909,9 +1026,9 @@
     ],
     "id": 48,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -920,6 +1037,10 @@
     "sensorName": "耘农微气象仪-风向",
     "modelToken": "6006",
     "modelName": "风向",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "风向",
@@ -939,9 +1060,9 @@
     ],
     "id": 49,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -950,6 +1071,10 @@
     "sensorName": "耘农微气象仪-噪声",
     "modelToken": "6001",
     "modelName": "噪声",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "噪声",
@@ -969,9 +1094,9 @@
     ],
     "id": 50,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -980,6 +1105,10 @@
     "sensorName": "耘农微气象仪-PM2.5",
     "modelToken": "6002",
     "modelName": "PM2.5浓度",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "PM2.5",
@@ -999,9 +1128,9 @@
     ],
     "id": 51,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -1010,6 +1139,10 @@
     "sensorName": "耘农微气象仪-PM10",
     "modelToken": "6003",
     "modelName": "PM10浓度",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "PM10",
@@ -1029,9 +1162,9 @@
     ],
     "id": 52,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-2",
@@ -1040,12 +1173,16 @@
     "sensorName": "振弦式传感器",
     "modelToken": "10066",
     "modelName": "振弦式传感器",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [],
     "id": 53,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-2",
@@ -1054,12 +1191,16 @@
     "sensorName": "测斜仪",
     "modelToken": "213",
     "modelName": "测斜仪",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [],
     "id": 54,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-2",
@@ -1068,12 +1209,16 @@
     "sensorName": "量水堰计",
     "modelToken": "60006",
     "modelName": "量水堰计",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [],
     "id": 55,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-2",
@@ -1082,12 +1227,16 @@
     "sensorName": "水位计",
     "modelToken": "214",
     "modelName": "水位计",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [],
     "id": 56,
     "createUserID": 1,
-    "createTime": "2025-07-28 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -1096,6 +1245,10 @@
     "sensorName": "华和静力水准仪-沉降",
     "modelToken": "221",
     "modelName": "沉降仪",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "沉降变化量",
@@ -1115,9 +1268,9 @@
     ],
     "id": 872,
     "createUserID": 1,
-    "createTime": "2025-08-18 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -1126,6 +1279,10 @@
     "sensorName": "台州量子裂缝计-长度",
     "modelToken": "203",
     "modelName": "裂缝计",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "裂缝宽度",
@@ -1145,9 +1302,9 @@
     ],
     "id": 873,
     "createUserID": 1,
-    "createTime": "2025-08-18 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -1156,6 +1313,10 @@
     "sensorName": "科皓气泡水位计-水位",
     "modelToken": "227",
     "modelName": "水位高程",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "水位高程",
@@ -1175,9 +1336,9 @@
     ],
     "id": 874,
     "createUserID": 1,
-    "createTime": "2025-08-18 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   },
   {
     "port": "RS485-1",
@@ -1186,6 +1347,10 @@
     "sensorName": "博林裂缝计-长度",
     "modelToken": "203",
     "modelName": "裂缝计",
+    "baud": 9600,
+    "collAddr": 1,
+    "calcType": "不计算",
+    "stationType": "无",
     "modelFieldList": [
       {
         "fieldName": "裂缝宽度",
@@ -1205,8 +1370,8 @@
     ],
     "id": 875,
     "createUserID": 1,
-    "createTime": "2025-08-18 14:48:44",
+    "createTime": "2025-08-20 09:45:41",
     "updateUserID": 1,
-    "updateTime": "2025-08-19 16:36:38"
+    "updateTime": "2025-08-20 10:05:44"
   }
 ]

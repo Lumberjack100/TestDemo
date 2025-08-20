@@ -236,8 +236,17 @@ class ProductConfigViewModel(
     fun loadMR702SensorConfig() {
         viewModelScope.launch(Dispatchers.Default) {
             try {
+                // 先从服务器中获取传感器配置列表
                 val remoteSensorConfigList: List<SensorModel> = queryRemoteMR702SensorConfigList()
+                
                 if (remoteSensorConfigList.isEmpty()) {
+                    // 如果服务器中没有传感器配置列表，则从本地缓存中获取传感器配置列表获取
+                    val sensorConfigList: List<SensorModel> =
+                        MmkvCacheUtil.getMR702SensorConfigInfo()
+                    if (sensorConfigList.isNotEmpty())
+                        return@launch
+
+                    // 如果本地缓存中没有传感器配置列表，则从本地资源文件中获取传感器配置列表
                     val localSensorConfigInfo =
                         ResourceUtils.readAssets2String("mr702_sensor_config.json")
                     val localSensorConfigList =
