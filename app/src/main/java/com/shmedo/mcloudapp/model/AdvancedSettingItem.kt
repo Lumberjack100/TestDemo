@@ -40,6 +40,9 @@ data class AdvancedSettingItem(
 
         //更换设备
         data object REPLACE_DEVICE : Type()
+
+        //一键配置
+        data object QUICK_CONFIG : Type()
     }
 }
 

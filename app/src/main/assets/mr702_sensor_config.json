@@ -1,7 +1,7 @@
 [
   {
-    "port": "485-1",
-    "sensorID": "0",
+    "port": "RS485-1",
+    "sensorID": 0,
     "sensorName": "自定义传感器",
     "modelToken": "",
     "modelName": "",
@@ -13,17 +13,25 @@
         "collectionInstructions": "",
         "ratio": "",
         "dataFormat": "浮点型ABCD",
+        "dataKey": "14",
         "triggerValue": "10000",
         "upperLimit": "10000",
         "lowerLimit": "0",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 20,
+    "createUserID": 1,
+    "createTime": "2025-08-17 22:35:42",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "1",
+    "port": "RS485-1",
+    "sensorID": 1,
+    "productName": "MR702传感器",
     "sensorName": "MD-VWP数字渗压计",
     "modelToken": "214",
     "modelName": "水位",
@@ -31,15 +39,17 @@
       {
         "fieldName": "温度",
         "engUnit": "℃",
-        "hydrologicalIdentification": "3B",
+        "hydrologicalIdentification": "03",
         "collectionInstructions": "03000C0002",
         "ratio": "1",
         "dataFormat": "浮点型ABCD",
+        "dataKey": "14",
         "triggerValue": "0",
         "upperLimit": "10000",
         "lowerLimit": "-10000",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       },
       {
         "fieldName": "水深",
@@ -48,17 +58,25 @@
         "collectionInstructions": "03000A0002",
         "ratio": "0.001",
         "dataFormat": "浮点型ABCD",
+        "dataKey": "14",
         "triggerValue": "0",
         "upperLimit": "10000",
         "lowerLimit": "0",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 21,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "2",
+    "port": "RS485-1",
+    "sensorID": 2,
+    "productName": "MR702传感器",
     "sensorName": "单通道渗压采集器",
     "modelToken": "10066",
     "modelName": "振弦",
@@ -66,34 +84,44 @@
       {
         "fieldName": "模数",
         "engUnit": "F",
-        "hydrologicalIdentification": "3B",
+        "hydrologicalIdentification": "FB",
         "collectionInstructions": "03000A0002",
         "ratio": "1",
         "dataFormat": "浮点型ABCD",
+        "dataKey": "14",
         "triggerValue": "0",
         "upperLimit": "10000",
         "lowerLimit": "3000",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       },
       {
         "fieldName": "温度",
         "engUnit": "℃",
-        "hydrologicalIdentification": "3B",
+        "hydrologicalIdentification": "FB",
         "collectionInstructions": "03000C0002",
         "ratio": "1",
         "dataFormat": "浮点型ABCD",
+        "dataKey": "14",
         "triggerValue": "0",
         "upperLimit": "50",
         "lowerLimit": "-300",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 22,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "3",
+    "port": "RS485-1",
+    "sensorID": 3,
+    "productName": "MR702传感器",
     "sensorName": "单通道渗流采集器",
     "modelToken": "228",
     "modelName": "量水堰",
@@ -101,101 +129,135 @@
       {
         "fieldName": "堰上水头",
         "engUnit": "m",
-        "hydrologicalIdentification": "3B",
+        "hydrologicalIdentification": "FA",
         "collectionInstructions": "03000A0002",
-        "ratio": "1",
+        "ratio": "0.001",
         "dataFormat": "浮点型ABCD",
+        "dataKey": "14",
         "triggerValue": "0",
         "upperLimit": "10000",
         "lowerLimit": "3000",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       },
       {
         "fieldName": "温度",
         "engUnit": "℃",
-        "hydrologicalIdentification": "3B",
+        "hydrologicalIdentification": "00",
         "collectionInstructions": "03000C0002",
         "ratio": "1",
         "dataFormat": "浮点型ABCD",
+        "dataKey": "14",
         "triggerValue": "0",
         "upperLimit": "50",
         "lowerLimit": "-300",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 23,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "4",
+    "port": "RS485-1",
+    "sensorID": 4,
+    "productName": "MR702传感器",
     "sensorName": "MD-SSY数字渗压计",
     "modelToken": "227",
     "modelName": "水位高程",
     "modelFieldList": [
       {
-        "fieldName": "水深",
+        "fieldName": "水位高程",
         "engUnit": "m",
         "hydrologicalIdentification": "3B",
         "collectionInstructions": "03000A0002",
         "ratio": "0.001",
         "dataFormat": "浮点型ABCD",
+        "dataKey": "14",
         "triggerValue": "70",
         "upperLimit": "70",
         "lowerLimit": "-1",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 24,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "5",
-    "sensorName": "MD-LD-1雷达水位计",
+    "port": "RS485-1",
+    "sensorID": 5,
+    "productName": "MR702传感器",
+    "sensorName": "米度雷达水位计-1",
     "modelToken": "227",
     "modelName": "水位高程",
     "modelFieldList": [
       {
-        "fieldName": "空高",
+        "fieldName": "水位高程",
         "engUnit": "m",
-        "hydrologicalIdentification": "3B",
+        "hydrologicalIdentification": "39",
         "collectionInstructions": "0300010002",
         "ratio": "0.01",
         "dataFormat": "无符号四字节ABCD",
+        "dataKey": "3",
         "triggerValue": "35",
         "upperLimit": "35",
         "lowerLimit": "0.2",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 25,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "6",
-    "sensorName": "MD-LD-2雷达水位计",
+    "port": "RS485-1",
+    "sensorID": 6,
+    "productName": "MR702传感器",
+    "sensorName": "米度雷达水位计-2",
     "modelToken": "227",
     "modelName": "水位高程",
     "modelFieldList": [
       {
-        "fieldName": "空高",
+        "fieldName": "水位高程",
         "engUnit": "m",
         "hydrologicalIdentification": "3B",
         "collectionInstructions": "0300010002",
         "ratio": "0.001",
         "dataFormat": "浮点型ABCD",
+        "dataKey": "14",
         "triggerValue": "35",
         "upperLimit": "35",
         "lowerLimit": "0.2",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 26,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "7",
-    "sensorName": "HC-CBS超声波流量计",
+    "port": "RS485-1",
+    "sensorID": 7,
+    "productName": "MR702传感器",
+    "sensorName": "海川超声波流量计",
     "modelToken": "220",
     "modelName": "流量",
     "modelFieldList": [
@@ -206,128 +268,176 @@
         "collectionInstructions": "0300000002",
         "ratio": "0.00028",
         "dataFormat": "浮点型CDAB",
+        "dataKey": "16",
         "triggerValue": "10000",
         "upperLimit": "10000",
         "lowerLimit": "0",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 27,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "8",
+    "port": "RS485-1",
+    "sensorID": 8,
+    "productName": "MR702传感器",
     "sensorName": "亿立能气泡水位计",
     "modelToken": "227",
     "modelName": "水位高程",
     "modelFieldList": [
       {
-        "fieldName": "水深",
+        "fieldName": "水位高程",
         "engUnit": "m",
         "hydrologicalIdentification": "3B",
         "collectionInstructions": "0303F80002",
         "ratio": "0.001",
         "dataFormat": "无符号四字节ABCD",
+        "dataKey": "3",
         "triggerValue": "40",
         "upperLimit": "40",
         "lowerLimit": "0",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 28,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "9",
+    "port": "RS485-1",
+    "sensorID": 9,
+    "productName": "MR702传感器",
     "sensorName": "亿立能雷达水位计",
     "modelToken": "227",
     "modelName": "水位高程",
     "modelFieldList": [
       {
-        "fieldName": "空高",
+        "fieldName": "水位高程",
         "engUnit": "m",
         "hydrologicalIdentification": "3B",
         "collectionInstructions": "0300010001",
         "ratio": "0.001",
         "dataFormat": "无符号双字节AB",
+        "dataKey": "1",
         "triggerValue": "30",
         "upperLimit": "30",
         "lowerLimit": "0",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 29,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "10",
-    "sensorName": "MPM4700水位计",
+    "port": "RS485-1",
+    "sensorID": 10,
+    "productName": "MR702传感器",
+    "sensorName": "麦克投入式水位计",
     "modelToken": "227",
     "modelName": "水位高程",
     "modelFieldList": [
       {
-        "fieldName": "水深",
+        "fieldName": "水位高程",
         "engUnit": "m",
         "hydrologicalIdentification": "3B",
         "collectionInstructions": "0300240002",
         "ratio": "1",
         "dataFormat": "浮点型CDAB",
+        "dataKey": "16",
         "triggerValue": "40",
         "upperLimit": "40",
         "lowerLimit": "-1",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 30,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "11",
-    "sensorName": "MRL雷达水位计",
+    "port": "RS485-1",
+    "sensorID": 11,
+    "productName": "MR702传感器",
+    "sensorName": "中科水研雷达-水位",
     "modelToken": "227",
     "modelName": "水位高程",
     "modelFieldList": [
       {
-        "fieldName": "空高",
+        "fieldName": "水位高程",
         "engUnit": "m",
         "hydrologicalIdentification": "3B",
         "collectionInstructions": "0300020002",
         "ratio": "0.001",
         "dataFormat": "无符号四字节ABCD",
+        "dataKey": "3",
         "triggerValue": "30",
         "upperLimit": "30",
         "lowerLimit": "0.5",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 31,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "12",
-    "sensorName": "HZ-RLS雷达水位计",
+    "port": "RS485-1",
+    "sensorID": 12,
+    "productName": "MR702传感器",
+    "sensorName": "航征雷达-水位",
     "modelToken": "227",
     "modelName": "水位高程",
     "modelFieldList": [
       {
-        "fieldName": "空高",
+        "fieldName": "水位高程",
         "engUnit": "m",
         "hydrologicalIdentification": "3B",
         "collectionInstructions": "0300060001",
         "ratio": "0.001",
         "dataFormat": "无符号双字节AB",
+        "dataKey": "1",
         "triggerValue": "80",
         "upperLimit": "80",
         "lowerLimit": "0.3",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 32,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "13",
-    "sensorName": "雷达流量计",
+    "port": "RS485-1",
+    "sensorID": 13,
+    "productName": "MR702传感器",
+    "sensorName": "航征雷达-瞬时流量",
     "modelToken": "220",
     "modelName": "瞬时流量",
     "modelFieldList": [
@@ -338,18 +448,26 @@
         "collectionInstructions": "0300010002",
         "ratio": "0.0001",
         "dataFormat": "有符号四字节ABCD",
+        "dataKey": "10",
         "triggerValue": "1000000",
         "upperLimit": "1000000",
         "lowerLimit": "0",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 33,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "14",
-    "sensorName": "静力水准",
+    "port": "RS485-1",
+    "sensorID": 14,
+    "productName": "MR702传感器",
+    "sensorName": "葛南静力水准",
     "modelToken": "221",
     "modelName": "沉降仪",
     "modelFieldList": [
@@ -360,18 +478,26 @@
         "collectionInstructions": "0300040002",
         "ratio": "1",
         "dataFormat": "AB整数,CD小数",
+        "dataKey": "21",
         "triggerValue": "300",
         "upperLimit": "300",
         "lowerLimit": "0",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 34,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "15",
-    "sensorName": "水温传感器",
+    "port": "RS485-1",
+    "sensorID": 15,
+    "productName": "MR702传感器",
+    "sensorName": "苏州蛙视水质-水温",
     "modelToken": "230",
     "modelName": "水温",
     "modelFieldList": [
@@ -382,18 +508,26 @@
         "collectionInstructions": "0300030002",
         "ratio": "1",
         "dataFormat": "浮点型DCBA",
+        "dataKey": "17",
         "triggerValue": "50",
         "upperLimit": "50",
-        "lowerLimit": "0",
+        "lowerLimit": "-50",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 35,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "16",
-    "sensorName": "溶解氧传感器",
+    "port": "RS485-1",
+    "sensorID": 16,
+    "productName": "MR702传感器",
+    "sensorName": "苏州蛙视水质-溶解氧",
     "modelToken": "231",
     "modelName": "水质溶解氧",
     "modelFieldList": [
@@ -404,18 +538,26 @@
         "collectionInstructions": "0300320002",
         "ratio": "1",
         "dataFormat": "浮点型DCBA",
+        "dataKey": "17",
         "triggerValue": "20",
         "upperLimit": "20",
         "lowerLimit": "0",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 36,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "17",
-    "sensorName": "浊度传感器",
+    "port": "RS485-1",
+    "sensorID": 17,
+    "productName": "MR702传感器",
+    "sensorName": "苏州蛙视水质-浊度",
     "modelToken": "10003",
     "modelName": "浊度",
     "modelFieldList": [
@@ -426,18 +568,26 @@
         "collectionInstructions": "0300360002",
         "ratio": "1",
         "dataFormat": "浮点型DCBA",
+        "dataKey": "17",
         "triggerValue": "300",
         "upperLimit": "300",
         "lowerLimit": "0",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 37,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "18",
-    "sensorName": "电导率传感器",
+    "port": "RS485-1",
+    "sensorID": 18,
+    "productName": "MR702传感器",
+    "sensorName": "苏州蛙视水质-电导率",
     "modelToken": "232",
     "modelName": "水质电导率",
     "modelFieldList": [
@@ -448,18 +598,26 @@
         "collectionInstructions": "0300380002",
         "ratio": "1000",
         "dataFormat": "浮点型DCBA",
+        "dataKey": "17",
         "triggerValue": "100000",
         "upperLimit": "100000",
         "lowerLimit": "0",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 38,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-1",
-    "sensorID": "19",
-    "sensorName": "PH值传感器",
+    "port": "RS485-1",
+    "sensorID": 19,
+    "productName": "MR702传感器",
+    "sensorName": "苏州蛙视水质-PH",
     "modelToken": "10006",
     "modelName": "PH值",
     "modelFieldList": [
@@ -470,44 +628,585 @@
         "collectionInstructions": "03004A0002",
         "ratio": "1",
         "dataFormat": "浮点型DCBA",
+        "dataKey": "17",
         "triggerValue": "14",
         "upperLimit": "14",
         "lowerLimit": "0",
         "correctValue": "0",
-        "ngateval": "3"
+        "ngateval": "3",
+        "isenabled": true
       }
-    ]
+    ],
+    "id": 39,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-2",
+    "port": "RS485-1",
+    "sensorID": 20,
+    "productName": "MR702传感器",
+    "sensorName": "仁科多普勒流速仪-流速",
+    "modelToken": "217",
+    "modelName": "流速仪",
+    "modelFieldList": [
+      {
+        "fieldName": "瞬时流速",
+        "engUnit": "m/s",
+        "hydrologicalIdentification": "37",
+        "collectionInstructions": "0300020002",
+        "ratio": "1",
+        "dataFormat": "浮点型ABCD",
+        "dataKey": "14",
+        "triggerValue": "1000000",
+        "upperLimit": "1000000",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 40,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 21,
+    "productName": "MR702传感器",
+    "sensorName": "仁科多普勒流速仪-秒流量",
+    "modelToken": "234",
+    "modelName": "秒流量",
+    "modelFieldList": [
+      {
+        "fieldName": "秒流量",
+        "engUnit": "m3",
+        "hydrologicalIdentification": "60",
+        "collectionInstructions": "0300060002",
+        "ratio": "1",
+        "dataFormat": "浮点型ABCD",
+        "dataKey": "14",
+        "triggerValue": "1000000",
+        "upperLimit": "1000000",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 41,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 22,
+    "productName": "MR702传感器",
+    "sensorName": "仁科多普勒流速仪-水温",
+    "modelToken": "230",
+    "modelName": "水温",
+    "modelFieldList": [
+      {
+        "fieldName": "水温",
+        "engUnit": "℃",
+        "hydrologicalIdentification": "03",
+        "collectionInstructions": "0300040002",
+        "ratio": "1",
+        "dataFormat": "浮点型ABCD",
+        "dataKey": "14",
+        "triggerValue": "150",
+        "upperLimit": "150",
+        "lowerLimit": "-100",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 42,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 23,
+    "productName": "MR702传感器",
+    "sensorName": "仁科多普勒流速仪-水位",
+    "modelToken": "227",
+    "modelName": "水位高程",
+    "modelFieldList": [
+      {
+        "fieldName": "水位高程",
+        "engUnit": "m",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "0300000002",
+        "ratio": "1",
+        "dataFormat": "浮点型ABCD",
+        "dataKey": "14",
+        "triggerValue": "1000000",
+        "upperLimit": "1000000",
+        "lowerLimit": "-5",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 43,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 24,
+    "productName": "MR702传感器",
+    "sensorName": "仁科多普勒流速仪-正累积流量",
+    "modelToken": "233",
+    "modelName": "累计流量",
+    "modelFieldList": [
+      {
+        "fieldName": "正累计流量",
+        "engUnit": "m3",
+        "hydrologicalIdentification": "30",
+        "collectionInstructions": "0300080002",
+        "ratio": "1",
+        "dataFormat": "浮点型ABCD",
+        "dataKey": "14",
+        "triggerValue": "1000000",
+        "upperLimit": "1000000",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 44,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 25,
+    "productName": "MR702传感器",
+    "sensorName": "耘农微气象仪-气温",
+    "modelToken": "218",
+    "modelName": "气温",
+    "modelFieldList": [
+      {
+        "fieldName": "气温",
+        "engUnit": "℃",
+        "hydrologicalIdentification": "02",
+        "collectionInstructions": "0300090001",
+        "ratio": "0.01",
+        "dataFormat": "无符号双字节AB",
+        "dataKey": "1",
+        "triggerValue": "90",
+        "upperLimit": "90",
+        "lowerLimit": "-45",
+        "correctValue": "-40",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 45,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 26,
+    "productName": "MR702传感器",
+    "sensorName": "耘农微气象仪-湿度",
+    "modelToken": "10004",
+    "modelName": "湿度",
+    "modelFieldList": [
+      {
+        "fieldName": "湿度",
+        "engUnit": "%",
+        "hydrologicalIdentification": "18",
+        "collectionInstructions": "03000A0001",
+        "ratio": "0.01",
+        "dataFormat": "无符号双字节AB",
+        "dataKey": "1",
+        "triggerValue": "100",
+        "upperLimit": "100",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 46,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 27,
+    "productName": "MR702传感器",
+    "sensorName": "耘农微气象仪-气压",
+    "modelToken": "6004",
+    "modelName": "大气压强",
+    "modelFieldList": [
+      {
+        "fieldName": "气压",
+        "engUnit": "kPa",
+        "hydrologicalIdentification": "08",
+        "collectionInstructions": "03000B0001",
+        "ratio": "0.01",
+        "dataFormat": "无符号双字节AB",
+        "dataKey": "1",
+        "triggerValue": "110",
+        "upperLimit": "110",
+        "lowerLimit": "30",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 47,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 28,
+    "productName": "MR702传感器",
+    "sensorName": "耘农微气象仪-风速",
+    "modelToken": "6005",
+    "modelName": "风速",
+    "modelFieldList": [
+      {
+        "fieldName": "风速",
+        "engUnit": "m/s",
+        "hydrologicalIdentification": "35",
+        "collectionInstructions": "03000C0001",
+        "ratio": "0.01",
+        "dataFormat": "无符号双字节AB",
+        "dataKey": "1",
+        "triggerValue": "60",
+        "upperLimit": "60",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 48,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 29,
+    "productName": "MR702传感器",
+    "sensorName": "耘农微气象仪-风向",
+    "modelToken": "6006",
+    "modelName": "风向",
+    "modelFieldList": [
+      {
+        "fieldName": "风向",
+        "engUnit": "°",
+        "hydrologicalIdentification": "33",
+        "collectionInstructions": "03000D0001",
+        "ratio": "0.1",
+        "dataFormat": "无符号双字节AB",
+        "dataKey": "1",
+        "triggerValue": "360",
+        "upperLimit": "360",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 49,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 30,
+    "productName": "MR702传感器",
+    "sensorName": "耘农微气象仪-噪声",
+    "modelToken": "6001",
+    "modelName": "噪声",
+    "modelFieldList": [
+      {
+        "fieldName": "噪声",
+        "engUnit": "dB",
+        "hydrologicalIdentification": "76",
+        "collectionInstructions": "0300010001",
+        "ratio": "0.1",
+        "dataFormat": "无符号双字节AB",
+        "dataKey": "1",
+        "triggerValue": "130",
+        "upperLimit": "130",
+        "lowerLimit": "28",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 50,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 31,
+    "productName": "MR702传感器",
+    "sensorName": "耘农微气象仪-PM2.5",
+    "modelToken": "6002",
+    "modelName": "PM2.5浓度",
+    "modelFieldList": [
+      {
+        "fieldName": "PM2.5",
+        "engUnit": "ug/m3",
+        "hydrologicalIdentification": "77",
+        "collectionInstructions": "0300070001",
+        "ratio": "1",
+        "dataFormat": "无符号双字节AB",
+        "dataKey": "1",
+        "triggerValue": "1000",
+        "upperLimit": "1000",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 51,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 32,
+    "productName": "MR702传感器",
+    "sensorName": "耘农微气象仪-PM10",
+    "modelToken": "6003",
+    "modelName": "PM10浓度",
+    "modelFieldList": [
+      {
+        "fieldName": "PM10",
+        "engUnit": "ug/m3",
+        "hydrologicalIdentification": "78",
+        "collectionInstructions": "0300080001",
+        "ratio": "1",
+        "dataFormat": "无符号双字节AB",
+        "dataKey": "1",
+        "triggerValue": "1000",
+        "upperLimit": "1000",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 52,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-2",
+    "sensorID": 1,
+    "productName": "MR702传感器",
+    "sensorName": "振弦式传感器",
     "modelToken": "10066",
     "modelName": "振弦式传感器",
-    "sensorName": "振弦式传感器",
-    "sensorID": "1",
-    "modelFieldList": []
+    "modelFieldList": [],
+    "id": 53,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-2",
+    "port": "RS485-2",
+    "sensorID": 2,
+    "productName": "MR702传感器",
+    "sensorName": "测斜仪",
     "modelToken": "213",
     "modelName": "测斜仪",
-    "sensorName": "测斜仪",
-    "sensorID": "2",
-    "modelFieldList": []
+    "modelFieldList": [],
+    "id": 54,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-2",
+    "port": "RS485-2",
+    "sensorID": 3,
+    "productName": "MR702传感器",
+    "sensorName": "量水堰计",
     "modelToken": "60006",
     "modelName": "量水堰计",
-    "sensorName": "量水堰计",
-    "sensorID": "3",
-    "modelFieldList": []
+    "modelFieldList": [],
+    "id": 55,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   },
   {
-    "port": "485-2",
+    "port": "RS485-2",
+    "sensorID": 4,
+    "productName": "MR702传感器",
+    "sensorName": "水位计",
     "modelToken": "214",
     "modelName": "水位计",
-    "sensorName": "水位计",
-    "sensorID": "4",
-    "modelFieldList": []
+    "modelFieldList": [],
+    "id": 56,
+    "createUserID": 1,
+    "createTime": "2025-07-28 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 33,
+    "productName": "MR702传感器",
+    "sensorName": "华和静力水准仪-沉降",
+    "modelToken": "221",
+    "modelName": "沉降仪",
+    "modelFieldList": [
+      {
+        "fieldName": "沉降变化量",
+        "engUnit": "mm",
+        "hydrologicalIdentification": "FF01",
+        "collectionInstructions": "0400040002",
+        "ratio": "0.10204",
+        "dataFormat": "有符号双字节AB",
+        "dataKey": "2",
+        "triggerValue": "100000",
+        "upperLimit": "100000",
+        "lowerLimit": "-100000",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 872,
+    "createUserID": 1,
+    "createTime": "2025-08-18 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 34,
+    "productName": "MR702传感器",
+    "sensorName": "台州量子裂缝计-长度",
+    "modelToken": "203",
+    "modelName": "裂缝计",
+    "modelFieldList": [
+      {
+        "fieldName": "裂缝宽度",
+        "engUnit": "mm",
+        "hydrologicalIdentification": "00",
+        "collectionInstructions": "0300000002",
+        "ratio": "0.1",
+        "dataFormat": "无符号四字节ABCD",
+        "dataKey": "3",
+        "triggerValue": "200000",
+        "upperLimit": "200000",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 873,
+    "createUserID": 1,
+    "createTime": "2025-08-18 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 35,
+    "productName": "MR702传感器",
+    "sensorName": "科皓气泡水位计-水位",
+    "modelToken": "227",
+    "modelName": "水位高程",
+    "modelFieldList": [
+      {
+        "fieldName": "水位高程",
+        "engUnit": "m",
+        "hydrologicalIdentification": "39",
+        "collectionInstructions": "0300000002",
+        "ratio": "0.001",
+        "dataFormat": "无符号双字节AB",
+        "dataKey": "1",
+        "triggerValue": "100000",
+        "upperLimit": "100000",
+        "lowerLimit": "-1",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 874,
+    "createUserID": 1,
+    "createTime": "2025-08-18 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
+  },
+  {
+    "port": "RS485-1",
+    "sensorID": 36,
+    "productName": "MR702传感器",
+    "sensorName": "博林裂缝计-长度",
+    "modelToken": "203",
+    "modelName": "裂缝计",
+    "modelFieldList": [
+      {
+        "fieldName": "裂缝宽度",
+        "engUnit": "mm",
+        "hydrologicalIdentification": "00",
+        "collectionInstructions": "0300000001",
+        "ratio": "0.1",
+        "dataFormat": "无符号双字节AB",
+        "dataKey": "1",
+        "triggerValue": "20000",
+        "upperLimit": "20000",
+        "lowerLimit": "-1",
+        "correctValue": "0",
+        "ngateval": "3",
+        "isenabled": true
+      }
+    ],
+    "id": 875,
+    "createUserID": 1,
+    "createTime": "2025-08-18 14:48:44",
+    "updateUserID": 1,
+    "updateTime": "2025-08-19 16:36:38"
   }
 ]

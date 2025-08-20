@@ -1,13 +1,10 @@
 package com.shmedo.mcloudapp.utils.permission
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.provider.Settings
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
@@ -21,43 +18,9 @@ import com.shmedo.mcloudapp.extensions.showMessage
  */
 object PermissionHelper {
     const val REQUEST_CODE_SCAN = 0x1008
+    const val REQUEST_CODE_QUICK_CONFIG_SCAN = 0x1009  // 新增：快速配置专用扫码
     
-    val foregroundLocationPermissions: Array<String>
-        get() {
-            return arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-            )
-        }
 
-    val backgroundLocationPermissions: Array<String>
-        get() {
-            return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                arrayOf(
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                )
-            } else {
-                arrayOf(
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                )
-            }
-        }
-
-    /**
-     * Checks for required permissions.
-     *
-     * @return True if permissions are already granted, false otherwise.
-     */
-    fun isLocationPermissionGranted(): Boolean {
-        return (ContextCompat.checkSelfPermission(
-            Utils.getApp().applicationContext,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-                == PackageManager.PERMISSION_GRANTED)
-    }
 
     fun isLocationEnabled(): Boolean {
         val lm = Utils.getApp().applicationContext.getSystemService(LocationManager::class.java)

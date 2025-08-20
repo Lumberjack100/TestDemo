@@ -7,6 +7,7 @@ import com.shmedo.core.model.TransferState
 import com.shmedo.lib.ble.communicate.service.MedoBleRepository
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
 import com.shmedo.mcloudapp.utils.DataFormatUtils
@@ -382,7 +383,7 @@ class MonitoringDataTransferManager(
         }
 
         // 检查是否成功
-        if (response.contains("result=fail")) {
+        if (response.contains(IOTConstants.ERROR_FLAG)) {
             val reason = extractParameter(response, "reason") ?: "未知错误"
             return MonitoringDataResponse(
                 currentPageData = emptyList(),

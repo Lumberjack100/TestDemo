@@ -1,12 +1,9 @@
 package com.shmedo.mcloudapp.ui.page.userprofile
 
-import android.Manifest
-import android.os.Build
 import android.os.Bundle
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
-import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import com.hjq.permissions.permission.PermissionLists
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -17,22 +14,11 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.AppPermissionSettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.utils.permission.PermissionHelper
 
 class AppPermissionSettingFragment : BaseFragment() {
     private lateinit var binding: FragmentAppPermissionSettingBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: AppPermissionSettingViewModel by viewModels()
-
-    private val needBluetoothPermissions by lazy {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-            arrayOf(
-                Manifest.permission.BLUETOOTH_SCAN,
-                Manifest.permission.BLUETOOTH_CONNECT
-            )
-        else
-            arrayOf()
-    }
 
     override fun initViewModel() {
     }
@@ -72,36 +58,46 @@ class AppPermissionSettingFragment : BaseFragment() {
 
     private fun checkLocationPermission() {
         mStates.isAllowLocation.set(
-            XXPermissions.isGranted(
+            XXPermissions.isGrantedPermissions(
                 requireContext(),
-                PermissionHelper.foregroundLocationPermissions
+                listOf(
+                    PermissionLists.getAccessCoarseLocationPermission(),
+                    PermissionLists.getAccessFineLocationPermission()
+                )
             )
         )
     }
 
     private fun checkBluetoothPermission() {
         mStates.isAllowBluetooth.set(
-            XXPermissions.isGranted(
+            XXPermissions.isGrantedPermissions(
                 requireContext(),
-                needBluetoothPermissions
+                listOf(
+                    PermissionLists.getBluetoothScanPermission(),
+                    PermissionLists.getBluetoothConnectPermission()
+                )
             )
         )
     }
 
     private fun checkCameraPermission() {
         mStates.isAllowCamera.set(
-            XXPermissions.isGranted(
+            XXPermissions.isGrantedPermission(
                 requireContext(),
-                Permission.CAMERA
+                PermissionLists.getCameraPermission()
             )
         )
     }
 
     private fun checkStoragePermission() {
         mStates.isAllowStorage.set(
-            XXPermissions.isGranted(
+            XXPermissions.isGrantedPermissions(
                 requireContext(),
-                Permission.MANAGE_EXTERNAL_STORAGE
+                listOf(
+                    PermissionLists.getReadMediaImagesPermission(),
+                    PermissionLists.getReadMediaVisualUserSelectedPermission(),
+                    PermissionLists.getWriteExternalStoragePermission()
+                )
             )
         )
     }
@@ -110,28 +106,32 @@ class AppPermissionSettingFragment : BaseFragment() {
         fun onLocationPermissionClick() {
             XXPermissions.startPermissionActivity(
                 this@AppPermissionSettingFragment,
-                PermissionHelper.foregroundLocationPermissions
+                PermissionLists.getAccessCoarseLocationPermission(),
+                PermissionLists.getAccessFineLocationPermission()
             )
         }
 
         fun onBluetoothPermissionClick() {
             XXPermissions.startPermissionActivity(
                 this@AppPermissionSettingFragment,
-                needBluetoothPermissions
+                PermissionLists.getBluetoothScanPermission(),
+                PermissionLists.getBluetoothConnectPermission()
             )
         }
 
         fun onCameraPermissionClick() {
             XXPermissions.startPermissionActivity(
                 this@AppPermissionSettingFragment,
-                Permission.CAMERA
+                PermissionLists.getCameraPermission()
             )
         }
 
         fun onStoragePermissionClick() {
             XXPermissions.startPermissionActivity(
                 this@AppPermissionSettingFragment,
-                Permission.MANAGE_EXTERNAL_STORAGE
+                PermissionLists.getReadMediaImagesPermission(),
+                PermissionLists.getReadMediaVisualUserSelectedPermission(),
+                PermissionLists.getWriteExternalStoragePermission()
             )
         }
     }

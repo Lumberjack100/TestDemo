@@ -10,6 +10,10 @@
             type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.QuickConfigCommandParamViewModel" />
+
+        <variable
             name="click"
             type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
 
@@ -31,6 +35,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
+            invisible="@{!stateVM.emptyContent}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:clipToPadding="false"
@@ -42,5 +47,14 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar"
             tools:itemCount="4"
             tools:listitem="@layout/data_center_status_item" />
+
+        <include
+            layout="@layout/info_empty_quick_cmd_items"
+            app:click="@{click}"
+            visible="@{stateVM.emptyContent}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

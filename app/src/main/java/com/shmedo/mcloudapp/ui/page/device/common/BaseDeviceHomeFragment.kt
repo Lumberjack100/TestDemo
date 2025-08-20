@@ -16,6 +16,8 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.XXPermissions
+import com.hjq.permissions.permission.PermissionLists
+import com.hjq.permissions.permission.base.IPermission
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.utils.AppContants
@@ -559,27 +561,19 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
 
     private fun checkPermissionForLocation() {
         XXPermissions.with(this)
-            // 申请多个权限
-            .permission(PermissionHelper.foregroundLocationPermissions)
+            .permission(PermissionLists.getAccessCoarseLocationPermission())
+            .permission(PermissionLists.getAccessFineLocationPermission())
             // 设置权限请求拦截器（局部设置）
             .interceptor(PermissionInterceptor())
             .request(object : OnPermissionCallback {
-                override fun onGranted(
-                    grantedPermissions: MutableList<String>,
-                    allGranted: Boolean
-                ) {
-                    if (allGranted) {
-                        // 权限获取成功，开始自动同步位置
-                        startAutoLocationSync()
+                override fun onResult(
+                    grantedList: List<IPermission>, deniedList: List<IPermission>) {
+                    val allGranted = deniedList.isEmpty()
+                    if (!allGranted) {
+                        return
                     }
-                }
-
-                override fun onDenied(
-                    deniedPermissions: MutableList<String>,
-                    doNotAskAgain: Boolean
-                ) {
-                    // 权限被拒绝，不进行强制提示，静默处理
-                    Timber.d("位置权限被拒绝，跳过自动位置同步")
+                    // 权限获取成功，开始自动同步位置
+                    startAutoLocationSync()
                 }
             })
     }

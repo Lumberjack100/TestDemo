@@ -12,7 +12,6 @@ import com.shmedo.core.data.repository.ProductConfigRepositoryImp
 import com.shmedo.core.model.AdmeConfigInfo
 import com.shmedo.core.model.DeviceCmdOrderInfo
 import com.shmedo.core.model.DeviceDebugAddress
-import com.shmedo.core.model.MR702PortSensorConfig
 import com.shmedo.core.model.ProductGroupConfig
 import com.shmedo.core.model.SensorModel
 import com.shmedo.lib.network.response.DataResult
@@ -156,7 +155,6 @@ class ProductConfigViewModel(
     }
     // </editor-fold>
 
-    //<editor-fold desc="米易通远程配置接口">
     /**
      * 加载产品配置
      */
@@ -181,6 +179,54 @@ class ProductConfigViewModel(
                     data = msg
                 )
             }
+        }
+    }
+
+
+    //<editor-fold desc="孙建伟通用配置接口">
+    /**
+     * 获取远程设备登录信息
+     */
+    suspend fun getRemoteDeviceLogin(
+        deviceSn: String,
+        deviceKey: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): DeviceDebugAddress? {
+        val jsonObjectRequest = JSONObject()//接口请求参数
+        jsonObjectRequest.put("appKey", BuildConfig.AMS_APP_KEY)
+        jsonObjectRequest.put("appSecret", BuildConfig.AMS_APP_SECRET)
+        jsonObjectRequest.put("deviceSn", deviceSn)
+        jsonObjectRequest.put("deviceKey", deviceKey)
+        jsonObjectRequest.put("reCreate", false)
+
+        return productConfigRepositoryImp.getRemoteDebugDeviceServerInfo(jsonObjectRequest.toString()) { error: Throwable ->
+            handleError(
+                MutableResult<DataResult<Unit>>(),
+                error,
+                "${BaseURL.AMS_CONFIG_ADDRESS.baseUrl}/DeviceLogin"
+            )
+            onCatch?.invoke(error)
+        }
+    }
+
+    /**
+     * 获取设备快速配置参数指令模版
+     */
+    suspend fun getDeviceGetCmdOrdersBySn(
+        verificationSuffix: String,
+        param: Map<String, String>,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): DeviceCmdOrderInfo? {
+        return productConfigRepositoryImp.getDeviceGetCmdOrdersBySn(
+            verificationSuffix,
+            param
+        ) { error: Throwable ->
+            handleError(
+                MutableResult<DataResult<Unit>>(),
+                error,
+                "${BaseURL.AMS_CONFIG_ADDRESS.baseUrl}/GetCmdOrdersBySn"
+            )
+            onCatch?.invoke(error)
         }
     }
 
@@ -219,89 +265,22 @@ class ProductConfigViewModel(
     /**
      * 获取远程 MR702 传感器配置列表
      */
-    suspend fun queryRemoteMR702SensorConfigList(): List<SensorModel> {
-        val token: String = appConfigLogin() ?: return arrayListOf()
-        CommonMMKVOwner.deviceRemoteConfigToken = token
-
-        val remoteAppConfigInfo: MR702PortSensorConfig =
-            queryMR702SensorConfigList() ?: return arrayListOf()
-
-        return remoteAppConfigInfo.sensorModelList
-    }
-
-    suspend fun appConfigLogin(): String? {
+    suspend fun queryRemoteMR702SensorConfigList(onCatch: ((Throwable) -> Unit)? = null): List<SensorModel> {
         val jsonObject = JSONObject().apply {
-            put("access_type", "android")
-            put("account", "medo_gh")
-            put("password", "medo123456")
-        }
-
-        return productConfigRepositoryImp.appRemoteConfigLogin(jsonObject.toString()) { error: Throwable ->
-            handleError(
-                MutableResult<DataResult<Unit>>(),
-                error,
-                "${BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl}/SignIn"
-            )
-        }
-    }
-
-    private suspend fun queryMR702SensorConfigList(): MR702PortSensorConfig? {
-        val jsonObject = JSONObject().apply {
-            put("port", "")
+            put("productName", "")
+            put("portName", "")
             put("sensorName", "")
         }
-        return productConfigRepositoryImp.queryMR702SensorConfigList(jsonObject.toString()) { error: Throwable ->
-            handleError(
-                MutableResult<DataResult<Unit>>(),
-                error,
-                "${BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl}/QueryMR702SensorConfigList"
-            )
-        }
-    }
-    // </editor-fold>
+        val tempList =
+            productConfigRepositoryImp.queryMR702SensorConfigList(jsonObject.toString()) { error: Throwable ->
+                handleError(
+                    MutableResult<DataResult<Unit>>(),
+                    error,
+                    "${BaseURL.AMS_CONFIG_ADDRESS.baseUrl}/QueryDeviceTemplates"
+                )
+            }
 
-    //<editor-fold desc="孙建伟通用配置接口">
-    /**
-     * 获取远程设备登录信息
-     */
-    suspend fun getRemoteDeviceLogin(
-        deviceSn: String,
-        deviceKey: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): DeviceDebugAddress? {
-        val jsonObjectRequest = JSONObject()//接口请求参数
-        jsonObjectRequest.put("appKey", BuildConfig.AMS_APP_KEY)
-        jsonObjectRequest.put("appSecret", BuildConfig.AMS_APP_SECRET)
-        jsonObjectRequest.put("deviceSn", deviceSn)
-        jsonObjectRequest.put("deviceKey", deviceKey)
-        jsonObjectRequest.put("reCreate", false)
-
-        return productConfigRepositoryImp.getRemoteDebugDeviceServerInfo(jsonObjectRequest.toString()) { error: Throwable ->
-            handleError(
-                MutableResult<DataResult<Unit>>(),
-                error,
-                "${BaseURL.AMS_CONFIG_ADDRESS.baseUrl}/DeviceLogin"
-            )
-            onCatch?.invoke(error)
-        }
-    }
-
-    suspend fun getDeviceGetCmdOrdersBySn(
-        verificationSuffix: String,
-        param: Map<String, String>,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): DeviceCmdOrderInfo? {
-        return productConfigRepositoryImp.getDeviceGetCmdOrdersBySn(
-            verificationSuffix,
-            param
-        ) { error: Throwable ->
-            handleError(
-                MutableResult<DataResult<Unit>>(),
-                error,
-                "${BaseURL.AMS_CONFIG_ADDRESS.baseUrl}/GetCmdOrdersBySn"
-            )
-            onCatch?.invoke(error)
-        }
+        return tempList ?: return arrayListOf()
     }
     // </editor-fold>
 }

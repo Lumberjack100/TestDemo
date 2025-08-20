@@ -71,7 +71,21 @@ class MR702HomeFragment : BaseDeviceHomeFragment() {
         )
 
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-        groupList.add(DeviceStatusInfoGroupItem("设备配置"))
+        groupList.add(DeviceStatusInfoGroupItem("快捷配置"))
+        groupList.add(
+            ConfigModuleTree(
+                configModules = arrayListOf(
+                    CommonModule(
+                        name = "一键配置",
+                        resID = R.drawable.ic_module_cmd_debug_new,
+                        navId = R.id.action_global_to_quickConfigCommandParam
+                    ).toUnified(),
+                )
+            )
+        )
+
+        groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+        groupList.add(DeviceStatusInfoGroupItem("高级配置"))
         val configModuleTree = ConfigModuleTree(
             configModules = arrayListOf(
                 CommonModule(
@@ -115,12 +129,6 @@ class MR702HomeFragment : BaseDeviceHomeFragment() {
                     resID = R.drawable.ic_module_system_setting,
                     navId = R.id.action_global_to_advancedSettingFragment
                 ).toUnified(),
-
-//                CommonModule(
-//                    name = "一键配置",
-//                    resID = R.drawable.ic_module_equip_operation,
-//                    navId = R.id.action_global_to_quickConfigCommandParam
-//                ).toUnified(),
             )
         )
         if (communicateWay is BleConnect) {

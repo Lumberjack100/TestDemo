@@ -6,6 +6,7 @@ import com.kunminx.architecture.domain.message.Result
 import com.shmedo.core.data.repository.DeviceManageRepositoryImp
 import com.shmedo.core.data.repository.LoggerRepositoryImp
 import com.shmedo.core.model.CloudDeviceData
+import com.shmedo.core.model.DeviceBackupInfo
 import com.shmedo.core.model.DeviceDetailInfo
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.core.model.DeviceSensorBasicInfo
@@ -290,6 +291,23 @@ class DeviceRequestViewModel(
         return deviceManageRepositoryImp.getDeviceDetailInfo(jsonObjectRequest.toString(), onCatch)
     }
 
+    suspend fun queryDeviceBackupList(
+        deviceID: String,
+        currentPage: Int = 1,
+        pageSize: Int = 100,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): PageList<DeviceBackupInfo>? {
+        val jsonObjectRequest = JSONObject()
+        jsonObjectRequest.put("deviceID", deviceID)
+        jsonObjectRequest.put("currentPage", currentPage)
+        jsonObjectRequest.put("pageSize", pageSize)
+
+        return deviceManageRepositoryImp.queryDeviceBackupListWithPage(
+            jsonObjectRequest.toString(),
+            onCatch
+        )
+    }
+
     suspend fun applyBackup(
         backupID: String = "",
         deviceID: String = "",
@@ -303,56 +321,43 @@ class DeviceRequestViewModel(
     }
 
     /**
-     * 分页查询设备列表
+     * 更换设备，将拉旧设备的最新配置数据同步给新设备（如果老设备没有相关备份文件，就不同步），并且自动旧设备的传感器关联标识更改生成一个新的，新设备的传感器标识改成旧设备之前的传感器关联标识，旧设备的；并且将新设备自动加入到之前旧设备的相关分组中
+     * @param companyID 公司ID
+     * @param oldDeviceToken 旧设备Token
+     * @param newDeviceToken 新设备Token
+     * @param configEnable 是否同步配置
+     * @param failureMainType 故障主类型
+     * @param failureChildType 故障子类型
+     * @param failureDesc 故障描述
+     * @param replaceTime 更换时间
+     * @param replacePerson 更换人
+     * @param onCatch 异常捕获
+     * @return 返回结果
      */
-    fun queryCloudDataExWithPage(
-        sn: String = "",//SN号
-        begin: String = "",//
-        end: String = "",//
-        condition: String = "",//正则表达式
-        dataType: String = "",//数据类型 "" 全部 "0"传感器数据 "1"设备状态数据
-        iotData: Boolean = false,//true 物联网平台数据 false MDNET平台数据
-        timeSort: Boolean = false,
-        currentPage: Int = 1,
-        pageSize: Int = 50,
-    ) {
-        viewModelScope.launch {
-            val jsonObjectRequest = JSONObject()
-            jsonObjectRequest.put("sn", sn)
-            jsonObjectRequest.put("begin", begin)
-            jsonObjectRequest.put("end", end)
-            jsonObjectRequest.put("condition", condition)
-            jsonObjectRequest.put("dataType", dataType)
-            jsonObjectRequest.put("iotData", iotData)
-            jsonObjectRequest.put("timeSort", timeSort)
-            jsonObjectRequest.put("currentPage", currentPage)
-            jsonObjectRequest.put("pageSize", pageSize)
+    suspend fun replaceDevice(
+        companyID: Int,
+        oldDeviceToken: String = "",
+        newDeviceToken: String = "",
+        configEnable: Boolean = false,
+        failureMainType: Int = 1,
+        failureChildType: Int = 1,
+        failureDesc: String = "",
+        replaceTime: String = "",
+        replacePerson: String = "",
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? {
+        val jsonObjectRequest = JSONObject()
+        jsonObjectRequest.put("companyID", companyID)
+        jsonObjectRequest.put("oldDeviceToken", oldDeviceToken)
+        jsonObjectRequest.put("newDeviceToken", newDeviceToken)
+        jsonObjectRequest.put("configEnable", configEnable)
+        jsonObjectRequest.put("failureMainType", failureMainType)
+        jsonObjectRequest.put("failureChildType", failureChildType)
+        jsonObjectRequest.put("failureDesc", failureDesc)
+        jsonObjectRequest.put("replaceTime", replaceTime)
+        jsonObjectRequest.put("replacePerson", replacePerson)
 
-            val data: PageList<CloudDeviceData> =
-                deviceManageRepositoryImp.queryCloudDataExWithPage(
-                    jsonObjectRequest.toString()
-                ) { error: Throwable ->
-                    handleError(
-                        _cloudDeviceDataListResult,
-                        error,
-                        "${BaseURL.CLOUD_PLATFORM_DATA_ADDRESS.baseUrl}/QueryCloudDataEx"
-                    )
-
-                } ?: return@launch
-
-            val responseStatus = ResponseStatus()
-            responseStatus.isSuccess = true
-            responseStatus.responseCode = "0"
-            responseStatus.source = ResultSource.NETWORK
-            _cloudDeviceDataListResult.postValue(
-                DataResult(
-                    data.currentPageData,
-                    responseStatus = responseStatus,
-                    totalCount = data.totalCount,
-                    totalPage = data.totalPage
-                )
-            )
-        }
+        return deviceManageRepositoryImp.replaceDevice(jsonObjectRequest.toString(), onCatch)
     }
 
     /**
@@ -549,6 +554,59 @@ class DeviceRequestViewModel(
         )
     }
     //</editor-fold>
+
+    /**
+     * 分页查询设备原始数据列表
+     */
+    fun queryCloudDataExWithPage(
+        sn: String = "",//SN号
+        begin: String = "",//
+        end: String = "",//
+        condition: String = "",//正则表达式
+        dataType: String = "",//数据类型 "" 全部 "0"传感器数据 "1"设备状态数据
+        iotData: Boolean = false,//true 物联网平台数据 false MDNET平台数据
+        timeSort: Boolean = false,
+        currentPage: Int = 1,
+        pageSize: Int = 50,
+    ) {
+        viewModelScope.launch {
+            val jsonObjectRequest = JSONObject()
+            jsonObjectRequest.put("sn", sn)
+            jsonObjectRequest.put("begin", begin)
+            jsonObjectRequest.put("end", end)
+            jsonObjectRequest.put("condition", condition)
+            jsonObjectRequest.put("dataType", dataType)
+            jsonObjectRequest.put("iotData", iotData)
+            jsonObjectRequest.put("timeSort", timeSort)
+            jsonObjectRequest.put("currentPage", currentPage)
+            jsonObjectRequest.put("pageSize", pageSize)
+
+            val data: PageList<CloudDeviceData> =
+                deviceManageRepositoryImp.queryCloudDataExWithPage(
+                    jsonObjectRequest.toString()
+                ) { error: Throwable ->
+                    handleError(
+                        _cloudDeviceDataListResult,
+                        error,
+                        "${BaseURL.CLOUD_PLATFORM_DATA_ADDRESS.baseUrl}/QueryCloudDataEx"
+                    )
+
+                } ?: return@launch
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _cloudDeviceDataListResult.postValue(
+                DataResult(
+                    data.currentPageData,
+                    responseStatus = responseStatus,
+                    totalCount = data.totalCount,
+                    totalPage = data.totalPage
+                )
+            )
+        }
+    }
 
     override fun onCleared() {
         Timber.i("DeviceRequestViewModel onCleared")

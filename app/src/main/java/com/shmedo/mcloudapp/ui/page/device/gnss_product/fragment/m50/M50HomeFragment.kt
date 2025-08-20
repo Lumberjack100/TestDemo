@@ -124,18 +124,21 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_m50BaseInfoFragment
                     ).toUnified(),
+
                     CommonModule(
                         name = "网络信息",
                         resID = R.drawable.ic_module_net_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_m50NetInfoFragment
                     ).toUnified(),
+
                     CommonModule(
                         name = "状态信息",
                         resID = R.drawable.ic_module_state_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_m50StatusInfoFragment
                     ).toUnified(),
+
                     CommonModule(
                         name = "运行信息",
                         resID = R.drawable.ic_module_satellite_info,
@@ -147,9 +150,22 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
         )
 
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+        groupList.add(DeviceStatusInfoGroupItem("快捷配置"))
+        groupList.add(
+            ConfigModuleTree(
+                configModules = arrayListOf(
+                    CommonModule(
+                        name = "一键配置",
+                        resID = R.drawable.ic_module_cmd_debug_new,
+                        navId = R.id.action_global_to_quickConfigCommandParam
+                    ).toUnified(),
+                )
+            )
+        )
 
+        groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
         // 设备配置模块
-        groupList.add(DeviceStatusInfoGroupItem("设备配置"))
+        groupList.add(DeviceStatusInfoGroupItem("高级配置"))
         val configModuleTree = ConfigModuleTree(
             configModules = arrayListOf(
                 CommonModule(
@@ -157,47 +173,56 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
                     resID = R.drawable.ic_module_work_mode_new,
                     navId = R.id.action_global_to_m50WorkModelParamFragment
                 ).toUnified(),
+
                 CommonModule(
                     name = "网络配置",
                     resID = R.drawable.ic_module_network_setting,
                     navId = R.id.action_global_to_m50NetworkConfigFragment
                 ).toUnified(),
+
                 DataCenterModule(
                     name = "链路配置",
                     resID = R.drawable.ic_module_datacenter_new,
                     navId = R.id.action_global_dataCenterHomeFragment
                 ).toUnified(),
+
                 CommonModule(
                     name = "电台配置",
                     resID = R.drawable.ic_module_lora_new,
                     navId = R.id.action_global_to_m50RadioSettingFragment
                 ).toUnified(),
+
                 CommonModule(
                     name = "GNSS配置",
                     resID = R.drawable.ic_module_cors,
                     navId = R.id.action_global_to_m50GNSSConfigFragment,
                 ).toUnified(),
+
                 CommonModule(
                     name = "倾斜触发",
                     resID = R.drawable.ic_module_sensor_setting_new,
                     navId = R.id.action_global_to_m50SensorConfigFragment
                 ).toUnified(),
+
                 CommonModule(
                     name = "串口配置",
                     resID = R.drawable.ic_module_serial_port,
                     navId = R.id.action_global_to_m50SerialPortParamFragment,
                     isSupport = false
                 ).toUnified(),
+
                 CommonModule(
                     name = "报警配置",
                     resID = R.drawable.ic_module_alarm_new,
                     navId = R.id.action_global_to_m50AlarmParamSettingFragment
                 ).toUnified(),
+
                 CommonModule(
                     name = "时间校准",
                     resID = R.drawable.ic_module_time_calibration_new,
                     navId = R.id.action_global_to_time_calibration
                 ).toUnified(),
+
                 CommonModule(
                     name = "系统配置",
                     resID = R.drawable.ic_module_system_setting,

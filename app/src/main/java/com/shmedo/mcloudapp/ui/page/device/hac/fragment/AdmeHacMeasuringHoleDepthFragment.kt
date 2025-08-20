@@ -414,6 +414,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         mStates.projectNum.get()
                     ) { newNumber ->
                         mStates.projectNum.set(newNumber)
+                        mStates.runButtonText.set("启动")
                     }
                 }
 
@@ -423,6 +424,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         mStates.areaNum.get()
                     ) { newNumber ->
                         mStates.areaNum.set(newNumber)
+                        mStates.runButtonText.set("启动")
                     }
                 }
 
@@ -432,6 +434,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         mStates.holeNum.get()
                     ) { newNumber ->
                         mStates.holeNum.set(newNumber)
+                        mStates.runButtonText.set("启动")
                     }
                 }
             }

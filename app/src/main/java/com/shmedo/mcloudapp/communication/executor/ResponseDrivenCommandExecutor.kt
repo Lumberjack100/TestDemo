@@ -59,7 +59,7 @@ class ResponseDrivenCommandExecutor(
             return
         }
 
-        Timber.i("开始执行指令序列，共 ${commands.size} 条指令")
+        Timber.i("开始执行指令序列: 共 ${commands.size} 条指令")
 
         currentExecutionJob = scope.launch {
             try {
@@ -99,11 +99,11 @@ class ResponseDrivenCommandExecutor(
                 // 处理结果
                 when (result) {
                     is CommandResult.Success -> {
+                        Timber.i("指令执行成功: $command")
+
                         // 检查是否是最后一条指令
                         if (index == commands.size - 1) {
-                            Timber.i("指令序列执行完成，成功${getSuccessCount()}条，失败${getErrorCount()}条")
                             isExecuting.set(false)
-                            callbacks.onComplete.invoke(executionResults.toList())
                         }
 
                         // 检查是否启用了业务层解析失败中断功能
@@ -121,18 +121,18 @@ class ResponseDrivenCommandExecutor(
                             // 保持原有逻辑：只是回调，不检查返回值
                             callbacks.onSuccess?.invoke(result)
                         }
-                        //最后一条指令,返回
-                        if (index == commands.size - 1) return
 
                         // 继续执行下一条指令
                     }
 
                     is CommandResult.Error -> {
                         Timber.e("指令执行失败: $command, 错误: ${result.error.message}")
-                        if (config.stopOnFirstError) {
+                        if (config.stopOnFirstCmdError) {
                             handleExecutionError(result.error, command, config, callbacks)
                             return
                         }
+
+                        callbacks.onError(result.error, command)
                         // 记录错误但继续执行
                         Timber.w("忽略错误，继续执行下一条指令")
                     }
@@ -140,10 +140,12 @@ class ResponseDrivenCommandExecutor(
                     is CommandResult.Timeout -> {
                         Timber.e("指令超时: $command")
                         val timeoutError = DeviceError.Timeout(command, result.timeoutMs)
-                        if (config.stopOnFirstError) {
+                        if (config.stopOnFirstCmdError) {
                             handleExecutionError(timeoutError, command, config, callbacks)
                             return
                         }
+
+                        callbacks.onError(timeoutError, command)
                         Timber.w("忽略超时，继续执行下一条指令")
                     }
                 }
@@ -156,7 +158,7 @@ class ResponseDrivenCommandExecutor(
 
         } catch (e: Exception) {
             Timber.e(e, "指令序列执行异常")
-            val error = DeviceError.Unknown(e.message ?: "未知错误", e)
+            val error = DeviceError.Unknown("指令序列执行异常 ${e.message ?: ""}", e)
             handleExecutionError(error, "", config, callbacks)
         }
     }
@@ -183,7 +185,7 @@ class ResponseDrivenCommandExecutor(
         } catch (e: Exception) {
             Timber.e(e, "执行指令异常: $command")
             CommandResult.Error(
-                error = DeviceError.Unknown(e.message ?: "指令执行异常", e),
+                error = DeviceError.Unknown("执行指令异常 ${e.message ?: ""}", e),
                 command = command
             )
         }

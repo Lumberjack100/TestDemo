@@ -6,8 +6,8 @@ import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
 import com.hjq.permissions.OnPermissionCallback
-import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import com.hjq.permissions.permission.PermissionLists
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -103,9 +103,10 @@ class MainFragment : BaseFragment() {
     private fun requestPermission() {
         // 申请通知栏权限
         XXPermissions.with(this)
-            .permission(Permission.POST_NOTIFICATIONS)
+            .permission(PermissionLists.getPostNotificationsPermission())
             // .interceptor(PermissionInterceptor())
-            .request(OnPermissionCallback { permissions, allGranted ->
+            .request(OnPermissionCallback { grantedList, deniedList ->
+                val allGranted = deniedList.isEmpty()
                 if (!allGranted) {
                     return@OnPermissionCallback
                 }

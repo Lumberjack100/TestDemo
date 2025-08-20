@@ -150,7 +150,7 @@
     </string-array>
 
     <!-- 数据类型-->
-    <string-array name="mr_rs232_port1_sensor_data_format">
+    <string-array name="mr_rs485_sensor_data_format">
         <item>无符号单字节</item>
         <item>无符号双字节AB</item>
         <item>无符号双字节BA</item>
@@ -179,7 +179,7 @@
     </string-array>
 
     <!-- 解算方式-->
-    <string-array name="mr_rs232_port1_sensor_solution_method">
+    <string-array name="mr_rs485_sensor_solution_method">
         <item>加权平均</item>
     </string-array>
 
