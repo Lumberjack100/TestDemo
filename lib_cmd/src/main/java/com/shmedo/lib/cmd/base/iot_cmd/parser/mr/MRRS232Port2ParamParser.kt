@@ -14,13 +14,15 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 class MRRS232Port2ParamParser : IOTCommandParser<MRRS232Port2Param> {
     override fun parseKeyValueMap(keyValueMap: Map<String, String>): MRRS232Port2Param {
         return MRRS232Port2Param().apply {
-            status = keyValueMap.getOrDefault("status", status)
-            switch = keyValueMap.getOrDefault("switch", switch)
-            daddr = keyValueMap.getOrDefault("daddr", daddr)
+            sw = keyValueMap.getOrDefault("sw", sw)
+            destaddr = keyValueMap.getOrDefault("destaddr", destaddr)
             baud = keyValueMap.getOrDefault("baud", baud)
             databit = keyValueMap.getOrDefault("databit", databit)
-            parity = keyValueMap.getOrDefault("parity", parity)
+            paritybit = keyValueMap.getOrDefault("paritybit", paritybit)
             stopbit = keyValueMap.getOrDefault("stopbit", stopbit)
+            linkid = keyValueMap.getOrDefault("linkid", linkid)
+            confirm = keyValueMap.getOrDefault("confirm", confirm)
+            codetype = keyValueMap.getOrDefault("codetype", codetype)
         }
     }
 

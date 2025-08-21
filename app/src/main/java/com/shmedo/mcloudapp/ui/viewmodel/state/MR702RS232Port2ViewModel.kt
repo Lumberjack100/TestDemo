@@ -5,13 +5,13 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseStateViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class MR702RS232Port2ViewModel : BaseStateViewModel() {
-    val status = NonNullObservableField("已接入")
     val isOpened = NonNullObservableField(true)
     val address = NonNullObservableField("")
     val baudRate = NonNullObservableField("9600")
-    val dataBit = NonNullObservableField("5")//数据位
-    val checkBit = NonNullObservableField("NONE")//校验位
-    val stopBit = NonNullObservableField("1")//停止位
+    val encodingType = NonNullObservableField("")//编码类型
+    val dataLink = NonNullObservableField("")//数据链路
+    val inStationConfirm = NonNullObservableField("")//入站确认
+
 
     init {
         registerField()
@@ -24,9 +24,9 @@ class MR702RS232Port2ViewModel : BaseStateViewModel() {
             "isOpened" to isOpened.get(),
             "address" to address.get(),
             "baudRate" to baudRate.get(),
-            "dataBit" to dataBit.get(),
-            "checkBit" to checkBit.get(),
-            "stopBit" to stopBit.get()
+            "encodingType" to encodingType.get(),
+            "dataLink" to dataLink.get(),
+            "inStationConfirm" to inStationConfirm.get(),
         )
         isDataModified.value = false
         isInitializing = false
@@ -37,9 +37,9 @@ class MR702RS232Port2ViewModel : BaseStateViewModel() {
             isOpened,
             address,
             baudRate,
-            dataBit,
-            checkBit,
-            stopBit
+            encodingType,
+            dataLink,
+            inStationConfirm,
         ).forEach { field ->
             field.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
                 override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
@@ -56,9 +56,9 @@ class MR702RS232Port2ViewModel : BaseStateViewModel() {
                 "isOpened" -> isOpened.get() != value
                 "address" -> address.get() != value
                 "baudRate" -> baudRate.get() != value
-                "dataBit" -> dataBit.get() != value
-                "checkBit" -> checkBit.get() != value
-                "stopBit" -> stopBit.get() != value
+                "encodingType" -> encodingType.get() != value
+                "dataLink" -> dataLink.get() != value
+                "inStationConfirm" -> inStationConfirm.get() != value
                 else -> false
             }
         }

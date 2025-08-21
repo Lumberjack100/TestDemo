@@ -106,13 +106,13 @@ enum class ErrorHandlingStrategy {
 data class ErrorConfig(
     val strategy: ErrorHandlingStrategy = ErrorHandlingStrategy.Toast,
     val shouldDismissLoading: Boolean = true,
-    val customHandler: ((String) -> Unit)? = null
+    val customHandler: ((DeviceError) -> Unit)? = null
 ) {
     companion object {
         fun silentConfig() = ErrorConfig(strategy = ErrorHandlingStrategy.Silent)
         fun toastConfig() = ErrorConfig(strategy = ErrorHandlingStrategy.Toast)
         fun dialogConfig() = ErrorConfig(strategy = ErrorHandlingStrategy.Dialog)
-        fun customConfig(handler: (String) -> Unit) = ErrorConfig(
+        fun customConfig(handler: (DeviceError) -> Unit) = ErrorConfig(
             strategy = ErrorHandlingStrategy.Custom,
             customHandler = handler
         )

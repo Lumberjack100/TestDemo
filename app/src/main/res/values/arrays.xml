@@ -10,7 +10,7 @@
 
     <!-- 广东水文平台测站类型-->
     <string-array name="guangdong_water_platform_station_type">
-        <item>山洪灾害监测站</item>
+        <item>北斗山洪灾害监测站</item>
         <item>河道水情监测站</item>
         <item>沉降监测站</item>
         <item>水质监测站</item>

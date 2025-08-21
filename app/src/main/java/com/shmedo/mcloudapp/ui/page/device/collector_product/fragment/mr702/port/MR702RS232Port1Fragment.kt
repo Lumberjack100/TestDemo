@@ -13,7 +13,6 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS232Port1ParamEntity
-import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS232Port2ParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRRS232Port1Param
@@ -224,12 +223,9 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
 
     private fun closeSwitch() {
         commandItems.clear()
-        val entity = MRRS232Port2ParamEntity(
-            switch = "0"
-        )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MR_MD_SET_RS232_PORT1_PARAM,
-            entity.toCommandString()
+            "switch=0"
         )
         commandItems.add(command)
         showLoadingDialog(StringUtils.getString(R.string.processing))

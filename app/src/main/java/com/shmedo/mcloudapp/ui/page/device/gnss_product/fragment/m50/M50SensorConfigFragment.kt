@@ -170,12 +170,12 @@ class M50SensorConfigFragment : OptimizedBaseIOTDeviceFragment() {
             commands = listOf(command),
             config = CommandSequenceConfig(
                 showLoadingDialog = false, // 已经显示特殊的加载对话框了
-                errorConfig = ErrorConfig.customConfig { errorMsg ->
+                errorConfig = ErrorConfig.customConfig { error ->
                     dismissLoadingDialog(measureInitialValueLoadingDialogId)
                     if (command.contains("method=1")) {
-                        showMessageDialog("更新倾角初始值出错: $errorMsg")
+                        showMessageDialog("更新倾角初始值出错: ${error.message}")
                     } else {
-                        showMessageDialog("查询倾角初始值出错: $errorMsg")
+                        showMessageDialog("查询倾角初始值出错: ${error.message}")
                     }
                 }
             )

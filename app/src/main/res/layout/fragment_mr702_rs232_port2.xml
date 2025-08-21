@@ -60,22 +60,6 @@
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_Layout_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Title_Style"
-                        android:text="接入状态" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Value_Style"
-                        android:drawableEnd="@null"
-                        android:text="@{stateVM.status}"
-                        tools:text="已接入" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
                 <RelativeLayout
                     style="@style/SwitchButton_Item_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
@@ -118,7 +102,7 @@
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{stateVM.isOpened}"
-                        android:text="波特率(Bps)"
+                        android:text="波特率"
                         tools:textColor="@color/title_text_color" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -131,55 +115,55 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
-                    onClickWithDebouncing="@{()->click.onDataBitChooseClick()}"
+                    onClickWithDebouncing="@{()->click.onEncodingTypeChooseClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{stateVM.isOpened}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{stateVM.isOpened}"
-                        android:text="数据位" />
+                        android:text="编码类型" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
                         textViewEnabled="@{stateVM.isOpened}"
-                        android:text="@{stateVM.dataBit}"
+                        android:text="@{stateVM.encodingType}"
                         tools:text="5" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
-                    onClickWithDebouncing="@{()->click.onCheckBitChooseClick()}"
+                    onClickWithDebouncing="@{()->click.onInStationConfirmChooseClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{stateVM.isOpened}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{stateVM.isOpened}"
-                        android:text="校验位" />
+                        android:text="入站申请确认" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
                         textViewEnabled="@{stateVM.isOpened}"
-                        android:text="@{stateVM.checkBit}"
+                        android:text="@{stateVM.inStationConfirm}"
                         tools:text="NONE" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
-                    onClickWithDebouncing="@{()->click.onStopBitChooseClick()}"
+                    onClickWithDebouncing="@{()->click.onDataLinkChooseClick()}"
                     android:background="@drawable/shape_common_click_item_bottom_corner_4"
                     android:enabled="@{stateVM.isOpened}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{stateVM.isOpened}"
-                        android:text="停止位" />
+                        android:text="数据源" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
                         textViewEnabled="@{stateVM.isOpened}"
-                        android:text="@{stateVM.stopBit}"
+                        android:text="@{stateVM.dataLink}"
                         tools:text="2" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
