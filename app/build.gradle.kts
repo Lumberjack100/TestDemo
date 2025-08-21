@@ -11,11 +11,11 @@ plugins {
 
 val majorVersion = 5
 val minorVersion = 3
-val patchVersion = 3
+val patchVersion = 4
 
 val testMajorVersion = 5
 val testMinorVersion = 3
-val testPatchVersion = 15
+val testPatchVersion = 16
 
 /**
  * 获取Git库HEAD的SHA1码前5位
