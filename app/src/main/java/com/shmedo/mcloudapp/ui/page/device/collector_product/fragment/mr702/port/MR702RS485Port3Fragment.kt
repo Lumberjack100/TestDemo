@@ -20,16 +20,19 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port3Binding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.MRSensorItem
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
 
-class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
+class MR702RS485Port3Fragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port3Binding
     private val mInterfaceHomeViewModel: MR702PortHomeViewModel by activityViewModels()
     private val iotParseManager: IOTParserManager by inject()
@@ -52,7 +55,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 return@onRefresh
             }
@@ -129,107 +132,53 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryInfo() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
         var command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_RS485_PORT3_MODULE_STATUS)
-        commandItems.add(command)
+        commands.add(command)
 
         command = IOTCommandUtil.getCommand(
             IOTCommandType.MR_MD_GET_RS485_PORT3_SENSOR_PARAM,
             "device=2"
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = IOTCommandUtil.getCommand(
             IOTCommandType.MR_MD_GET_RS485_PORT3_SENSOR_PARAM,
             "device=3"
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = IOTCommandUtil.getCommand(
             IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM,
             "index=0"
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = IOTCommandUtil.getCommand(
             IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM,
             "index=1"
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = IOTCommandUtil.getCommand(
             IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM,
             "index=2"
         )
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.MR_MD_GET_RS485_PORT3_MODULE_STATUS)
-                || (commandType == IOTCommandType.MR_MD_GET_RS485_PORT3_SENSOR_PARAM)
-                || (commandType == IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM)
-                || (commandType == IOTCommandType.MD_SET_RADIO_CTRL)
+        commands.add(command)
 
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig(
+                    strategy = ErrorHandlingStrategy.Dialog
+                )
+            )
         )
     }
 
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage,
-            errMsg = errMsg
-        )
-    }
-    override fun setResultData(cmdStr: String) {
-        if (isRestrictHiddenMode() && isHidden) {
-            return
-        }
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MR_MD_GET_RS485_PORT3_MODULE_STATUS -> {
                 val result = iotParseManager.parse<MRRS485Port3SensorStatus>(
@@ -239,14 +188,11 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询状态出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initSolarSensorData(result.data)
                     }
                 }
@@ -260,14 +206,11 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initAudibleAndLedData(result.data)
                     }
                 }
@@ -281,21 +224,18 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initCameraData(result.data)
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+
             }
         }
     }
@@ -305,7 +245,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
      */
     private fun initSolarSensorData(sensorStatus: MRRS485Port3SensorStatus) {
         binding.rv.models = arrayListOf()
-        var item = MRSensorItem(
+        val item = MRSensorItem(
             isPlugin = sensorStatus.solarstatus == "1",
             addr = sensorStatus.solarid,
             addrDesc = "地址-${sensorStatus.solarid}",
