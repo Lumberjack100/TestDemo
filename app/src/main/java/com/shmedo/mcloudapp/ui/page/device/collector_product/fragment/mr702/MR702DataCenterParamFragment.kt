@@ -229,12 +229,13 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                 .getCmdValue(),
             packtype = if (mStates.platformType.get() == DataCenterPlatform.GUANGDONG_WATER_PLATFORM.getPlatName()) {
                 when (mStates.guangdongWaterPlatformStationType.get()) {
-                    guangdongWaterPlatformStationTypeList[0] -> "7"
+                    guangdongWaterPlatformStationTypeList[0] -> "0"
                     guangdongWaterPlatformStationTypeList[1] -> "1"
                     guangdongWaterPlatformStationTypeList[2] -> "3"
                     guangdongWaterPlatformStationTypeList[3] -> "4"
                     guangdongWaterPlatformStationTypeList[4] -> "5"
                     guangdongWaterPlatformStationTypeList[5] -> "6"
+                    guangdongWaterPlatformStationTypeList[6] -> "7"
                     else -> IOTConstants.NULL_KEY
                 }
             } else IOTConstants.NULL_KEY
@@ -441,7 +442,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             // Handle packtype for Guangdong Water Platform station types
             // The mapping is: 0=山洪灾害监测站, 1=河道水情监测站, 3=沉降监测站, 4=水质监测站, 5=雨量监测站, 6=流量监测站
             when (data.packtype) {
-                "7" -> mStates.guangdongWaterPlatformStationType.set(
+                "0" -> mStates.guangdongWaterPlatformStationType.set(
                     guangdongWaterPlatformStationTypeList[0]
                 )
 
@@ -463,6 +464,10 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
 
                 "6" -> mStates.guangdongWaterPlatformStationType.set(
                     guangdongWaterPlatformStationTypeList[5]
+                )
+
+                "7" -> mStates.guangdongWaterPlatformStationType.set(
+                    guangdongWaterPlatformStationTypeList[6]
                 )
             }
 
