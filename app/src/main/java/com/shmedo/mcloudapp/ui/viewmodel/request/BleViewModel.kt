@@ -1,17 +1,13 @@
 package com.shmedo.mcloudapp.ui.viewmodel.request
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.data.repository.LoggerRepositoryImp
-import com.shmedo.lib.ble.communicate.data.CommandData
 import com.shmedo.lib.ble.communicate.service.MedoBleRepository
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import no.nordicsemi.android.ble.ktx.state.ConnectionState
 import java.util.UUID
 
 /**
@@ -75,71 +71,5 @@ class BleViewModel(
             } else cmdStr
             medoBleRepository.sendData(command)
         }
-    }
-
-    /**
-     * 记录连接状态变化
-     */
-    private fun logConnectionState(state: ConnectionState) {
-        when (state) {
-            ConnectionState.Connecting -> {
-                addLogItem(
-                    CommonMMKVOwner.iotDeviceLogSessionId,
-                    Log.INFO,
-                    "ble device connecting"
-                )
-            }
-            is ConnectionState.Initializing -> {
-                addLogItem(
-                    CommonMMKVOwner.iotDeviceLogSessionId,
-                    Log.INFO,
-                    "ble device connected"
-                )
-            }
-            is ConnectionState.Ready -> {
-                addLogItem(
-                    CommonMMKVOwner.iotDeviceLogSessionId,
-                    Log.INFO,
-                    "ble device ready"
-                )
-            }
-            is ConnectionState.Disconnected -> {
-                when (state.reason) {
-                    ConnectionState.Disconnected.Reason.LINK_LOSS -> {
-                        addLogItem(
-                            CommonMMKVOwner.iotDeviceLogSessionId,
-                            Log.ERROR,
-                            "ble device link loss"
-                        )
-                    }
-                    ConnectionState.Disconnected.Reason.NOT_SUPPORTED -> {
-                        addLogItem(
-                            CommonMMKVOwner.iotDeviceLogSessionId,
-                            Log.ERROR,
-                            "ble device missing service"
-                        )
-                    }
-                    else -> {
-                        addLogItem(
-                            CommonMMKVOwner.iotDeviceLogSessionId,
-                            Log.ERROR,
-                            "ble device disconnected, reason: ${state.reason}"
-                        )
-                    }
-                }
-            }
-            else -> {}
-        }
-    }
-
-    /**
-     * 记录数据响应
-     */
-    private fun logDataResponse(data: CommandData) {
-        addLogItem(
-            CommonMMKVOwner.iotDeviceLogSessionId,
-            Log.INFO,
-            "ble 响应内容: ${data.response}"
-        )
     }
 }
