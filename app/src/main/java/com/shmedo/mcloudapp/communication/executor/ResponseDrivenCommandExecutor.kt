@@ -53,6 +53,7 @@ class ResponseDrivenCommandExecutor(
 
         // 检查是否已有指令在执行
         if (!isExecuting.compareAndSet(false, true)) {
+            Timber.w("已有指令序列在执行中，请等待完成后再试")
             val error = DeviceError.Validation("已有指令序列在执行中，请等待完成后再试")
             errorHandler.handleError(error, config.errorConfig)
             callbacks.onError(error, "")
@@ -211,7 +212,7 @@ class ResponseDrivenCommandExecutor(
     fun cancelExecution() {
         currentExecutionJob?.cancel()
         isExecuting.set(false)
-        Timber.i("清理指令序列执行 Job")
+        Timber.i("清理当前执行指令序列的 Job")
     }
 
     /**

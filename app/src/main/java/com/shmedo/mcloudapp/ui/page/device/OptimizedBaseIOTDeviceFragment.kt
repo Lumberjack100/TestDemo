@@ -163,7 +163,8 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
                 },
                 onComplete = { results ->
                     // 统一的清理逻辑
-                    finishCommunication()
+//                    finishCommunication()
+                    finishRefresh()
                     callbacks.onComplete(results)
                 },
                 onError = { error, command ->
