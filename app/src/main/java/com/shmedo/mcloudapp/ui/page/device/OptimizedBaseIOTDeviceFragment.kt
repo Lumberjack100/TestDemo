@@ -298,8 +298,9 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     /**
      * 取消当前通信
      */
-    protected fun finishCommunication() {
-        finishRefresh()
+    protected fun finishCommunication(isFinishRefresh: Boolean = true) {
+        if (isFinishRefresh)
+            finishRefresh()
         communicationManager.cancelExecution()
     }
 
