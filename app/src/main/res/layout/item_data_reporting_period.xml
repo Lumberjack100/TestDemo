@@ -61,7 +61,7 @@
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
-                android:hint="数值范围[5-60]"
+                android:hint="数值范围[0-60]"
                 android:inputType="number"
                 android:text="@={m.reportStartTimeMinute}"
                 app:lengthFilter="@{4}" />
@@ -80,7 +80,7 @@
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
-                android:hint="数值范围[5-1440]"
+                android:hint="数值范围[0-1440]"
                 android:inputType="number"
                 android:text="@={m.reportInterval}"
                 app:lengthFilter="@{4}" />
