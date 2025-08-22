@@ -30,14 +30,16 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1TwoSensorParamBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.MRSensorItem
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1TwoSensorParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -47,7 +49,7 @@ import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
+class MR702RS485Port1TwoSensorParamFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port1TwoSensorParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: MR702RS485Port1TwoSensorParamViewModel by viewModels()
@@ -89,7 +91,7 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 return@onRefresh
             }
@@ -100,17 +102,15 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         arguments?.let {
-            sensorItem = it.getParcelable(MR702RS485Port2SensorParamFragment.Companion.SENSOR_MODEL_ITEM)!!
+            sensorItem =
+                it.getParcelable(MR702RS485Port2SensorParamFragment.Companion.SENSOR_MODEL_ITEM)!!
         }
         binding.llToolbar.toolbar.title = sensorItem.sensorName
 
         portHomeViewModel.configPort4851SensorIDToSensorModelMap[sensorItem.sensorID]?.let {
-            mStates.curSensorModel = it
+            mStates.defaultSensorModel = it
         }
 
-        mStates.modelName.set(mStates.curSensorModel.modelName)//物模型名称
-        mStates.modelToken.set(mStates.curSensorModel.modelToken)//物模型编号
-        mStates.address.set(sensorItem.addr)//传感器地址
         resetDefaultParam()
     }
 
@@ -118,13 +118,24 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
      * 重置采集项
      */
     private fun resetDefaultParam() {
-        mStates.baudRate.set("9600")  //默认波特率
+        val siteTypeIndex = siteTypeList.indexOf(mStates.defaultSensorModel.stationType)
+        val defaultSiteType =
+            if (siteTypeIndex in siteTypeList.indices) siteTypeList[siteTypeIndex] else siteTypeList[0]
+        val calculateIndex = calculateList.indexOf(mStates.defaultSensorModel.calcType)
+        val defaultCalculate =
+            if (calculateIndex in calculateList.indices) calculateList[calculateIndex] else calculateList[0]
+
+        mStates.modelName.set(mStates.defaultSensorModel.modelName)//物模型名称
+        mStates.modelToken.set(mStates.defaultSensorModel.modelToken)//物模型编号
+        mStates.address.set(sensorItem.addr)//传感器地址
+
+        mStates.baudRate.set(mStates.defaultSensorModel.baud)  //默认波特率
         mStates.dataBit.set(dataBitList[3])//默认数据位 8
         mStates.checkBit.set(checkBitList[0])//默认校验位 无
         mStates.stopBit.set(stopBitList[0])//默认停止位 1
 
-        mStates.siteType.set(siteTypeList[0])//站点类型 默认无
-        mStates.calculate.set(calculateList[0])//计算方式 默认不计算
+        mStates.siteType.set(defaultSiteType)//站点类型
+        mStates.calculate.set(defaultCalculate)//计算方式
         mStates.sensitivityK.set("1")//灵敏度K
         mStates.temperatureCorrectionCoefficientB.set("0")//温度修正系数 b
         mStates.powValue.set("1")//指数
@@ -142,67 +153,67 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
         //采集项名称
         mStates.modelFieldName.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].fieldName
+                mStates.defaultSensorModel.modelFieldList[0].fieldName
             else "采集项1"
         )
         //采集项单位
         mStates.modelFieldUnit.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].engUnit
+                mStates.defaultSensorModel.modelFieldList[0].engUnit
             else ""
         )
         //水文识别
         mStates.hydrologicalIdentification.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].hydrologicalIdentification
+                mStates.defaultSensorModel.modelFieldList[0].hydrologicalIdentification
             else ""
         )
         //采集指令
         mStates.collectionInstructions.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].collectionInstructions
+                mStates.defaultSensorModel.modelFieldList[0].collectionInstructions
             else ""
         )
         //倍率
         mStates.ratio.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].ratio
+                mStates.defaultSensorModel.modelFieldList[0].ratio
             else "1"
         )
         //数据类型
         mStates.dataFormat.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].dataFormat
+                mStates.defaultSensorModel.modelFieldList[0].dataFormat
             else dataFormatList[0]
         )
         //触发值
         mStates.triggerValue.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].triggerValue
+                mStates.defaultSensorModel.modelFieldList[0].triggerValue
             else "0"
         )
         //上限值
         mStates.upperLimit.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].upperLimit
+                mStates.defaultSensorModel.modelFieldList[0].upperLimit
             else "100"
         )
         //下限值
         mStates.lowerLimit.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].lowerLimit
+                mStates.defaultSensorModel.modelFieldList[0].lowerLimit
             else "0"
         )
         //默认修正值 0
         mStates.correctValue.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].correctValue
+                mStates.defaultSensorModel.modelFieldList[0].correctValue
             else "0"
         )
         //阈值次数 3
         mStates.ngateval.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].ngateval
+                mStates.defaultSensorModel.modelFieldList[0].ngateval
             else "3"
         )
     }
@@ -211,67 +222,67 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
         //采集项名称
         mStates.modelFieldName2.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[1].fieldName
+                mStates.defaultSensorModel.modelFieldList[1].fieldName
             else "采集项2"
         )
         //采集项单位
         mStates.modelFieldUnit2.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[1].engUnit
+                mStates.defaultSensorModel.modelFieldList[1].engUnit
             else ""
         )
         //水文标识
         mStates.hydrologicalIdentification2.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[1].hydrologicalIdentification
+                mStates.defaultSensorModel.modelFieldList[1].hydrologicalIdentification
             else ""
         )
         //采集指令
         mStates.collectionInstructions2.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[1].collectionInstructions
+                mStates.defaultSensorModel.modelFieldList[1].collectionInstructions
             else ""
         )
         //倍率
         mStates.ratio2.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[1].ratio
+                mStates.defaultSensorModel.modelFieldList[1].ratio
             else "1"
         )
         //数据类型
         mStates.dataFormat2.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[1].dataFormat
+                mStates.defaultSensorModel.modelFieldList[1].dataFormat
             else dataFormatList[0]
         )
         //触发值
         mStates.triggerValue2.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[1].triggerValue
+                mStates.defaultSensorModel.modelFieldList[1].triggerValue
             else "0"
         )
         //上限值
         mStates.upperLimit2.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[1].upperLimit
+                mStates.defaultSensorModel.modelFieldList[1].upperLimit
             else "100"
         )
         //下限值
         mStates.lowerLimit2.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[1].lowerLimit
+                mStates.defaultSensorModel.modelFieldList[1].lowerLimit
             else "0"
         )
         //默认修正值 0
         mStates.correctValue2.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[1].correctValue
+                mStates.defaultSensorModel.modelFieldList[1].correctValue
             else "0"
         )
         //阈值次数 3
         mStates.ngateval2.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[1].ngateval
+                mStates.defaultSensorModel.modelFieldList[1].ngateval
             else "3"
         )
     }
@@ -402,7 +413,7 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
         }
 
         override fun onSubmitButtonClick() {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -411,7 +422,8 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initSaveCommand() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
+
         if (mStates.modelName.get().isEmpty()) {
             showMessageDialog("请输入物模型名称")
             return
@@ -484,7 +496,7 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MR_MD_SET_RS485_PORT1_SENSOR_PARAM,
             entity.toCommandString()
         )
-        commandItems.add(command)
+        commands.add(command)
 
         entity = MRRS485Port1SensorParamEntity(
             model = mStates.modelToken.get() + "_" + mStates.address.get(),
@@ -534,10 +546,15 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MR_MD_SET_RS485_PORT1_SENSOR_PARAM,
             entity.toCommandString()
         )
-        commandItems.add(command)
+        commands.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     private fun checkModelField(): Boolean {
@@ -627,81 +644,32 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryData() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
+
         var command = IOTCommandUtil.getCommand(
             IOTCommandType.MR_MD_GET_RS485_PORT1_SENSOR_PARAM,
             "model=${sensorItem.modelToken}_${sensorItem.addr}&index=0"
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = IOTCommandUtil.getCommand(
             IOTCommandType.MR_MD_GET_RS485_PORT1_SENSOR_PARAM,
             "model=${sensorItem.modelToken}_${sensorItem.addr}&index=1"
         )
-        commandItems.add(command)
+        commands.add(command)
 
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.MR_MD_GET_RS485_PORT1_SENSOR_PARAM)
-                || (commandType == IOTCommandType.MR_MD_SET_RS485_PORT1_SENSOR_PARAM)
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig(
+                    strategy = ErrorHandlingStrategy.Dialog
+                )
+            )
         )
     }
 
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage,
-            errMsg = errMsg
-        )
-    }
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MR_MD_GET_RS485_PORT1_SENSOR_PARAM -> {
                 val result = iotParseManager.parse<String>(
@@ -711,14 +679,11 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initParamData(result.data)
                     }
                 }
@@ -728,12 +693,12 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错：${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("数据保存成功")
                             processBack()
                         }
@@ -742,7 +707,6 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
             }
         }
     }
@@ -784,14 +748,33 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
                             mStates.calculate.set(calculateList[value])
                         }
                     }
-                    mStates.sensitivityK.set(sensorParam.kvalue.replace("-nan", "0").replace("nan", "0"))
-                    mStates.temperatureCorrectionCoefficientB.set(sensorParam.bvalue.replace("-nan", "0").replace("nan", "0"))
-                    mStates.powValue.set(sensorParam.powvalue.replace("-nan", "0").replace("nan", "0"))
-                    mStates.initialFrequencyF0.set(sensorParam.r0value.replace("-nan", "0").replace("nan", "0"))
-                    mStates.initialTemperatureT0.set(sensorParam.t0value.replace("-nan", "0").replace("nan", "0"))
-                    mStates.initialWaterLevel.set(sensorParam.l0value.replace("-nan", "0").replace("nan", "0"))
-                    mStates.initialMeasureValue.set(sensorParam.lvalue.replace("-nan", "0").replace("nan", "0"))
-                    mStates.initialValue.set(sensorParam.initvalue.replace("-nan", "0").replace("nan", "0"))
+                    mStates.sensitivityK.set(
+                        sensorParam.kvalue.replace("-nan", "0").replace("nan", "0")
+                    )
+                    mStates.temperatureCorrectionCoefficientB.set(
+                        sensorParam.bvalue.replace(
+                            "-nan",
+                            "0"
+                        ).replace("nan", "0")
+                    )
+                    mStates.powValue.set(
+                        sensorParam.powvalue.replace("-nan", "0").replace("nan", "0")
+                    )
+                    mStates.initialFrequencyF0.set(
+                        sensorParam.r0value.replace("-nan", "0").replace("nan", "0")
+                    )
+                    mStates.initialTemperatureT0.set(
+                        sensorParam.t0value.replace("-nan", "0").replace("nan", "0")
+                    )
+                    mStates.initialWaterLevel.set(
+                        sensorParam.l0value.replace("-nan", "0").replace("nan", "0")
+                    )
+                    mStates.initialMeasureValue.set(
+                        sensorParam.lvalue.replace("-nan", "0").replace("nan", "0")
+                    )
+                    mStates.initialValue.set(
+                        sensorParam.initvalue.replace("-nan", "0").replace("nan", "0")
+                    )
 
                     if (sensorParam.num == "0") {
                         mStates.hydrologicalIdentification.set(sensorParam.swtoken.decimalStringToHexString())
@@ -850,7 +833,7 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
                 return@launchWithViewLifecycle
             }
             delay(1000)
-            
+
             // 使用优化的事件机制通知传感器更新
             val updatedSensor = MRSensorItem(
                 sensorID = sensorItem.sensorID,
@@ -872,7 +855,7 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun checkModelFieldList() =
-        mStates.curSensorModel.modelFieldList.isNotEmpty() && mStates.curSensorModel.modelFieldList.size > 1
+        mStates.defaultSensorModel.modelFieldList.isNotEmpty() && mStates.defaultSensorModel.modelFieldList.size > 1
 
     override fun onResume() {
         super.onResume()

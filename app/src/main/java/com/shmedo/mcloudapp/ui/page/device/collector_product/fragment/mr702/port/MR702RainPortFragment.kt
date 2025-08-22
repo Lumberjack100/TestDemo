@@ -23,16 +23,18 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.databinding.FragmentMr702RainPortBinding
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RainPortViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class MR702RainPortFragment : BaseIOTDeviceFragment() {
+class MR702RainPortFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702RainPortBinding
     private val mInterfaceHomeViewModel: MR702PortHomeViewModel by activityViewModels()
     private val mStates: MR702RainPortViewModel by viewModels()
@@ -56,7 +58,7 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 return@onRefresh
             }
@@ -108,7 +110,7 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -121,7 +123,8 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
     }
 
     private fun closeSwitch() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
+
         val entity = MRRainGaugeParamEntity(
             switch = "0"
         )
@@ -129,16 +132,23 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MR_MD_SET_RAIN_GAUGE_PORT_PARAM,
             entity.toCommandString()
         )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        commands.add(command)
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     /**
      * 保存采集参数
      */
     private fun initSaveCommand() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
+
         if (mStates.debounceCoefficient.get().isEmpty()) {
             showMessageDialog("请输入消抖系数")
             return
@@ -152,9 +162,15 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MR_MD_SET_RAIN_GAUGE_PORT_PARAM,
             entity.toCommandString()
         )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        commands.add(command)
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun lazyLoadData() {
@@ -162,74 +178,23 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryInfo() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
         val command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_RAIN_GAUGE_PORT_PARAM)
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
+        commands.add(command)
 
-    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.MR_MD_GET_RAIN_GAUGE_PORT_PARAM)
-                || (commandType == IOTCommandType.MR_MD_SET_RAIN_GAUGE_PORT_PARAM)
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig(
+                    strategy = ErrorHandlingStrategy.Dialog
+                )
+            )
         )
     }
 
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage,
-            errMsg = errMsg
-        )
-    }
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MR_MD_GET_RAIN_GAUGE_PORT_PARAM -> {
                 val result = iotParseManager.parse<MRRainGaugeParam>(
@@ -239,14 +204,11 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initParamData(result.data)
                     }
                 }
@@ -256,12 +218,12 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("数据保存成功")
                             // 保存初始状态
                             mStates.saveInitialState()
@@ -271,7 +233,6 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
             }
         }
     }

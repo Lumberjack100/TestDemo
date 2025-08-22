@@ -462,8 +462,8 @@ enum class IOTCommandType(val value: String) {
     MR_MD_SET_RS232_PORT1_PARAM("md_mrsetrs232p1param"),
 
     /** RS232-2-北斗数据终端 参数获取 */
-    MR_MD_GET_RS232_PORT2_PARAM("md_mrgetrs232p2param"),
-    MR_MD_SET_RS232_PORT2_PARAM("md_mrsetrs232p2param"),
+    MR_MD_GET_RS232_PORT2_PARAM("md_get_rdssparam"),
+    MR_MD_SET_RS232_PORT2_PARAM("md_set_rdssparam"),
 
     /** 雨量计 参数获取 */
     MR_MD_GET_RAIN_GAUGE_PORT_PARAM("md_mrgetraingauge"),

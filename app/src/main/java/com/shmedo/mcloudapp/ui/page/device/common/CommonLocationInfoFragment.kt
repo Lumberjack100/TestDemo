@@ -190,9 +190,9 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
             commands = listOf(command),
             config = CommandSequenceConfig(
                 showLoadingDialog = false, // 已经显示特殊的加载对话框了
-                errorConfig = ErrorConfig.customConfig { errorMsg ->
+                errorConfig = ErrorConfig.customConfig { error ->
                     dismissLoadingDialog(measureLoadingDialogId)
-                    showMessageDialog("位置更新出错: $errorMsg")
+                    showMessageDialog("位置更新出错: ${error.message}")
                 }
             )
         )

@@ -33,16 +33,18 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port2Binding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.RVEmptyFooter
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.collector_product.dialog.MR702SensorSelectionPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port2ViewModel
@@ -53,7 +55,7 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.UUID
 
-class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
+class MR702RS485Port2Fragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port2Binding
     private val mStates: MR702RS485Port2ViewModel by viewModels()
     private val portHomeViewModel: MR702PortHomeViewModel by activityViewModels()
@@ -83,7 +85,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 return@onRefresh
             }
@@ -277,7 +279,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -289,22 +291,28 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
      * 删除传感器
      */
     private fun deleteSensorCommand(chl: String) {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MR_MD_DEL_RS485_PORT2_SENSOR,
             "chl=$chl"
         )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        commands.add(command)
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     /**
      * 保存采集参数
      */
     private fun initSaveCommand() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
         if (mStates.acquisitionFrequency.get().isEmpty()) {
             showMessageDialog("请输入采集频率")
@@ -338,7 +346,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             IOTCommandType.MR_MD_SET_RS485_PORT2_COLL,
             entity.toCommandString()
         )
-        commandItems.add(command)
+        commands.add(command)
 
         if (mStates.baudRate.get().isEmpty()) {
             Toaster.show("请选择波特率")
@@ -354,10 +362,15 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             IOTCommandType.MR_MD_SET_RS485_PORT2_UART,
             entity2.toCommandString()
         )
-        commandItems.add(command)
+        commands.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun lazyLoadData() {
@@ -365,26 +378,28 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryInfo() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
         var command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_RS485_PORT2_COLL)
-        commandItems.add(command)
+        commands.add(command)
 
         command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_RS485_PORT2_UART)
-        commandItems.add(command)
+        commands.add(command)
 
         command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_RS485_PORT2_SENSOR, "index=0")
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        commands.add(command)
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig(
+                    strategy = ErrorHandlingStrategy.Dialog
+                )
+            )
+        )
     }
 
-    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.MR_MD_GET_RS485_PORT2_COLL)
-                || (commandType == IOTCommandType.MR_MD_GET_RS485_PORT2_UART)
-                || (commandType == IOTCommandType.MR_MD_GET_RS485_PORT2_SENSOR)
-                || (commandType == IOTCommandType.MR_MD_DEL_RS485_PORT2_SENSOR)
-                || (commandType == IOTCommandType.MR_MD_SET_RS485_PORT2_COLL)
-                || (commandType == IOTCommandType.MR_MD_SET_RS485_PORT2_UART)
 
     /**
      * 添加传感器到列表（增量更新）
@@ -417,63 +432,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     }
 
 
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
-    }
-
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage,
-            errMsg = errMsg
-        )
-    }
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MR_MD_GET_RS485_PORT2_COLL -> {
                 val result = iotParseManager.parse<MRRS485Port2CollectionParam>(
@@ -483,14 +442,11 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询采集参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initCollectionData(result.data)
                     }
                 }
@@ -504,14 +460,11 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询采集器参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initUartData(result.data)
                     }
                 }
@@ -524,7 +477,6 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         if (result.message.contains("index")) {
                             initEmptySensor()
                             return
@@ -535,9 +487,6 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initSensorData(result.data)
                     }
                 }
@@ -547,12 +496,12 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "移除传感器出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("移除成功")
                             updateAdapterRemoveSensorItem()
                         }
@@ -569,7 +518,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("数据保存成功")
                             // 保存初始状态
                             mStates.saveInitialState()
@@ -587,7 +536,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("数据保存成功")
                             // 保存初始状态
                             mStates.saveInitialState()
@@ -597,7 +546,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+
             }
         }
     }

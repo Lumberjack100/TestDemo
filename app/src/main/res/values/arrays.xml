@@ -16,6 +16,7 @@
         <item>水质监测站</item>
         <item>雨量监测站</item>
         <item>流量监测站</item>
+        <item>北斗山洪灾害监测站</item>
     </string-array>
 
     <string-array name="baud_rates">

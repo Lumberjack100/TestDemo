@@ -11,7 +11,7 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702PlusePortViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702PulsePortViewModel" />
 
         <variable
             name="click"

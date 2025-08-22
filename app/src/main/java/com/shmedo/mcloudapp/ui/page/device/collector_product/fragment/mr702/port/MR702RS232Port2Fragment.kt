@@ -8,10 +8,10 @@ import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS232Port2ParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -23,24 +23,28 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.DeviceError
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs232Port2Binding
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS232Port2ViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
+class MR702RS232Port2Fragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs232Port2Binding
     private val mInterfaceHomeViewModel: MR702PortHomeViewModel by activityViewModels()
     private val mStates: MR702RS232Port2ViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
-    private val dataBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_bit) }
-    private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
-    private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
+    private val encodingTypeList =
+        arrayListOf("汉字", "ASCII", "混编", "压缩汉字", "压缩ASCII")//编码类型
+    private val dataLinkList =
+        arrayListOf("4G数据链路1", "4G数据链路2", "4G数据链路3", "4G数据链路4", "4G数据链路5")//数据链路
+    private val inStationConfirmList = arrayListOf("不需要", "需要")//入站确认
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -58,7 +62,7 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 return@onRefresh
             }
@@ -80,58 +84,58 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
         mStates.isOpened.set(true)
         mStates.address.set("")
         mStates.baudRate.set("115200")
-        mStates.dataBit.set(dataBitList[3])
-        mStates.checkBit.set(checkBitList[0])
-        mStates.stopBit.set(stopBitList[0])
+        mStates.encodingType.set(encodingTypeList[2])
+        mStates.dataLink.set(dataLinkList[1])
+        mStates.inStationConfirm.set(inStationConfirmList[0])
     }
 
     inner class ClickProxy : BaseClickProxy() {
-        fun onDataBitChooseClick() {
-            val selectedIndex = dataBitList.indexOf(mStates.dataBit.get())
+        fun onEncodingTypeChooseClick() {
+            val selectedIndex = encodingTypeList.indexOf(mStates.encodingType.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "请选择数据位", dataBitList,
+                    "请选择编码类型", encodingTypeList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.dataBit.set(text)
+                        mStates.encodingType.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
         }
 
-        fun onCheckBitChooseClick() {
-            val selectedIndex = checkBitList.indexOf(mStates.checkBit.get())
+        fun onInStationConfirmChooseClick() {
+            val selectedIndex = inStationConfirmList.indexOf(mStates.inStationConfirm.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "请选择校验位", checkBitList,
+                    "", inStationConfirmList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.checkBit.set(text)
+                        mStates.inStationConfirm.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
         }
 
-        fun onStopBitChooseClick() {
-            val selectedIndex = stopBitList.indexOf(mStates.stopBit.get())
+        fun onDataLinkChooseClick() {
+            val selectedIndex = dataLinkList.indexOf(mStates.dataLink.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "请选择停止位", stopBitList,
+                    "请选择数据源", dataLinkList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.stopBit.set(text)
+                        mStates.dataLink.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -146,7 +150,7 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -159,24 +163,32 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
     }
 
     private fun closeSwitch() {
-        commandItems.clear()
         val entity = MRRS232Port2ParamEntity(
-            switch = "0"
+            sw = "0"
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MR_MD_SET_RS232_PORT2_PARAM,
             entity.toCommandString()
         )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                timeout = AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.customConfig { error ->
+                    if (error is DeviceError.Timeout)
+                        Toaster.show("Feature not supported")
+                    else
+                        Toaster.show(error.message)
+                }
+            )
+        )
     }
 
     /**
      * 保存采集参数
      */
     private fun initSaveCommand() {
-        commandItems.clear()
         if (mStates.address.get().isEmpty()) {
             showMessageDialog("请输入地址")
             return
@@ -186,20 +198,30 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
             return
         }
         val entity = MRRS232Port2ParamEntity(
-            switch = "1",
-            daddr = mStates.address.get(),
+            sw = "1",
+            destaddr = mStates.address.get(),
             baud = mStates.baudRate.get(),
-            databit = mStates.dataBit.get(),
-            parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
-            stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
+            codetype = (encodingTypeList.indexOf(mStates.encodingType.get()) + 1).toString(),
+            linkid = (dataLinkList.indexOf(mStates.dataLink.get())).toString(),
+            confirm = (inStationConfirmList.indexOf(mStates.inStationConfirm.get()) + 1).toString(),
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MR_MD_SET_RS232_PORT2_PARAM,
             entity.toCommandString()
         )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                timeout = AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.customConfig { error ->
+                    if (error is DeviceError.Timeout)
+                        Toaster.show("Feature not supported")
+                    else
+                        Toaster.show(error.message)
+                }
+            )
+        )
     }
 
     override fun lazyLoadData() {
@@ -207,74 +229,23 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryInfo() {
-        commandItems.clear()
-
         val command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_RS232_PORT2_PARAM)
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.MR_MD_GET_RS232_PORT2_PARAM)
-                || (commandType == IOTCommandType.MR_MD_SET_RS232_PORT2_PARAM)
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                timeout = AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.customConfig { error ->
+                    if (error is DeviceError.Timeout)
+                        Toaster.show("Feature not supported")
+                    else
+                        Toaster.show(error.message)
+                }
+            )
         )
     }
 
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage,
-            errMsg = errMsg
-        )
-    }
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MR_MD_GET_RS232_PORT2_PARAM -> {
                 val result = iotParseManager.parse<MRRS232Port2Param>(
@@ -289,9 +260,6 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initParamData(result.data)
                     }
                 }
@@ -306,7 +274,7 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("数据保存成功")
                             // 保存初始状态
                             mStates.saveInitialState()
@@ -316,27 +284,32 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+
             }
         }
     }
 
     private fun initParamData(sensorParam: MRRS232Port2Param) {
         try {
-            mStates.status.set(if (sensorParam.status == "1") "已接入" else "未接入")
-            mStates.isOpened.set(sensorParam.switch == "1")
-            mStates.address.set(sensorParam.daddr)
-
+            mStates.isOpened.set(sensorParam.sw == "1")
+            mStates.address.set(sensorParam.destaddr)
             mStates.baudRate.set(sensorParam.baud)
-            mStates.dataBit.set(sensorParam.databit)
-            sensorParam.parity.toInt().let {
-                if (it in checkBitList.indices) {
-                    mStates.checkBit.set(checkBitList[it])
+
+            sensorParam.codetype.toIntOrNull()?.let {
+                if (it - 1 in encodingTypeList.indices) {
+                    mStates.encodingType.set(encodingTypeList[it - 1])
                 }
             }
-            sensorParam.stopbit.toInt().let {
-                if (it in stopBitList.indices) {
-                    mStates.stopBit.set(stopBitList[it])
+
+            sensorParam.linkid.toIntOrNull()?.let {
+                if (it in dataLinkList.indices) {
+                    mStates.dataLink.set(dataLinkList[it])
+                }
+            }
+
+            sensorParam.confirm.toIntOrNull()?.let {
+                if (it - 1 in inStationConfirmList.indices) {
+                    mStates.inStationConfirm.set(inStationConfirmList[it - 1])
                 }
             }
 

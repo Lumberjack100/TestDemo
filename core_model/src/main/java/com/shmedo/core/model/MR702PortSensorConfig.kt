@@ -19,6 +19,10 @@ data class SensorModel(
     var sensorName: String = "",
     var modelToken: String = "",
     var modelName: String = "",
+    var collAddr: String = "",//采集器地址
+    var baud: String = "",//波特率
+    var stationType: String = "",//站点类型
+    var calcType: String = "",//计算方式
     var modelFieldList: List<ModelField> = listOf(),
 ) : Parcelable
 

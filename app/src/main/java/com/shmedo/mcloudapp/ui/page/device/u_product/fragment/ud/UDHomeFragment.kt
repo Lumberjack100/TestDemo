@@ -310,9 +310,9 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
             commands = listOf(command),
             config = CommandSequenceConfig(
                 showLoadingDialog = false,
-                errorConfig = ErrorConfig.customConfig { errorMsg ->
+                errorConfig = ErrorConfig.customConfig { error ->
                     stopMeasurementAnimation()
-                    showMessageDialog("出错了: $errorMsg")
+                    showMessageDialog("出错了: ${error.message}")
                 }
             )
         )
@@ -331,9 +331,9 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
             commands = listOf(command),
             config = CommandSequenceConfig(
                 showLoadingDialog = false, // 已经显示了自定义加载对话框
-                errorConfig = ErrorConfig.customConfig { errorMsg ->
+                errorConfig = ErrorConfig.customConfig { error ->
                     stopMeasurementAnimation()
-                    showMessageDialog("测量数据出错: $errorMsg")
+                    showMessageDialog("测量数据出错: ${error.message}")
                 }
             )
         )
@@ -352,9 +352,9 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
             commands = listOf(command),
             config = CommandSequenceConfig(
                 showLoadingDialog = false, // 已经显示了自定义加载对话框
-                errorConfig = ErrorConfig.customConfig { errorMsg ->
+                errorConfig = ErrorConfig.customConfig { error ->
                     stopMeasurementAnimation()
-                    showMessageDialog("拍照出错: $errorMsg")
+                    showMessageDialog("拍照出错: ${error.message}")
                 }
             )
         )

@@ -8,7 +8,7 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 class MR702RS485Port1TwoSensorParamViewModel : ViewModel() {
     val isCustomSensor = NonNullObservableField(false)//是否自定义传感器
 
-    var curSensorModel: SensorModel = SensorModel()
+    var defaultSensorModel: SensorModel = SensorModel()
     val sensorParamWrapper = NonNullObservableField(MRRS485Port1SensorParam())
 
     val modelName = NonNullObservableField("")//物模型/传感器名称

@@ -229,12 +229,13 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                 .getCmdValue(),
             packtype = if (mStates.platformType.get() == DataCenterPlatform.GUANGDONG_WATER_PLATFORM.getPlatName()) {
                 when (mStates.guangdongWaterPlatformStationType.get()) {
-                    "山洪灾害监测站" -> "0"
-                    "河道水情监测站" -> "1"
-                    "沉降监测站" -> "3"
-                    "水质监测站" -> "4"
-                    "雨量监测站" -> "5"
-                    "流量监测站" -> "6"
+                    guangdongWaterPlatformStationTypeList[0] -> "0"
+                    guangdongWaterPlatformStationTypeList[1] -> "1"
+                    guangdongWaterPlatformStationTypeList[2] -> "3"
+                    guangdongWaterPlatformStationTypeList[3] -> "4"
+                    guangdongWaterPlatformStationTypeList[4] -> "5"
+                    guangdongWaterPlatformStationTypeList[5] -> "6"
+                    guangdongWaterPlatformStationTypeList[6] -> "7"
                     else -> IOTConstants.NULL_KEY
                 }
             } else IOTConstants.NULL_KEY
@@ -441,12 +442,33 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             // Handle packtype for Guangdong Water Platform station types
             // The mapping is: 0=山洪灾害监测站, 1=河道水情监测站, 3=沉降监测站, 4=水质监测站, 5=雨量监测站, 6=流量监测站
             when (data.packtype) {
-                "0" -> mStates.guangdongWaterPlatformStationType.set("山洪灾害监测站")
-                "1" -> mStates.guangdongWaterPlatformStationType.set("河道水情监测站")
-                "3" -> mStates.guangdongWaterPlatformStationType.set("沉降监测站")
-                "4" -> mStates.guangdongWaterPlatformStationType.set("水质监测站")
-                "5" -> mStates.guangdongWaterPlatformStationType.set("雨量监测站")
-                "6" -> mStates.guangdongWaterPlatformStationType.set("流量监测站")
+                "0" -> mStates.guangdongWaterPlatformStationType.set(
+                    guangdongWaterPlatformStationTypeList[0]
+                )
+
+                "1" -> mStates.guangdongWaterPlatformStationType.set(
+                    guangdongWaterPlatformStationTypeList[1]
+                )
+
+                "3" -> mStates.guangdongWaterPlatformStationType.set(
+                    guangdongWaterPlatformStationTypeList[2]
+                )
+
+                "4" -> mStates.guangdongWaterPlatformStationType.set(
+                    guangdongWaterPlatformStationTypeList[3]
+                )
+
+                "5" -> mStates.guangdongWaterPlatformStationType.set(
+                    guangdongWaterPlatformStationTypeList[4]
+                )
+
+                "6" -> mStates.guangdongWaterPlatformStationType.set(
+                    guangdongWaterPlatformStationTypeList[5]
+                )
+
+                "7" -> mStates.guangdongWaterPlatformStationType.set(
+                    guangdongWaterPlatformStationTypeList[6]
+                )
             }
 
             // MQTT 协议参数
