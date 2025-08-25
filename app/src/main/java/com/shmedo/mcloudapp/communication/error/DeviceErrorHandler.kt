@@ -18,7 +18,7 @@ class DeviceErrorHandler(private val fragment: Fragment) {
      * 处理单个错误
      */
     fun handleError(error: DeviceError, config: ErrorConfig) {
-        Timber.e("设备错误: ${error.message}")
+        Timber.i("设备错误: ${error.message}")
         
         when (config.strategy) {
             ErrorHandlingStrategy.Silent -> {

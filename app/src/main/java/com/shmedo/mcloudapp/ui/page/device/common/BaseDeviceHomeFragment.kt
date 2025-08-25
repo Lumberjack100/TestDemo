@@ -121,12 +121,14 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUniversalDeviceHomeNewBinding
         binding.llToolbar.toolbar.title = "返回"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
+            cleanupCommunication()
             if (bleViewModel.isConnected()) {
                 bleViewModel.disconnect()
             }
             mActivity.finish()
         }
         registerOnBackPressedDispatcher {
+            cleanupCommunication()
             if (bleViewModel.isConnected()) {
                 bleViewModel.disconnect()
             }
