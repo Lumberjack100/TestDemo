@@ -29,17 +29,18 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentDasCollectorSettingBinding
 import com.shmedo.mcloudapp.extensions.formatDoubleValue
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasCollectorSettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
@@ -51,7 +52,7 @@ import timber.log.Timber
  * @desc: 物联网采集器(DAS)参数配置页面 - 支持4G和蓝牙两种通讯方式
  *
  */
-class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
+class DasCollectorSettingFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasCollectorSettingBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: DasCollectorSettingViewModel by viewModels()
@@ -87,7 +88,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 return@onRefresh
             }
@@ -128,7 +129,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -211,62 +212,71 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
             sensitivity = if (mStates.isShowSensitivity.get()) mStates.sensitivity.get() else IOTConstants.NULL_KEY
         )
 
-        commandItems.clear()
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL,
             entity.toCommandString()
         )
-        commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     /**
      * 蓝牙通讯模式保存指令
      */
     private fun initBleSaveCommand() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
+
         var command = MDCommandUtil.getCommand(
             MDCommandType.SET_COLLECTOR_ADDRESS,
             mStates.collectorAddress.get()
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = MDCommandUtil.getCommand(
             MDCommandType.COLLECTOR_SOLUTION_FREQUENCY,
             "$collectorModel${MDCommandUtil.formatStringFour(mStates.solvingInterval.get())}"
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = MDCommandUtil.getCommand(
             MDCommandType.COLLECTOR_STANDBY_TIME,
             "$collectorModel${MDCommandUtil.formatStringFour(mStates.standbyTime.get())}"
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = MDCommandUtil.getCommand(
             MDCommandType.COLLECTOR_FREQUENCY,
             "$collectorModel${MDCommandUtil.formatStringFive(mStates.collectionInterval.get())}"
         )
-        commandItems.add(command)
+        commands.add(command)
 
         if (mStates.isShowSensitivity.get()) {
             command = MDCommandUtil.getCommand(
                 MDCommandType.SET_COLLECTOR_SENSITIVITY,
                 mStates.sensitivity.get()
             )
-            commandItems.add(command)
+            commands.add(command)
         }
 
         command = MDCommandUtil.getCommand(
             MDCommandType.SAVE_CONFIG_INFO,
             SaveConfigMode.SAVE_NO_REBOOT.toString()
         )
-        commandItems.add(command)
+        commands.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun lazyLoadData() {
@@ -282,88 +292,182 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 4G通讯模式查询采集器信息
-     */
-    private fun query4GCollectorInfo() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL
-        )
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
      * 蓝牙通讯模式查询采集器信息
      */
     private fun queryBleCollectorInfo() {
-        commandItems.clear()
         val command = MDCommandUtil.getCommand(
             MDCommandType.COLLECTOR_CONFIG, collectorModel
         )
-        commandItems.add(command)
+
         Timber.d("查询采集器配置信息===%s", command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig() // 查询失败显示Dialog
+            )
         )
     }
 
     /**
-     * 4G 下发指令响应超时
+     * 4G通讯模式查询采集器信息
      */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+    private fun query4GCollectorInfo() {
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL
+        )
+
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig() // 查询失败显示Dialog
+            )
         )
     }
 
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
-            errMsg = errMsg
-        )
-    }
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         if (communicateWay == BleConnect) {
             handleBleCommandResult(cmdStr)
         } else {
             handle4GCommandResult(cmdStr)
+        }
+    }
+
+    /**
+     * 处理蓝牙通讯指令结果
+     */
+    private fun handleBleCommandResult(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.COLLECTOR_CONFIG -> {
+                val result = mdParseManager.parse<DasCollectorInfo>(
+                    cmdStr,
+                    MDCommandType.COLLECTOR_CONFIG
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询采集器参数出错：${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    is MDCommandResult.Success -> {
+                        initBleCollectorInfo(result.data)
+                    }
+                }
+            }
+
+            MDCommandType.SET_COLLECTOR_ADDRESS -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "采集器地址配置错误!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+
+            MDCommandType.COLLECTOR_SOLUTION_FREQUENCY -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "采集器解算间隔配置错误!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+
+            MDCommandType.COLLECTOR_STANDBY_TIME -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "采集器待机时长配置错误!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+
+            MDCommandType.COLLECTOR_FREQUENCY -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "采集器采集间隔配置错误!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+
+            MDCommandType.SET_COLLECTOR_SENSITIVITY -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "采集器灵敏度配置错误!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+
+            MDCommandType.SAVE_CONFIG_INFO -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "保存出错!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        if (!isCommunicationExecuting()) {
+                            processNavigateUp()
+                        }
+                    }
+                }
+            }
+
+            else -> {
+
+            }
+        }
+    }
+
+    /**
+     * 初始化蓝牙通讯模式下的参数数据
+     */
+    private fun initBleCollectorInfo(collectorInfo: DasCollectorInfo) {
+        try {
+            mStates.collectorAddress.set(collectorInfo.addr)
+            mStates.solvingInterval.set(collectorInfo.calcgap)
+            mStates.standbyTime.set(collectorInfo.standbygap)
+            mStates.collectionInterval.set(collectorInfo.collgap)
+
+            mStates.isShowSensitivity.set(collectorInfo.sensitivity != IOTConstants.NULL_KEY)
+            collectorInfo.sensitivity.notNullKey {
+                mStates.sensitivity.set(it.formatDoubleValue("", 1))
+            }
+            // 保存初始状态
+            mStates.saveInitialState()
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -385,9 +489,6 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         init4GParamData(result.data)
                     }
                 }
@@ -402,7 +503,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             processNavigateUp()
                         }
                     }
@@ -410,7 +511,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+
             }
         }
     }
@@ -438,145 +539,6 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /**
-     * 处理蓝牙通讯指令结果
-     */
-    private fun handleBleCommandResult(cmdStr: String) {
-        when (MDCommandUtil.extractCommandType(cmdStr)) {
-            MDCommandType.COLLECTOR_CONFIG -> {
-                val result = mdParseManager.parse<DasCollectorInfo>(
-                    cmdStr,
-                    MDCommandType.COLLECTOR_CONFIG
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "查询采集器参数出错：${result.message}"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        initBleCollectorInfo(result.data)
-                    }
-                }
-            }
-
-            MDCommandType.SET_COLLECTOR_ADDRESS -> {
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "采集器地址配置错误!"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList()
-                    }
-                }
-            }
-
-            MDCommandType.COLLECTOR_SOLUTION_FREQUENCY -> {
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "采集器解算间隔配置错误!"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList()
-                    }
-                }
-            }
-
-            MDCommandType.COLLECTOR_STANDBY_TIME -> {
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "采集器待机时长配置错误!"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList()
-                    }
-                }
-            }
-
-            MDCommandType.COLLECTOR_FREQUENCY -> {
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "采集器采集间隔配置错误!"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList()
-                    }
-                }
-            }
-
-            MDCommandType.SET_COLLECTOR_SENSITIVITY -> {
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "采集器灵敏度配置错误!"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList()
-                    }
-                }
-            }
-
-            MDCommandType.SAVE_CONFIG_INFO -> {
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "保存出错!"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            processNavigateUp()
-                        }
-                    }
-                }
-            }
-
-            else -> {
-                cancelNearbyCommunicationTimeoutJob()
-            }
-        }
-    }
-
-    /**
-     * 初始化蓝牙通讯模式下的参数数据
-     */
-    private fun initBleCollectorInfo(collectorInfo: DasCollectorInfo) {
-        try {
-            mStates.collectorAddress.set(collectorInfo.addr)
-            mStates.solvingInterval.set(collectorInfo.calcgap)
-            mStates.standbyTime.set(collectorInfo.standbygap)
-            mStates.collectionInterval.set(collectorInfo.collgap)
-
-            mStates.isShowSensitivity.set(collectorInfo.sensitivity != IOTConstants.NULL_KEY)
-            collectorInfo.sensitivity.notNullKey {
-                mStates.sensitivity.set(it.formatDoubleValue("", 1))
-            }
-            // 保存初始状态
-            mStates.saveInitialState()
-        } catch (e: Exception) {
-            Timber.e(e)
-            addDeviceLogItem(Log.ERROR, e.errorMsg)
-        }
-    }
 
     override fun handleBackByCheckDataModified() {
         if (mStates.isDataModified.value == true) {

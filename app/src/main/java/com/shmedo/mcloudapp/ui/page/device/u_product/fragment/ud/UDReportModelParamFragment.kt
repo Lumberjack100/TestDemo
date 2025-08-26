@@ -26,13 +26,14 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentUdReportModelParamBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDReportModelParamViewModel
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +46,7 @@ import timber.log.Timber
  * @time: 2024/8/23
  * @desc: 一体式雷达水位/泥位计上报工作模式参数设置
  */
-class UDReportModelParamFragment : BaseIOTDeviceFragment() {
+class UDReportModelParamFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUdReportModelParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: UDReportModelParamViewModel by viewModels()
@@ -85,8 +86,9 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
+                finishRefresh()
                 return@onRefresh
             }
             queryData()
@@ -198,7 +200,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -207,106 +209,9 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initSaveCommand() {
-        commandItems.clear()
 
-        //自动上报
-        if (mStates.reportModel.get() == reportModelList[0]) {
-            //加报模式
-            if (mStates.alarmModel.get() == alarmModelList[0]) {
-                if (mStates.addReportThreshold.get().isEmpty()) {
-                    showMessageDialog("请输入加报阈值!")
-                    return
-                }
-                try {
-                    val value = mStates.firstAlarmThreshold.get().toDouble()
-                } catch (ex: Exception) {
-                    showMessageDialog("请输入正确的加报阈值!")
-                    return
-                }
-                val reportModeEntity = UDAlarmReportModeEntity(
-                    rept_mode = "0",
-                    warning_mode = "0",
-                    add_rept_threshold = mStates.addReportThreshold.get()
-                )
-                val command = IOTCommandUtil.getCommand(
-                    IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR,
-                    reportModeEntity.toCommandString()
-                )
-                commandItems.add(command)
-
-                showLoadingDialog(StringUtils.getString(R.string.processing))
-                sendCommandFromCmdList(isStartTimeoutJob = true)
-                return
-            }
-
-            //四级报警模式
-            if (mStates.firstAlarmThreshold.get().isEmpty()) {
-                showMessageDialog("请输入一级报警阈值!")
-                return
-            }
-            try {
-                val value = mStates.firstAlarmThreshold.get().toDouble()
-            } catch (ex: Exception) {
-                showMessageDialog("请输入正确的一级报警阈值!")
-                return
-            }
-
-            if (mStates.secondAlarmThreshold.get().isEmpty()) {
-                showMessageDialog("请输入二级报警阈值!")
-                return
-            }
-            try {
-                val value = mStates.secondAlarmThreshold.get().toDouble()
-            } catch (ex: Exception) {
-                showMessageDialog("请输入正确的二级报警阈值!")
-                return
-            }
-
-            if (mStates.thirdAlarmThreshold.get().isEmpty()) {
-                showMessageDialog("请输入三级报警阈值!")
-                return
-            }
-            try {
-                val value = mStates.thirdAlarmThreshold.get().toDouble()
-            } catch (ex: Exception) {
-                showMessageDialog("请输入正确的三级报警阈值!")
-                return
-            }
-
-            if (mStates.fourthAlarmThreshold.get().isEmpty()) {
-                showMessageDialog("请输入四级报警阈值!")
-                return
-            }
-            try {
-                val value = mStates.fourthAlarmThreshold.get().toDouble()
-            } catch (ex: Exception) {
-                showMessageDialog("请输入正确的四级报警阈值!")
-                return
-            }
-
-            val reportModeEntity = UDAlarmReportModeEntity(
-                rept_mode = "0",
-                warning_mode = "1",
-            )
-            val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR,
-                reportModeEntity.toCommandString()
-            )
-            commandItems.add(command)
-
-            val triggerValueEntity = AlarmTriggerValueEntity(
-                level1 = mStates.firstAlarmThreshold.get(),
-                level2 = mStates.secondAlarmThreshold.get(),
-                level3 = mStates.thirdAlarmThreshold.get(),
-                level4 = mStates.fourthAlarmThreshold.get()
-            )
-            val triggerValueCommand = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE,
-                triggerValueEntity.toCommandString()
-            )
-            commandItems.add(triggerValueCommand)
-
-        } else {//手动
+        //手动上报
+        if (mStates.reportModel.get() == reportModelList[1]) {
             val reportModeEntity = UDAlarmReportModeEntity(
                 rept_mode = "1",
                 ld_reptgap = reportFrequencyMinList[reportFrequencyList.indexOf(mStates.reportFrequency.get())]
@@ -315,11 +220,122 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                 IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR,
                 reportModeEntity.toCommandString()
             )
-            commandItems.add(command)
+
+            sendCommandSequence(
+                commands = listOf(command),
+                config = CommandSequenceConfig(
+                    loadingMessage = StringUtils.getString(R.string.processing),
+                    errorConfig = ErrorConfig.dialogConfig()
+                )
+            )
+            return
         }
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        /***************   自动上报处理   **********************/
+        //加报模式
+        if (mStates.alarmModel.get() == alarmModelList[0]) {
+            if (mStates.addReportThreshold.get().isEmpty()) {
+                showMessageDialog("请输入加报阈值!")
+                return
+            }
+            try {
+                val value = mStates.firstAlarmThreshold.get().toDouble()
+            } catch (ex: Exception) {
+                showMessageDialog("请输入正确的加报阈值!")
+                return
+            }
+            val reportModeEntity = UDAlarmReportModeEntity(
+                rept_mode = "0",
+                warning_mode = "0",
+                add_rept_threshold = mStates.addReportThreshold.get()
+            )
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR,
+                reportModeEntity.toCommandString()
+            )
+
+            sendCommandSequence(
+                commands = listOf(command),
+                config = CommandSequenceConfig(
+                    loadingMessage = StringUtils.getString(R.string.processing),
+                    errorConfig = ErrorConfig.dialogConfig()
+                )
+            )
+            return
+        }
+
+        //四级报警模式
+        if (mStates.firstAlarmThreshold.get().isEmpty()) {
+            showMessageDialog("请输入一级报警阈值!")
+            return
+        }
+        try {
+            val value = mStates.firstAlarmThreshold.get().toDouble()
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的一级报警阈值!")
+            return
+        }
+
+        if (mStates.secondAlarmThreshold.get().isEmpty()) {
+            showMessageDialog("请输入二级报警阈值!")
+            return
+        }
+        try {
+            val value = mStates.secondAlarmThreshold.get().toDouble()
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的二级报警阈值!")
+            return
+        }
+
+        if (mStates.thirdAlarmThreshold.get().isEmpty()) {
+            showMessageDialog("请输入三级报警阈值!")
+            return
+        }
+        try {
+            val value = mStates.thirdAlarmThreshold.get().toDouble()
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的三级报警阈值!")
+            return
+        }
+
+        if (mStates.fourthAlarmThreshold.get().isEmpty()) {
+            showMessageDialog("请输入四级报警阈值!")
+            return
+        }
+        try {
+            val value = mStates.fourthAlarmThreshold.get().toDouble()
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的四级报警阈值!")
+            return
+        }
+
+        val reportModeEntity = UDAlarmReportModeEntity(
+            rept_mode = "0",
+            warning_mode = "1",
+        )
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR,
+            reportModeEntity.toCommandString()
+        )
+
+        val triggerValueEntity = AlarmTriggerValueEntity(
+            level1 = mStates.firstAlarmThreshold.get(),
+            level2 = mStates.secondAlarmThreshold.get(),
+            level3 = mStates.thirdAlarmThreshold.get(),
+            level4 = mStates.fourthAlarmThreshold.get()
+        )
+        val triggerValueCommand = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE,
+            triggerValueEntity.toCommandString()
+        )
+
+        sendCommandSequence(
+            commands = listOf(command, triggerValueCommand),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun lazyLoadData() {
@@ -327,84 +343,28 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryData() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
         var command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_GET_DEVICE_STATUS, "method=0"
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE
         )
-        commandItems.add(command)
+        commands.add(command)
 
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.MD_GET_DEVICE_STATUS)
-                || (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE)
-                || (commandType == IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR)
-                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE)
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig() // 查询失败显示Dialog
+            )
         )
     }
 
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage,
-            errMsg = errMsg
-        )
-    }
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DEVICE_STATUS -> {
                 val result = iotParseManager.parse<String>(
@@ -419,9 +379,6 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         val content: String = result.data
                         initStatusInfo(content)
                     }
@@ -441,9 +398,6 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initAlarmTriggerValueData(result.data)
                     }
                 }
@@ -458,7 +412,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             processNavigateUp()
                         }
                     }
@@ -474,7 +428,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             processNavigateUp()
                         }
                     }
@@ -482,7 +436,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+
             }
         }
     }

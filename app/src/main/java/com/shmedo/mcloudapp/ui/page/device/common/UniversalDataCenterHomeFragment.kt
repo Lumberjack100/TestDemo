@@ -437,8 +437,8 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
                 }
                 try {
                     val value = dataReportingPeriodItem.getReportStartTimeMinuteStr().toDouble()
-                    if (value < 5 || value > 60) {
-                        showMessageDialog("起始时间（分钟）数值范围[5,60]!")
+                    if (value < 0 || value > 60) {
+                        showMessageDialog("起始时间（分钟）数值范围[0,60]!")
                         return false
                     }
                 } catch (ex: Exception) {
@@ -452,8 +452,8 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
                 }
                 try {
                     val value = dataReportingPeriodItem.getReportIntervalStr().toDouble()
-                    if (value < 5 || value > 1440) {
-                        showMessageDialog("时间间隔（分钟）数值范围[5,1440]!")
+                    if (value < 0 || value > 1440) {
+                        showMessageDialog("时间间隔（分钟）数值范围[0,1440]!")
                         return false
                     }
                 } catch (ex: Exception) {

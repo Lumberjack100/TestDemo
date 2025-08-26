@@ -27,13 +27,14 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentUdAlarmParamSettingBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDAlarmParamSettingViewModel
 import org.koin.android.ext.android.inject
@@ -45,7 +46,7 @@ import timber.log.Timber
  * @desc: 一体式雷达水位/泥位计报警参数设置
  *
  */
-class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
+class UDAlarmParamSettingFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUdAlarmParamSettingBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: UDAlarmParamSettingViewModel by viewModels()
@@ -88,8 +89,9 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
+                finishRefresh()
                 return@onRefresh
             }
             queryData()
@@ -151,7 +153,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
          * 测试一级报警
          */
         fun onTestFirstAlarmClick() {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -162,7 +164,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
          * 测试二级报警
          */
         fun onTestSecondAlarmClick() {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -173,7 +175,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
          * 测试三级报警
          */
         fun onTestThirdAlarmClick() {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -184,7 +186,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
          * 测试四级报警
          */
         fun onTestFourthAlarmClick() {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -201,7 +203,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -210,14 +212,18 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initTestAlarmCommand(level: Int) {
-        commandItems.clear()
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_TEST_ALRAM_BROADCAST,
             "level=$level"
         )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     private fun initSaveCommand() {
@@ -342,14 +348,14 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
             return
         }
 
-        commandItems.clear()
+        val commands = mutableListOf<String>()
         //UD 设备报警启用开关打开或者关闭，都需要发送开关指令
         if (productType == ProductType.U_D_1 || productType == ProductType.U_D_2 || productType == ProductType.U_D_3) {
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_SET_ALRAM_BROADCAST_SWITCH,
                 "sw=${if (mStates.isOpened.get()) "1" else "0"}"
             )
-            commandItems.add(command)
+            commands.add(command)
         }
 
         //GNSS 设备报警启用开关关闭时处理
@@ -358,7 +364,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
                 "sw=0"
             )
-            commandItems.add(command)
+            commands.add(command)
         }
 
         //报警启用开关打开时，才发送报警信息设置指令
@@ -378,7 +384,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
                 monitorPointEntity.toCommandString()
             )
-            commandItems.add(command)
+            commands.add(command)
         }
 
         val reportIntervalEntity = AlarmReportIntervalEntity(
@@ -391,10 +397,15 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_ALRAM_BROADCAST_REPORT_INTERVAL,
             reportIntervalEntity.toCommandString()
         )
-        commandItems.add(command)
+        commands.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun lazyLoadData() {
@@ -402,94 +413,35 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryData() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
         if (productType == ProductType.U_D_1 || productType == ProductType.U_D_2 || productType == ProductType.U_D_3) {
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_GET_ALRAM_BROADCAST_SWITCH
             )
-            commandItems.add(command)
+            commands.add(command)
         }
 
         var command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_GET_ALRAM_BROADCAST_REPORT_INTERVAL
         )
-        commandItems.add(command)
+        commands.add(command)
 
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_SWITCH)
-                || (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL)
-                || (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_REPORT_INTERVAL)
-                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_SWITCH)
-                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL)
-                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_REPORT_INTERVAL)
-                || (commandType == IOTCommandType.MD_TEST_ALRAM_BROADCAST)
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig() // 查询失败显示Dialog
+            )
         )
     }
 
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage,
-            errMsg = errMsg
-        )
-    }
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_ALRAM_BROADCAST_SWITCH -> {
                 val result = iotParseManager.parse<AlarmSwitchInfo>(
@@ -504,9 +456,6 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initAlarmSwitch(result.data)
                     }
                 }
@@ -525,9 +474,6 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initAlarmMonitorPointData(result.data)
                     }
                 }
@@ -546,9 +492,6 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initAlarmReportIntervalData(result.data)
                     }
                 }
@@ -564,7 +507,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             processNavigateUp()
                         }
                     }
@@ -581,7 +524,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             processNavigateUp()
                         }
                     }
@@ -597,7 +540,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             processNavigateUp()
                         }
                     }
@@ -613,7 +556,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             showMessageDialog("预警测试成功")
                         }
                     }
@@ -621,7 +564,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+
             }
         }
     }

@@ -163,14 +163,15 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
                 },
                 onComplete = { results ->
                     // 统一的清理逻辑
-                    finishCommunication()
+//                    finishCommunication()
+                    finishRefresh()
                     callbacks.onComplete(results)
                 },
                 onError = { error, command ->
                     addDeviceLogItem(Log.ERROR, "指令执行失败: $command, 错误: ${error.message}")
                     if (config.stopOnFirstCmdError) {
                         // 统一的清理逻辑
-                        finishCommunication()
+                        cancelCommunication()
                     }
                     callbacks.onError(error, command)
                 }
@@ -298,10 +299,14 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     /**
      * 取消当前通信
      */
-    protected fun finishCommunication(isFinishRefresh: Boolean = true) {
+    protected fun cancelCommunication(isFinishRefresh: Boolean = true) {
         if (isFinishRefresh)
             finishRefresh()
         communicationManager.cancelExecution()
+    }
+
+    protected fun cleanupCommunication() {
+        communicationManager.cleanup()
     }
 
     protected fun handleFailureResult(
@@ -362,7 +367,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     override fun isRestrictHiddenMode(): Boolean = true
 
     override fun onDestroy() {
-        communicationManager.cleanup()
+        cleanupCommunication()
         super.onDestroy()
     }
 

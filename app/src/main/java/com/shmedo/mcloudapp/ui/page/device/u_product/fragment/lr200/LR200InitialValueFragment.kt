@@ -16,13 +16,16 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentLr200InitialValueBinding
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.LR200InitialValueViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
@@ -33,12 +36,13 @@ import org.koin.android.ext.android.inject
  * @desc: LR200 一体式裂缝计初始化
  *
  */
-class LR200InitialValueFragment : BaseIOTDeviceFragment() {
+class LR200InitialValueFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentLr200InitialValueBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: LR200InitialValueViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
+    private var initialValueLoadingDialogId = ""
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -78,7 +82,7 @@ class LR200InitialValueFragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -99,26 +103,29 @@ class LR200InitialValueFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initSaveCommand() {
-        commandItems.clear()
-        if (mStates.isAutoInit.get()) {
+        val command = if (mStates.isAutoInit.get()) {
             //先发送遥测指令
-            val command = IOTCommandUtil.getCommand(
-                IOTCommandType.SAMPLE
-            )
-            commandItems.add(command)
+            IOTCommandUtil.getCommand(IOTCommandType.SAMPLE)
         } else {
             //发送初始化指令
-            val command = IOTCommandUtil.getCommand(
+            IOTCommandUtil.getCommand(
                 IOTCommandType.LF_MD_MANUAL_SET_INITIAL_VALUE,
                 "datastreams=${mStates.initValue.get()}"
             )
-            commandItems.add(command)
         }
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+
+        initialValueLoadingDialogId =
+            showLoadingWithUUID(StringUtils.getString(R.string.processing))
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 已经显示特殊的加载对话框了
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.SAMPLE -> {//
                 val result = iotParseManager.parse<String>(
@@ -127,6 +134,7 @@ class LR200InitialValueFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
+                        dismissLoadingDialog(initialValueLoadingDialogId)
                         val errMsg = "查询参数出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
                         return
@@ -142,10 +150,13 @@ class LR200InitialValueFragment : BaseIOTDeviceFragment() {
                             IOTCommandType.LF_MD_MANUAL_SET_INITIAL_VALUE,
                             "datastreams=$zeroValueMeasured"
                         )
-                        commandItems.add(command)
-                        sendCommandFromCmdList()
-
-                        mStates.initValue.set(result.data)
+                        sendCommandSequence(
+                            commands = listOf(command),
+                            config = CommandSequenceConfig(
+                                showLoadingDialog = false, // 已经显示特殊的加载对话框了
+                                errorConfig = ErrorConfig.dialogConfig()
+                            )
+                        )
                     }
                 }
             }
@@ -154,21 +165,22 @@ class LR200InitialValueFragment : BaseIOTDeviceFragment() {
             IOTCommandType.LF_MD_MANUAL_SET_INITIAL_VALUE -> {//设置
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
+                        dismissLoadingDialog(initialValueLoadingDialogId)
                         val errMsg = "初始化出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("初始化成功")
-                        }
+                        dismissLoadingDialog(initialValueLoadingDialogId)
+                        if (!isCommunicationExecuting())
+                            processNavigateUp("初始化成功")
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+
             }
         }
     }
