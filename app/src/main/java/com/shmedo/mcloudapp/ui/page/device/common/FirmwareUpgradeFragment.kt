@@ -27,13 +27,9 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentFirmwareUpgradeBinding
-import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
-import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.FirmwareUpgradeViewModel
@@ -165,42 +161,23 @@ class FirmwareUpgradeFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     private fun applyFirmwareUpgrade(firmWareInfo: FirmWareInfo) {
-        showLoadingDialog(StringUtils.getString(R.string.processing))
+        val entity = FirmWareEntity(
+            url = firmWareInfo.absolutePath,
+            size = firmWareInfo.fwSize.toString(),
+            md5 = firmWareInfo.fwMd5
+        )
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_UPGRADE,
+            entity.toCommandString()
+        )
 
-        launchWithViewLifecycle {
-            if (communicateWay is BleConnect) {
-                val entity = FirmWareEntity(
-                    url = firmWareInfo.absolutePath,
-                    size = firmWareInfo.fwSize.toString(),
-                    md5 = firmWareInfo.fwMd5
-                )
-                val commands = mutableListOf<String>()
-                val command = IOTCommandUtil.getCommand(
-                    IOTCommandType.MD_UPGRADE,
-                    entity.toCommandString()
-                )
-                commands.add(command)
-
-                sendCommandSequence(
-                    commands = commands,
-                    config = CommandSequenceConfig(
-                        showLoadingDialog = false,
-                        errorConfig = ErrorConfig.dialogConfig()
-                    )
-                )
-
-            } else {
-                val msgID = deviceRequestViewModel.applyFirmwareUpgrade(
-                    deviceToken = deviceInfo.deviceToken,
-                    firmwareID = firmWareInfo.id,
-                ) { error: Throwable ->
-                    dismissLoadingDialog()
-                    Toaster.show("升级失败：${error.message}")
-                } ?: return@launchWithViewLifecycle
-
-                netIotCommandViewModel.processCmdResult("", arrayListOf(msgID))
-            }
-        }
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun handleCommandResponse(cmdStr: String) {
