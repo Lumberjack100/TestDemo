@@ -184,6 +184,8 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
             measureLoadingDialogId = showLoadingWithUUID(StringUtils.getString(R.string.processing)) {
                 clearQueryMeasureResultTimeoutJob()
             }
+        }else {
+            Timber.d("查询位置更新结果轮询次数：$repeatPollNum")
         }
 
         sendCommandSequence(
@@ -458,12 +460,12 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
         queryMeasureResultTimeoutJob?.cancel()
         queryMeasureResultTimeoutJob = launchWithViewLifecycle {
             if (repeatPollNum >= REPEAT_POLL_NUM) {
+                dismissLoadingDialog(measureLoadingDialogId)
                 showMessageDialog("位置更新失败，请稍后重试")
                 return@launchWithViewLifecycle
             }
             delay(AppContants.Communication.DELAY_5000_MILLIS)
             repeatPollNum++
-            Timber.d("查询位置更新结果轮询次数：$repeatPollNum")
             measureLocation("0")
         }
     }

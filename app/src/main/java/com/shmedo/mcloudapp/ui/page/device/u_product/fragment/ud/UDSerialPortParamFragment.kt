@@ -24,12 +24,13 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentUdSerialPortParamBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDSerialPortParamViewModel
 import org.koin.android.ext.android.inject
@@ -40,8 +41,13 @@ import timber.log.Timber
  * @time: 2024/9/10
  * @desc: 一体式雷达水位/泥位计端口参数配置
  *
+ * 优化特点：
+ * 1. 继承自 OptimizedBaseIOTDeviceFragment，使用新的通信架构
+ * 2. 统一的错误处理策略
+ * 3. 响应驱动的指令执行
+ * 4. 保持原有的复杂业务逻辑不变（包括485端口配置、雨量计配置等）
  */
-class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
+class UDSerialPortParamFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUdSerialPortParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: UDSerialPortParamViewModel by viewModels()
@@ -50,8 +56,7 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
     private val rs485BaudRateList = arrayListOf("2400", "4800", "9600", "14400", "19200")//波特率
     private val rainGaugeResolutionList = arrayListOf("0.1", "0.2", "0.5")  //雨量计分辨率
 
-    var cmdRainGauge = ""
-
+    private var isCleanRainMode = false;
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -62,7 +67,6 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
-
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdSerialPortParamBinding
@@ -80,8 +84,9 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
+                finishRefresh()
                 return@onRefresh
             }
             queryData()
@@ -149,18 +154,22 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
          * 清零累计雨量值
          */
         fun onClearRainGaugeTotalValueClick() {
-            commandItems.clear()
             val rainGaugeSerialPortEntity = UDRainGaugeSerialPortEntity(
                 clean_rain = "1"
             )
-            cmdRainGauge = IOTCommandUtil.getCommand(
+            val command = IOTCommandUtil.getCommand(
                 IOTCommandType.UD_MD_SET_RAIN_GAUGE_PARAM,
                 rainGaugeSerialPortEntity.toCommandString()
             )
-            commandItems.add(cmdRainGauge)
 
-            showLoadingDialog(StringUtils.getString(R.string.processing))
-            sendCommandFromCmdList(isStartTimeoutJob = true)
+            isCleanRainMode = true
+            sendCommandSequence(
+                commands = listOf(command),
+                config = CommandSequenceConfig(
+                    loadingMessage = StringUtils.getString(R.string.processing),
+                    errorConfig = ErrorConfig.dialogConfig()
+                )
+            )
         }
 
         /**
@@ -172,7 +181,7 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -180,6 +189,9 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    /**
+     * 保存配置 - 使用新的通信架构
+     */
     private fun initSaveCommand() {
         if (mStates.rs485Enable.get()) {
             if (mStates.rs485Address.get().isEmpty()) {
@@ -188,116 +200,67 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
             }
         }
 
-        commandItems.clear()
+        val commands = mutableListOf<String>()
+
+        // 设置485端口参数
         val uD485SerialPortEntity = UD485SerialPortEntity(
             sw = if (mStates.rs485Enable.get()) "1" else "0",
             baud = mStates.rs485BaudRate.get(),
             addr = mStates.rs485Address.get()
         )
-        val command = IOTCommandUtil.getCommand(
+        val rs485Command = IOTCommandUtil.getCommand(
             IOTCommandType.UD_MD_SET_RS485_PARAM,
             uD485SerialPortEntity.toCommandString()
         )
-        commandItems.add(command)
+        commands.add(rs485Command)
 
+        // 设置雨量计参数
         val rainGaugeSerialPortEntity = UDRainGaugeSerialPortEntity(
             sw = if (mStates.rainGaugeEnable.get()) "1" else "0",
             res = mStates.rainGaugeResolution.get()
         )
-        cmdRainGauge = IOTCommandUtil.getCommand(
+        val rainGaugeCommand = IOTCommandUtil.getCommand(
             IOTCommandType.UD_MD_SET_RAIN_GAUGE_PARAM,
             rainGaugeSerialPortEntity.toCommandString()
         )
-        commandItems.add(cmdRainGauge)
+        isCleanRainMode = false
+        commands.add(rainGaugeCommand)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
     }
 
+    /**
+     * 查询数据 - 使用新的通信架构
+     */
     private fun queryData() {
-        commandItems.clear()
-
-        var command = IOTCommandUtil.getCommand(
-            IOTCommandType.UD_MD_GET_RS485_PARAM
+        val commands = listOf(
+            IOTCommandUtil.getCommand(IOTCommandType.UD_MD_GET_RS485_PARAM),
+            IOTCommandUtil.getCommand(IOTCommandType.UD_MD_GET_RAIN_GAUGE_PARAM)
         )
-        commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.UD_MD_GET_RAIN_GAUGE_PARAM
-        )
-        commandItems.add(command)
-
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-
-    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.UD_MD_GET_RS485_PARAM)
-                || (commandType == IOTCommandType.UD_MD_GET_RAIN_GAUGE_PARAM)
-                || (commandType == IOTCommandType.UD_MD_SET_RS485_PARAM)
-                || (commandType == IOTCommandType.UD_MD_SET_RAIN_GAUGE_PARAM)
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig() // 状态查询失败显示Dialog
+            )
         )
     }
 
     /**
-     * 4G 下发指令响应超时
+     * 处理指令响应
      */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage,
-            errMsg = errMsg
-        )
-    }
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.UD_MD_GET_RS485_PARAM -> {
                 val result = iotParseManager.parse<UD485SerialPortInfo>(
@@ -312,9 +275,6 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         init485SerialPortData(result.data)
                     }
                 }
@@ -333,15 +293,12 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initRainGaugeSerialPortData(result.data)
                     }
                 }
             }
 
-            IOTCommandType.UD_MD_SET_RS485_PARAM -> {//
+            IOTCommandType.UD_MD_SET_RS485_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置485端口参数出错: ${result.message}"
@@ -350,14 +307,13 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting())
                             processNavigateUp()
-                        }
                     }
                 }
             }
 
-            IOTCommandType.UD_MD_SET_RAIN_GAUGE_PARAM -> {//
+            IOTCommandType.UD_MD_SET_RAIN_GAUGE_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置雨量计端口参数出错: ${result.message}"
@@ -366,22 +322,19 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        if (cmdRainGauge.contains("clean_rain")) {
-                            sendCommandFromCmdList {
-                                mStates.rainGaugeTotalValue.set("")
-                                Toaster.show("清零成功")
-                            }
+                        if (isCleanRainMode) {
+                            mStates.rainGaugeTotalValue.set("")
+                            Toaster.show("清零成功")
                         } else {
-                            sendCommandFromCmdList {
+                            if (!isCommunicationExecuting())
                                 processNavigateUp()
-                            }
                         }
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+                Timber.d("未处理的指令类型: ${IOTCommandUtil.extractCommandType(cmdStr)}")
             }
         }
     }

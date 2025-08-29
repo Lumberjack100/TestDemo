@@ -22,6 +22,8 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentUdCorsParamBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
@@ -29,7 +31,7 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDCORSParamViewModel
 import kotlinx.coroutines.Job
@@ -42,8 +44,13 @@ import timber.log.Timber
  * @time: 2024/8/28
  * @desc:  一体式雷达水位/泥位计RTK测高参数
  *
+ * 优化特点：
+ * 1. 使用新的通信架构，代码更简洁
+ * 2. 统一的错误处理策略
+ * 3. 响应驱动的指令执行
+ * 4. 保持原有的复杂业务逻辑不变
  */
-class UDCORSParamFragment : BaseIOTDeviceFragment() {
+class UDCORSParamFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUdCorsParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: UDCORSParamViewModel by viewModels()
@@ -81,8 +88,9 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
+                finishRefresh()
                 return@onRefresh
             }
             queryData()
@@ -137,7 +145,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
          */
         fun onMeasureHeightClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -149,19 +157,27 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
         binding.refreshLayout.autoRefresh()
     }
 
+    /**
+     * 查询数据 - 使用新的通信架构
+     */
     private fun queryData() {
-        commandItems.clear()
-
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_DIFF_LOCATE, "method=0"
         )
-        commandItems.add(command)
 
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig(), // 状态查询失败显示Dialog
+            )
+        )
     }
 
+    /**
+     * 测量海拔高度 - 使用新的通信架构
+     */
     private fun measureAltitude() {
-        commandItems.clear()
         if (mStates.altitudeMeasureMode.get() == "自动") {
             if (mStates.domain.get().isEmpty()) {
                 showMessageDialog("请输入域名!")
@@ -198,132 +214,48 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_DIFF_LOCATE,
             "method=1&${entity.toCommandString()}"
         )
-        commandItems.add(command)
 
+        // 显示特殊的加载对话框（用于更新海拔）
         measureAltitudeLoadingDialogId =
             showLoadingWithUUID(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 已经显示特殊的加载对话框了
+                errorConfig = ErrorConfig.customConfig { error ->
+                    dismissLoadingDialog(measureAltitudeLoadingDialogId)
+                    showMessageDialog("更新海拔高度出错: ${error.message}")
+                }
+            )
+        )
     }
 
     /**
-     * 轮询测得的海拔高度结果
+     * 轮询测得的海拔高度结果 - 使用新的通信架构
      */
     private fun pollMeasureResult() {
         Timber.d("查询测量海拔高度结果轮询次数：$repeatPollNum")
-        commandItems.clear()
-        val command =
-            IOTCommandUtil.getCommand(IOTCommandType.MD_DIFF_LOCATE, "method=2")
-        commandItems.add(command)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_DIFF_LOCATE, "method=2")
 
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 4G 下发指令响应错误
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_DIFF_LOCATE -> {
-                if (cmdStr.contains("method=0")) {
-                    super.doCmdResponseResultError(
-                        cmdStr = cmdStr,
-                        errMsg = "查询配置参数信息出错: $errMsg",
-                        isShowErrMsg = true,
-                        isMessageDialog = true
-                    )
-                } else {
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 已经显示了加载对话框
+                errorConfig = ErrorConfig.customConfig { error ->
                     dismissLoadingDialog(measureAltitudeLoadingDialogId)
-                    super.doCmdResponseResultError(
-                        cmdStr = cmdStr,
-                        errMsg = "更新海拔高度指令下发出错: $errMsg",
-                        isShowErrMsg = true,
-                        isMessageDialog = true
-                    )
+                    showMessageDialog("查询测量海拔高度结果出错: ${error.message}")
                 }
-            }
-
-            else -> {
-                super.doCmdResponseResultError(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = false,
-                    isMessageDialog = isMessageDialog
-                )
-            }
-        }
+            )
+        )
     }
+
+
 
     /**
-     * 4G 下发指令响应超时
+     * 处理指令响应
      */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_DIFF_LOCATE -> {
-                dismissLoadingDialog(measureAltitudeLoadingDialogId)
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = true,
-                    isMessageDialog = true
-                )
-            }
-
-            else -> {
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = false,
-                    isMessageDialog = isMessageDialog
-                )
-            }
-        }
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_DIFF_LOCATE -> {
-                dismissLoadingDialog(measureAltitudeLoadingDialogId)
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = true,
-                    isMessageDialog = isMessageDialog,
-                    errMsg = errMsg
-                )
-            }
-
-            else -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = false,
-                    isMessageDialog = isMessageDialog,
-                    errMsg = errMsg
-                )
-            }
-        }
-    }
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_DIFF_LOCATE -> {
                 val result = iotParseManager.parse<Map<String, String>>(
@@ -345,21 +277,19 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+                Timber.d("未处理的指令类型: ${IOTCommandUtil.extractCommandType(cmdStr)}")
             }
         }
     }
 
     /**
-     * 处理
+     * 处理指令响应数据
      */
     private fun processResponse(resultMap: Map<String, String>) {
         try {
             resultMap["method"]?.let { code ->
                 when (code) {
                     "0" -> {//查询海拔配置页面信息
-                        cancelNearbyCommunicationTimeoutJob()
-
                         val altitudeMeasureMode = resultMap["alt_get_mode"] ?: ""
                         val domain = resultMap["host"] ?: ""
                         val port = resultMap["port"] ?: ""
@@ -385,7 +315,6 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
                             startQueryMeasureResultJob()
                         } else {
                             dismissLoadingDialog(measureAltitudeLoadingDialogId)
-                            cancelNearbyCommunicationTimeoutJob()
                             Toaster.show("更新海拔高度成功")
                             mStates.saveInitialState()
                         }
@@ -395,7 +324,6 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
                         //已经有数据
                         if (resultMap.containsKey("alt")) {
                             dismissLoadingDialog(measureAltitudeLoadingDialogId)
-                            cancelNearbyCommunicationTimeoutJob()
                             Toaster.show("更新海拔高度成功")
 
                             val altitude = resultMap["alt"] ?: ""
@@ -406,7 +334,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
                             return
                         }
 
-                        cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog = false)
+                        // 无数据，继续轮询
                         startQueryMeasureResultJob()
                     }
 
@@ -425,7 +353,6 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
         queryMeasureResultTimeoutJob = launchWithViewLifecycle {
             if (repeatPollNum >= REPEAT_POLL_NUM) {
                 dismissLoadingDialog(measureAltitudeLoadingDialogId)
-                cancelNearbyCommunicationTimeoutJob()
                 showMessageDialog("更新海拔高度失败，请稍后重试")
                 return@launchWithViewLifecycle
             }

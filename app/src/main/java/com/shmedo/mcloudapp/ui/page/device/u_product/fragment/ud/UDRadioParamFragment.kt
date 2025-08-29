@@ -22,11 +22,12 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentUdRadioParamBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDRadioParamViewModel
 import org.koin.android.ext.android.inject
@@ -38,7 +39,7 @@ import timber.log.Timber
  * @desc: 一体式雷达水位/泥位计电台配置
  *
  */
-class UDRadioParamFragment : BaseIOTDeviceFragment() {
+class UDRadioParamFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUdRadioParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: UDRadioParamViewModel by viewModels()
@@ -77,8 +78,9 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
+                finishRefresh()
                 return@onRefresh
             }
             queryData()
@@ -198,7 +200,7 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -214,19 +216,21 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
      * 关闭
      */
     private fun disableRadio() {
-        commandItems.clear()
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_SET_RADIO_CTRL,
             "sw=0"
         )
-        commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     private fun initSaveCommand() {
-        commandItems.clear()
         val entity = RadioCommunicateEntity(
             sw = "1",
             rxchl = radioChannelNumList[radioChannelTextList.indexOf(mStates.receiveChannel.get())],
@@ -238,10 +242,14 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_RADIO_CTRL,
             entity.toCommandString()
         )
-        commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun lazyLoadData() {
@@ -249,73 +257,18 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryData() {
-        commandItems.clear()
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_RADIO_CTRL)
-        commandItems.add(command)
 
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
-        (commandType == IOTCommandType.MD_GET_RADIO_CTRL) || (commandType == IOTCommandType.MD_SET_RADIO_CTRL)
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig() // 查询失败显示Dialog
+            )
         )
     }
 
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = isShowMessage,
-            isMessageDialog = isShowMessage,
-            errMsg = errMsg
-        )
-    }
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_RADIO_CTRL -> {
                 val result = iotParseManager.parse<RadioCommunicateInfo>(
@@ -330,9 +283,6 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initRadioData(result.data)
                     }
                 }
@@ -347,7 +297,7 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             processNavigateUp()
                         }
                     }
@@ -355,7 +305,6 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
             }
         }
     }

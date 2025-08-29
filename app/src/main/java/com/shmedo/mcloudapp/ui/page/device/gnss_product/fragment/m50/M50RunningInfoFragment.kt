@@ -70,7 +70,7 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                         initRunningData1(result.data)
                         // 基站仅获取工作信息
                         if (result.data.contains("\"work_mode\":1")) {
-                            finishCommunication()
+                            cancelCommunication()
                         }
                         // 测站：除了获取工作信息即可，还需要获取数据解算和初始坐标信息
                         // 这些信息会在SAMPLE指令响应中处理

@@ -104,7 +104,7 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
     private var gcjLatLng: BDLocation? = null //当前定位经纬度,中国国测局地理坐标（GCJ-02）
     protected var isLocationSyncInProgress = false // 添加标志位，防止重复同步
 
-    private var lastOnlineStatus: Boolean = false//在线状态
+    private var lastOnlineStatus: Boolean = true//在线状态
     private var deviceStatusCheckJob: Job? = null
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -121,12 +121,14 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUniversalDeviceHomeNewBinding
         binding.llToolbar.toolbar.title = "返回"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
+            cleanupCommunication()
             if (bleViewModel.isConnected()) {
                 bleViewModel.disconnect()
             }
             mActivity.finish()
         }
         registerOnBackPressedDispatcher {
+            cleanupCommunication()
             if (bleViewModel.isConnected()) {
                 bleViewModel.disconnect()
             }
@@ -406,6 +408,8 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
 
         // 创建新的job，每30秒执行一次
         deviceStatusCheckJob = launchWithViewLifecycle {
+            delay(AppContants.Communication.DELAY_CHECK_DEVICE_ONLINE_STATUS)
+
             while (isActive) {
                 try {
                     deviceRequestViewModel.getDeviceDetailInfo(deviceInfo.deviceToken) { error: Throwable ->
@@ -455,6 +459,8 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     protected open fun sendHeartbeatCommand() {
+        if (isCommunicationExecuting()) return
+
         val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
         sendCommandSequence(
             commands = listOf(command),
@@ -567,7 +573,8 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
             .interceptor(PermissionInterceptor())
             .request(object : OnPermissionCallback {
                 override fun onResult(
-                    grantedList: List<IPermission>, deniedList: List<IPermission>) {
+                    grantedList: List<IPermission>, deniedList: List<IPermission>
+                ) {
                     val allGranted = deniedList.isEmpty()
                     if (!allGranted) {
                         return

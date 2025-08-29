@@ -74,7 +74,7 @@ sealed class DeviceError(open val message: String, open val cause: Throwable? = 
     /**
      * 指令验证错误
      */
-    data class Validation(val errorMsg: String) : DeviceError("指令验证错误: $errorMsg")
+    data class Validation(val errorMsg: String) : DeviceError(errorMsg)
 
     /**
      * 未知错误
