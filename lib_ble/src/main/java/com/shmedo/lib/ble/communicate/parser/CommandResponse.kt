@@ -11,8 +11,8 @@ import android.bluetooth.BluetoothDevice
  */
 class CommandResponse(
     parsers: List<CommandParserStrategy> = listOf(
-        IoTCommandParser(),
-        StandardCommandParser(),
+        StandardIOTCommandParser(),
+        MDCommandParser(),
         DefaultCommandParser()
     ),
 ) : CommandDataCallback(parsers) {
