@@ -25,7 +25,7 @@ import timber.log.Timber
  * @desc:  一体式雨量计传感器状态
  *
  */
-class URProductStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
+class URStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         binding.llToolbar.toolbar.title = "状态信息"

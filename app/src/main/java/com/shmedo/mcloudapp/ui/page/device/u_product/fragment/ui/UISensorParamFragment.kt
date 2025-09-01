@@ -1,62 +1,52 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ur
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasIOSensorEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTRainStation
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasIOSensorInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
-import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
-import com.shmedo.mcloudapp.databinding.FragmentUrProductSensorParamBinding
+import com.shmedo.mcloudapp.databinding.FragmentUiProductSensorParamBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.URProductSensorParamViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.UIProductSensorParamViewModel
 import org.koin.android.ext.android.inject
-import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
 /**
  * @author：gonghe
  * @time: 2024/4/26
- * @desc: 一体式雨量计传感参数
+ * @desc: 一体式倾斜仪传感参数
  *
  */
-class URProductSensorParamFragment : OptimizedBaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentUrProductSensorParamBinding
+class UISensorParamFragment : OptimizedBaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentUiProductSensorParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: URProductSensorParamViewModel by viewModels()
+    private val mStates: UIProductSensorParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
-    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
-    private val rainResolutionList by lazy { Utils.getApp().resources.getStringArray(R.array.rain_value) }
+    private val measureIntervalList = arrayListOf("1", "2", "5", "10")
+    private val averageTimesList = arrayListOf("2", "3", "5", "10")
+
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_ur_product_sensor_param,
+            R.layout.fragment_ui_product_sensor_param,
             BR.stateVM,
             mStates
         )
@@ -65,12 +55,13 @@ class URProductSensorParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentUrProductSensorParamBinding
+        binding = getBinding() as FragmentUiProductSensorParamBinding
         binding.llToolbar.toolbar.title = "传感配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
+//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             handleBackByCheckDataModified()
         }
         initRefresh()
@@ -97,31 +88,49 @@ class URProductSensorParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     private fun resetDefaultParams() {
-        mStates.rainResolution.set(rainResolutionList[0])
+        mStates.measureInterval.set(measureIntervalList[0])//测量间隔：1s、2s、5s、10s；默认为1s，当前置灰不可配置
+        mStates.averageTimes.set(averageTimesList[2])
     }
 
     inner class ClickProxy : BaseClickProxy() {
-        fun onChooseResolutionClick() {
-            val selectedIndex = rainResolutionList.indexOf(mStates.rainResolution.get())
+        fun onMeasureIntervalClick() {
+            val selectedIndex = measureIntervalList.indexOf(mStates.measureInterval.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", rainResolutionList,
+                    "", measureIntervalList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.rainResolution.set(text)
+                        mStates.measureInterval.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        fun onAverageTimesClick() {
+            val selectedIndex = averageTimesList.indexOf(mStates.averageTimes.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "", averageTimesList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.averageTimes.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
         }
 
         /**
-         * 清空雨量值
+         * 设置倾角初始值
          */
-        fun onRainValueClearClick() {
+        fun onSetInitialValueClick() {
             KeyboardUtils.hideSoftInput(binding.root)
             if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
@@ -144,7 +153,7 @@ class URProductSensorParamFragment : OptimizedBaseIOTDeviceFragment() {
         /**
          * 恢复默认配置
          */
-        fun onResetClick() {
+        override fun onResetButtonClick() {
             resetDefaultParams()
         }
 
@@ -159,90 +168,49 @@ class URProductSensorParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     private fun initSaveCommand() {
-        val entity = DasIOSensorEntity(
-            type = "1",
-            value = mStates.rainResolution.get(),
-            min_time = IOTConstants.NULL_KEY,
-        )
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.DAS_MD_SET_IO_SENSOR_INFO,
-            entity.toCommandString()
-        )
-
-        sendCommandSequence(
-            commands = listOf(command),
-            config = CommandSequenceConfig(
-                loadingMessage = StringUtils.getString(R.string.processing),
-                errorConfig = ErrorConfig.dialogConfig()
-            )
-        )
+//        val entity = DasIOSensorEntity(
+//            type = "1",
+//            value = mStates.rainResolution.get(),
+//            min_time = IOTConstants.NULL_KEY,
+//        )
+//        commandItems.clear()
+//        val command = IOTCommandUtil.getCommand(
+//            IOTCommandType.DAS_MD_SET_IO_SENSOR_INFO,
+//            entity.toCommandString()
+//        )
+//        commandItems.add(command)
+//
+//        showLoadingDialog(StringUtils.getString(R.string.processing))
+//        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
+//        binding.refreshLayout.autoRefresh()
     }
 
     private fun queryData() {
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO
-        )
-
-        sendCommandSequence(
-            commands = listOf(command),
-            config = CommandSequenceConfig(
-                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
-                errorConfig = ErrorConfig.dialogConfig() // 查询失败显示Dialog
-            )
-        )
+//        commandItems.clear()
+//        val command = IOTCommandUtil.getCommand(
+//            IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO
+//        )
+//        commandItems.add(command)
+//        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
+
 
     override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO -> {//查询开关量传感器参数
-                val result = iotParseManager.parse<DasIOSensorInfo>(
-                    cmdStr,
-                    IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO
-                )
-                when (result) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "查询参数出错: ${result.message}"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    is IOTCommandResult.Success -> {
-                        initParamData(result.data)
-                    }
-                }
-            }
-
-            IOTCommandType.DAS_MD_SET_IO_SENSOR_INFO -> {//设置开关量传感器
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "数据保存出错: ${result.message}"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    else -> {
-                        if (!isCommunicationExecuting()) {
-                            processNavigateUp()
-                        }
-                    }
-                }
-            }
-
             IOTCommandType.MD_SET_SENSOR_INITIAL -> {//设置开关量传感器
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "雨量值清零出错: ${result.message}"
+                        val errMsg = "更新倾角初始值出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     else -> {
                         if (!isCommunicationExecuting()) {
-                            Toaster.show("雨量值清零成功")
+                            Toaster.show("更新倾角初始值成功")
                         }
                     }
                 }
@@ -251,28 +219,6 @@ class URProductSensorParamFragment : OptimizedBaseIOTDeviceFragment() {
             else -> {
 
             }
-        }
-    }
-
-    private fun initParamData(ioSensorInfo: DasIOSensorInfo) {
-        try {
-            when (IOTRainStation.Companion.value(ioSensorInfo.type)) {
-                IOTRainStation.RAIN_OPEN -> {//1：雨量站模式
-                    ioSensorInfo.value.toDoubleOrNull()?.let { value ->
-                        mStates.rainResolution.set(decimalFormat.format(value))
-                    }
-                }
-
-                else -> {
-
-                }
-            }
-
-            // 保存初始状态，用于后续修改检测
-            mStates.saveInitialState()
-        } catch (e: Exception) {
-            Timber.Forest.e(e)
-            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
