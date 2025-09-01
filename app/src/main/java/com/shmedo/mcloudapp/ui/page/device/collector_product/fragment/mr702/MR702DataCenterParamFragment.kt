@@ -152,14 +152,14 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
         mStates.registerPort.set("")
 
         // SL651 水文协议特有配置参数
-        mStates.stationType.set(StationCode.RESERVOIR.description) // 默认选择水库(湖泊)
-        mStates.centerStationAddr.set("")
-        mStates.password.set("")
-        mStates.telemetryStationAddr.set("")
-        mStates.hourlyReport.set(false)
-        mStates.timingReport.set(false)
-        mStates.addReport.set(false)
-        mStates.maintainReport.set(true)
+        mStates.stationType.set(StationCode.RESERVOIR.description)//SL651 测站分类 默认选择水库(湖泊)
+        mStates.centerStationAddr.set("")//SL651 中心站地址
+        mStates.password.set("")//SL651 密码
+        mStates.telemetryStationAddr.set("")// 测站编码(遥测站地址)
+        mStates.hourlyReport.set(false)// 小时报开启标识
+        mStates.timingReport.set(false)// 定时报开启标识
+        mStates.addReport.set(false)// 加报报开启标识
+        mStates.maintainReport.set(true)// 维持报开启标识
         mStates.maintainReportInterval.set("30") // 维持上报间隔（秒）
         mStates.reissuingDataValidDays.set("180") // 数据补发有效天数
         mStates.reissuingDataInterval.set("30") // 数据补发间隔（分钟）
@@ -241,7 +241,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             } else IOTConstants.NULL_KEY
         )
 
-        // MQTT 协议特有配置参数
+        // MQTT/MQTTS 协议特有配置参数
         if (mStates.dataProtocol.get() == PlatformDataProtocol.MQTT.toString() || mStates.dataProtocol.get() == PlatformDataProtocol.MQTTS.toString()) {
             // 当产品 ID、设备 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
             if (mStates.productId.get().isEmpty() && mStates.deviceId.get().isEmpty()) {
@@ -279,7 +279,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             entity.httpaddr = mStates.registerAddress.get()
             entity.httpport = mStates.registerPort.get()
 
-            if (mStates.dataProtocol.get() == PlatformDataProtocol.MQTT.toString())
+            if (mStates.dataProtocol.get() == PlatformDataProtocol.MQTTS.toString())
                 entity.taddress = mStates.telemetryStationAddr.get()
 
         } else if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.toString() || mStates.dataProtocol.get() == PlatformDataProtocol.SZY206.toString()) {
