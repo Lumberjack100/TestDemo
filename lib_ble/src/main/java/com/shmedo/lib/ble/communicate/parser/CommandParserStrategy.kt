@@ -20,25 +20,9 @@ interface CommandParserStrategy {
 }
 
 /**
- * 物联网指令解析策略 - 处理包含 $$ 的指令
+ * 标准物联网指令解析策略 - 处理包含 $cmd 的指令
  */
-class IoTCommandParser : CommandParserStrategy {
-    override fun canParse(content: String): Boolean = content.contains("$$")
-    
-    override fun parse(content: String): List<String> {
-        return content.split("\r\n".toRegex())
-            .filter { it.isNotEmpty() }
-            .mapNotNull { tempCmd ->
-                val index = tempCmd.lastIndexOf("$$")
-                if (index != -1) tempCmd.substring(index) else null
-            }
-    }
-}
-
-/**
- * 标准指令解析策略 - 处理包含 $cmd 的指令
- */
-class StandardCommandParser : CommandParserStrategy {
+class StandardIOTCommandParser : CommandParserStrategy {
     override fun canParse(content: String): Boolean = content.contains("\$cmd")
     
     override fun parse(content: String): List<String> {
@@ -48,6 +32,22 @@ class StandardCommandParser : CommandParserStrategy {
         } else {
             emptyList()
         }
+    }
+}
+
+/**
+ * 米度 ## 指令解析策略 - 处理包含 $$ 的指令
+ */
+class MDCommandParser : CommandParserStrategy {
+    override fun canParse(content: String): Boolean = content.contains("$$")
+
+    override fun parse(content: String): List<String> {
+        return content.split("\r\n".toRegex())
+            .filter { it.isNotEmpty() }
+            .mapNotNull { tempCmd ->
+                val index = tempCmd.lastIndexOf("$$")
+                if (index != -1) tempCmd.substring(index) else null
+            }
     }
 }
 

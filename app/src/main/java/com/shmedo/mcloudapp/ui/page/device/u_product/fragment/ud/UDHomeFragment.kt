@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.communication.session.CommandPriority
 import com.shmedo.mcloudapp.databinding.ItemUdMeasureDataBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
@@ -313,7 +314,8 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
                 errorConfig = ErrorConfig.customConfig { error ->
                     stopMeasurementAnimation()
                     showMessageDialog("出错了: ${error.message}")
-                }
+                },
+                priority = CommandPriority.NORMAL
             )
         )
     }
@@ -334,7 +336,8 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
                 errorConfig = ErrorConfig.customConfig { error ->
                     stopMeasurementAnimation()
                     showMessageDialog("测量数据出错: ${error.message}")
-                }
+                },
+                priority = CommandPriority.NORMAL
             )
         )
     }

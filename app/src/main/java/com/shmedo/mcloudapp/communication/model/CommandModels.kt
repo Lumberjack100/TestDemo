@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.communication.model
 
 import com.shmedo.core.commonlib.utils.AppContants
+import com.shmedo.mcloudapp.communication.session.CommandPriority
 
 /**
  * 指令执行结果密封类
@@ -124,7 +125,9 @@ data class ErrorConfig(
  */
 data class CommandConfig(
     val timeout: Long = AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
-    val delayBeforeSend: Long = 0L
+    val delayBeforeSend: Long = 0L,
+    val ownerId: String? = null,  // 新增：指令发起者ID
+    val priority: CommandPriority = CommandPriority.HIGH  // 新增：指令优先级
 )
 
 /**
@@ -141,7 +144,9 @@ data class CommandSequenceConfig(
      * 是否启用业务层指令响应内容解析失败中断功能
      * 当启用时，如果 handleCommandResponse 抛出异常，会中断后续指令执行
      */
-    val enableBusinessParseFailureInterrupt: Boolean = true
+    val enableBusinessParseFailureInterrupt: Boolean = true,
+    val ownerId: String? = null,  // 新增：指令序列发起者ID
+    val priority: CommandPriority = CommandPriority.HIGH  // 新增：指令序列优先级
 )
 
 

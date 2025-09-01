@@ -15,8 +15,8 @@ import timber.log.Timber
  */
 abstract class CommandDataCallback(
     private val parsers: List<CommandParserStrategy> = listOf(
-        IoTCommandParser(),
-        StandardCommandParser(),
+        StandardIOTCommandParser(),
+        MDCommandParser(),
         DefaultCommandParser()
     )
 ) : ProfileReadResponse(), CommandCallback {
