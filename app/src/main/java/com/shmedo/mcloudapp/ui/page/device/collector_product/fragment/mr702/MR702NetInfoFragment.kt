@@ -7,6 +7,8 @@ import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.extensions.compareAndReturn
+import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRDeviceInfoEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRBaseInfo
@@ -50,6 +52,9 @@ class MR702NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         val command2 = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO, entity2)
         commands.add(command2)
 
+        // 查询设备状态
+        commands.add(IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS))
+
         sendCommandSequence(
             commands = commands,
             config = CommandSequenceConfig(
@@ -80,6 +85,21 @@ class MR702NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                         } else if (deviceInfo.pages == "2" && deviceInfo.label == "1") {
                             initCommunicationInfo(deviceInfo.communicationData)
                         }
+                    }
+                }
+            }
+
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
+                val result =
+                    iotParseManager.parse<String>(cmdStr, IOTCommandType.QUERY_DEVICE_STATUS)
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询设备状态出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        initStatusInfo(result.data)
                     }
                 }
             }
@@ -203,6 +223,101 @@ class MR702NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 isBottomItem = true
             )
 
+
+            binding.recyclerview.bindingAdapter.apply {
+                mutable.addAll(groupList)
+                notifyItemRangeInserted(itemCount, groupList.size)
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    override fun <T> initStatusInfo(content: T) {
+        try {
+            // 将 JSON 字符串解析为 Map 对象
+            val statusMap = MoshiUtil.fromJson<Map<String, Any>>(content as String)
+            if (statusMap == null) {
+                return
+            }
+
+            val groupList = mutableListOf<Any>()
+            groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+            groupList.add(DeviceStatusInfoGroupItem("北斗短报文"))
+
+
+            val cmdStr = content as String
+
+            val pattern = "\"bd_signal\":([0-9.]+)".toRegex()
+            val bdSignal = pattern.find(cmdStr)?.groupValues?.get(1) ?: "0"
+            val bdSignalValue = bdSignal.toDoubleOrNull() ?: 0.0
+            val bdSignalIntValue = bdSignalValue.toInt() // 用于信号强度等级判断
+
+            //未接入：bd_signal 为 0 值且无 bdsim 字段或 bd_signal 为 0 值且 bdsim 为 0 值
+            val hasBdsim = cmdStr.contains("\"key\":\"bdsim\"")
+            val bdsimValue = if (hasBdsim) {
+                // 简单的字符串匹配，查找 bdsim 的值
+                val pattern = "\"key\":\"bdsim\",\"value\":\"([^\"]+)\"".toRegex()
+                pattern.find(cmdStr)?.groupValues?.get(1) ?: ""
+            } else ""
+
+            if (bdSignalIntValue == 0 && (!hasBdsim || bdsimValue == "000000")) {
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "数传终端",
+                    value = "未接入",
+                    textColorRes = 0
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "信号强度",
+                    value = AppContants.Companion.PLACE_HOLDER_VALUE,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "信号值(dB)",
+                    value = AppContants.Companion.PLACE_HOLDER_VALUE,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "北斗卡号",
+                    value = AppContants.Companion.PLACE_HOLDER_VALUE,
+                    isBottomItem = true
+                )
+                return
+            }
+
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "数传终端",
+                value = "已接入",
+                textColorRes = ColorUtils.getColor(R.color.online_colorPrimary)
+            )
+
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "信号强度",
+                value = when (bdSignalIntValue) {
+                    0 -> "无"
+                    in 1..41 -> "极差"
+                    in 42..44 -> "较差"
+                    in 45..46 -> "一般"
+                    in 47..49 -> "良好"
+                    else -> if (bdSignalIntValue >= 50) "极好" else "无"
+                }
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "信号值(dB)",
+                value = bdSignalIntValue.toString(),
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "北斗卡号",
+                value = if (bdsimValue == "000000") AppContants.Companion.PLACE_HOLDER_VALUE else bdsimValue,
+                isBottomItem = true
+            )
 
             binding.recyclerview.bindingAdapter.apply {
                 mutable.addAll(groupList)
