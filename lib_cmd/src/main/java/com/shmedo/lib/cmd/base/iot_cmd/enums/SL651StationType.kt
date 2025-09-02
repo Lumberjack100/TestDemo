@@ -7,7 +7,7 @@ import android.text.TextUtils
  * 创建时间:  2022/9/26 <br></br>
  * 描述：    SL651水文 遥测站分类码
  */
-enum class StationCode(val description: String, val code: String) {
+enum class SL651StationType(val stationName: String, val code: String) {
     PRECIPITATION("降水", "P"),
     RIVER_COURSE("河道", "H"),
     RESERVOIR("水库(湖泊)", "K"),
@@ -29,16 +29,16 @@ enum class StationCode(val description: String, val code: String) {
 
     companion object {
         @JvmStatic
-        fun valueByDescription(name: String): StationCode {
+        fun valueByStationName(name: String): SL651StationType {
             if (TextUtils.isEmpty(name)) return CUSTOM
             for (errorType in entries) {
-                if (errorType.description == name) return errorType
+                if (errorType.stationName == name) return errorType
             }
             return CUSTOM
         }
 
         @JvmStatic
-        fun valueByCode(code: String): StationCode {
+        fun valueByCode(code: String): SL651StationType {
             if (TextUtils.isEmpty(code)) return CUSTOM
             for (errorType in entries) {
                 if (errorType.code == code) return errorType
@@ -48,6 +48,6 @@ enum class StationCode(val description: String, val code: String) {
 
         @JvmStatic
         val descriptions: List<String>
-            get() = entries.map { it.description }
+            get() = entries.map { it.stationName }
     }
 }

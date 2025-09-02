@@ -22,7 +22,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRDataCenterParamEntit
 import com.shmedo.lib.cmd.base.iot_cmd.enums.DataCenterPlatform
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol
-import com.shmedo.lib.cmd.base.iot_cmd.enums.StationCode
+import com.shmedo.lib.cmd.base.iot_cmd.enums.SL651StationType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDataCenterParam
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -160,7 +160,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             mStates.registerPort.set("80")//设备注册端口
 
             // SL651 水文协议特有配置参数
-            mStates.stationType.set(StationCode.RESERVOIR.description)//SL651 测站分类  默认选择水库(湖泊)
+            mStates.stationType.set(SL651StationType.RESERVOIR.stationName)//SL651 测站分类  默认选择水库(湖泊)
             mStates.centerStationAddr.set("")//SL651 中心站地址
             mStates.password.set("")//SL651 密码
             mStates.telemetryStationAddr.set("")// 测站编码(遥测站地址)
@@ -295,7 +295,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             // SL651/SZY206 协议特有配置参数
             entity.type_code =
                 if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.toString())
-                    StationCode.valueByDescription(mStates.stationType.get()).code else IOTConstants.NULL_KEY
+                    SL651StationType.valueByStationName(mStates.stationType.get()).code else IOTConstants.NULL_KEY
             entity.co_address =
                 if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.toString())
                     mStates.centerStationAddr.get() else IOTConstants.NULL_KEY
@@ -490,7 +490,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
 
             // SL651/SZY206 协议参数
             if (mStates.dataProtocol.get() == dataProtocolList[2]) {
-                mStates.stationType.set(StationCode.valueByCode(data.type_code).description)//测站分类
+                mStates.stationType.set(SL651StationType.valueByCode(data.type_code).stationName)//测站分类
                 mStates.centerStationAddr.set(data.co_address)//中心站地址
             }
 
@@ -681,7 +681,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
          * 测站分类选择
          */
         fun onStationClassificationChooseClick() {
-            val codeList = StationCode.entries.map { it.description }
+            val codeList = SL651StationType.entries.map { it.stationName }
             val selectedIndex = codeList.indexOf(mStates.stationType.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
