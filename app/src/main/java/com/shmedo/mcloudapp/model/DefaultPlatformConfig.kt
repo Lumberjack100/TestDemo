@@ -64,7 +64,7 @@ data class DefaultPlatformConfig(
                     address = "222.216.6.174",
                     port = "8076",
                     dataProtocol = PlatformDataProtocol.SL651,
-                    stationType = SL651StationType.RESERVOIR.stationName, // 水库(湖泊)
+                    stationType = SL651StationType.RESERVOIR.getStationName(), // 水库(湖泊)
                     hourlyReport = true,
                     timingReport = true,
                     addReport = false,
@@ -78,7 +78,7 @@ data class DefaultPlatformConfig(
                     address = "183.95.190.143",
                     port = "9095",
                     dataProtocol = PlatformDataProtocol.SL651,
-                    stationType = SL651StationType.RESERVOIR.stationName, // 水库(湖泊)
+                    stationType = SL651StationType.RESERVOIR.getStationName(), // 水库(湖泊)
                     hourlyReport = true,
                     timingReport = true,
                     addReport = false,

@@ -20,6 +20,7 @@ import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.CenterNumberEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRDataCenterParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.DataCenterPlatform
+import com.shmedo.lib.cmd.base.iot_cmd.enums.GuangdongWaterPlatformStationType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol
 import com.shmedo.lib.cmd.base.iot_cmd.enums.SL651StationType
@@ -83,13 +84,6 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
         PlatformDataProtocol.MQTTS.toString()
     )
 
-    // 使用 DataCenterPlatform 枚举类替换硬编码的数组资源
-    private val guangdongWaterPlatformStationTypeList by lazy {
-        Utils.getApp().resources.getStringArray(
-            R.array.guangdong_water_platform_station_type
-        )
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_mr702_data_center_param,
@@ -138,9 +132,12 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
         mStates.communicateWay.set(communicateWayList[0]) //通信方式 默认选择4G
         mStates.ipLeve.set(ipLevelList[0]) //网络协议 默认选择IPV4
         mStates.transferProtocol.set(transferProtocolList[0]) //传输协议 默认选择TCP
-        
+
         // 加载默认平台配置（米度物联平台）
-        val defaultConfig = DefaultPlatformConfigManager.getDefaultConfig(DataCenterPlatform.MEDO_IOT_PLATFORM, true)
+        val defaultConfig = DefaultPlatformConfigManager.getDefaultConfig(
+            DataCenterPlatform.MEDO_IOT_PLATFORM,
+            true
+        )
         defaultConfig?.let {
             DefaultPlatformConfigManager.applyDefaultConfig(it, mStates)
         } ?: run {
@@ -149,7 +146,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             mStates.centerServerAddress.set("47.96.80.48")//链路地址
             mStates.centerServerPort.set("1883")//链路端口
             mStates.dataProtocol.set(PlatformDataProtocol.MQTT.toString()) //数据协议 默认选择MQTT
-            mStates.guangdongWaterPlatformStationType.set(guangdongWaterPlatformStationTypeList[0]) //测站类型 默认选择山洪灾害监测站
+            mStates.guangdongWaterPlatformStationType.set(GuangdongWaterPlatformStationType.FLOOD_MONITORING.getStationName()) //测站类型 默认选择山洪灾害监测站
 
             // MQTT 协议特有配置参数
             mStates.productId.set("")//产品ID
@@ -160,7 +157,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             mStates.registerPort.set("80")//设备注册端口
 
             // SL651 水文协议特有配置参数
-            mStates.stationType.set(SL651StationType.RESERVOIR.stationName)//SL651 测站分类  默认选择水库(湖泊)
+            mStates.stationType.set(SL651StationType.RESERVOIR.getStationName())//SL651 测站分类  默认选择水库(湖泊)
             mStates.centerStationAddr.set("")//SL651 中心站地址
             mStates.password.set("")//SL651 密码
             mStates.telemetryStationAddr.set("")// 测站编码(遥测站地址)
@@ -236,18 +233,10 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             datatype = (dataProtocolList.indexOf(mStates.dataProtocol.get()) + 1).toString(),//数据协议
             plattype = DataCenterPlatform.valueByPlatformName(mStates.platformType.get())//平台类型
                 .getCmdValue(),
-            packtype = if (mStates.platformType.get() == DataCenterPlatform.GUANGDONG_WATER_PLATFORM.getPlatName()) {// 测站类型
-                when (mStates.guangdongWaterPlatformStationType.get()) {
-                    guangdongWaterPlatformStationTypeList[0] -> "0"
-                    guangdongWaterPlatformStationTypeList[1] -> "1"
-                    guangdongWaterPlatformStationTypeList[2] -> "3"
-                    guangdongWaterPlatformStationTypeList[3] -> "4"
-                    guangdongWaterPlatformStationTypeList[4] -> "5"
-                    guangdongWaterPlatformStationTypeList[5] -> "6"
-                    guangdongWaterPlatformStationTypeList[6] -> "7"
-                    else -> IOTConstants.NULL_KEY
-                }
-            } else IOTConstants.NULL_KEY
+            packtype = if (mStates.platformType.get() == DataCenterPlatform.GUANGDONG_WATER_PLATFORM.getPlatName()) // 测站类型
+                GuangdongWaterPlatformStationType.valueByStationName(mStates.guangdongWaterPlatformStationType.get())
+                    .getCode()
+            else IOTConstants.NULL_KEY
         )
 
         // MQTT/MQTTS 协议特有配置参数
@@ -295,7 +284,8 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             // SL651/SZY206 协议特有配置参数
             entity.type_code =
                 if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.toString())
-                    SL651StationType.valueByStationName(mStates.stationType.get()).code else IOTConstants.NULL_KEY
+                    SL651StationType.valueByStationName(mStates.stationType.get())
+                        .getCode() else IOTConstants.NULL_KEY
             entity.co_address =
                 if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.toString())
                     mStates.centerStationAddr.get() else IOTConstants.NULL_KEY
@@ -450,35 +440,11 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
 
             // Handle packtype for Guangdong Water Platform station types
             // The mapping is: 0=山洪灾害监测站, 1=河道水情监测站, 3=沉降监测站, 4=水质监测站, 5=雨量监测站, 6=流量监测站
-            when (data.packtype) {
-                "0" -> mStates.guangdongWaterPlatformStationType.set(
-                    guangdongWaterPlatformStationTypeList[0]
-                )
-
-                "1" -> mStates.guangdongWaterPlatformStationType.set(
-                    guangdongWaterPlatformStationTypeList[1]
-                )
-
-                "3" -> mStates.guangdongWaterPlatformStationType.set(
-                    guangdongWaterPlatformStationTypeList[2]
-                )
-
-                "4" -> mStates.guangdongWaterPlatformStationType.set(
-                    guangdongWaterPlatformStationTypeList[3]
-                )
-
-                "5" -> mStates.guangdongWaterPlatformStationType.set(
-                    guangdongWaterPlatformStationTypeList[4]
-                )
-
-                "6" -> mStates.guangdongWaterPlatformStationType.set(
-                    guangdongWaterPlatformStationTypeList[5]
-                )
-
-                "7" -> mStates.guangdongWaterPlatformStationType.set(
-                    guangdongWaterPlatformStationTypeList[6]
-                )
-            }
+            mStates.guangdongWaterPlatformStationType.set(
+                GuangdongWaterPlatformStationType.valueByCode(
+                    data.packtype
+                ).getStationName()
+            )
 
             // MQTT 协议参数
             mStates.productId.set(data.projid)
@@ -490,7 +456,9 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
 
             // SL651/SZY206 协议参数
             if (mStates.dataProtocol.get() == dataProtocolList[2]) {
-                mStates.stationType.set(SL651StationType.valueByCode(data.type_code).stationName)//测站分类
+                mStates.stationType.set(
+                    SL651StationType.valueByCode(data.type_code).getStationName()
+                )//测站分类
                 mStates.centerStationAddr.set(data.co_address)//中心站地址
             }
 
@@ -542,7 +510,8 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
          * 平台类型选择
          */
         fun onPlatformTypeChooseClick() {
-            val supportedPlatformNames = DefaultPlatformConfigManager.getMR702SupportedPlatformNames().toTypedArray()
+            val supportedPlatformNames =
+                DefaultPlatformConfigManager.getMR702SupportedPlatformNames().toTypedArray()
             val selectedIndex = supportedPlatformNames.indexOf(mStates.platformType.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
@@ -660,15 +629,16 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
          * 广东水文平台测站类型选择
          */
         fun onGuangdongWaterPlatformStationTypeChooseClick() {
-            val selectedIndex =
-                guangdongWaterPlatformStationTypeList.indexOf(mStates.guangdongWaterPlatformStationType.get())
+            val stationList = GuangdongWaterPlatformStationType.stationNames
+            val selectedIndex = stationList.indexOf(mStates.guangdongWaterPlatformStationType.get())
+
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true)
                 .enableDrag(false)
                 .asBottomList(
-                    "请选择测站类型", guangdongWaterPlatformStationTypeList,
+                    "请选择测站类型", stationList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.guangdongWaterPlatformStationType.set(text)
@@ -681,15 +651,15 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
          * 测站分类选择
          */
         fun onStationClassificationChooseClick() {
-            val codeList = SL651StationType.entries.map { it.stationName }
-            val selectedIndex = codeList.indexOf(mStates.stationType.get())
+            val stationList = SL651StationType.stationNames
+            val selectedIndex = stationList.indexOf(mStates.stationType.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true)
                 .enableDrag(false)
                 .asBottomList(
-                    "请选择测站分类", codeList.toTypedArray(),
+                    "请选择测站分类", stationList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.stationType.set(text)

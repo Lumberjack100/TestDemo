@@ -3,28 +3,22 @@ package com.shmedo.lib.cmd.base.iot_cmd.enums
 import android.text.TextUtils
 
 /**
- * 创建者:   gonghe <br></br>
- * 创建时间:  2022/9/26 <br></br>
- * 描述：    SL651水文 遥测站分类码
+ * 创建者：gonghe
+ * 创建时间：2025/9/2
+ * 描述： 广东水文平台测站类型枚举
  */
-enum class SL651StationType(private val stationName: String, private val code: String) {
-    PRECIPITATION("降水", "P"),
-    RIVER_COURSE("河道", "H"),
-    RESERVOIR("水库(湖泊)", "K"),
-    DAM(
-        "闸坝",
-        "Z"
-    ),
-    PUMPING_STATION("泵站", "D"),
-    TIDAL("潮汐", "T"),
-    MOISTURE("墒情", "M"),
-    GROUNDWATER(
-        "地下水",
-        "G"
-    ),
-    WATER_QUALITY("水质", "Q"),
-    WATER_INTAKE("取水口", "I"),
-    DRAIN("排水口", "O"),
+enum class GuangdongWaterPlatformStationType(
+    private val stationName: String,
+    private val code: String
+) {
+    FLOOD_MONITORING("山洪灾害监测站", "O"),
+    RIVER_COURSE_MONITORING("河道水情监测站", "1"),
+    SETTLEMENT_MONITORING("沉降监测站", "3"),
+    WATER_QUALITY_MONITORING("水质监测站", "4"),
+    RAIN_MONITORING("雨量监测站", "5"),
+    FLOW_MONITORING("流量监测站", "6"),
+    BDS_FLOOD_MONITORING("北斗山洪灾害监测站", "7"),
+
     CUSTOM("自定义", "1");
 
     fun getStationName(): String {
@@ -37,7 +31,7 @@ enum class SL651StationType(private val stationName: String, private val code: S
 
     companion object {
         @JvmStatic
-        fun valueByStationName(name: String): SL651StationType {
+        fun valueByStationName(name: String): GuangdongWaterPlatformStationType {
             if (TextUtils.isEmpty(name)) return CUSTOM
             for (station in entries) {
                 if (station.stationName == name) return station
@@ -46,7 +40,7 @@ enum class SL651StationType(private val stationName: String, private val code: S
         }
 
         @JvmStatic
-        fun valueByCode(code: String): SL651StationType {
+        fun valueByCode(code: String): GuangdongWaterPlatformStationType {
             if (TextUtils.isEmpty(code)) return CUSTOM
             for (station in entries) {
                 if (station.code == code) return station

@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.model
 
 import com.shmedo.lib.cmd.base.iot_cmd.enums.DataCenterPlatform
+import com.shmedo.lib.cmd.base.iot_cmd.enums.GuangdongWaterPlatformStationType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol
 import com.shmedo.mcloudapp.ui.viewmodel.state.DataCenterParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702DataCenterParamViewModel
@@ -150,18 +151,7 @@ object DefaultPlatformConfigManager {
 
         // 广东水文平台特有参数
         if (config.platform == DataCenterPlatform.GUANGDONG_WATER_PLATFORM) {
-            states.guangdongWaterPlatformStationType.set(
-                when (config.packType) {
-                    "0" -> "山洪灾害监测站"
-                    "1" -> "河道水情监测站"
-                    "3" -> "沉降监测站"
-                    "4" -> "水质监测站"
-                    "5" -> "雨量监测站"
-                    "6" -> "流量监测站"
-                    "7" -> "北斗山洪灾害监测站"
-                    else -> "山洪灾害监测站"
-                }
-            )
+            states.guangdongWaterPlatformStationType.set(GuangdongWaterPlatformStationType.valueByCode(config.packType).getStationName())
         }
     }
 

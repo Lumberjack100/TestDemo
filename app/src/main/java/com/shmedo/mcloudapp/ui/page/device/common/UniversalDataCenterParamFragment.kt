@@ -156,7 +156,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
         /**
          * SL651 水文协议特有配置参数
          */
-        mStates.stationType.set(SL651StationType.RESERVOIR.stationName)//默认选择水库(湖泊)
+        mStates.stationType.set(SL651StationType.RESERVOIR.getStationName())//默认选择水库(湖泊)
         mStates.centerStationAddr.set("")//
         mStates.password.set("")//
         mStates.telemetryStationAddr.set("")//
@@ -286,7 +286,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
          * 测站分类
          */
         fun onStationClassificationChooseClick() {
-            val codeList = SL651StationType.entries.map { it.stationName }
+            val codeList = SL651StationType.entries.map { it.getStationName() }
             val selectedIndex = codeList.indexOf(mStates.stationType.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
@@ -422,7 +422,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                 if (mStates.isRegisterVisible.get()) mStates.registerPort.get() else ""
 
         } else if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.toString()) {//SL651
-            entity.type_code = SL651StationType.valueByStationName(mStates.stationType.get()).code
+            entity.type_code = SL651StationType.valueByStationName(mStates.stationType.get()).getCode()
             entity.co_address = mStates.centerStationAddr.get()
             entity.password = mStates.password.get()
             entity.taddress = mStates.telemetryStationAddr.get()
@@ -590,7 +590,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
         mStates.isRegisterVisible.set(mStates.platformType.get() !=DataCenterPlatform.CHONGQING_DISASTER_PLATFORM.getPlatName())
 
         //SL651 水文协议参数
-        mStates.stationType.set(SL651StationType.valueByCode(data.type_code).stationName)
+        mStates.stationType.set(SL651StationType.valueByCode(data.type_code).getStationName())
         mStates.centerStationAddr.set(data.co_address)
         mStates.password.set(data.password)
         mStates.telemetryStationAddr.set(data.taddress)
