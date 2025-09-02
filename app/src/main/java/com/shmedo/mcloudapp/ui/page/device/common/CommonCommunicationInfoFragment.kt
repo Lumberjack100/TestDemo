@@ -11,7 +11,7 @@ import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UProductCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.lb20s.LB20SCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
@@ -157,7 +157,7 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
         launchWithViewLifecycle {
             try {
                 val commonCurrentStateInfoList = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<List<CommonCurrentStateInfo2>>(content)
+                    MoshiUtil.fromJson<List<UProductCurrentStateInfo>>(content)
                 } ?: return@launchWithViewLifecycle
 
                 if (commonCurrentStateInfoList.isEmpty()) {

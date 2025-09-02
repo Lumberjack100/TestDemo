@@ -8,7 +8,7 @@ import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UProductCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
@@ -109,7 +109,7 @@ class GWBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         launchWithViewLifecycle {
             try {
                 val commonCurrentStateInfoList = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<List<CommonCurrentStateInfo2>>(content)
+                    MoshiUtil.fromJson<List<UProductCurrentStateInfo>>(content)
                 } ?: return@launchWithViewLifecycle
 
                 if (commonCurrentStateInfoList.isEmpty()) {

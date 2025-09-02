@@ -179,8 +179,8 @@ class UProductCommonHomeFragment : BaseDeviceHomeFragment() {
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = when (productType) {
                             ProductType.LR200 -> R.id.action_global_to_lR200StatusInfoFragment //米度一体式裂缝计
-                            ProductType.U_I_1 -> R.id.action_global_to_uProductStatusInfoFragment//倾斜仪
-                            ProductType.U_R_1 -> R.id.action_global_to_uRProductStatusInfoFragment //一体式雨量计
+                            ProductType.U_I_1 -> R.id.action_global_to_uIStatusInfoFragment//倾斜仪
+                            ProductType.U_R_1 -> R.id.action_global_to_uRStatusInfoFragment //一体式雨量计
                             ProductType.U_L_1 -> R.id.action_global_to_uLStatusInfoFragment //北斗林木生长监测终端
                             else -> 0
                         },
@@ -293,8 +293,8 @@ class UProductCommonHomeFragment : BaseDeviceHomeFragment() {
 
             is SensorConfigModule -> {
                 val navId = when (productType) {
-                    ProductType.U_I_1 -> R.id.action_global_to_uIProductSensorParamFragment//倾斜仪
-                    ProductType.U_R_1 -> R.id.action_global_to_uRProductSensorParamFragment//一体式雨量计
+                    ProductType.U_I_1 -> R.id.action_global_to_uISensorParamFragment//倾斜仪
+                    ProductType.U_R_1 -> R.id.action_global_to_uRSensorParamFragment//一体式雨量计
                     ProductType.LR200 -> R.id.action_global_to_lR200SensorParamFragment//米度一体式裂缝计
                     ProductType.U_L_1 -> R.id.action_global_to_uLSensorParamFragment//北斗林木生长监测终端
                     else -> 0

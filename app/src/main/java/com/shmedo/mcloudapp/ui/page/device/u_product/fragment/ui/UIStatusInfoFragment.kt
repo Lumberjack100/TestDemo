@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +9,7 @@ import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UProductCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
@@ -28,7 +28,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/9/19
- * 描述： U产品状态信息
+ * 描述： : 一体式倾斜仪状态信息
  *
  * 优化特点：
  * 1. 继承自 OptimizedBaseDeviceStatusInfoStyleFragment，使用新的通信架构
@@ -37,7 +37,7 @@ import timber.log.Timber
  * 4. 保持原有的U产品特定业务逻辑不变
  * 5. 支持4G和蓝牙两种通讯方式
  */
-class UProductStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
+class UIStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -54,7 +54,7 @@ class UProductStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() 
             commands = commands,
             config = CommandSequenceConfig(
                 showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
-                errorConfig = ErrorConfig.dialogConfig()
+                errorConfig = ErrorConfig.Companion.dialogConfig()
             )
         )
     }
@@ -63,7 +63,7 @@ class UProductStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() 
         launchWithViewLifecycle {
             try {
                 val commonCurrentStateInfoList = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<List<CommonCurrentStateInfo2>>(content as String)
+                    MoshiUtil.fromJson<List<UProductCurrentStateInfo>>(content as String)
                 }
                 if (commonCurrentStateInfoList.isNullOrEmpty()) {
                     binding.refreshLayout.showEmpty()
@@ -94,7 +94,7 @@ class UProductStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电池电压",
-                    value = if (batteryVoltage == 0.0) "0" else stateInfo.batPowerVolt.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    value = if (batteryVoltage == 0.0) "0" else stateInfo.batPowerVolt.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     unit = "V",
                     isBottomItem = true
                 )
@@ -105,7 +105,7 @@ class UProductStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "内部温度",
-                    value = stateInfo.temp.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    value = stateInfo.temp.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     textColorRes = if ((internalTemp > -20 && internalTemp < 70) || internalTemp == Double.MAX_VALUE) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00
                     ),
@@ -279,7 +279,7 @@ class UProductStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() 
 
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }

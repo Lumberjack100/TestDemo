@@ -73,15 +73,15 @@
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
-        android:id="@+id/uRProductStatusInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ur.URProductStatusInfoFragment"
-        android:label="URProductStatusInfoFragment"
+        android:id="@+id/uRStatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ur.URStatusInfoFragment"
+        android:label="URStatusInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
-        android:id="@+id/uProductStatusInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UProductStatusInfoFragment"
-        android:label="UProductStatusInfoFragment"
+        android:id="@+id/uIStatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ui.UIStatusInfoFragment"
+        android:label="UIStatusInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
@@ -91,16 +91,16 @@
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <fragment
-        android:id="@+id/uIProductSensorParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ui.UIProductSensorParamFragment"
-        android:label="UIProductSensorParamFragment"
+        android:id="@+id/uISensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ui.UISensorParamFragment"
+        android:label="UISensorParamFragment"
         tools:layout="@layout/fragment_ui_product_sensor_param" />
 
     <fragment
-        android:id="@+id/uRProductSensorParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ur.URProductSensorParamFragment"
-        android:label="URProductSensorParamFragment"
-        tools:layout="@layout/fragment_ud_product_sensor_param" />
+        android:id="@+id/uRSensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ur.URSensorParamFragment"
+        android:label="URSensorParamFragment"
+        tools:layout="@layout/fragment_ur_product_sensor_param" />
 
     <fragment
         android:id="@+id/lR200SensorParamFragment"
@@ -193,16 +193,16 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_uRProductStatusInfoFragment"
-        app:destination="@id/uRProductStatusInfoFragment"
+        android:id="@+id/action_global_to_uRStatusInfoFragment"
+        app:destination="@id/uRStatusInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_uProductStatusInfoFragment"
-        app:destination="@id/uProductStatusInfoFragment"
+        android:id="@+id/action_global_to_uIStatusInfoFragment"
+        app:destination="@id/uIStatusInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -233,16 +233,16 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_uIProductSensorParamFragment"
-        app:destination="@id/uIProductSensorParamFragment"
+        android:id="@+id/action_global_to_uISensorParamFragment"
+        app:destination="@id/uISensorParamFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_uRProductSensorParamFragment"
-        app:destination="@id/uRProductSensorParamFragment"
+        android:id="@+id/action_global_to_uRSensorParamFragment"
+        app:destination="@id/uRSensorParamFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

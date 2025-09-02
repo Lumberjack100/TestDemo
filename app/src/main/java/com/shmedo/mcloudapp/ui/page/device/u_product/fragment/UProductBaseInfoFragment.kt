@@ -7,7 +7,7 @@ import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UProductCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
@@ -72,7 +72,7 @@ class UProductBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         launchWithViewLifecycle {
             try {
                 val commonCurrentStateInfoList = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<List<CommonCurrentStateInfo2>>(content as String)
+                    MoshiUtil.fromJson<List<UProductCurrentStateInfo>>(content as String)
                 }
                 if (commonCurrentStateInfoList.isNullOrEmpty()) {
                     binding.refreshLayout.showEmpty()
