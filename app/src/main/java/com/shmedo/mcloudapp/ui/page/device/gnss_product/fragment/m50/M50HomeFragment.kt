@@ -22,6 +22,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.communication.session.CommandPriority
 import com.shmedo.mcloudapp.databinding.ItemM50MeasureDataBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -299,7 +300,8 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
             config = CommandSequenceConfig(
                 showLoadingDialog = false,
                 errorConfig = ErrorConfig.silentConfig(), // 状态查询失败不显示错误
-                enableBusinessParseFailureInterrupt = false // 不启用业务层解析失败中断功能，保持后续指令执行
+                enableBusinessParseFailureInterrupt = false, // 不启用业务层解析失败中断功能，保持后续指令执行
+                priority = CommandPriority.NORMAL
             )
         )
     }

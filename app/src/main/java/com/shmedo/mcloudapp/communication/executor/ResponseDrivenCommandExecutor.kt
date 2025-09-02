@@ -174,7 +174,9 @@ class ResponseDrivenCommandExecutor(
         return try {
             val commandConfig = CommandConfig(
                 timeout = config.timeout,
-                delayBeforeSend = config.delayBeforeSend
+                delayBeforeSend = config.delayBeforeSend,
+                ownerId = config.ownerId,
+                priority = config.priority,
             )
 
             // 发送指令并等待响应

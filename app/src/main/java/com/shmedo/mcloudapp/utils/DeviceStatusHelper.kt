@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.utils
 
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.AdmeModuleErrorType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UProductCurrentStateInfo
 
 /**
  * 创建者：gonghe
@@ -138,7 +138,7 @@ object DeviceStatusHelper {
         return deviceAbnormalList
     }
 
-    fun checkDeviceAbnormal(currentStateInfo: CommonCurrentStateInfo2): ArrayList<String> {
+    fun checkDeviceAbnormal(currentStateInfo: UProductCurrentStateInfo): ArrayList<String> {
         val deviceAbnormalList: ArrayList<String> = ArrayList()
 
         if (currentStateInfo._4g.uppercase().contains("FAIL")

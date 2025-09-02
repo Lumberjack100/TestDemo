@@ -33,7 +33,9 @@ package com.shmedo.lib.ble.communicate.service
 
 import android.content.Context
 import com.shmedo.lib.ble.communicate.data.CommandData
+import com.shmedo.lib.ble.communicate.data.EnhancedMedoBleManager
 import com.shmedo.lib.ble.communicate.data.MedoBleManager
+import com.shmedo.lib.ble.communicate.data.SessionCommand
 import com.shmedo.lib.ble.communicate.service.base.ServiceManager
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -54,7 +56,7 @@ class MedoBleRepository(
     private val context: Context,
     private val serviceManager: ServiceManager
 ) {
-    private var medoBleManager: MedoBleManager? = null
+    private var enhancedMedoBleManager: EnhancedMedoBleManager? = null
 
     // 分离的连接状态流
     private val _connectionState = MutableSharedFlow<ConnectionState>()
@@ -64,45 +66,89 @@ class MedoBleRepository(
     private val _commandData = MutableSharedFlow<CommandData>()
     val commandData = _commandData.asSharedFlow()
 
-
     fun launch(device: DiscoveredBluetoothDevice) {
         serviceManager.startService(MedoBleService::class.java, device)
     }
 
     fun startConnect(device: DiscoveredBluetoothDevice, scope: CoroutineScope) {
-        val manager = MedoBleManager(context, scope, device.device)
-        this.medoBleManager = manager
+        // 使用增强版管理器
+        val enhancedManager = EnhancedMedoBleManager(context, scope, device.device)
+        this.enhancedMedoBleManager = enhancedManager
 
         // 收集连接状态
-        manager.connectionState.onEach { state ->
+        enhancedManager.connectionState.onEach { state ->
             _connectionState.emit(state)
         }.launchIn(scope)
 
-        // 收集数据响应
-        manager.commandData.onEach { commandData ->
+        // 收集数据响应（兼容原有接口）
+        enhancedManager.commandData.onEach { commandData ->
             _commandData.emit(commandData)
         }.launchIn(scope)
-
 
         val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
             Timber.e("MedoBle Error", throwable)
         }
         scope.launch(Dispatchers.IO + exceptionHandler) {
-            Timber.v("MedoBle call connect()")
-            manager.connect()
+            Timber.v("EnhancedMedoBle call connect()")
+            enhancedManager.connect()
         }
     }
 
+    /**
+     * 兼容原有接口：发送普通指令
+     */
     fun sendData(command: String) {
-        medoBleManager?.sendData(command)
+        enhancedMedoBleManager?.sendData(command)
+    }
+
+    /**
+     * 新接口：发送会话指令
+     */
+    fun sendSessionCommand(sessionCommand: SessionCommand) {
+        enhancedMedoBleManager?.sendSessionCommand(sessionCommand)
+    }
+
+    /**
+     * 注册会话监听器
+     */
+    suspend fun registerSessionListener(sessionId: String, listener: (CommandData) -> Unit) {
+        enhancedMedoBleManager?.registerSessionListener(sessionId, listener)
+    }
+
+    /**
+     * 注销会话监听器
+     */
+    suspend fun unregisterSessionListener(sessionId: String) {
+        enhancedMedoBleManager?.unregisterSessionListener(sessionId)
+    }
+
+    /**
+     * 取消会话
+     */
+    fun cancelSession(sessionId: String) {
+        enhancedMedoBleManager?.cancelSession(sessionId)
+    }
+
+    /**
+     * 清理过期会话
+     */
+    fun cleanupExpiredSessions() {
+        enhancedMedoBleManager?.cleanupExpiredSessions()
+    }
+
+    /**
+     * 获取会话状态
+     */
+    fun getSessionStatus(): Triple<Int, Int, Int>? {
+        return enhancedMedoBleManager?.getSessionStatus()
     }
 
     fun disconnect() {
-        medoBleManager?.release()
-        medoBleManager = null
+        enhancedMedoBleManager?.release()
+        enhancedMedoBleManager = null
     }
 
     fun isConnected(): Boolean {
-        return medoBleManager?.isReady ?: false
+        return enhancedMedoBleManager?.isReady ?: false
     }
 }

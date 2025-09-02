@@ -8,12 +8,12 @@ class MR702DataCenterParamViewModel : BaseDataCenterParamViewModel() {
     val isWiredNetOpened = NonNullObservableField(true) // 有线 是否开启
 
     val communicateWay = NonNullObservableField("") // 通信方式
-    val ipLeve = NonNullObservableField("")
+    val ipLeve = NonNullObservableField("")// IP 网络协议
 
     /** SL651 水文协议特有配置参数 */
-    val stationType = NonNullObservableField("") // 测站分类
-    val centerStationAddr = NonNullObservableField("") // 中心站地址
-    val password = NonNullObservableField("") // 密码
+    val stationType = NonNullObservableField("") //SL651 测站分类
+    val centerStationAddr = NonNullObservableField("") //SL651 中心站地址
+    val password = NonNullObservableField("") //SL651 密码
     val telemetryStationAddr = NonNullObservableField("") // 测站编码(遥测站地址)
 
     val isAdvancedItemVisible = NonNullObservableField(false) // 高级设置是否可见
@@ -26,7 +26,7 @@ class MR702DataCenterParamViewModel : BaseDataCenterParamViewModel() {
     val reissuingDataInterval = NonNullObservableField("") // 数据补发间隔（分钟）
 
     /** 广东水文平台特有配置参数 */
-    val guangdongWaterPlatformStationType = NonNullObservableField("") // 测站分类
+    val guangdongWaterPlatformStationType = NonNullObservableField("") // 测站类型
 
     init {
         // 在所有字段初始化后调用 registerField()

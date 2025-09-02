@@ -162,7 +162,10 @@ class FirmwareUpgradeFragment : OptimizedBaseIOTDeviceFragment() {
 
     private fun applyFirmwareUpgrade(firmWareInfo: FirmWareInfo) {
         val entity = FirmWareEntity(
-            url = firmWareInfo.absolutePath,
+            url = firmWareInfo.absolutePath.replace(
+                "https://mdnetfile.shmedo.cn",
+                "http://114.55.169.167:8018"
+            ),
             size = firmWareInfo.fwSize.toString(),
             md5 = firmWareInfo.fwMd5
         )

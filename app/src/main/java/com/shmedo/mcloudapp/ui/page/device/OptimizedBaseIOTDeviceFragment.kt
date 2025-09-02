@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.DeviceConnectionState
 import com.shmedo.mcloudapp.communication.model.DeviceError
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.communication.session.CommandPriority
 import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -68,6 +69,9 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     // 通信管理器
     protected lateinit var communicationManager: DeviceCommunicationManager
 
+    // 页面唯一标识，用于会话管理
+    protected val fragmentId = "Fragment_${this::class.simpleName}_${System.currentTimeMillis()}"
+
     // 最后通信时间
     protected val lastCommunicationTime = MutableStateFlow(System.currentTimeMillis())
 
@@ -114,7 +118,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
 
     // ==================== 新的API方法 ====================
     /**
-     * 发送指令序列 (支持实时回调)
+     * 发送指令序列 (支持实时回调和会话隔离)
      * @param commands 指令列表
      * @param config 执行配置
      * @param callbacks 回调配置
@@ -124,13 +128,21 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
         config: CommandSequenceConfig = CommandSequenceConfig(),
         callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks(),
     ) {
+        // 自动设置会话所有者ID和优先级
+        val enhancedConfig = config.copy(
+            ownerId = config.ownerId ?: fragmentId,
+            priority = config.priority
+        )
+        
+        Timber.d("页面 $fragmentId 发送指令序列: ${commands.size} 条指令")
+        
         communicationManager.executeCommandSequence(
             commands = commands,
-            config = config,
+            config = enhancedConfig,
             callbacks = CommandSequenceCallbacks(
                 onSuccess = { successResult ->
                     // 根据配置决定是否启用业务层指令响应内容解析失败中断功能
-                    if (config.enableBusinessParseFailureInterrupt) {
+                    if (enhancedConfig.enableBusinessParseFailureInterrupt) {
                         // 启用了业务层解析失败中断功能
                         val shouldContinue = try {
                             handleCommandResponse(successResult.responseData)
@@ -138,7 +150,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
                             true
                         } catch (e: Exception) {
                             // 如果handleCommandResponse抛出异常，表示响应内容解析失败，中断指令序列执行
-                            Timber.e(e, "业务解析失败，中断指令序列执行")
+                            Timber.e(e, "页面 $fragmentId 业务解析失败，中断指令序列执行")
                             false
                         }
 
@@ -153,7 +165,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
                         try {
                             handleCommandResponse(successResult.responseData)
                         } catch (e: Exception) {
-                            Timber.e(e, "业务解析失败，继续指令序列执行")
+                            Timber.e(e, "页面 $fragmentId 业务解析失败，继续指令序列执行")
                         }
                         // 调用原始回调
                         callbacks.onSuccess?.invoke(successResult)
@@ -163,13 +175,14 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
                 },
                 onComplete = { results ->
                     // 统一的清理逻辑
-//                    finishCommunication()
+                    // finishCommunication()
                     finishRefresh()
+                    Timber.d("页面 $fragmentId 指令序列执行完成")
                     callbacks.onComplete(results)
                 },
                 onError = { error, command ->
-                    addDeviceLogItem(Log.ERROR, "指令执行失败: $command, 错误: ${error.message}")
-                    if (config.stopOnFirstCmdError) {
+                    addDeviceLogItem(Log.ERROR, "页面 $fragmentId 指令执行失败: $command, 错误: ${error.message}")
+                    if (enhancedConfig.stopOnFirstCmdError) {
                         // 统一的清理逻辑
                         cancelCommunication()
                     }
@@ -366,8 +379,69 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
 
     override fun isRestrictHiddenMode(): Boolean = true
 
+    // ==================== 会话管理便捷方法 ====================
+
+    /**
+     * 发送紧急指令序列（高优先级）
+     */
+    protected fun sendUrgentCommandSequence(
+        commands: List<String>,
+        config: CommandSequenceConfig = CommandSequenceConfig(),
+        callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks(),
+    ) {
+        val urgentConfig = config.copy(
+            priority = CommandPriority.URGENT,
+            ownerId = config.ownerId ?: fragmentId
+        )
+        sendCommandSequence(commands, urgentConfig, callbacks)
+    }
+
+    /**
+     * 发送高优先级指令序列
+     */
+    protected fun sendHighPriorityCommandSequence(
+        commands: List<String>,
+        config: CommandSequenceConfig = CommandSequenceConfig(),
+        callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks(),
+    ) {
+        val highConfig = config.copy(
+            priority = CommandPriority.HIGH,
+            ownerId = config.ownerId ?: fragmentId
+        )
+        sendCommandSequence(commands, highConfig, callbacks)
+    }
+
+    /**
+     * 取消当前页面的所有指令
+     */
+    protected fun cancelAllPageCommands() {
+        if (communicateWay == BleConnect) {
+            bleViewModel.cancelSession(fragmentId)
+        }
+        communicationManager.cancelExecution()
+        Timber.i("页面 $fragmentId 取消所有指令")
+    }
+
+    /**
+     * 获取当前页面的会话状态
+     */
+    protected fun getPageSessionStatus(): String {
+        return if (communicateWay == BleConnect) {
+            val status = bleViewModel.getSessionStatus()
+            if (status != null) {
+                "活跃会话: ${status.first}, 队列指令: ${status.second}, 监听器: ${status.third}"
+            } else {
+                "会话状态不可用"
+            }
+        } else {
+            "4G通信模式"
+        }
+    }
+
     override fun onDestroy() {
-        cleanupCommunication()
+        // 页面销毁时取消所有相关指令
+        Timber.d("页面 $fragmentId 销毁，清理相关会话")
+        cancelAllPageCommands()
         super.onDestroy()
     }
 

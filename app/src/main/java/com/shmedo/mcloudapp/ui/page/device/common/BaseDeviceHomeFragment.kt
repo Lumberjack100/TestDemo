@@ -37,6 +37,7 @@ import com.shmedo.mcloudapp.baseclickproxy.DoubleClickListener
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.DeviceError
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.communication.session.CommandPriority
 import com.shmedo.mcloudapp.databinding.FragmentUniversalDeviceHomeNewBinding
 import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
@@ -467,7 +468,8 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
             config = CommandSequenceConfig(
                 showLoadingDialog = false,
                 errorConfig = ErrorConfig.silentConfig(),
-                timeout = 5000L  // 心跳包使用较短的超时时间
+                timeout = 5000L,  // 心跳包使用较短的超时时间
+                priority = CommandPriority.LOW
             )
         )
     }
