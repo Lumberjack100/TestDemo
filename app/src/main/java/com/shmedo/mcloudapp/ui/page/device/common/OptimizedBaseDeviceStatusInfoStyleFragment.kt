@@ -92,7 +92,7 @@ abstract class OptimizedBaseDeviceStatusInfoStyleFragment : OptimizedBaseIOTDevi
         binding.refreshLayout.onRefresh {
             if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
-                binding.refreshLayout.finishRefresh(false)
+                finishRefresh()
                 return@onRefresh
             }
             queryStatusInfo()
