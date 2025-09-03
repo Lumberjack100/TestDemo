@@ -102,7 +102,7 @@ class QueryDeviceDataFragment : BaseFragment() {
         PageRefreshLayout.startIndex = 1
         binding.refreshLayout.onRefresh {
             if (mHeadStates.sn.get().isEmpty()) {
-                binding.refreshLayout.finishRefresh(false)
+                finishRefresh()
                 showMessageDialog("请输入 SN 号")
                 return@onRefresh
             }

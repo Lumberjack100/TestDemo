@@ -79,6 +79,7 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
         binding.refreshLayout.onRefresh {
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
+                finishRefresh()
                 return@onRefresh
             }
             queryData()

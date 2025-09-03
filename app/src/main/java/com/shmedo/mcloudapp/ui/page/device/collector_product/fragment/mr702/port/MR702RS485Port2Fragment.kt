@@ -87,6 +87,7 @@ class MR702RS485Port2Fragment : OptimizedBaseIOTDeviceFragment() {
         binding.refreshLayout.onRefresh {
             if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
+                finishRefresh()
                 return@onRefresh
             }
             queryInfo()

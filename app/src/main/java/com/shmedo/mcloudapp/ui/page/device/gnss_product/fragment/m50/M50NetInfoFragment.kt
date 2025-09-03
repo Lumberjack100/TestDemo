@@ -140,7 +140,9 @@ class M50NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
                     onlineStatusList.forEachIndexed { index, status ->
                         val platformIndex = platformTypeList.getOrNull(index)?.toIntOrNull() ?: 0
-                        val platformType = DataCenterPlatform.valueByCmdValue(platformIndex.toString()).getPlatName()
+                        val platformType =
+                            DataCenterPlatform.valueByCmdValue(platformIndex.toString())
+                                .getPlatName()
                         val statusText = status.compareAndReturn(
                             "1",
                             "已连接",
@@ -174,11 +176,12 @@ class M50NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
             val item = DataCenterStatusItem(
                 centerid = index,
                 name = "数据链路$index",
-                status = infoBasicItem.value.substringBefore("(").compareAndReturn(
-                    "未启用",
-                    "0",
-                    infoBasicItem.value.substringBefore("(").compareAndReturn("已连接", "1", "2")
-                )
+                status = when {
+                    infoBasicItem.value.contains("未启用") -> "0"
+                    infoBasicItem.value.contains("已连接") -> "1"
+                    infoBasicItem.value.contains("未连接") -> "2"
+                    else -> "0"
+                }
             )
 
             val bundle = UniversalDataCenterParamFragment.newBundleArguments(
@@ -189,9 +192,10 @@ class M50NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 bleDevice
             )
             nav().safeNavigate(
-                R.id.action_global_dataCenterParamFragment,
+                R.id.action_global_to_dataCenterParamFragment,
                 bundle
             )
         }
     }
+
 }

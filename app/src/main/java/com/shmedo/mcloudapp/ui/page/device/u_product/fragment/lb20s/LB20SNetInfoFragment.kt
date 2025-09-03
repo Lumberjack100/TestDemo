@@ -12,12 +12,16 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNullKey
+import com.shmedo.mcloudapp.extensions.safeNavigate
+import com.shmedo.mcloudapp.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
+import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -113,6 +117,7 @@ class LB20SNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                             textColorRes = if (status == "0" || statusText == "未连接") 0 else ColorUtils.getColor(
                                 R.color.online_colorPrimary
                             ),
+                            isClickable = true,
                             isBottomItem = index == statusList.size - 1
                         )
                     }
@@ -152,6 +157,35 @@ class LB20SNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 Timber.e(e2, "无法解析设备状态信息")
                 null
             }
+        }
+    }
+
+
+    override fun processItemClick(infoBasicItem: DeviceStatusInfoBasicItem) {
+        if (infoBasicItem.name.startsWith("数据链路")) {
+            val index = infoBasicItem.name.substringAfter("数据链路").toIntOrNull() ?: 0
+            val item = DataCenterStatusItem(
+                centerid = index,
+                name = "数据链路$index",
+                status = when {
+                    infoBasicItem.value.contains("未启用") -> "0"
+                    infoBasicItem.value.contains("已连接") -> "1"
+                    infoBasicItem.value.contains("未连接") -> "2"
+                    else -> "0"
+                }
+            )
+
+            val bundle = UniversalDataCenterParamFragment.newBundleArguments(
+                item,
+                productType,
+                communicateWay,
+                deviceInfo,
+                bleDevice
+            )
+            nav().safeNavigate(
+                R.id.action_global_to_dataCenterParamFragment,
+                bundle
+            )
         }
     }
 }

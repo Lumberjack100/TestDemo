@@ -20,7 +20,7 @@ import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
  */
 class MR702DataCenterHomeFragment : BaseDataCenterHomeFragment() {
     override fun getNavigationActionId(): Int {
-        return R.id.action_global_to_mR702DataCenterParamFragment
+        return R.id.action_global_to_dataCenterParamFragment
     }
 
     override fun queryData() {

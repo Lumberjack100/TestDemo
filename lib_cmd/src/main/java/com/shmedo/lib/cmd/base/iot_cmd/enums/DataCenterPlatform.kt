@@ -23,9 +23,7 @@ enum class DataCenterPlatform(private val platName: String, private val cmdValue
     GUIZHOU_ENCRYPT_PLATFORM("贵州加密平台", "12"),
     CORS_PLATFORM("CORS平台", "13"),
     BEIJING_LUAN_PLATFORM("北京路安平台", "14"),
-    GUANGDONG_FLOOD_PLATFORM("广东山洪预警平台", "15"),
-
-    UNKNOWN_PLATFORM("未知", "100")
+    GUANGDONG_FLOOD_PLATFORM("广东山洪预警平台", "15")
 
     ;
 
@@ -41,21 +39,21 @@ enum class DataCenterPlatform(private val platName: String, private val cmdValue
     companion object {
         @JvmStatic
         fun valueByPlatformName(name: String): DataCenterPlatform {
-            if (TextUtils.isEmpty(name)) return UNKNOWN_PLATFORM
+            if (TextUtils.isEmpty(name)) return MEDO_IOT_PLATFORM
             for (platform in entries) {
                 if (platform.platName == name) return platform
 
             }
-            return UNKNOWN_PLATFORM
+            return MEDO_IOT_PLATFORM
         }
 
         @JvmStatic
         fun valueByCmdValue(cmdValue: String): DataCenterPlatform {
-            if (TextUtils.isEmpty(cmdValue)) return UNKNOWN_PLATFORM
+            if (TextUtils.isEmpty(cmdValue)) return MEDO_IOT_PLATFORM
             for (platform in entries) {
                 if (platform.cmdValue == cmdValue) return platform
             }
-            return UNKNOWN_PLATFORM
+            return MEDO_IOT_PLATFORM
         }
 
         @JvmStatic

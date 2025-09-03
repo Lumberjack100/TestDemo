@@ -6,7 +6,6 @@
     app:startDestination="@id/lB20SHomeFragment">
 
     <include app:graph="@navigation/include_time_calibration_graph" />
-    <include app:graph="@navigation/include_data_center_graph" />
     <include app:graph="@navigation/include_lora_graph" />
     <include app:graph="@navigation/include_advanced_setting_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
@@ -47,6 +46,18 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lb20s.LB20SAdHocNetworkSettingsFragment"
         android:label="LB20SAdHocNetworkSettingsFragment"
         tools:layout="@layout/fragment_lb20s_ad_hoc_network_settings" />
+
+    <fragment
+        android:id="@+id/dataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment"
+        android:label="UniversalDataCenterHomeFragment"
+        tools:layout="@layout/fragment_universal_data_center_home" />
+
+    <fragment
+        android:id="@+id/dataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment"
+        android:label="DataCenterParamFragment"
+        tools:layout="@layout/fragment_data_center_param" />
 
     <fragment
         android:id="@+id/radioSettingsFragment"
@@ -105,6 +116,22 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
+        android:id="@+id/action_global_to_dataCenterHomeFragment"
+        app:destination="@id/dataCenterHomeFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dataCenterParamFragment"
+        app:destination="@id/dataCenterParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
         android:id="@+id/action_global_to_lB20SAdHocNetworkSettingsFragment"
         app:destination="@id/lB20SAdHocNetworkSettingsFragment"
         app:enterAnim="@anim/activity_open_enter"
@@ -123,14 +150,6 @@
     <action
         android:id="@+id/action_global_to_loraSettingFragment"
         app:destination="@id/lora_graph"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
-        android:id="@+id/action_global_to_universalDataCenterHomeFragment"
-        app:destination="@id/data_center_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
