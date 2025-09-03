@@ -20,9 +20,14 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
+import com.shmedo.mcloudapp.model.DataCenterStatusItem
+import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
+import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import timber.log.Timber
 
@@ -163,7 +168,8 @@ class MR702NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 value = status1,
                 textColorRes = if (communicationData.status1 == "0" || status1 == "未连接") 0 else ColorUtils.getColor(
                     R.color.online_colorPrimary
-                )
+                ),
+                isClickable = true,
             )
 
             val status2 = communicationData.status2.compareAndReturn(
@@ -177,7 +183,8 @@ class MR702NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 value = status2,
                 textColorRes = if (communicationData.status2 == "0" || status2 == "未连接") 0 else ColorUtils.getColor(
                     R.color.online_colorPrimary
-                )
+                ),
+                isClickable = true,
             )
 
             val status3 = communicationData.status3.compareAndReturn(
@@ -188,10 +195,11 @@ class MR702NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
             DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                 groupList,
                 name = "数据链路3",
-                value = "$status3(米度物联平台)",
+                value = status3,
                 textColorRes = if (communicationData.status3 == "0" || status3 == "未连接") 0 else ColorUtils.getColor(
                     R.color.online_colorPrimary
-                )
+                ),
+                isClickable = true,
             )
 
             val status4 = communicationData.status4.compareAndReturn(
@@ -205,7 +213,8 @@ class MR702NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 value = status4,
                 textColorRes = if (communicationData.status4 == "0" || status4 == "未连接") 0 else ColorUtils.getColor(
                     R.color.online_colorPrimary
-                )
+                ),
+                isClickable = true,
             )
 
             val status5 = communicationData.status5.compareAndReturn(
@@ -220,6 +229,7 @@ class MR702NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 textColorRes = if (communicationData.status5 == "0" || status5 == "未连接") 0 else ColorUtils.getColor(
                     R.color.online_colorPrimary
                 ),
+                isClickable = true,
                 isBottomItem = true
             )
 
@@ -333,4 +343,32 @@ class MR702NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         }
     }
 
+    override fun processItemClick(infoBasicItem: DeviceStatusInfoBasicItem) {
+        if (infoBasicItem.name.startsWith("数据链路")) {
+            val index = infoBasicItem.name.substringAfter("数据链路").toIntOrNull() ?: 0
+            val item = DataCenterStatusItem(
+                centerid = index,
+                name = "数据链路$index",
+                //用 when 表达式
+                status = when {
+                    infoBasicItem.value.contains("未启用") -> "0"
+                    infoBasicItem.value.contains("已连接") -> "1"
+                    infoBasicItem.value.contains("未连接") -> "2"
+                    else -> "0"
+                }
+            )
+
+            val bundle = UniversalDataCenterParamFragment.newBundleArguments(
+                item,
+                productType,
+                communicateWay,
+                deviceInfo,
+                bleDevice
+            )
+            nav().safeNavigate(
+                R.id.action_global_to_dataCenterParamFragment,
+                bundle
+            )
+        }
+    }
 }

@@ -18,11 +18,16 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNullKey
+import com.shmedo.mcloudapp.extensions.safeNavigate
+import com.shmedo.mcloudapp.model.DataCenterStatusItem
+import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
+import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -159,7 +164,9 @@ class UDNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
                     enableStatusList.forEachIndexed { index, enableStatus ->
                         val platformIndex = platformTypeList.getOrNull(index)?.toIntOrNull() ?: 0
-                        val platformType = DataCenterPlatform.valueByCmdValue(platformIndex.toString()).getPlatName()
+                        val platformType =
+                            DataCenterPlatform.valueByCmdValue(platformIndex.toString())
+                                .getPlatName()
                         val onlineStatus = onlineStatusList.getOrNull(index)
                             ?.compareAndReturn("1", "已连接", "未连接") ?: "未连接"
 
@@ -174,6 +181,7 @@ class UDNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                             textColorRes = if (enableStatus == "0" || onlineStatus == "未连接") 0 else ColorUtils.getColor(
                                 R.color.online_colorPrimary
                             ),
+                            isClickable = true,
                             isBottomItem = index == onlineStatusList.size - 1
                         )
                     }
@@ -184,6 +192,34 @@ class UDNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
+        }
+    }
+
+    override fun processItemClick(infoBasicItem: DeviceStatusInfoBasicItem) {
+        if (infoBasicItem.name.startsWith("数据链路")) {
+            val index = infoBasicItem.name.substringAfter("数据链路").toIntOrNull() ?: 0
+            val item = DataCenterStatusItem(
+                centerid = index,
+                name = "数据链路$index",
+                status = when {
+                    infoBasicItem.value.contains("未启用") -> "0"
+                    infoBasicItem.value.contains("已连接") -> "1"
+                    infoBasicItem.value.contains("未连接") -> "2"
+                    else -> "0"
+                }
+            )
+
+            val bundle = UniversalDataCenterParamFragment.newBundleArguments(
+                item,
+                productType,
+                communicateWay,
+                deviceInfo,
+                bleDevice
+            )
+            nav().safeNavigate(
+                R.id.action_global_to_dataCenterParamFragment,
+                bundle
+            )
         }
     }
 

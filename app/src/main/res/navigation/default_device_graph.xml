@@ -6,7 +6,6 @@
     app:startDestination="@id/defaultDeviceHomeFragment">
 
     <include app:graph="@navigation/include_quick_config_cmd_graph" />
-    <include app:graph="@navigation/include_data_center_graph" />
     <include app:graph="@navigation/include_time_calibration_graph" />
     <include app:graph="@navigation/include_advanced_setting_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
@@ -39,6 +38,18 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonLocationInfoFragment"
         android:label="CommonLocationInfoFragment"
         tools:layout="@layout/fragment_common_location_info" />
+
+    <fragment
+        android:id="@+id/dataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment"
+        android:label="UniversalDataCenterHomeFragment"
+        tools:layout="@layout/fragment_universal_data_center_home" />
+
+    <fragment
+        android:id="@+id/dataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment"
+        android:label="DataCenterParamFragment"
+        tools:layout="@layout/fragment_data_center_param" />
 
     <action
         android:id="@+id/action_global_to_defaultBaseInfoFragment"
@@ -73,8 +84,16 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_universalDataCenterHomeFragment"
-        app:destination="@id/data_center_graph"
+        android:id="@+id/action_global_to_dataCenterHomeFragment"
+        app:destination="@id/dataCenterHomeFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dataCenterParamFragment"
+        app:destination="@id/dataCenterParamFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

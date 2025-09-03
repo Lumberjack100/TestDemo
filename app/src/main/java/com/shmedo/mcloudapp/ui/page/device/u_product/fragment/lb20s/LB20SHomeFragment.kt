@@ -86,7 +86,7 @@ class LB20SHomeFragment : BaseDeviceHomeFragment() {
             DataCenterModule(
                 name = "链路配置",
                 resID = R.drawable.ic_module_datacenter_new,
-                navId = R.id.action_global_to_universalDataCenterHomeFragment
+                navId = R.id.action_global_to_dataCenterHomeFragment
             ).toUnified()
         )
         configModuleTree.configModules.add(
