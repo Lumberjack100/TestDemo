@@ -107,6 +107,58 @@ class NetIOTCommandViewModel(
         }
     }
 
+    /**
+     * 查询指令结果 - 新架构专用API
+     * @param command 指令内容
+     * @param msgIDs 消息ID列表
+     * @param timeoutMs 超时时间(毫秒)，默认10秒
+     * @return CommandResponse 指令响应结果
+     */
+    suspend fun queryCommandResultByMsgID(
+        command: String = "",
+        msgIDs: List<String>,
+        timeoutMs: Long = 10_000L
+    ): CommandResponse {
+        return withContext(Dispatchers.IO) {
+            try {
+                // 轮询响应结果
+                val queryParam = QueryCmdResultParam(msgIDs)
+                val queryJson = MoshiUtil.toJson(queryParam)
+
+                val maxRetries = (timeoutMs / 500).toInt().coerceAtLeast(1) // 每500ms查询一次
+                repeat(maxRetries) { attempt ->
+                    delay(500)
+
+                    try {
+                        val results: List<QueryCmdResult> =
+                            deviceInteractiveRepositoryImp.queryCmdResultByMsgID(queryJson)
+
+                        val result = results.firstOrNull()
+                        if (result?.cmdStatus == 2) { // 状态2表示成功
+                            Timber.i("网络指令响应成功: ${result.responseContent}")
+                            return@withContext CommandResponse.Success(
+                                responseData = result.responseContent,
+                                command = command,
+                                msgID = result.msgID
+                            )
+                        }
+                    } catch (e: Exception) {
+                        Timber.w(e, "查询指令结果异常，尝试 ${attempt + 1}/$maxRetries")
+                    }
+                }
+
+                // 超时
+                Timber.e("网络指令超时: $command")
+                CommandResponse.Timeout(command, timeoutMs)
+            } catch (e: CancellationException) {
+                throw e // 重新抛出取消异常
+            } catch (e: Exception) {
+                Timber.e(e, "网络指令发送异常: $command")
+                CommandResponse.Error(command, e.errorMsg, e)
+            }
+        }
+    }
+
 
     // ===========================================
     // 原有API (保持向后兼容)
