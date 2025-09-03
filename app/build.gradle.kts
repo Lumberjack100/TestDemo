@@ -11,7 +11,7 @@ plugins {
 
 val majorVersion = 5
 val minorVersion = 3
-val patchVersion = 6
+val patchVersion = 5
 
 val testMajorVersion = 5
 val testMinorVersion = 3
