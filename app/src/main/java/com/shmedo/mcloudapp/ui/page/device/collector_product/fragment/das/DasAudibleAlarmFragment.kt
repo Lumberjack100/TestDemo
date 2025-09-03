@@ -24,12 +24,13 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentDasAudibleAlarmBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasAudibleAlarmViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
@@ -41,7 +42,7 @@ import java.text.DecimalFormat
  * 创建时间：2024/5/7
  * 描述： 物联网采集器(DAS)声光报警器参数配置页面- 支持4G通讯方式
  */
-class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
+class DasAudibleAlarmFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasAudibleAlarmBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: DasAudibleAlarmViewModel  by viewModels()
@@ -78,7 +79,7 @@ class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 finishRefresh()
                 return@onRefresh
@@ -94,7 +95,7 @@ class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
                 return
@@ -122,7 +123,6 @@ class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
                     null, selectedIndex,
                     { _, text ->
                         mStates.alarmType.set(text)
-                        showLoadingDialog(StringUtils.getString(R.string.loading))
                         queryAlarmData(alarmTypeList.indexOf(text).toString())
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
@@ -131,7 +131,7 @@ class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -140,7 +140,6 @@ class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initSaveCommand() {
-        commandItems.clear()
         if (mStates.isAudibleOpened.get()) {
             if (mStates.alarmAddress.get().isEmpty()) {
                 showMessageDialog("请输入报警器地址")
@@ -232,9 +231,14 @@ class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
             IOTCommandType.DAS_MD_SET_AUDIBLE_ALARM,
             entity.toCommandString()
         )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun lazyLoadData() {
@@ -242,15 +246,19 @@ class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryAlarmData(type: String = "0") {
-        commandItems.clear()
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.DAS_MD_GET_AUDIBLE_ALARM, "alarmtype=$type"
         )
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false,
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.DAS_MD_GET_AUDIBLE_ALARM -> {
                 val result = iotParseManager.parse<AudibleAlarm>(
@@ -260,14 +268,11 @@ class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询报警控制参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initParamData(result.data)
                     }
                 }
@@ -277,20 +282,20 @@ class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
+                        if (!isCommunicationExecuting()) {
+                            processNavigateUp()
                         }
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+                // 其他指令类型不做处理
             }
         }
     }

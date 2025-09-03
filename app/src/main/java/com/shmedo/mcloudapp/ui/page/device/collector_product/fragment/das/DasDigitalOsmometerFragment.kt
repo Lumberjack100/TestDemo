@@ -25,12 +25,13 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentDasDigitalOsmometerBinding
 import com.shmedo.mcloudapp.extensions.formatDoubleValue
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BleConnect
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasDigitalOsmometerViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -41,7 +42,7 @@ import timber.log.Timber
  * @desc: 物联网采集器(DAS)数字式水位计参数配置页面 - 支持4G和蓝牙两种通讯方式
  *
  */
-class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
+class DasDigitalOsmometerFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasDigitalOsmometerBinding
     private val mStates: DasDigitalOsmometerViewModel by viewModels()
     private val mdParseManager: MDParserManager by inject()
@@ -66,7 +67,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 finishRefresh()
                 return@onRefresh
@@ -100,7 +101,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -123,40 +124,45 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
 
     /** 蓝牙通讯模式保存指令 */
     private fun initBleSaveCommand() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
         var command = MDCommandUtil.getCommand(
             MDCommandType.SET_OSMOMETER_ADDRESS,
             mStates.address.get()
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = MDCommandUtil.getCommand(
             MDCommandType.SET_OSMOMETER_TRIGGER,
             "${mStates.triggerValue.get()},10" //深度触发值,温度触发值
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = MDCommandUtil.getCommand(
             MDCommandType.SET_OSMOMETR_CORRECT,
             "${mStates.correctValue.get()},10" //深度修正值,温度修正值
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = MDCommandUtil.getCommand(
             MDCommandType.SET_CORD_LENGTH,
             mStates.wireRopeLength.get()
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = MDCommandUtil.getCommand(
             MDCommandType.SET_OSMOMETR_NOZZEL_HEIGHT,
             mStates.installElevation.get()
         )
-        commandItems.add(command)
+        commands.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     /** 4G通讯模式保存指令 */
@@ -169,15 +175,18 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
             ropelen = if (mStates.isOpened.get()) mStates.wireRopeLength.get() else IOTConstants.NULL_KEY,
             tubealti = if (mStates.isOpened.get()) mStates.installElevation.get() else IOTConstants.NULL_KEY,
         )
-        commandItems.clear()
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.DAS_MD_SET_DIGITAL_PIEZOMETER_INFO,
             entity.toCommandString()
         )
-        commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     /**
@@ -262,81 +271,37 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
      * 蓝牙通讯模式查询信息
      */
     private fun queryBleParamInfo() {
-        commandItems.clear()
         val command = MDCommandUtil.getCommand(
             MDCommandType.QUERY_OSMOMETER_PARAMETER
         )
-        commandItems.add(command)
-        Timber.Forest.d("查询数字水位计配置信息===%s", command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        Timber.d("查询数字水位计配置信息===%s", command)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false,
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     /**
      * 4G通讯模式查询信息
      */
     private fun query4GParamInfo() {
-        commandItems.clear()
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.DAS_MD_GET_DIGITAL_PIEZOMETER_INFO
         )
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false,
+                errorConfig = ErrorConfig.dialogConfig()
+            )
         )
     }
 
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
-        )
-    }
 
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
-            errMsg = errMsg
-        )
-    }
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         //判断是否页面是否处于 resume 状态
         if (!isResumed) {
             return
@@ -366,9 +331,6 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initBleParamData(result.data)
                     }
                 }
@@ -385,7 +347,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("数据保存成功")
                             // 保存初始状态
                             mStates.saveInitialState()
@@ -403,7 +365,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("数据保存成功")
                             // 保存初始状态
                             mStates.saveInitialState()
@@ -421,7 +383,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("数据保存成功")
                             // 保存初始状态
                             mStates.saveInitialState()
@@ -439,7 +401,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("数据保存成功")
                             // 保存初始状态
                             mStates.saveInitialState()
@@ -457,7 +419,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("数据保存成功")
                             // 保存初始状态
                             mStates.saveInitialState()
@@ -475,7 +437,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("数据保存成功")
                             // 保存初始状态
                             mStates.saveInitialState()
@@ -485,7 +447,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+                // 其他指令类型不做处理
             }
         }
     }
@@ -537,9 +499,6 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         init4GParamData(result.data)
                     }
                 }
@@ -554,7 +513,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("数据保存成功")
                             // 保存初始状态
                             mStates.saveInitialState()
@@ -564,7 +523,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+                // 其他指令类型不做处理
             }
         }
     }
