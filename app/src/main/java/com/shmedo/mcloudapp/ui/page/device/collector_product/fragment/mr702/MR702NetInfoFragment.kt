@@ -285,6 +285,10 @@ class MR702NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     value = AppContants.Companion.PLACE_HOLDER_VALUE,
                     isBottomItem = true
                 )
+                binding.recyclerview.bindingAdapter.apply {
+                    mutable.addAll(groupList)
+                    notifyItemRangeInserted(itemCount, groupList.size)
+                }
                 return
             }
 
