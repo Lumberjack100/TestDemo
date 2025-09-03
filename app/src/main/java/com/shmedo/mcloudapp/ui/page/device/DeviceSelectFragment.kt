@@ -69,7 +69,7 @@ class DeviceSelectFragment : BaseFragment() {
         binding.refreshLayout.onRefresh {
             if (mStates.deviceToken.get().isEmpty()) {
                 Toaster.show("请输入设备SN号")
-                binding.refreshLayout.finishRefresh()
+                finishRefresh()
                 return@onRefresh
             }
             queryDeviceList()

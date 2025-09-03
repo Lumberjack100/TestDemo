@@ -12,11 +12,16 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNullKey
+import com.shmedo.mcloudapp.extensions.safeNavigate
+import com.shmedo.mcloudapp.model.DataCenterStatusItem
+import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
+import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -26,7 +31,7 @@ import timber.log.Timber
  * 创建者：gonghe
  * 创建时间：2024/9/19
  * 描述： 网络信息
- * 
+ *
  * 优化特点：
  * 1. 继承自 OptimizedBaseDeviceStatusInfoStyleFragment，使用新的通信架构
  * 2. 统一的错误处理策略
@@ -102,7 +107,8 @@ class DefaultNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                         value = status1,
                         textColorRes = if (stateInfo.dataCenter1 == "0" || status1 == "未连接") 0 else ColorUtils.getColor(
                             R.color.online_colorPrimary
-                        )
+                        ),
+                        isClickable = true,
                     )
 
                     val status2 = stateInfo.dataCenter2.compareAndReturn(
@@ -116,7 +122,8 @@ class DefaultNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                         value = status2,
                         textColorRes = if (stateInfo.dataCenter2 == "0" || status2 == "未连接") 0 else ColorUtils.getColor(
                             R.color.online_colorPrimary
-                        )
+                        ),
+                        isClickable = true,
                     )
 
                     val status3 = stateInfo.dataCenter3.compareAndReturn(
@@ -127,10 +134,11 @@ class DefaultNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
                         name = "数据链路3",
-                        value = "$status3(米度物联平台)",
+                        value = status3,
                         textColorRes = if (stateInfo.dataCenter3 == "0" || status3 == "未连接") 0 else ColorUtils.getColor(
                             R.color.online_colorPrimary
-                        )
+                        ),
+                        isClickable = true,
                     )
 
                     val status4 = stateInfo.dataCenter4.compareAndReturn(
@@ -145,6 +153,7 @@ class DefaultNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                         textColorRes = if (stateInfo.dataCenter4 == "0" || status4 == "未连接") 0 else ColorUtils.getColor(
                             R.color.online_colorPrimary
                         ),
+                        isClickable = true,
                         isBottomItem = true
                     )
                 }
@@ -154,6 +163,34 @@ class DefaultNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 Timber.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
+        }
+    }
+
+    override fun processItemClick(infoBasicItem: DeviceStatusInfoBasicItem) {
+        if (infoBasicItem.name.startsWith("数据链路")) {
+            val index = infoBasicItem.name.substringAfter("数据链路").toIntOrNull() ?: 0
+            val item = DataCenterStatusItem(
+                centerid = index,
+                name = "数据链路$index",
+                status = when {
+                    infoBasicItem.value.contains("未启用") -> "0"
+                    infoBasicItem.value.contains("已连接") -> "1"
+                    infoBasicItem.value.contains("未连接") -> "2"
+                    else -> "0"
+                }
+            )
+
+            val bundle = UniversalDataCenterParamFragment.newBundleArguments(
+                item,
+                productType,
+                communicateWay,
+                deviceInfo,
+                bleDevice
+            )
+            nav().safeNavigate(
+                R.id.action_global_to_dataCenterParamFragment,
+                bundle
+            )
         }
     }
 

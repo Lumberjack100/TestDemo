@@ -400,7 +400,7 @@ class UDAlarmParamSettingFragment : OptimizedBaseIOTDeviceFragment() {
         commands.add(command)
 
         sendCommandSequence(
-            commands = listOf(command),
+            commands = commands,
             config = CommandSequenceConfig(
                 loadingMessage = StringUtils.getString(R.string.processing),
                 errorConfig = ErrorConfig.dialogConfig()

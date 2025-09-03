@@ -90,6 +90,7 @@ class DasCollectorSettingFragment : OptimizedBaseIOTDeviceFragment() {
         binding.refreshLayout.onRefresh {
             if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
+                finishRefresh()
                 return@onRefresh
             }
             queryData()
@@ -271,7 +272,7 @@ class DasCollectorSettingFragment : OptimizedBaseIOTDeviceFragment() {
         commands.add(command)
 
         sendCommandSequence(
-            commands = listOf(command),
+            commands = commands,
             config = CommandSequenceConfig(
                 loadingMessage = StringUtils.getString(R.string.processing),
                 errorConfig = ErrorConfig.dialogConfig()

@@ -159,7 +159,7 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_dataCenterHomeFragment"
+        android:id="@+id/action_global_to_dataCenterHomeFragment"
         app:destination="@id/dataCenterHomeFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
@@ -167,7 +167,7 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_dataCenterParamFragment"
+        android:id="@+id/action_global_to_dataCenterParamFragment"
         app:destination="@id/dataCenterParamFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"

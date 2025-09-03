@@ -144,7 +144,7 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
     }
 
     override fun getNavigationActionId(): Int {
-        return R.id.action_global_dataCenterParamFragment
+        return R.id.action_global_to_dataCenterParamFragment
     }
 
     override fun queryData() {

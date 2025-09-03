@@ -53,15 +53,28 @@
                     android:paddingTop="@dimen/page_content_container_padding_top_12"
                     android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
-                    <include
-                        android:id="@+id/ll_data_center_param_head"
-                        layout="@layout/data_center_param_head"
-                        app:click="@{click}"
-                        app:vm="@{stateVM}" />
+                    <RelativeLayout
+                        style="@style/SwitchButton_Item_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/SwitchButton_Item_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="链路启用" />
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/statusSB"
+                            style="@style/SwitchButton_Item_Button_Style"
+                            android:checked="@={stateVM.isCenterOpened}"
+                            android:enabled="@{stateVM.isEditable}"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+
+                    </RelativeLayout>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
-                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
                         android:background="@drawable/shape_common_click_item_top_corner_4">
 
                         <com.google.android.material.textview.MaterialTextView
@@ -90,10 +103,9 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_data_server_port"
                             style="@style/Common_EditItem_EditText_Style"
-
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:text="@={stateVM.centerServerPort}"
                             android:inputType="number"
+                            android:text="@={stateVM.centerServerPort}"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -111,9 +123,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-
                             android:text="@{stateVM.transferProtocol}"
                             tools:text="TCP" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -132,14 +142,12 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-
                             android:text="@{stateVM.platformType}"
                             tools:text="成都理工平台" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
-
+                    <!-- MQTT 协议特有参数 -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/ll_mqtt"
                         visible="@{stateVM.isMqttItemVisible}"
@@ -159,7 +167,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.registerAddress}"
                                 app:lengthFilter="@{100}" />
@@ -178,10 +185,9 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                android:text="@={stateVM.registerPort}"
                                 android:inputType="number"
+                                android:text="@={stateVM.registerPort}"
                                 app:lengthFilter="@{5}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -197,10 +203,9 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                android:text="@={stateVM.keepAlive}"
                                 android:inputType="number"
+                                android:text="@={stateVM.keepAlive}"
                                 app:lengthFilter="@{4}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -217,7 +222,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.sn}"
                                 app:lengthFilter="@{100}" />
@@ -236,7 +240,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.productId}"
                                 app:lengthFilter="@{100}" />
@@ -255,7 +258,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.registerCode}"
                                 app:lengthFilter="@{100}" />
@@ -274,7 +276,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.deviceId}"
                                 app:lengthFilter="@{100}" />
@@ -293,7 +294,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.account}"
                                 app:lengthFilter="@{100}" />
@@ -312,7 +312,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.password}"
                                 app:lengthFilter="@{100}" />
@@ -323,7 +322,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_confirm"
                         style="@style/SubmitButton_Style"
-                        onClickWithDebouncing="@{()->click.onSubmitClick()}"
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
                         visible="@{stateVM.isEditable &amp;&amp; stateVM.isCenterOpened}"
                         android:layout_marginTop="@dimen/reset_button_margin_top_50"
                         android:text="@string/button_save_text" />

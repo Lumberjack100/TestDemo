@@ -55,7 +55,7 @@ import timber.log.Timber
  * 创建时间：2024/5/7
  * 描述：  一体式传感器配置主页 - 支持4G和蓝牙两种通讯方式
  */
-class UProductCommonHomeFragment : BaseDeviceHomeFragment() {
+class UProductHomeFragment : BaseDeviceHomeFragment() {
 
     // 根据产品类型使用不同的测量数据项
     private var uiMeasureDataItem: UIMeasureDataItem = UIMeasureDataItem()
@@ -208,7 +208,7 @@ class UProductCommonHomeFragment : BaseDeviceHomeFragment() {
                 DataCenterModule(
                     name = "链路配置",
                     resID = R.drawable.ic_module_datacenter_new,
-                    navId = R.id.action_global_to_universalDataCenterHomeFragment,
+                    navId = R.id.action_global_to_dataCenterHomeFragment,
                 ).toUnified()
             )
         }

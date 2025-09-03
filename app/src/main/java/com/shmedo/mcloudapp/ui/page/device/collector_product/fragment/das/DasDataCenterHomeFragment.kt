@@ -28,14 +28,16 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.databinding.FragmentDasDataCenterHomeBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasSensorHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -47,7 +49,7 @@ import org.koin.android.ext.android.inject
  * @desc: 物联网采集器(DAS)数据中心参数配置页面 - 支持 4G 通讯方式
  *
  */
-class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
+class DasDataCenterHomeFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasDataCenterHomeBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: DasSensorHomeViewModel by viewModels()
@@ -82,8 +84,9 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
+                finishRefresh()
                 return@onRefresh
             }
             queryData()
@@ -129,14 +132,17 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
             val centerNumber =
                 bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
 
-            commandItems.clear()
             val entity = CenterNumberEntity(centerNumber.toString())
             val command =
                 IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
-            commandItems.add(command)
 
-            showLoadingDialog(StringUtils.getString(R.string.loading))
-            sendCommandFromCmdList(isStartTimeoutJob = true)
+            sendCommandSequence(
+                commands = listOf(command),
+                config = CommandSequenceConfig(
+                    loadingMessage = StringUtils.getString(R.string.loading),
+                    errorConfig = ErrorConfig.dialogConfig()
+                )
+            )
         }
     }
 
@@ -167,7 +173,7 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
         }
 
         override fun onSubmitButtonClick() {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -180,22 +186,22 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun closeSwitch() {
-        commandItems.clear()
-
         val entity = DasBdTerminalEntity(sw = "0")
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.DAS_MD_SET_BD_TERMINAL,
             entity.toCommandString()
         )
-        commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     private fun initSaveCommand() {
-        commandItems.clear()
-
         if (mStates.address.get().isEmpty()) {
             showMessageDialog("请输入目标地址!")
             return
@@ -209,10 +215,14 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
             IOTCommandType.DAS_MD_SET_BD_TERMINAL,
             entity.toCommandString()
         )
-        commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun lazyLoadData() {
@@ -220,80 +230,35 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryData() {
-        commandItems.clear()
+        val commands = mutableListOf<String>()
 
         var command = IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_BD_TERMINAL)
-        commandItems.add(command)
+        commands.add(command)
 
         var entity = CenterNumberEntity(ServerOne.centerId.toString())
         command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
-        commandItems.add(command)
+        commands.add(command)
 
         entity = CenterNumberEntity(ServerTwo.centerId.toString())
         command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
-        commandItems.add(command)
+        commands.add(command)
 
         entity = CenterNumberEntity(ServerThree.centerId.toString())
         command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
-        commandItems.add(command)
+        commands.add(command)
 
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig(
+                    strategy = ErrorHandlingStrategy.Dialog
+                )
+            )
         )
     }
 
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
-            errMsg = errMsg
-        )
-    }
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.DAS_MD_GET_BD_TERMINAL -> {
                 val result = iotParseManager.parse<DasBdTerminalInfo>(
@@ -304,11 +269,9 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询北斗参数出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
                         initBdTerminal(result.data)
                     }
                 }
@@ -323,13 +286,9 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询数据链路状态出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initDataCenterStatus(result.data)
                     }
                 }
@@ -344,7 +303,7 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             processNavigateUp()
                         }
                     }
@@ -352,7 +311,7 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+
             }
         }
     }

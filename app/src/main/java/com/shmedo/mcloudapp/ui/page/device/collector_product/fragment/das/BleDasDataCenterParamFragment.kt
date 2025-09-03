@@ -2,17 +2,16 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import android.os.Bundle
 import android.view.View
-import android.widget.CompoundButton
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
@@ -31,17 +30,17 @@ import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentBleDasDataCenterParamBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleDasDataCenterParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
@@ -54,7 +53,7 @@ import timber.log.Timber
  * @desc: 物联网采集器(DAS)数据中心参数配置页面 - 支持蓝牙通讯方式
  *
  */
-class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
+class BleDasDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleDasDataCenterParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: BleDasDataCenterParamViewModel by viewModels()
@@ -74,7 +73,6 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentBleDasDataCenterParamBinding
-        binding.llToolbar.toolbar.title = "链路配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
         }
@@ -90,8 +88,9 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
+                finishRefresh()
                 return@onRefresh
             }
             queryData()
@@ -103,31 +102,23 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
         arguments?.let {
             statusItem = it.getParcelable(AppContants.Extras.SERVER_NUMBER)!!
         }
+        binding.llToolbar.toolbar.title = statusItem.name.replace("数据", "") + "配置"
+        resetDefaultParams()
+    }
+
+    /**
+     * 初始化默认参数
+     */
+    private fun resetDefaultParams() {
+        mStates.isCenterOpened.set(statusItem.status != "0")
         mStates.centerName.set(statusItem.name)
         mStates.centerStatus.set(statusItem.status)
-        mStates.isCenterOpened.set(statusItem.status != "0")
         mStates.transferProtocol.set(transferProtocolList[0])
         mStates.transferProtocolCode.set("2")
         mStates.platformType.set(DataCenterPlatform.MEDO_IOT_PLATFORM.getPlatName())//默认选择米度物联平台
     }
 
     inner class ClickProxy : BaseClickProxy() {
-        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
-                return
-            }
-            mStates.isCenterOpened.set(isChecked)
-            if (!isChecked) {
-                showMessage("确定要关闭链路吗？", "温馨提示", "确定", {
-                    closeDataServer()
-                }, "取消", {
-                    mStates.isCenterOpened.set(true)
-                    (button as SwitchButton).setCheckedImmediatelyNoEvent(true)
-                })
-            }
-        }
 
         /**
          * 传输协议
@@ -191,9 +182,14 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        fun onSubmitClick() {
-            if (isBleDisconnected()) {
+        override fun onSubmitButtonClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            if (!mStates.isCenterOpened.get()) {
+                closeDataServer()
                 return
             }
             initSaveCommand()
@@ -205,19 +201,22 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
      * addr和port设置为空时，关闭该数据链路
      */
     private fun closeDataServer() {
-        commandItems.clear()
         val command = MDCommandUtil.getCommand(
             MDCommandType.SET_SERVER_ADDRESS_PORT,
             statusItem.centerid.toString()
         )
-        commandItems.add(command)
-        Timber.Forest.d("关闭数据服务器%s指令===%s", statusItem.centerid.toString(), command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        Timber.d("关闭数据服务器%s指令===%s", statusItem.centerid.toString(), command)
+
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     private fun initSaveCommand() {
-        commandItems.clear()
         if (mStates.centerServerAddress.get().isEmpty()) {
             showMessageDialog("请输入链路地址!")
             return
@@ -313,13 +312,15 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             }
         }
 
+        val commands = mutableListOf<String>()
+
         //网络中心通讯协议
         var command = MDCommandUtil.getCommand(
             MDCommandType.NET_LINK_COMMUN_PROTOCOL,
             "${statusItem.centerid}${mStates.transferProtocolCode.get()}"
         )
-        Timber.Forest.d("设置网络中心通讯协议===%s", command)
-        commandItems.add(command)
+        Timber.d("设置网络中心通讯协议===%s", command)
+        commands.add(command)
 
         //数据服务器地址、端口
         var entity = ServerAddressInfoEntity(
@@ -331,8 +332,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             MDCommandType.SET_SERVER_ADDRESS_PORT,
             entity.toCommandString()
         )
-        Timber.Forest.d("设置数据服务器地址、端口===%s", command)
-        commandItems.add(command)
+        Timber.d("设置数据服务器地址、端口===%s", command)
+        commands.add(command)
 
         if (mStates.transferProtocolCode.get() == "4") {//MQTT自动注册
             //选择注册平台
@@ -340,8 +341,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 MDCommandType.AUTO_REGISTRATION_PLATFORM,
                 "${statusItem.centerid}${DataCenterPlatform.valueByPlatformName(mStates.platformType.get()).getCmdValue()}"
             )
-            Timber.Forest.d("选择平台配置===%s", command)
-            commandItems.add(command)
+            Timber.d("选择平台配置===%s", command)
+            commands.add(command)
 
             //自动注册平台地址端口
             entity = ServerAddressInfoEntity(
@@ -353,16 +354,16 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 MDCommandType.SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT,
                 entity.toCommandString()
             )
-            Timber.Forest.d("自动注册平台地址、端口===%s", command)
-            commandItems.add(command)
+            Timber.d("自动注册平台地址、端口===%s", command)
+            commands.add(command)
 
             //MQTT KeepAlive值
             command = MDCommandUtil.getCommand(
                 MDCommandType.MQTT_KEEP_ALIVE,
                 "${statusItem.centerid}${mStates.keepAlive.get()}"
             )
-            Timber.Forest.d("设置KeepAlive===%s", command)
-            commandItems.add(command)
+            Timber.d("设置KeepAlive===%s", command)
+            commands.add(command)
 
             //自动注册平台参数：设备SN号+产品ID+注册码
             val platformEntity = RegistrationPlatformEntity(
@@ -375,8 +376,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 MDCommandType.SET_AUTO_REGISTRATION_PLATFORM_PARAM,
                 platformEntity.toCommandString()
             )
-            Timber.Forest.d("自动注册平台参数===%s", command)
-            commandItems.add(command)
+            Timber.d("自动注册平台参数===%s", command)
+            commands.add(command)
 
         } else if (mStates.transferProtocolCode.get() == "5") {//MQTT手动注册
             //选择注册平台
@@ -384,16 +385,16 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 MDCommandType.AUTO_REGISTRATION_PLATFORM,
                 "${statusItem.centerid}${DataCenterPlatform.valueByPlatformName(mStates.platformType.get()).getCmdValue()}"
             )
-            Timber.Forest.d("选择平台配置===%s", command)
-            commandItems.add(command)
+            Timber.d("选择平台配置===%s", command)
+            commands.add(command)
 
             //MQTT KeepAlive值
             command = MDCommandUtil.getCommand(
                 MDCommandType.MQTT_KEEP_ALIVE,
                 "${statusItem.centerid}${mStates.keepAlive.get()}"
             )
-            Timber.Forest.d("设置KeepAlive===%s", command)
-            commandItems.add(command)
+            Timber.d("设置KeepAlive===%s", command)
+            commands.add(command)
 
             //手动注册平台参数：产品ID+设备ID+设备KEY
             val platformEntity = RegistrationPlatformEntity(
@@ -406,20 +407,22 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 MDCommandType.SET_MANUAL_REGISTRATION_PLATFORM_PARAM,
                 platformEntity.toCommandString()
             )
-            Timber.Forest.d("手动注册平台参数===%s", command)
-            commandItems.add(command)
+            Timber.d("手动注册平台参数===%s", command)
+            commands.add(command)
         }
 
         command = MDCommandUtil.getCommand(
             MDCommandType.SAVE_CONFIG_INFO,
             SaveConfigMode.SAVE_NO_REBOOT.toString()
         )
-        commandItems.add(command)
+        commands.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(
-            isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_20000_MILLIS
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
         )
     }
 
@@ -428,78 +431,23 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryData() {
-        commandItems.clear()
-
-        //获取服务器地址,查询中心开启状态
-//        var command = MDCommandUtil.getCommand(MDCommandType.SERVER_ADDRESS, statusItem.centerid.toString())
-//        commandItems.add(command)
-//        Timber.d("查询数据服务器%s的地址===%s", statusItem.centerid.toString(), command)
-
         //查询数据链路参数
         val command = MDCommandUtil.getCommand(
             MDCommandType.QUERY_DATA_CENTER_PARAM,
             statusItem.centerid.toString()
         )
-        commandItems.add(command)
-        Timber.Forest.d("查询数据链路%s的参数===%s", statusItem.centerid.toString(), command)
+        Timber.d("查询数据链路%s的参数===%s", statusItem.centerid.toString(), command)
 
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig() // 查询失败显示Dialog
+            )
         )
     }
 
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
-            errMsg = errMsg
-        )
-    }
-
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (MDCommandUtil.extractCommandType(cmdStr)) {
             MDCommandType.SERVER_ADDRESS -> {//获取服务器1、2、3 的地址
                 val result = mdParseManager.parse<ServerAddressInfo>(
@@ -509,15 +457,10 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "查询数据链路地址出错"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-//                        initDataCenterParam(result.data)
                     }
                 }
             }
@@ -530,14 +473,10 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "查询数据链路参数出错"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     is MDCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initDataCenterParam(result.data)
                     }
                 }
@@ -547,12 +486,11 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "通讯协议配置错误!"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList()
+
                     }
                 }
             }
@@ -561,12 +499,11 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "设置数据链路地址、端口错误!"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList()
+
                     }
                 }
             }
@@ -575,12 +512,11 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "平台类型配置错误!"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList()
+
                     }
                 }
             }
@@ -589,12 +525,11 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "注册平台地址、端口配置错误!"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList()
+
                     }
                 }
             }
@@ -603,12 +538,11 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "心跳间隔配置错误!"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList()
+
                     }
                 }
             }
@@ -617,12 +551,11 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "自动注册平台参数配置错误!"
-                        handleFailureResult("$errMsg")
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList()
+
                     }
                 }
             }
@@ -631,12 +564,11 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "手动注册平台参数配置错误!"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList()
+
                     }
                 }
             }
@@ -645,20 +577,18 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "保存参数出错!"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
-                        }
+                        if (!isCommunicationExecuting())
+                            processNavigateUp()
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+
             }
         }
     }
@@ -716,11 +646,11 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     private fun processBack(isPressBackBtn: Boolean = false) {
         launchWithViewLifecycle {
-            if (isPressBackBtn) {
-                mMessenger.requestStatusBarColor(if (statusBarColor == 0) R.color.colorPrimary else statusBarColor)
-                nav().navigateUp()
-                return@launchWithViewLifecycle
-            }
+//            if (isPressBackBtn) {
+//                mMessenger.requestStatusBarColor(if (statusBarColor == 0) R.color.colorPrimary else statusBarColor)
+//                nav().navigateUp()
+//                return@launchWithViewLifecycle
+//            }
             delay(1000)
             //巡护事件需要给上一级浏览页面传递最新的事件信息
             setFragmentResult(
