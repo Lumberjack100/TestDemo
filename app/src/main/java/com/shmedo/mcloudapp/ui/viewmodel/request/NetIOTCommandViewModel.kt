@@ -107,21 +107,6 @@ class NetIOTCommandViewModel(
         }
     }
 
-    /**
-     * 检查设备连接状态
-     */
-    suspend fun checkDeviceOnlineStatus(deviceToken: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                // 这里应该调用检查设备在线状态的API
-                // 暂时返回true，具体实现需要根据实际API来
-                true
-            } catch (e: Exception) {
-                Timber.e(e, "检查设备在线状态失败: $deviceToken")
-                false
-            }
-        }
-    }
 
     // ===========================================
     // 原有API (保持向后兼容)
@@ -222,13 +207,6 @@ class NetIOTCommandViewModel(
         }
     }
 
-    /**
-     * 取消当前指令 - 旧API
-     */
-    fun cancelCurrentCommand() {
-        // 新架构下这个方法主要用于兼容
-        Timber.d("取消当前指令")
-    }
 
     /**
      * 清空指令队列 - 旧API
