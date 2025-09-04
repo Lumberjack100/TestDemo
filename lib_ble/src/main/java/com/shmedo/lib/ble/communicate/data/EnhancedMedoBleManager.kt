@@ -493,15 +493,6 @@ class EnhancedMedoBleManager(
     }
 
     /**
-     * 立即发送数据（不使用队列，用于紧急指令）
-     */
-    fun sendDataImmediate(command: String) {
-        scope.launch {
-            sendDataInternal(command)
-        }
-    }
-
-    /**
      * 清空指令队列
      */
     fun clearCommandQueue() {

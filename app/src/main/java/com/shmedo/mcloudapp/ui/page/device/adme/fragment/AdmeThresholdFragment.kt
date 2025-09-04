@@ -273,9 +273,9 @@ class AdmeThresholdFragment : OptimizedBaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询阈值参数出错: ${result.message}"
-                        handleFailureResult(errMsg, isMessageDialog = true)
                         //设备版本不支持，隐藏编辑按钮
                         toolbarViewModel.toolbarIvActionVisible.set(!errMsg.contains("设备版本不支持"))
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     is IOTCommandResult.Success -> {
