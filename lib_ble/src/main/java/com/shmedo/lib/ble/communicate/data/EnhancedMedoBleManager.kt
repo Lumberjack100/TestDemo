@@ -332,32 +332,6 @@ class EnhancedMedoBleManager(
     }
 
     /**
-     * 取消指定会话的所有指令
-     */
-    fun cancelSession(sessionId: String) {
-        commandQueue.removeAll { it.session.sessionId == sessionId }
-        activeSessions.remove(sessionId)
-        scope.launch {
-            sessionResponseRouter.unregisterSession(sessionId)
-        }
-        Timber.i("会话 $sessionId 的所有指令已取消")
-    }
-
-    /**
-     * 清理过期或无效会话
-     */
-    fun cleanupExpiredSessions() {
-        val currentTime = System.currentTimeMillis()
-        val expiredSessions = activeSessions.values.filter { 
-            currentTime - it.createdTime > SESSION_TIMEOUT_MS 
-        }
-        
-        expiredSessions.forEach { session ->
-            cancelSession(session.sessionId)
-        }
-    }
-
-    /**
      * 处理指令响应
      */
     private suspend fun processCommandResponse(commandResponse: CommandResponse) {
@@ -490,6 +464,32 @@ class EnhancedMedoBleManager(
         }
 
         Timber.w("等待响应超时")
+    }
+
+    /**
+     * 取消指定会话的所有指令
+     */
+    fun cancelSession(sessionId: String) {
+        commandQueue.removeAll { it.session.sessionId == sessionId }
+        activeSessions.remove(sessionId)
+        scope.launch {
+            sessionResponseRouter.unregisterSession(sessionId)
+        }
+        Timber.i("会话 $sessionId 的所有指令已取消")
+    }
+
+    /**
+     * 清理过期或无效会话
+     */
+    fun cleanupExpiredSessions() {
+        val currentTime = System.currentTimeMillis()
+        val expiredSessions = activeSessions.values.filter {
+            currentTime - it.createdTime > SESSION_TIMEOUT_MS
+        }
+
+        expiredSessions.forEach { session ->
+            cancelSession(session.sessionId)
+        }
     }
 
     /**

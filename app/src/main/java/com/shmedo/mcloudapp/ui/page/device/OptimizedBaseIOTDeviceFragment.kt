@@ -394,22 +394,6 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
         Timber.i("页面 $fragmentId 取消所有指令")
     }
 
-    /**
-     * 获取当前页面的会话状态
-     */
-    protected fun getPageSessionStatus(): String {
-        return if (communicateWay == BleConnect) {
-            val status = bleViewModel.getSessionStatus()
-            if (status != null) {
-                "活跃会话: ${status.first}, 队列指令: ${status.second}, 监听器: ${status.third}"
-            } else {
-                "会话状态不可用"
-            }
-        } else {
-            "4G通信模式"
-        }
-    }
-
     override fun onDestroy() {
         // 页面销毁时取消所有相关指令
         Timber.d("页面 $fragmentId 销毁，清理相关会话")

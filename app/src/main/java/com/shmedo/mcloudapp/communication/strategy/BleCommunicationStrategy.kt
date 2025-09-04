@@ -71,7 +71,7 @@ class BleCommunicationStrategy(
 
         }.onCompletion { cause ->
             // 无论流程如何结束（成功、异常、取消），都会执行清理
-            Timber.d("清理BLE会话资源: ${session.sessionId}, 原因: $cause")
+            Timber.d("流程结束清理BLE会话资源: ${session.sessionId}, 原因: $cause")
             bleViewModel.unregisterSessionListener(session.sessionId)
             responseChannel.close()
 

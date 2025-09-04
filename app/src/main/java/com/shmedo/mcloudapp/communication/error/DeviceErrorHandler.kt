@@ -18,23 +18,24 @@ class DeviceErrorHandler(private val fragment: Fragment) {
      * 处理单个错误
      */
     fun handleError(error: DeviceError, config: ErrorConfig) {
-        Timber.i("设备错误: ${error.message}")
-        
         when (config.strategy) {
             ErrorHandlingStrategy.Silent -> {
                 // 静默处理，只记录日志
-                Timber.w("静默处理错误: ${error.message}")
+                Timber.i("静默处理错误: ${error.message}")
             }
             
             ErrorHandlingStrategy.Toast -> {
+                Timber.i("Toast 处理错误: ${error.message}")
                 Toaster.show(error.message)
             }
             
             ErrorHandlingStrategy.Dialog -> {
+                Timber.i("Dialog 处理错误: ${error.message}")
                 fragment.showMessageDialog(error.message)
             }
             
             ErrorHandlingStrategy.Custom -> {
+                Timber.i("Custom 处理错误: ${error.message}")
                 config.customHandler?.invoke(error)
                     ?: run {
                         Timber.w("自定义错误处理器为空，使用默认Toast处理")
