@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
-import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * 4G网络通信策略实现
@@ -23,7 +22,7 @@ class NetCommunicationStrategy(
     private val deviceInfo: DeviceInfo
 ) : CommunicationStrategy {
 
-    override suspend fun sendCommand(command: String, config: CommandConfig): Flow<CommandResult> =
+    override fun sendCommand(command: String, config: CommandConfig): Flow<CommandResult> =
         flow {
             Timber.d("4G发送指令: $command")
 
@@ -69,12 +68,6 @@ class NetCommunicationStrategy(
         }.catch { e ->
             // 使用Flow.catch处理异常，避免Flow异常透明度违规
             when (e) {
-                is CancellationException -> {
-                    // Flow被取消，不发出任何值，避免异常透明度违规
-                    Timber.d("4G指令被取消: $command")
-                    // 不emit任何值，让Flow自然结束
-                }
-
                 else -> {
                     // 其他异常
                     Timber.e(e, "4G通信异常")

@@ -11,7 +11,6 @@ import com.shmedo.mcloudapp.communication.model.DeviceConnectionState
 import com.shmedo.mcloudapp.communication.model.DeviceError
 import com.shmedo.mcloudapp.communication.session.CommandPriority
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -33,7 +32,7 @@ class BleCommunicationStrategy(
     private val deviceInfo: DeviceInfo
 ) : CommunicationStrategy {
 
-    override suspend fun sendCommand(command: String, config: CommandConfig): Flow<CommandResult> {
+    override fun sendCommand(command: String, config: CommandConfig): Flow<CommandResult> {
         val session = createBleSession(config)
         val responseChannel = Channel<CommandData>(1)
 
@@ -79,11 +78,6 @@ class BleCommunicationStrategy(
             when (e) {
                 is TimeoutCancellationException -> {
                     emit(CommandResult.Timeout(command, config.timeout))
-                }
-
-                is CancellationException -> {
-                    // 不emit任何值，让Flow自然结束
-                    Timber.d("BLE指令被取消: $command")
                 }
 
                 else -> {
