@@ -59,12 +59,6 @@ import timber.log.Timber
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.PriorityBlockingQueue
 
-/**
- * 增强版指令发送配置
- */
-data class EnhancedSendConfig(
-    val responseTimeoutMs: Long = 15000,        // 等待指令响应超时时间（毫秒）
-)
 
 /**
  * 会话优先级枚举
@@ -167,8 +161,7 @@ class BleSessionResponseRouter {
 class EnhancedMedoBleManager(
     context: Context,
     private val scope: CoroutineScope,
-    private val device: BluetoothDevice,
-    private val sendConfig: EnhancedSendConfig = EnhancedSendConfig()
+    private val device: BluetoothDevice
 ) : BleManager(context) {
     private var notifyCharacteristic: BluetoothGattCharacteristic? = null
     private var writeCharacteristic: BluetoothGattCharacteristic? = null
@@ -398,7 +391,7 @@ class EnhancedMedoBleManager(
                 sendDataInternal(sessionCommand.command)
 
                 //流控机制
-                waitForResponseOrTimeout()
+                waitForResponseOrTimeout(sessionCommand)
             }
         } finally {
             isProcessingQueue = false
@@ -450,11 +443,11 @@ class EnhancedMedoBleManager(
     /**
      * 等待响应或超时
      */
-    private suspend fun waitForResponseOrTimeout() {
+    private suspend fun waitForResponseOrTimeout( sessionCommand: SessionCommand) {
         val startTime = System.currentTimeMillis()
         val initialResponseTime = lastResponseTime
 
-        while (System.currentTimeMillis() - startTime < sendConfig.responseTimeoutMs) {
+        while (System.currentTimeMillis() - startTime < sessionCommand.timeoutMs) {
             if (lastResponseTime > initialResponseTime) {
                 // 收到新的响应
 //                Timber.v("收到响应，继续处理下一个指令")
@@ -476,20 +469,6 @@ class EnhancedMedoBleManager(
             sessionResponseRouter.unregisterSession(sessionId)
         }
         Timber.i("会话 $sessionId 的所有指令已取消")
-    }
-
-    /**
-     * 清理过期或无效会话
-     */
-    fun cleanupExpiredSessions() {
-        val currentTime = System.currentTimeMillis()
-        val expiredSessions = activeSessions.values.filter {
-            currentTime - it.createdTime > SESSION_TIMEOUT_MS
-        }
-
-        expiredSessions.forEach { session ->
-            cancelSession(session.sessionId)
-        }
     }
 
     /**
@@ -543,9 +522,5 @@ class EnhancedMedoBleManager(
         clearCommandQueue()
         cancelQueue()
         disconnect().enqueue()
-    }
-
-    companion object {
-        private const val SESSION_TIMEOUT_MS = 30_000L // 30秒会话超时
     }
 }

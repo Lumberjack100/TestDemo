@@ -34,7 +34,6 @@ package com.shmedo.lib.ble.communicate.service
 import android.content.Context
 import com.shmedo.lib.ble.communicate.data.CommandData
 import com.shmedo.lib.ble.communicate.data.EnhancedMedoBleManager
-import com.shmedo.lib.ble.communicate.data.MedoBleManager
 import com.shmedo.lib.ble.communicate.data.SessionCommand
 import com.shmedo.lib.ble.communicate.service.base.ServiceManager
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
@@ -42,11 +41,8 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.ble.ktx.state.ConnectionState
@@ -127,13 +123,6 @@ class MedoBleRepository(
      */
     fun cancelSession(sessionId: String) {
         enhancedMedoBleManager?.cancelSession(sessionId)
-    }
-
-    /**
-     * 清理过期会话
-     */
-    fun cleanupExpiredSessions() {
-        enhancedMedoBleManager?.cleanupExpiredSessions()
     }
 
     /**
