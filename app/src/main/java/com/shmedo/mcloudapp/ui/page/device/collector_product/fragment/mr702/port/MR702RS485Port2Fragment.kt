@@ -444,7 +444,6 @@ class MR702RS485Port2Fragment : OptimizedBaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询采集参数出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
@@ -462,7 +461,6 @@ class MR702RS485Port2Fragment : OptimizedBaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询采集器参数出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
@@ -484,7 +482,6 @@ class MR702RS485Port2Fragment : OptimizedBaseIOTDeviceFragment() {
                         }
                         val errMsg = "查询传感器状态信息出错: ${result.message}"
                         Toaster.show(errMsg)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
@@ -498,7 +495,6 @@ class MR702RS485Port2Fragment : OptimizedBaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "移除传感器出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
@@ -515,7 +511,6 @@ class MR702RS485Port2Fragment : OptimizedBaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置采集参数出错: ${result.message}"
                         handleFailureResult(errMsg)
-                        return
                     }
 
                     else -> {
@@ -533,7 +528,6 @@ class MR702RS485Port2Fragment : OptimizedBaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置采集器参数出错: ${result.message}"
                         handleFailureResult(errMsg)
-                        return
                     }
 
                     else -> {

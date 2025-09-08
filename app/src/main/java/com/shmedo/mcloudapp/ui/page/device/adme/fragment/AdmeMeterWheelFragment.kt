@@ -19,12 +19,13 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentAdmeMeterWheelBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeMeterWheelViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
@@ -39,7 +40,7 @@ import java.util.Locale
  * @desc:  ADME 计米轮参数配置页面
  *
  */
-class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
+class AdmeMeterWheelFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeMeterWheelBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: AdmeMeterWheelViewModel by viewModels()
@@ -77,7 +78,7 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 finishRefresh()
                 return@onRefresh
@@ -103,7 +104,7 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -235,18 +236,23 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
             downfilter = mStates.downFilterCoefficient.get()
         )
 
-        commandItems.clear()
+        val commands = mutableListOf<String>()
         var command = IOTCommandUtil.getCommand(
             IOTCommandType.ADME_MD_SET_METER_WHEEL,
             entity.toCommandString()
         )
-        commandItems.add(command)
+        commands.add(command)
 
         command = IOTCommandUtil.getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM)
-        commandItems.add(command)
+        commands.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun lazyLoadData() {
@@ -254,15 +260,19 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryData() {
-        commandItems.clear()
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.ADME_MD_GET_METER_WHEEL
         )
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false,
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.ADME_MD_GET_METER_WHEEL -> {
                 val result = iotParseManager.parse<AdmeMeterWheelInfo>(
@@ -272,14 +282,10 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询计米轮参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
-                            binding.refreshLayout.finish()
-                        }
                         initParamData(result.data)
                     }
                 }
@@ -289,12 +295,11 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置计米轮参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList()
+                        // Continue to next command in sequence
                     }
                 }
             }
@@ -303,20 +308,19 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "保存出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
+                        if (!isCommunicationExecuting()) {
+                            processNavigateUp()
                         }
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+                // 其他指令类型不做处理
             }
         }
     }

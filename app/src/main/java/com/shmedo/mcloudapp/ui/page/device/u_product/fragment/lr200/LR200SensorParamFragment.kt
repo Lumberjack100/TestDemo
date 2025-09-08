@@ -17,12 +17,14 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.DeviceError
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentLr200SensorParamBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.LR200ZeroValueCalibrationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.state.LR200SensorParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.LR200ZeroValueCalibrationViewModel
@@ -35,7 +37,7 @@ import org.koin.android.ext.android.inject
  * @desc: LR200 一体式裂缝计传感器参数设置
  *
  */
-class LR200SensorParamFragment : BaseIOTDeviceFragment() {
+class LR200SensorParamFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentLr200SensorParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: LR200SensorParamViewModel by viewModels()
@@ -70,25 +72,30 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
          */
         fun onZeroCalibrationClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            commandItems.clear()
+            val commands = mutableListOf<String>()
             //先发送遥测指令
             var command = IOTCommandUtil.getCommand(
                 IOTCommandType.SAMPLE
             )
-            commandItems.add(command)
+            commands.add(command)
 
             //发送零位预设值的查询指令
             command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_GET_LF_ZERO_VALUE
             )
-            commandItems.add(command)
+            commands.add(command)
 
-            showLoadingDialog(StringUtils.getString(R.string.loading))
-            sendCommandFromCmdList(isStartTimeoutJob = true)
+            sendCommandSequence(
+                commands = commands,
+                config = CommandSequenceConfig(
+                    loadingMessage = StringUtils.getString(R.string.processing),
+                    errorConfig = ErrorConfig.dialogConfig()
+                )
+            )
         }
 
         /**
@@ -96,7 +103,7 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
          */
         fun onSetInitialValueClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -121,14 +128,32 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
         popupView.setTitle("数据校准", mCommandResponseStates)
             .setClickListener(object : LR200ZeroValueCalibrationPopupView.OnClickListener {
                 override fun onSettingClick() {
-                    commandItems.clear()
                     val command = IOTCommandUtil.getCommand(
                         IOTCommandType.MD_SET_LF_ZERO_VALUE,
                         "datastreams=${mCommandResponseStates.zeroValueMeasured.get()}"
                     )
-                    commandItems.add(command)
-                    showLoadingDialog(StringUtils.getString(R.string.processing))
-                    sendCommandFromCmdList(isStartTimeoutJob = true)
+
+                    mCommandResponseStates.isResponseLoading.set(true)
+                    mCommandResponseStates.isResponseSuccess.set(false)
+
+                    sendCommandSequence(
+                        commands = listOf(command),
+                        config = CommandSequenceConfig(
+                            showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                            errorConfig = ErrorConfig.customConfig { error ->
+                                if (error is DeviceError.Timeout) {
+                                    mCommandResponseStates.isResponseLoading.set(false)
+                                    mCommandResponseStates.isResponseSuccess.set(false)
+                                    mCommandResponseStates.responseContent.set("设备未响应")
+
+                                } else {
+                                    mCommandResponseStates.isResponseLoading.set(false)
+                                    mCommandResponseStates.isResponseSuccess.set(false)
+                                    mCommandResponseStates.responseContent.set(error.message)
+                                }
+                            }
+                        )
+                    )
                 }
             })
         XPopup.Builder(context)
@@ -140,10 +165,7 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
             .show()
     }
 
-    override fun setResultData(cmdStr: String) {
-        if (isRestrictHiddenMode() && isHidden) {
-            return
-        }
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.SAMPLE -> {//
                 val result = iotParseManager.parse<String>(
@@ -154,11 +176,9 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询参数出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
                         //{"103_1":{"x":-1.32,"y":-4.06,"z":85.73},"203_1":0.00,"105_1":0.00}
                         //下面取出 203_1 对应的值赋值给 zeroValueMeasured：
                         val zeroValueMeasured =
@@ -177,11 +197,10 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询参数出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             mCommandResponseStates.isResponseLoading.set(false)
                             mCommandResponseStates.isResponseSuccess.set(true)
                             mCommandResponseStates.isCalibratingSuccess.set(false)
@@ -197,12 +216,14 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "校准出错: ${result.message}"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
+                        mCommandResponseStates.isResponseLoading.set(false)
+                        mCommandResponseStates.isResponseSuccess.set(false)
+                        mCommandResponseStates.responseContent.set(errMsg)
+                        handleFailureResult(result.message, isShowErrMsg = false)
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             mCommandResponseStates.isResponseLoading.set(false)
                             mCommandResponseStates.isResponseSuccess.set(true)
                             mCommandResponseStates.isCalibratingSuccess.set(true)
@@ -213,7 +234,6 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
 
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
             }
         }
     }

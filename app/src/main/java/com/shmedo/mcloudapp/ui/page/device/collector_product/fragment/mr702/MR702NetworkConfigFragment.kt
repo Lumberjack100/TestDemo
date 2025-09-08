@@ -259,7 +259,6 @@ class MR702NetworkConfigFragment : OptimizedBaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询移动网络配置出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
@@ -277,7 +276,6 @@ class MR702NetworkConfigFragment : OptimizedBaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询以太网络配置出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is IOTCommandResult.Success -> {
@@ -290,8 +288,7 @@ class MR702NetworkConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "移动网络配置出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
@@ -306,8 +303,7 @@ class MR702NetworkConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "以太网络配置出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {

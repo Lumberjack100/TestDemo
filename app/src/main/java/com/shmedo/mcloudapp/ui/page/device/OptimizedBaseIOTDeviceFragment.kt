@@ -21,7 +21,6 @@ import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.DeviceConnectionState
 import com.shmedo.mcloudapp.communication.model.DeviceError
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
-import com.shmedo.mcloudapp.communication.session.CommandPriority
 import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -133,9 +132,9 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
             ownerId = config.ownerId ?: fragmentId,
             priority = config.priority
         )
-        
+
         Timber.d("页面 $fragmentId 发送指令序列: ${commands.size} 条指令")
-        
+
         communicationManager.executeCommandSequence(
             commands = commands,
             config = enhancedConfig,
@@ -174,14 +173,17 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
                     }
                 },
                 onComplete = { results ->
-                    // 统一的清理逻辑
-                    // finishCommunication()
-                    finishRefresh()
+                    if (enhancedConfig.autoFinishRefreshLayoutOnComplete) {
+                        finishRefresh()
+                    }
                     Timber.d("页面 $fragmentId 指令序列执行完成")
                     callbacks.onComplete(results)
                 },
                 onError = { error, command ->
-                    addDeviceLogItem(Log.ERROR, "页面 $fragmentId 指令执行失败: $command, 错误: ${error.message}")
+                    addDeviceLogItem(
+                        Log.ERROR,
+                        "页面 $fragmentId 指令执行失败: $command, 错误: ${error.message}"
+                    )
                     if (enhancedConfig.stopOnFirstCmdError) {
                         // 统一的清理逻辑
                         cancelCommunication()
@@ -309,19 +311,6 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
      */
     protected fun isCommunicationExecuting(): Boolean = communicationManager.isExecuting()
 
-    /**
-     * 取消当前通信
-     */
-    protected fun cancelCommunication(isFinishRefresh: Boolean = true) {
-        if (isFinishRefresh)
-            finishRefresh()
-        communicationManager.cancelExecution()
-    }
-
-    protected fun cleanupCommunication() {
-        communicationManager.cleanup()
-    }
-
     protected fun handleFailureResult(
         errMsg: String,
         isShowErrMsg: Boolean = true,
@@ -367,7 +356,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     // ==================== 兼容性方法 ====================
 
     /**
-     * 检查是否是蓝牙DAS设备 (兼容原有逻辑)
+     * 检查是否是蓝牙DAS设备
      */
     protected fun isBleDas(): Boolean {
         return communicateWay == BleConnect && (
@@ -380,35 +369,18 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     override fun isRestrictHiddenMode(): Boolean = true
 
     // ==================== 会话管理便捷方法 ====================
-
     /**
-     * 发送紧急指令序列（高优先级）
+     * 取消当前通信
      */
-    protected fun sendUrgentCommandSequence(
-        commands: List<String>,
-        config: CommandSequenceConfig = CommandSequenceConfig(),
-        callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks(),
-    ) {
-        val urgentConfig = config.copy(
-            priority = CommandPriority.URGENT,
-            ownerId = config.ownerId ?: fragmentId
-        )
-        sendCommandSequence(commands, urgentConfig, callbacks)
-    }
+    protected fun cancelCommunication(isFinishRefresh: Boolean = true) {
+        if (isFinishRefresh) {
+            finishRefresh()
+        }
 
-    /**
-     * 发送高优先级指令序列
-     */
-    protected fun sendHighPriorityCommandSequence(
-        commands: List<String>,
-        config: CommandSequenceConfig = CommandSequenceConfig(),
-        callbacks: CommandSequenceCallbacks = CommandSequenceCallbacks(),
-    ) {
-        val highConfig = config.copy(
-            priority = CommandPriority.HIGH,
-            ownerId = config.ownerId ?: fragmentId
-        )
-        sendCommandSequence(commands, highConfig, callbacks)
+        if (communicateWay == BleConnect) {
+            bleViewModel.cancelSession(fragmentId)
+        }
+        communicationManager.cancelExecution()
     }
 
     /**
@@ -418,24 +390,8 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
         if (communicateWay == BleConnect) {
             bleViewModel.cancelSession(fragmentId)
         }
-        communicationManager.cancelExecution()
+        communicationManager.cleanup()
         Timber.i("页面 $fragmentId 取消所有指令")
-    }
-
-    /**
-     * 获取当前页面的会话状态
-     */
-    protected fun getPageSessionStatus(): String {
-        return if (communicateWay == BleConnect) {
-            val status = bleViewModel.getSessionStatus()
-            if (status != null) {
-                "活跃会话: ${status.first}, 队列指令: ${status.second}, 监听器: ${status.third}"
-            } else {
-                "会话状态不可用"
-            }
-        } else {
-            "4G通信模式"
-        }
     }
 
     override fun onDestroy() {
