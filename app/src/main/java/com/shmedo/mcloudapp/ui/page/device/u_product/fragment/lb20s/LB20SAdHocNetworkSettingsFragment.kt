@@ -9,6 +9,7 @@ import com.blankj.utilcode.util.TimeUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -17,15 +18,16 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.DeviceError
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentLb20sAdHocNetworkSettingsBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
-import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
@@ -36,7 +38,7 @@ import org.koin.android.ext.android.inject
  * @desc: 无线预警广播自组网设置
  *
  */
-class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
+class LB20SAdHocNetworkSettingsFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentLb20sAdHocNetworkSettingsBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mCommandResponseStates: CommandResponseViewModel by viewModels()
@@ -70,7 +72,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
          */
         fun onRadioSettingsClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -91,7 +93,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
          */
         fun onLoRaSettingsClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -112,7 +114,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
          */
         fun onGatewaySchoolTimeClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -124,7 +126,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
          */
         fun onGatewayRestartClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -144,7 +146,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
          */
         fun onRestoreGatewayToFactoryClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -164,40 +166,62 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
      * 查询终端时间
      */
     private fun queryTerminalTime() {
-        commandItems.clear()
         val command =
             IOTCommandUtil.getCommand(IOTCommandType.QUERY_TERMINAL_TIME, "devicetype=1")
-        commandItems.add(command)
 
-        if (communicateWay is BleConnect) {
-            mCommandResponseStates.isResponseLoading.set(true)
-            showTimeCalibrationPopup()
-        }
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        mCommandResponseStates.isResponseLoading.set(true)
+        mCommandResponseStates.isResponseSuccess.set(false)
+        showTimeCalibrationPopup()
+
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                timeout = AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.customConfig { error ->
+                    if (error is DeviceError.Timeout) {
+                        mCommandResponseStates.isResponseLoading.set(false)
+                        mCommandResponseStates.isResponseSuccess.set(false)
+                        mCommandResponseStates.responseContent.set("设备未响应")
+
+                    } else {
+                        mCommandResponseStates.isResponseLoading.set(false)
+                        mCommandResponseStates.isResponseSuccess.set(false)
+                        mCommandResponseStates.responseContent.set(error.message)
+                    }
+                }
+            )
+        )
     }
 
     /**
      * 重启设备
      */
-    override fun reboot() {
-        commandItems.clear()
+    fun reboot() {
         val command = IOTCommandUtil.getCommand(IOTCommandType.REBOOT, "devicetype=1")
-        commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     /**
      * 恢复出厂
      */
-    override fun restoreFactory() {
-        commandItems.clear()
+    fun restoreFactory() {
         val command = IOTCommandUtil.getCommand(IOTCommandType.RESET, "devicetype=1")
-        commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     /**
@@ -208,14 +232,12 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
         popupView.setTitle("时间校准", mCommandResponseStates)
             .setClickListener(object : TimeCalibrationPopupView.OnClickListener {
                 override fun onSettingClick() {
-                    commandItems.clear()
                     val command = IOTCommandUtil.getCommand(
                         IOTCommandType.SET_TERMINAL_TIME,
                         "time=${TimeUtils.getNowString()}&devicetype=1"
                     )
-                    commandItems.add(command)
-                    showLoadingDialog(StringUtils.getString(R.string.processing))
-                    sendCommandFromCmdList(isStartTimeoutJob = true)
+
+                    sendTimeCalibrationCommand(command)
                 }
             })
         XPopup.Builder(context)
@@ -227,98 +249,31 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
             .show()
     }
 
-    override fun doNetDispatchSuccess(cmdStr: String) {
-        super.doNetDispatchSuccess(cmdStr)
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_TERMINAL_TIME -> {
-                mCommandResponseStates.isResponseLoading.set(true)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                showTimeCalibrationPopup()
-            }
+    private fun sendTimeCalibrationCommand(command: String) {
+        mCommandResponseStates.isResponseLoading.set(true)
+        mCommandResponseStates.isResponseSuccess.set(false)
 
-            else -> {}
-        }
-    }
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.customConfig { error ->
+                    if (error is DeviceError.Timeout) {
+                        mCommandResponseStates.isResponseLoading.set(false)
+                        mCommandResponseStates.isResponseSuccess.set(false)
+                        mCommandResponseStates.responseContent.set("设备未响应")
 
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_TERMINAL_TIME,
-            -> {
-                mCommandResponseStates.isResponseLoading.set(false)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set(errMsg)
-            }
-
-            else -> {
-                super.doCmdResponseResultError(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
-                    isMessageDialog = isMessageDialog
-                )
-            }
-        }
-    }
-
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_TERMINAL_TIME,
-            -> {
-                mCommandResponseStates.isResponseLoading.set(false)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("设备未响应")
-            }
-
-            else -> {
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
-                    isMessageDialog = isMessageDialog
-                )
-            }
-        }
-    }
-
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = false,
-            isMessageDialog = isMessageDialog,
-            errMsg = errMsg
+                    } else {
+                        mCommandResponseStates.isResponseLoading.set(false)
+                        mCommandResponseStates.isResponseSuccess.set(false)
+                        mCommandResponseStates.responseContent.set(error.message)
+                    }
+                }
+            )
         )
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_TERMINAL_TIME,
-            -> {
-                mCommandResponseStates.isResponseLoading.set(false)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("设备未响应")
-            }
-
-            else -> {
-
-            }
-        }
     }
 
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME -> {//查询终端时间
                 val result = iotParseManager.parse<String>(
@@ -327,20 +282,20 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        handleFailureResult(result.message, isShowErrMsg = false)
                         mCommandResponseStates.isResponseLoading.set(false)
                         mCommandResponseStates.isResponseSuccess.set(false)
                         mCommandResponseStates.responseContent.set(result.message)
-                        return
+                        handleFailureResult(result.message, isShowErrMsg = false)
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(true)
-                        mCommandResponseStates.isCalibratingSuccess.set(false)
-                        mCommandResponseStates.deviceTime.set(result.data)
-                        mCommandResponseStates.systemTime.set(TimeUtils.getNowString())
+                        if (!isCommunicationExecuting()) {
+                            mCommandResponseStates.isResponseLoading.set(false)
+                            mCommandResponseStates.isResponseSuccess.set(true)
+                            mCommandResponseStates.isCalibratingSuccess.set(false)
+                            mCommandResponseStates.deviceTime.set(result.data)
+                            mCommandResponseStates.systemTime.set(TimeUtils.getNowString())
+                        }
                     }
                 }
             }
@@ -348,19 +303,19 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
             IOTCommandType.SET_TERMINAL_TIME -> {//设置终端时间
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        handleFailureResult(result.message, isShowErrMsg = false)
                         mCommandResponseStates.isResponseLoading.set(false)
                         mCommandResponseStates.isResponseSuccess.set(false)
                         mCommandResponseStates.responseContent.set(result.message)
-                        return
+                        handleFailureResult(result.message, isShowErrMsg = false)
                     }
 
                     else -> {
-                        sendCommandFromCmdList()
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(true)
-                        mCommandResponseStates.isCalibratingSuccess.set(true)
-                        mCommandResponseStates.deviceTime.set(mCommandResponseStates.systemTime.get())
+                        if (!isCommunicationExecuting()) {
+                            mCommandResponseStates.isResponseLoading.set(false)
+                            mCommandResponseStates.isResponseSuccess.set(true)
+                            mCommandResponseStates.isCalibratingSuccess.set(true)
+                            mCommandResponseStates.deviceTime.set(mCommandResponseStates.systemTime.get())
+                        }
                     }
                 }
             }
@@ -370,11 +325,10 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = StringUtils.getString(R.string.reboot_failed) + result.message
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
                         }
                     }
@@ -390,7 +344,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show(StringUtils.getString(R.string.device_reset_tip))
                         }
                     }
@@ -398,7 +352,6 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
             }
         }
     }

@@ -33,16 +33,18 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorParamBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1SensorParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -53,7 +55,7 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 @Deprecated("This class is deprecated", ReplaceWith("MR702RS485Port1SingleSensorAddParamFragment"))
-class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
+class MR702RS485Port1SensorParamFragment : OptimizedBaseIOTDeviceFragment(),
     TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentMr702Rs485Port1SensorParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
@@ -111,7 +113,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 finishRefresh()
                 return@onRefresh
@@ -294,7 +296,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         }
 
         fun onSaveModelFieldClick() {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -307,7 +309,6 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     }
 
     private fun initSaveCommand() {
-        commandItems.clear()
         if (mStates.modelToken.get().isEmpty()) {
             showMessageDialog("请输入物模型编号")
             return
@@ -375,9 +376,14 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
             IOTCommandType.MR_MD_SET_RS485_PORT1_SENSOR_PARAM,
             entity.toCommandString()
         )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     override fun lazyLoadData() {
@@ -385,16 +391,22 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     }
 
     private fun queryData() {
-        commandItems.clear()
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MR_MD_GET_RS485_PORT1_SENSOR_PARAM,
             "model=${sensorItem.modelToken}_${sensorItem.addr}&index=${selectedFieldIndex}"
         )
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig(
+                    strategy = ErrorHandlingStrategy.Dialog
+                )
+            )
+        )
     }
 
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MR_MD_GET_RS485_PORT1_SENSOR_PARAM -> {
                 val result = iotParseManager.parse<String>(
@@ -404,14 +416,10 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                         initParamData(result.data)
                     }
                 }
@@ -422,12 +430,11 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("数据保存成功")
                         }
                     }
@@ -435,7 +442,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+
             }
         }
     }

@@ -248,7 +248,8 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
             config = CommandSequenceConfig(
                 showLoadingDialog = false,
                 errorConfig = ErrorConfig.silentConfig(), // 状态查询失败不显示错误
-                enableBusinessParseFailureInterrupt = false
+                enableBusinessParseFailureInterrupt = false, // 不启用业务层解析失败中断功能，保持后续指令执行
+                priority = CommandPriority.LOW
             )
         )
     }

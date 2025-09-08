@@ -139,6 +139,7 @@ data class CommandSequenceConfig(
     val showLoadingDialog: Boolean = true,
     val loadingMessage: String = "处理中...",
     val errorConfig: ErrorConfig = ErrorConfig.toastConfig(),
+    val autoFinishRefreshLayoutOnComplete: Boolean = true,//是否在执行完成后自动结束刷新动画
     val stopOnFirstCmdError: Boolean = true,// 是否在执行第一条指令下发失败时停止后续指令执行
     /**
      * 是否启用业务层指令响应内容解析失败中断功能

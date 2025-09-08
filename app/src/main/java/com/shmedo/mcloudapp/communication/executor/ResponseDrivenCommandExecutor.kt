@@ -7,6 +7,7 @@ import com.shmedo.mcloudapp.communication.model.CommandSequenceCallbacks
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.DeviceError
 import com.shmedo.mcloudapp.communication.strategy.CommunicationStrategy
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
@@ -157,6 +158,11 @@ class ResponseDrivenCommandExecutor(
             isExecuting.set(false)
             callbacks.onComplete(executionResults.toList())
 
+        } catch (e: CancellationException) {
+            // ✅ 协程被取消，正常退出，不触发错误回调
+            Timber.d("指令序列被取消，停止执行")
+            isExecuting.set(false)
+            return
         } catch (e: Exception) {
             Timber.e(e, "指令序列执行异常")
             val error = DeviceError.Unknown("指令序列执行异常 ${e.message ?: ""}", e)
@@ -185,6 +191,10 @@ class ResponseDrivenCommandExecutor(
             // 收集第一个结果
             resultFlow.first()
 
+        } catch (e: CancellationException) {
+            // ✅ 协程取消是正常行为，不应该作为错误处理
+            Timber.d("指令被取消: $command")
+            throw e // 重新抛出，让上层决定如何处理
         } catch (e: Exception) {
             Timber.e(e, "执行指令异常: $command")
             CommandResult.Error(

@@ -153,12 +153,7 @@ class BleViewModel(
         medoBleRepository.cancelSession(sessionId)
     }
 
-    /**
-     * 清理过期会话
-     */
-    fun cleanupExpiredSessions() {
-        medoBleRepository.cleanupExpiredSessions()
-    }
+
 
     /**
      * 获取会话状态
