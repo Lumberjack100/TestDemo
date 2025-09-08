@@ -11,7 +11,7 @@ plugins {
 
 val majorVersion = 5
 val minorVersion = 3
-val patchVersion = 5
+val patchVersion = 6
 
 val testMajorVersion = 5
 val testMinorVersion = 3
@@ -130,7 +130,7 @@ android {
             dimension = "version"
             versionCode = getReversion()
             versionName = "$majorVersion.$minorVersion.$patchVersion"
-            resValue("string", "app_name", "米易通物联网")   // 设置默认的app_name
+            resValue("string", "app_name", "米易通")   // 设置默认的app_name
             buildConfigField("String", "APP_NAME", "\"米易通物联网\"")
             buildConfigField("String", "PGY_API_KEY", "\"64454bf76fe2abd8dec45200c11fc93b\"")
             buildConfigField("String", "PGY_APP_KEY", "\"b8a852c106c6cc532332081e22f218a9\"")
