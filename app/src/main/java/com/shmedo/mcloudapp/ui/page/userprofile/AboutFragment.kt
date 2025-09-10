@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.ui.page.userprofile
 
 import android.os.Bundle
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.AppUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -47,7 +46,7 @@ class AboutFragment : BaseFragment() {
 
     override fun initData() {
         mStates.appVersion.set(String.format("米易通 V%s", AppUtils.getAppVersionName()))
-        mStates.caseNumber.set("沪ICP备12047248号-4A")
+        mStates.caseNumber.set("ICP 备案号：沪ICP备12047248号-4A")
     }
 
 
@@ -61,7 +60,6 @@ class AboutFragment : BaseFragment() {
          * 用户协议
          */
         fun onUserProtocolClick() {
-//            val url = "file:///android_asset/private/user_protocol.html"
             val url = "https://appassets.androidplatform.net/assets/private/user_protocol.html"
 
 //            WebviewActivity.startActivity(mActivity, "用户协议与免责条款", url)
@@ -79,7 +77,6 @@ class AboutFragment : BaseFragment() {
          * 隐私协议
          */
         fun onPrivacyProtocolClick() {
-//            val url = "file:///android_asset/private/privacy.html"
             val url = "https://appassets.androidplatform.net/assets/private/privacy.html"
 
 //            WebviewActivity.startActivity(mActivity, "隐私政策", url)
