@@ -223,7 +223,7 @@ class LoginActivity : BaseActivity() {
                 val url = "https://appassets.androidplatform.net/assets/private/user_protocol.html"
                 WebviewActivity.startActivity(context, "用户协议与免责条款", url)
             } else {
-                val url = "https://appassets.androidplatform.net/assets/private/privacy_policy.html"
+                val url = "https://appassets.androidplatform.net/assets/private/privacy.html"
                 WebviewActivity.startActivity(context, "隐私政策", url)
             }
         }

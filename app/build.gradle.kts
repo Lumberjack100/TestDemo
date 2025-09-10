@@ -131,7 +131,7 @@ android {
             versionCode = getReversion()
             versionName = "$majorVersion.$minorVersion.$patchVersion"
             resValue("string", "app_name", "米易通")   // 设置默认的app_name
-            buildConfigField("String", "APP_NAME", "\"米易通物联网\"")
+            buildConfigField("String", "APP_NAME", "\"米易通\"")
             buildConfigField("String", "PGY_API_KEY", "\"64454bf76fe2abd8dec45200c11fc93b\"")
             buildConfigField("String", "PGY_APP_KEY", "\"b8a852c106c6cc532332081e22f218a9\"")
             manifestPlaceholders["mapApikey"] = "QVihTHJNsLL5k9tBLwHFdLGR5TR0Lrlj"

@@ -79,8 +79,8 @@ class AboutFragment : BaseFragment() {
          * 隐私协议
          */
         fun onPrivacyProtocolClick() {
-//            val url = "file:///android_asset/private/privacy_policy.html"
-            val url = "https://appassets.androidplatform.net/assets/private/privacy_policy.html"
+//            val url = "file:///android_asset/private/privacy.html"
+            val url = "https://appassets.androidplatform.net/assets/private/privacy.html"
 
 //            WebviewActivity.startActivity(mActivity, "隐私政策", url)
 
