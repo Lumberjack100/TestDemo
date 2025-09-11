@@ -108,7 +108,8 @@ class SettingFragment : BaseFragment() {
 
         /** 隐私政策 */
         fun onPrivacyPolicyClick() {
-            val url = "https://mduser.shmedo.cn/privacy.html"
+//            val url = "https://mduser.shmedo.cn/privacy.html"
+            val url = "https://appassets.androidplatform.net/assets/private/privacy.html"
             val bundle = WebViewFragment.newBundleArguments(
                 "米易通",
                 url

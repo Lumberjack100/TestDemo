@@ -42,7 +42,8 @@ class PolicyDialog : BaseVmDbDialogFragment() {
     inner class ClickProxy {
         /** 隐私政策 */
         fun onPrivacyPolicyClick() {
-            val url = "https://mduser.shmedo.cn/privacy.html"
+            // val url = "https://mduser.shmedo.cn/privacy.html"
+            val url = "https://appassets.androidplatform.net/assets/private/privacy.html"
             WebviewActivity.startActivity(mActivity, "米易通", url)
         }
 

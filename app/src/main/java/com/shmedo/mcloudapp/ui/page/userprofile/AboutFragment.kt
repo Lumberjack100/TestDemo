@@ -62,7 +62,6 @@ class AboutFragment : BaseFragment() {
         fun onUserProtocolClick() {
             val url = "https://appassets.androidplatform.net/assets/private/user_protocol.html"
 
-//            WebviewActivity.startActivity(mActivity, "用户协议与免责条款", url)
             val bundle = WebViewFragment.newBundleArguments(
                 "米易通",
                 url
@@ -78,8 +77,6 @@ class AboutFragment : BaseFragment() {
          */
         fun onPrivacyProtocolClick() {
             val url = "https://appassets.androidplatform.net/assets/private/privacy.html"
-
-//            WebviewActivity.startActivity(mActivity, "隐私政策", url)
 
             val bundle = WebViewFragment.newBundleArguments(
                 "米易通",
