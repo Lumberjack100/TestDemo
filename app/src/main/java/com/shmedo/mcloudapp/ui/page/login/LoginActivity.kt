@@ -221,10 +221,10 @@ class LoginActivity : BaseActivity() {
         override fun onClick(view: View) {
             if (contentType == ContentType.USER_PROTOCOL) {
                 val url = "https://appassets.androidplatform.net/assets/private/user_protocol.html"
-                WebviewActivity.startActivity(context, "用户协议与免责条款", url)
+                WebviewActivity.startActivity(context, "米易通", url)
             } else {
                 val url = "https://appassets.androidplatform.net/assets/private/privacy.html"
-                WebviewActivity.startActivity(context, "隐私政策", url)
+                WebviewActivity.startActivity(context, "米易通", url)
             }
         }
     }

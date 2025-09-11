@@ -64,7 +64,7 @@ class AboutFragment : BaseFragment() {
 
 //            WebviewActivity.startActivity(mActivity, "用户协议与免责条款", url)
             val bundle = WebViewFragment.newBundleArguments(
-                "用户协议与免责条款",
+                "米易通",
                 url
             )
             nav().safeNavigate(
@@ -82,7 +82,7 @@ class AboutFragment : BaseFragment() {
 //            WebviewActivity.startActivity(mActivity, "隐私政策", url)
 
             val bundle = WebViewFragment.newBundleArguments(
-                "隐私政策",
+                "米易通",
                 url
             )
             nav().safeNavigate(

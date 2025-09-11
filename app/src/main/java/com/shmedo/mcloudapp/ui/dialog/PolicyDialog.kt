@@ -43,7 +43,7 @@ class PolicyDialog : BaseVmDbDialogFragment() {
         /** 隐私政策 */
         fun onPrivacyPolicyClick() {
             val url = "https://mduser.shmedo.cn/privacy.html"
-            WebviewActivity.startActivity(mActivity, "隐私政策", url)
+            WebviewActivity.startActivity(mActivity, "米易通", url)
         }
 
         fun agree() {

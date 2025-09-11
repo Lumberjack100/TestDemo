@@ -351,7 +351,7 @@
         <header class="header">
             <h1>米易通隐私政策</h1>
             <div class="date-info">
-                <span>更新日期：2025/09/09</span>
+                <span>更新日期：2025/09/11</span>
                 <span>生效日期：2025/09/09</span>
             </div>
         </header>
@@ -389,40 +389,65 @@
                 <h3>2.设备连接配置</h3>
                 <p>2.1 当您使用蓝牙发现附近的设备功能时，我们将在获取您的明示同意后，收集您的<span class="highlight">位置信息</span>。</p>
                 <p>2.2 当您使用扫码连接、获取设备配置指令模版功能时，我们将在获取您的明示同意后，使用摄像头与手机相册获取相关二维码图片、收集您的<span class="highlight">设备信息</span>、<span class="highlight">应用使用数据</span>和<span class="highlight">网络状态</span>等信息。</p>
+                <p>2.3 当通过米易通给物联网设备发送同步安装位置指令时，我们将在获取您的明示同意后，收集您的<span class="highlight">精确位置信息</span>。</p>
+
+                <h3>3.安全运行需要</h3>
+                <p>3.1 为对米易通行错误异常进行监控，我们将收集应用程序运行的异常信息，包括设备型号和名称、操作系统和应用程序版本、产品版本号、网络类型、设备制造商、Andriod ID、设备参数及系统信息。</p>
 
                 <h3>第三方 SDK 的使用情况</h3>
                 <p>我们的应用使用了以下第三方 SDK：</p>
-
                 <div class="sdk-info">
                     <h4>1. Bugly Android SDK</h4>
                     <ul>
                         <li><strong>第三方名称：</strong>深圳市腾讯计算机系统有限公司</li>
-                        <li><strong>使用目的：</strong>监控应用性能，改进应用稳定性</li>
-                        <li><strong>收集个人信息类型：</strong>设备传感器信息、应用崩溃日志、错误堆栈跟踪、设备信息（型号、系统版本等）</li>
+                        <li><strong>使用目的与场景：</strong>排查崩溃问题，帮助APP提升稳定性，识别Crash等问题是否与手机型号有关。</li>
+                        <li><strong>个人信息类型：</strong>ANDROID ID、手机型号、手机品牌、Android系统版本、Android系统api等级、厂商系统版本、cpu架构类型、设备是否root、磁盘空间占用大小、sdcard空间占用大小、内存空间占用大小、网络类型、应用当前正在运行的进程名和PID。</li>
                         <li><strong>处理方式：</strong>SDK 本机采集</li>
                         <li><strong>隐私政策链接：</strong><a href="https://privacy.qq.com/document/preview/fc748b3d96224fdb825ea79e132c1a56" target="_blank">https://privacy.qq.com/document/preview/fc748b3d96224fdb825ea79e132c1a56</a></li>
                     </ul>
                 </div>
 
                 <div class="sdk-info">
-                    <h4>2. 百度地图、定位 SDK</h4>
+                    <h4>2. 百度 Android 地图 SDK（基础版）</h4>
                     <ul>
                         <li><strong>第三方名称：</strong>北京百度网讯科技有限公司</li>
-                        <li><strong>使用目的：</strong>用于在地图图面上展示物联网设备位置，以及获取用户定位</li>
-                        <li><strong>收集个人信息类型：</strong>设备信息，包括终端设备唯一标识符【包含 IDFV、OAID、IMEI（针对 Android Q 以下版本）、MEID、IMSI 等】、MAC 地址、操作系统版本、设备品牌及型号、设备配置、运营商类型、应用信息（应用名、应用版本号）。位置信息，包括 GNSS 信息、IP 地址、WLAN 热点、基站信息、蓝牙设备以及其他能够用于定位的传感器信息</li>
+                        <li><strong>使用目的与场景：</strong>在地图图层上展示物联网设备安装位置</li>
+                        <li><strong>个人信息类型：</strong>设备信息（包括Android ID、IDFV、操作系统版本、设备品牌及型号、设备配置、应用信息（应用名）、陀螺仪角度）、位置信息【可能包括经纬度、设备信号强度信息和传感器信息（加速度，陀螺仪、方向、压力、旋转矢量、光照、磁力计）】、位置信息（可能包括GNSS信息、WiFi地址及信号强度信息、基站ID数据信息、传感器信息、设备信号强度信息、IP地址和蓝牙信息）、网络状态（如移动网络、WiFi网络或无网状态）、图像信息。</li>
                         <li><strong>处理方式：</strong>SDK 本机采集</li>
                         <li><strong>隐私政策链接：</strong><a href="https://lbs.baidu.com/index.php?title=openprivacy" target="_blank">https://lbs.baidu.com/index.php?title=openprivacy</a></li>
                     </ul>
                 </div>
 
                 <div class="sdk-info">
-                    <h4>3. 华为统一扫码 SDK（Android版）</h4>
+                    <h4>3. 百度 Android 定位 SDK</h4>
+                    <ul>
+                        <li><strong>第三方名称：</strong>北京百度网讯科技有限公司</li>
+                        <li><strong>使用目的与场景：</strong>通过蓝牙连接上物联网设备后，使用高精度定位功能获取经纬度后给设备同步安装位置信息。</li>
+                        <li><strong>个人信息类型：</strong>设备信息【包括设备标识信息（Android ID、IDFA、IDFV）、系统信息（操作系统版本、设备品牌及型号、设备配置）和应用信息（应用名）】、位置信息【可能包括经纬度、GNSS信息、WiFi网关地址、WiFi MAC地址、WiFi信号强度、WiFi状态、WiFi参数、WiFi列表、基站ID数据信息、运营商信息、设备信号强度信息、IP地址、蓝牙信息和传感器信息（加速度，陀螺仪、方向、压力、旋转矢量、光照、磁力计）】、网络类型【如移动网络、WiFi网络】。</li>
+                        <li><strong>处理方式：</strong>SDK 本机采集</li>
+                        <li><strong>隐私政策链接：</strong><a href="https://lbs.baidu.com/index.php?title=openprivacy" target="_blank">https://lbs.baidu.com/index.php?title=openprivacy</a></li>
+                    </ul>
+                </div>
+
+                <div class="sdk-info">
+                    <h4>4. 华为统一扫码 SDK（Android 版）</h4>
                     <ul>
                         <li><strong>第三方名称：</strong>华为软件技术有限公司</li>
-                        <li><strong>使用目的：</strong>为应用提供扫码能力</li>
-                        <li><strong>收集个人信息类型：</strong>手机相册二维码图片、传感器信息（加速度传感器、光照传感器）、网络信息、应用信息、设备信息、运营商信息（运营商的名称）、系统信息（系统设置、系统属性、设备型号、操作系统）和Wi-Fi信息（Wi-Fi状态）</li>
+                        <li><strong>使用目的与场景：</strong>为应用提供扫码能力</li>
+                        <li><strong>个人信息类型：</strong>您主动提交的数据（图片、文本）、传感器信息（加速度传感器、光照传感器）、网络信息、应用信息、设备信息、运营商信息（运营商的名称）、系统信息（系统设置、系统属性、设备型号、操作系统）和Wi-Fi信息（Wi-Fi状态）。</li>
                         <li><strong>处理方式：</strong>SDK 本机采集</li>
                         <li><strong>隐私政策链接：</strong><a href="https://developer.huawei.com/consumer/cn/doc/HMSCore-Guides/sdk-data-security-0000001050043971" target="_blank">https://developer.huawei.com/consumer/cn/doc/HMSCore-Guides/sdk-data-security-0000001050043971</a></li>
+                    </ul>
+                </div>
+
+                <div class="sdk-info">
+                    <h4>5. AndroidUtilCode</h4>
+                    <ul>
+                        <li><strong>第三方名称：</strong>开源项目</li>
+                        <li><strong>使用目的与场景：</strong>安卓工具类库</li>
+                        <li><strong>个人信息类型：</strong>设备信息（包括Android ID、UUID 等）、位置信息（GPS 位置信息）、唯一应用程序编号、网络信息（网络信息）、设备硬件信息（设备型号、屏幕分辨率、硬件制造商、产品名称）、操作系统信息（系统名称、系统版本、系统语言）、应用信息（时区、应用 app_id、应用名称、应用版本号）、传感器（屏幕方向）。</li>
+                        <li><strong>处理方式：</strong>SDK 本机采集</li>
+                        <li><strong>隐私政策链接：</strong><a href="https://github.com/Blankj/AndroidUtilCode?tab=readme-ov-file" target="_blank">https://github.com/Blankj/AndroidUtilCode?tab=readme-ov-file</a></li>
                     </ul>
                 </div>
             </section>
@@ -478,14 +503,10 @@
                             <li>我们处理个人信息的行为违反法律法规；</li>
                             <li>我们收集、使用您的个人信息，却未征得您的明确同意；</li>
                             <li>我们处理个人信息的行为严重违反了与您的约定；</li>
-                            <li>您不再使用我们的产品或服务，或您主动注销了账号；</li>
+                            <li>您不再使用我们的产品或服务；</li>
                             <li>我们永久不再为您提供产品或服务。</li>
                         </ul>
                     </li>
-                    <li><strong>撤回同意权：</strong>您有权撤回您此前向我们做出的关于处理个人信息的授权同意；</li>
-                    <li><strong>注销账户：</strong>您可以通过应用中「首页点击设置 ▶ 账户管理 ▶ 注销账户」的方式来注销账户；</li>
-                    <li><strong>获取个人信息副本：</strong>根据您的请求，我们将向您提供您的个人信息副本；</li>
-                    <li><strong>响应您的请求：</strong>我们将在 15 天内响应您的权利请求。</li>
                 </ul>
             </section>
 
