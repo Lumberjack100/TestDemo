@@ -1,11 +1,6 @@
 package com.shmedo.mcloudapp
 
 import cat.ereza.customactivityoncrash.config.CaocConfig
-import com.baidu.location.LocationClient
-import com.baidu.mapapi.CoordType
-import com.baidu.mapapi.SDKInitializer
-import com.baidu.mapapi.common.BaiduMapSDKException
-import com.blankj.utilcode.util.DeviceUtils
 import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.BRV
 import com.drake.statelayout.StateConfig
@@ -20,11 +15,9 @@ import com.shmedo.mcloudapp.koin.appKoinModule
 import com.shmedo.mcloudapp.ui.page.base.activity.ErrorActivity
 import com.shmedo.mcloudapp.ui.page.welcome.SplashActivity
 import com.shmedo.mcloudapp.utils.CrashReportingTree
-import com.tencent.bugly.crashreport.CrashReport
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
-import org.koin.core.logger.Level
 import timber.log.Timber
 import timber.log.Timber.Forest.plant
 
@@ -66,8 +59,6 @@ class MCloudApplication : BaseApp() {
 
         //Android 快速构建 RecyclerView
         initBrv()
-
-        initBaiduMapSDK()
     }
 
     /**
@@ -89,11 +80,7 @@ class MCloudApplication : BaseApp() {
             openErrorActivity()
             //自己处理的异常
 //            AppCrashHandler.Companion.getINSTANCE()
-            //初始化腾讯Bugly异常上报组件
-            CrashReport.initCrashReport(applicationContext)
-            CrashReport.setDeviceId(this, DeviceUtils.getUniqueDeviceId())
-            // 也可以通过CrashReport类设置，适合无法在初始化sdk时获取到deviceModel的场景，context和deviceModel不能为空（或空字符串）
-            CrashReport.setDeviceModel(this, DeviceUtils.getModel())
+
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -149,17 +136,6 @@ class MCloudApplication : BaseApp() {
         }
         SmartRefreshLayout.setDefaultRefreshFooterCreator { context, _ ->
             ClassicsFooter(context)
-        }
-    }
-
-    private fun initBaiduMapSDK() {
-        try {
-            LocationClient.setAgreePrivacy(true)
-            SDKInitializer.setAgreePrivacy(this, true)
-            //在使用SDK各组件之前初始化context信息，传入ApplicationContext
-            SDKInitializer.initialize(this)
-            SDKInitializer.setCoordType(CoordType.GCJ02);
-        } catch (e: BaiduMapSDKException) {
         }
     }
 }

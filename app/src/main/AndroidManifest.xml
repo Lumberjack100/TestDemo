@@ -117,11 +117,11 @@
 
         <meta-data
             android:name="BUGLY_APPID"
-            android:value="${buglyAppId}" /> <!-- 配置Bugly调试模式（true或者false）测试阶段建议设置成true，发布时设置为false。 -->
+            android:value="${buglyAppId}" />  <!-- 配置APP ID -->
 
         <meta-data
             android:name="BUGLY_ENABLE_DEBUG"
-            android:value="false" />
+            android:value="false" /><!-- 配置Bugly调试模式（true或者false）测试阶段建议设置成true，发布时设置为false。 -->
 
         <meta-data
             android:name="ScopedStorage"
