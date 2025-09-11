@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
@@ -29,41 +27,60 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/privacy_agreement_title"
+                android:text="@string/privacy_agreement_dialog_title"
                 android:textColor="@color/title_text_color"
                 android:textSize="@dimen/text_size_18"
                 android:textStyle="bold" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_privacy_desc"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_marginTop="@dimen/dimen_size_20"
+                android:gravity="center"
+                android:lineSpacingExtra="@dimen/dimen_size_5"
+                android:text="@string/privacy_agreement_dialog_content_head"
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/text_size_14" />
+
+            <com.google.android.material.textview.MaterialTextView
+                onClickWithDebouncing="@{()->click.onPrivacyPolicyClick()}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/dimen_size_15"
+                android:gravity="center"
+                android:text="@string/privacy_agreement_dialog_content_file_name"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_size_14" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dimen_size_20"
-                tools:text="@string/privacy_agreement_desc"
-                android:textColor="@color/text_color_666666"
-                android:textSize="@dimen/text_size_15" />
+                android:gravity="center"
+                android:lineSpacingExtra="@dimen/dimen_size_5"
+                android:text="@string/privacy_agreement_dialog_content_foot"
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/text_size_14" />
 
             <Button
                 android:id="@+id/btn_agree"
+                onClickWithDebouncing="@{()->click.agree()}"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:background="@drawable/btn_select"
                 android:foreground="?attr/selectableItemBackground"
-                onClickWithDebouncing="@{()->click.agree()}"
                 android:text="同意"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_18" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/btn_deny"
+                onClickWithDebouncing="@{()->click.disAgree()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dimen_size_15"
                 android:background="@null"
-                onClickWithDebouncing="@{()->click.disAgree()}"
                 android:text="拒绝并退出"
                 android:textColor="@color/sub_title_text_color"
                 android:textSize="@dimen/text_size_15" />

@@ -57,10 +57,10 @@ class LoginActivity : BaseActivity() {
     private fun initLoginUserProtocol() {
         val text = StringUtils.getString(R.string.login_protocol_desc)
         val spannableString = SpannableString(text)
-        val start1 = text.indexOf("《用户协议与免责条款》")
-        val end1 = start1 + "《用户协议与免责条款》".length
+        val start1 = text.indexOf("《用户隐私保护指引》")
+        val end1 = start1 + "《用户隐私保护指引》".length
         spannableString.setSpan(
-            MyClickText(this, ContentType.USER_PROTOCOL),
+            MyClickText(this, ContentType.PRIVACY_POLICY),
             start1,
             end1,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
