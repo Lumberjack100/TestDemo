@@ -20,34 +20,17 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+# --------------- Moshi Proguard Rules ---------------
+# 保留 Moshi 生成的 JsonAdapter（例如 FooJsonAdapter）
+-keep class **JsonAdapter { *; }
+# Moshi/Kotlin 反射与注解元数据（保守做法，避免误删必要元信息）
+-keep class kotlin.Metadata { *; }
+-keepattributes *Annotation*, Signature, Exceptions, InnerClasses, EnclosingMethod
+
 # --------------- Koin Proguard Rules ---------------
-# Keep annotation definitions
--keep class org.koin.core.annotation.** { *; }
-
-# 保留使用了 Koin 相关注解的类，这在使用 Koin 注解（koin-annotations）时是必需的。
--keep @org.koin.core.annotation.* class * { *; }
-
 # 保留你定义的所有 Koin 模块（例如，val appModule = module { ... } 实际上会生成继承自 Module 的类）。
 -keep class * extends org.koin.core.module.Module { *; }
 -keep class org.koin.dsl.* { *; }
 
 # 保留泛型签名，这对于 Koin 解析泛型依赖（如 List<MyType>）非常重要。
 -keepattributes Signature
-
-# --------------- Netty Proguard Rules ---------------
-# Netty - General rules to prevent issues with reflection and native code access
--keep class io.netty.** { *; }
-
-# JNI (Java Native Interface) classes and methods must not be renamed
--keepclasseswithmembernames,includedescriptorclasses class * {
-    native <methods>;
-}
-
-# Keep attributes for proper reflection and debugging
--keepattributes Signature, InnerClasses, EnclosingMethod
-
-# Keep names of enum members, as they might be accessed by name
--keepclassmembers enum * {
-    public static **[] values();
-    public static ** valueOf(java.lang.String);
-}

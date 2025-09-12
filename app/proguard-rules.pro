@@ -20,23 +20,31 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-#百度开放平台 3D地图SDK、定位SDK 避免混淆配置
--keep class com.baidu.** {*;}
--keep class vi.com.** {*;}
--keep class com.baidu.vi.** {*;}
--dontwarn com.baidu.**
-
-#钉钉分享避免混淆配置
--keep class  com.android.dingtalk.share.ddsharemodule.** {
-       *;
+#=========================================基础不变的混淆配置=========================================##
+# 保留所有带有 native 方法的类名和方法名
+-keepclasseswithmembernames class * {
+    native <methods>;
 }
 
-#NordicSemiconductor 相关库避免混淆配置
--keep class no.nordicsemi.android.log.** { *; }
+# --------------- AgentWeb Proguard Rules ---------------
+#AgentWeb 避免混淆配置
+-keep class com.just.agentweb.** {
+        *;
+}
+-dontwarn com.just.agentweb.**
+
 
 #Bugly 避免混淆配置
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
+
+#Glide 避免混淆配置
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
 
 #HMS Core SDK(华为扫码服务) 避免混淆配置
 -ignorewarnings
@@ -49,30 +57,29 @@
 -keep class com.huawei.updatesdk.**{*;}
 -keep class com.huawei.hms.**{*;}
 
-#AgentWeb 避免混淆配置
--keep class com.just.agentweb.** {
-        *;
-}
--dontwarn com.just.agentweb.**
-
-
-#Glide 避免混淆配置
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep public class * extends com.bumptech.glide.module.AppGlideModule
--keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
-  **[] $VALUES;
-  public *;
-}
-#如果你的 target API 低于 Android API 27，请添加：
--dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
-
-#PictureSelector 3.0 避免混淆配置
+#PictureSelector 避免混淆配置
 -keep class com.luck.picture.lib.** { *; }
 
-#如果引入了Camerax库请添加混淆
+#PictureSelector 如果引入了Camerax库请添加混淆
 -keep class com.luck.lib.camerax.** { *; }
 
-#如果引入了Ucrop库请添加混淆
+#PictureSelector 如果引入了Ucrop库请添加混淆
 -dontwarn com.yalantis.ucrop**
 -keep class com.yalantis.ucrop** { *; }
 -keep interface com.yalantis.ucrop** { *; }
+
+
+
+#AndroidUtilCode  避免混淆配置
+#-keep class com.blankj.utilcode.** { *; }
+
+#xpopup 避免混淆配置
+-dontwarn com.lxj.xpopup.widget.**
+-keep class com.lxj.xpopup.widget.**{*;}
+
+
+
+
+
+
+
