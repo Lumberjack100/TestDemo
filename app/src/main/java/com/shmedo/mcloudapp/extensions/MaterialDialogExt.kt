@@ -73,101 +73,6 @@ fun Context.showDatePickerDialog(
     (dialog as BottomSheetDialog).behavior.isHideable = false
 }
 
-fun AppCompatActivity.showWarn(
-    title: String = "温馨提示",
-    message: String,
-    positiveButtonText: String = "确定",
-    positiveAction: () -> Unit = {},
-    negativeButtonText: String = "",
-    negativeAction: () -> Unit = {}
-) {
-    MaterialDialog(this).cancelable(true).lifecycleOwner(this).show {
-        title(text = title)
-        message(text = message)
-        positiveButton(text = positiveButtonText) {
-            positiveAction.invoke()
-        }
-        if (negativeButtonText.isNotEmpty()) {
-            negativeButton(text = negativeButtonText) {
-                negativeAction.invoke()
-            }
-        }
-    }
-}
-
-/**
- * @param message 显示对话框的内容 必填项
- * @param title 显示对话框的标题 默认 温馨提示
- * @param positiveButtonText 确定按钮文字 默认确定
- * @param positiveAction 点击确定按钮触发的方法 默认空方法
- * @param negativeButtonText 取消按钮文字 默认空 不为空时显示该按钮
- * @param negativeAction 点击取消按钮触发的方法 默认空方法
- *
- */
-fun AppCompatActivity.showMessage(
-    message: String,
-    title: String = "温馨提示",
-    positiveButtonText: String = "确定",
-    positiveAction: () -> Unit = {},
-    negativeButtonText: String = "",
-    negativeAction: () -> Unit = {}
-) {
-    MaterialDialog(this)
-        .cancelable(true)
-        .lifecycleOwner(this)
-        .show {
-            title(text = title)
-            message(text = message)
-            positiveButton(text = positiveButtonText) {
-                positiveAction.invoke()
-            }
-            if (negativeButtonText.isNotEmpty()) {
-                negativeButton(text = negativeButtonText) {
-                    negativeAction.invoke()
-                }
-            }
-            getActionButton(WhichButton.POSITIVE).updateTextColor(SettingUtil.getColor(this@showMessage))
-            getActionButton(WhichButton.NEGATIVE).updateTextColor(ColorUtils.getColor(R.color.sub_title_text_color))
-        }
-}
-
-/**
- * @param message 显示对话框的内容 必填项
- * @param title 显示对话框的标题 默认 温馨提示
- * @param positiveButtonText 确定按钮文字 默认确定
- * @param positiveAction 点击确定按钮触发的方法 默认空方法
- * @param negativeButtonText 取消按钮文字 默认空 不为空时显示该按钮
- * @param negativeAction 点击取消按钮触发的方法 默认空方法
- */
-fun Fragment.showMessage(
-    message: String,
-    title: String = "温馨提示",
-    positiveButtonText: String = "确定",
-    positiveAction: () -> Unit = {},
-    negativeButtonText: String = "",
-    negativeAction: () -> Unit = {}
-) {
-    activity?.let {
-        MaterialDialog(it)
-            .cancelable(false)
-            .lifecycleOwner(viewLifecycleOwner)
-            .show {
-                title(text = title)
-                message(text = message)
-                positiveButton(text = positiveButtonText) {
-                    positiveAction.invoke()
-                }
-                if (negativeButtonText.isNotEmpty()) {
-                    negativeButton(text = negativeButtonText) {
-                        negativeAction.invoke()
-                    }
-                }
-                getActionButton(WhichButton.POSITIVE).updateTextColor(SettingUtil.getColor(it))
-                getActionButton(WhichButton.NEGATIVE).updateTextColor(ColorUtils.getColor(R.color.sub_title_text_color))
-            }
-    }
-}
-
 /**
  * 带确定按钮的单选对话框
  */
@@ -245,26 +150,84 @@ fun Fragment.showItemsMultiChoiceDialog(
     }
 }
 
-
 /**
- * 提示对话框
+ * @param message 显示对话框的内容 必填项
+ * @param title 显示对话框的标题 默认 温馨提示
+ * @param positiveButtonText 确定按钮文字 默认确定
+ * @param positiveAction 点击确定按钮触发的方法 默认空方法
+ * @param negativeButtonText 取消按钮文字 默认空 不为空时显示该按钮
+ * @param negativeAction 点击取消按钮触发的方法 默认空方法
+ *
  */
-fun AppCompatActivity.showMessageDialog(
+fun AppCompatActivity.showMessage(
     message: String,
-    title: String = "提示",
-    positiveButtonText: String = "我已知晓"
+    title: String = "温馨提示",
+    positiveButtonText: String = "确定",
+    positiveAction: () -> Unit = {},
+    negativeButtonText: String = "",
+    negativeAction: () -> Unit = {}
 ) {
-    MessageDialog.show(
-        title,
-        message,
-        positiveButtonText
-    )
+    MaterialDialog(this)
+        .cancelable(true)
+        .lifecycleOwner(this)
+        .show {
+            title(text = title)
+            message(text = message)
+            positiveButton(text = positiveButtonText) {
+                positiveAction.invoke()
+            }
+            if (negativeButtonText.isNotEmpty()) {
+                negativeButton(text = negativeButtonText) {
+                    negativeAction.invoke()
+                }
+            }
+            getActionButton(WhichButton.POSITIVE).updateTextColor(SettingUtil.getColor(this@showMessage))
+            getActionButton(WhichButton.NEGATIVE).updateTextColor(ColorUtils.getColor(R.color.sub_title_text_color))
+        }
 }
 
 /**
+ * @param message 显示对话框的内容 必填项
+ * @param title 显示对话框的标题 默认 温馨提示
+ * @param positiveButtonText 确定按钮文字 默认确定
+ * @param positiveAction 点击确定按钮触发的方法 默认空方法
+ * @param negativeButtonText 取消按钮文字 默认空 不为空时显示该按钮
+ * @param negativeAction 点击取消按钮触发的方法 默认空方法
+ */
+fun Fragment.showMessage(
+    message: String,
+    title: String = "温馨提示",
+    positiveButtonText: String = "确定",
+    positiveAction: () -> Unit = {},
+    negativeButtonText: String = "",
+    negativeAction: () -> Unit = {}
+) {
+    activity?.let {
+        MaterialDialog(it)
+            .cancelable(false)
+            .lifecycleOwner(viewLifecycleOwner)
+            .show {
+                title(text = title)
+                message(text = message)
+                positiveButton(text = positiveButtonText) {
+                    positiveAction.invoke()
+                }
+                if (negativeButtonText.isNotEmpty()) {
+                    negativeButton(text = negativeButtonText) {
+                        negativeAction.invoke()
+                    }
+                }
+                getActionButton(WhichButton.POSITIVE).updateTextColor(SettingUtil.getColor(it))
+                getActionButton(WhichButton.NEGATIVE).updateTextColor(ColorUtils.getColor(R.color.sub_title_text_color))
+            }
+    }
+}
+
+
+/**
  * 提示对话框
  */
-fun Fragment.showMessageDialog(
+fun showMessageDialog(
     message: String,
     title: String = "提示",
     positiveButtonText: String = "确认"
@@ -302,7 +265,7 @@ fun BaseFragment.showAdmeErrorProtectionDialog(
         .show()
 }
 
-fun BaseFragment.getAdmeErrorMsg(abndiasis: String, delimiters: String = "\n"): String {
+fun getAdmeErrorMsg(abndiasis: String, delimiters: String = "\n"): String {
     if (abndiasis.isEmpty()) {
         return ""
     }

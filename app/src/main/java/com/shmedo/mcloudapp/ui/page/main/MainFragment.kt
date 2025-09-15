@@ -19,6 +19,7 @@ import com.shmedo.mcloudapp.ui.page.userprofile.MineFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.AppUpdateViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.ProductConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -104,7 +105,8 @@ class MainFragment : BaseFragment() {
         // 申请通知栏权限
         XXPermissions.with(this)
             .permission(PermissionLists.getPostNotificationsPermission())
-            // .interceptor(PermissionInterceptor())
+            // 设置权限请求拦截器（局部设置）
+            .interceptor(PermissionInterceptor())
             .request(OnPermissionCallback { grantedList, deniedList ->
                 val allGranted = deniedList.isEmpty()
                 if (!allGranted) {

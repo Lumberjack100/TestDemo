@@ -31,7 +31,7 @@ class DeviceErrorHandler(private val fragment: Fragment) {
             
             ErrorHandlingStrategy.Dialog -> {
                 Timber.i("Dialog 处理错误: ${error.message}")
-                fragment.showMessageDialog(error.message)
+                showMessageDialog(error.message)
             }
             
             ErrorHandlingStrategy.Custom -> {
