@@ -21,6 +21,7 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.model.ContentType
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
@@ -37,7 +38,12 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.LoginViewModel
 import com.shmedo.mcloudapp.ui.widget.MyCountDownTimer
 import com.tencent.bugly.crashreport.CrashReport
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
+/**
+ * @author：gonghe
+ * @time: 2025/9/15
+ * @desc: 登录页面
+ *
+ */
 class LoginActivity : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
     private val mStates: LoginViewModel by viewModels()
@@ -45,7 +51,7 @@ class LoginActivity : BaseActivity() {
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.activity_login, BR.vm, mStates)
+        return DataBindingConfig(R.layout.activity_login, BR.stateVM, mStates)
             .addBindingParam(BR.click, ClickProxy())
     }
 
@@ -73,6 +79,7 @@ class LoginActivity : BaseActivity() {
 
     override fun initData() {
         mStates.account.set(AuthMMKVOwner.account)
+        mStates.agreeProtocol.set(CommonMMKVOwner.isAgreePrivate)
         initLoginUserProtocol()
     }
 
@@ -149,11 +156,21 @@ class LoginActivity : BaseActivity() {
                 Toaster.show("手机号格式错误！")
                 return
             }
+            // 校验是否已同意隐私协议
+            if (!mStates.agreeProtocol.get()) {
+                Toaster.show("请先勾选并同意隐私协议。")
+                return
+            }
             showLoadingDialog("处理中...")
             loginRequestViewModel.requestSendSmsCode(mStates.phone.get())
         }
 
         fun login() {
+            // 校验是否已同意隐私协议
+            if (!mStates.agreeProtocol.get()) {
+                Toaster.show("请先勾选并同意隐私协议。")
+                return
+            }
             //账号登录
             if (mStates.isAccountLogin.get()) {
                 if (TextUtils.isEmpty(mStates.account.get())) {

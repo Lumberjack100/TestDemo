@@ -31,6 +31,11 @@ class PolicyDialog : BaseVmDbDialogFragment() {
             ClickProxy()
         )
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isCancelable = false
+    }
+
     override fun setWindowStyle(gravity: Int) {
         super.setWindowStyle(Gravity.CENTER)
     }
