@@ -20,6 +20,10 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+# 警告：此规则会完全禁用对该库的混淆、压缩和优化。仅作为最后手段使用。
+-dontwarn com.shmedo.core.commonlib.**
+-keep class com.shmedo.core.commonlib.** { *; }
+
 # --------------- Moshi Proguard Rules ---------------
 # 保留 Moshi 生成的 JsonAdapter（例如 FooJsonAdapter）
 -keep class **JsonAdapter { *; }

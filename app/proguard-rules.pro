@@ -21,10 +21,8 @@
 #-renamesourcefileattribute SourceFile
 
 #=========================================基础不变的混淆配置=========================================##
-# 保留所有带有 native 方法的类名和方法名
--keepclasseswithmembernames class * {
-    native <methods>;
-}
+#保留行号和源文件属性
+-keepattributes SourceFile, LineNumberTable
 
 # --------------- AgentWeb Proguard Rules ---------------
 #AgentWeb 避免混淆配置
@@ -33,11 +31,12 @@
 }
 -dontwarn com.just.agentweb.**
 
-
+# --------------- Bugly Proguard Rules ---------------
 #Bugly 避免混淆配置
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
 
+# --------------- Glide Proguard Rules ---------------
 #Glide 避免混淆配置
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public class * extends com.bumptech.glide.module.AppGlideModule
@@ -46,6 +45,7 @@
   public *;
 }
 
+# --------------- HMS Core SDK(华为扫码服务) Proguard Rules ---------------
 #HMS Core SDK(华为扫码服务) 避免混淆配置
 -ignorewarnings
 -keepattributes *Annotation*
@@ -57,22 +57,23 @@
 -keep class com.huawei.updatesdk.**{*;}
 -keep class com.huawei.hms.**{*;}
 
+# --------------- PictureSelector Proguard Rules ---------------
 #PictureSelector 避免混淆配置
 -keep class com.luck.picture.lib.** { *; }
 
-#PictureSelector 如果引入了Camerax库请添加混淆
+#PictureSelector 如果引入了Camerax库请添加混淆配置
 -keep class com.luck.lib.camerax.** { *; }
 
-#PictureSelector 如果引入了Ucrop库请添加混淆
+#PictureSelector 如果引入了Ucrop库请添加混淆配置
 -dontwarn com.yalantis.ucrop**
 -keep class com.yalantis.ucrop** { *; }
 -keep interface com.yalantis.ucrop** { *; }
 
-
-
+# --------------- AndroidUtilCode Proguard Rules ---------------
 #AndroidUtilCode  避免混淆配置
 #-keep class com.blankj.utilcode.** { *; }
 
+# --------------- xpopup Proguard Rules ---------------
 #xpopup 避免混淆配置
 -dontwarn com.lxj.xpopup.widget.**
 -keep class com.lxj.xpopup.widget.**{*;}
