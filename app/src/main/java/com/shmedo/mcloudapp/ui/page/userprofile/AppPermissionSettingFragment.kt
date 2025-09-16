@@ -61,7 +61,6 @@ class AppPermissionSettingFragment : BaseFragment() {
             XXPermissions.isGrantedPermissions(
                 requireContext(),
                 listOf(
-                    PermissionLists.getAccessCoarseLocationPermission(),
                     PermissionLists.getAccessFineLocationPermission()
                 )
             )
@@ -106,7 +105,6 @@ class AppPermissionSettingFragment : BaseFragment() {
         fun onLocationPermissionClick() {
             XXPermissions.startPermissionActivity(
                 this@AppPermissionSettingFragment,
-                PermissionLists.getAccessCoarseLocationPermission(),
                 PermissionLists.getAccessFineLocationPermission()
             )
         }

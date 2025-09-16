@@ -14,4 +14,7 @@ class LoginViewModel : ViewModel() {
     val code = NonNullObservableField("")
     val eyeOpen = NonNullObservableField(false)
     val isAccountLogin = NonNullObservableField(true)
+
+    val agreeProtocol = NonNullObservableField(false)//是否同意隐私协议
+
 }

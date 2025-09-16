@@ -53,6 +53,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.AdvancedSettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.utils.map.CustomLatLng
 import com.shmedo.mcloudapp.utils.map.JZLocationConverter
+import com.shmedo.mcloudapp.utils.permission.PermissionDescription
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import kotlinx.coroutines.flow.collectLatest
@@ -726,10 +727,10 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
 
     private fun checkPermissionForLocation() {
         XXPermissions.with(this)
-            .permission(PermissionLists.getAccessCoarseLocationPermission())
             .permission(PermissionLists.getAccessFineLocationPermission())
             // 设置权限请求拦截器（局部设置）
             .interceptor(PermissionInterceptor())
+            .description(PermissionDescription())
             .request(object : OnPermissionCallback {
                 override fun onResult(
                     grantedList: List<IPermission>, deniedList: List<IPermission>) {

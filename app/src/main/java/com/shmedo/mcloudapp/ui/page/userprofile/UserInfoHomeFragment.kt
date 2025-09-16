@@ -12,6 +12,10 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ThreadUtils
+import com.hjq.permissions.OnPermissionCallback
+import com.hjq.permissions.XXPermissions
+import com.hjq.permissions.permission.PermissionLists
+import com.hjq.permissions.permission.base.IPermission
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.luck.picture.lib.basic.PictureSelector
@@ -22,6 +26,7 @@ import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.PictureFileUtils
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.UserInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
@@ -41,6 +46,8 @@ import com.shmedo.mcloudapp.utils.image.GlideEngine
 import com.shmedo.mcloudapp.utils.image.ImageFileCompressEngine
 import com.shmedo.mcloudapp.utils.image.MeOnCameraInterceptListener
 import com.shmedo.mcloudapp.utils.image.MeSandboxFileEngine
+import com.shmedo.mcloudapp.utils.permission.PermissionDescription
+import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import org.json.JSONException
 import org.json.JSONObject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -122,7 +129,7 @@ class UserInfoHomeFragment : BaseFragment() {
             Toaster.show("数据保存成功")
             setFragmentResult(
                 MineFragment.requestKey,
-                bundleOf(com.shmedo.core.commonlib.utils.AppContants.Extras.IS_REFRESH_USER_INFO to true)
+                bundleOf(AppContants.Extras.IS_REFRESH_USER_INFO to true)
             )
             ThreadUtils.runOnUiThreadDelayed({
 //                mMessenger.requestStatusBarColor(R.color.colorPrimary)
@@ -132,21 +139,58 @@ class UserInfoHomeFragment : BaseFragment() {
     }
 
 
+    private fun showPermissionDescription() {
+        XXPermissions.with(this)
+            .permission(PermissionLists.getCameraPermission())
+            .permission(PermissionLists.getReadMediaImagesPermission())
+            .permission(PermissionLists.getReadMediaVisualUserSelectedPermission())
+            // 设置权限请求拦截器（局部设置）
+            .interceptor(PermissionInterceptor())
+            .description(PermissionDescription())
+            .request(object : OnPermissionCallback {
+                override fun onResult(
+                    grantedList: List<IPermission>, deniedList: List<IPermission>
+                ) {
+                    val allGranted = deniedList.isEmpty()
+                    if (!allGranted) {
+                        return
+                    }
+
+                    openGallery()
+                }
+            })
+    }
+
+    private fun openGallery() {
+        // 进入相册
+        PictureSelector.create(context)
+            .openGallery(SelectMimeType.ofAll())
+            .setImageEngine(GlideEngine.createGlideEngine())
+            .setCompressEngine(ImageFileCompressEngine())
+            .setSandboxFileEngine(MeSandboxFileEngine())
+            .setCameraInterceptListener(MeOnCameraInterceptListener())
+            .isDisplayCamera(true)
+            .isWithSelectVideoImage(false)
+            .isMaxSelectEnabledMask(false)
+            .setMaxSelectNum(1)
+            .setMaxVideoSelectNum(0) //                    .setSelectedData(mAdapter.getData())
+            .forResult(MeOnResultCallbackListener())
+    }
+
     inner class ClickProxy : BaseClickProxy() {
         fun onChangeAvatar() {
-            // 进入相册
-            PictureSelector.create(context)
-                .openGallery(SelectMimeType.ofAll())
-                .setImageEngine(GlideEngine.createGlideEngine())
-                .setCompressEngine(ImageFileCompressEngine())
-                .setSandboxFileEngine(MeSandboxFileEngine())
-                .setCameraInterceptListener(MeOnCameraInterceptListener())
-                .isDisplayCamera(true)
-                .isWithSelectVideoImage(false)
-                .isMaxSelectEnabledMask(false)
-                .setMaxSelectNum(1)
-                .setMaxVideoSelectNum(0) //                    .setSelectedData(mAdapter.getData())
-                .forResult(MeOnResultCallbackListener())
+            if (!XXPermissions.isGrantedPermissions(
+                    requireContext(),
+                    listOf(
+                        PermissionLists.getCameraPermission()
+                    )
+                )
+            ) {
+                showPermissionDescription()
+            } else {
+                openGallery()
+            }
+
         }
 
         /**

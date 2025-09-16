@@ -59,8 +59,8 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        android:text='@{stateVM.isAllowNotification ? "已开启" : "未开启"}'
                         android:drawableEnd="@drawable/ic_arrow_right"
+                        android:text='@{stateVM.isAllowNotification ? "已开启" : "未开启"}'
                         tools:text="未开启" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -75,8 +75,35 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        android:drawableEnd="@drawable/ic_arrow_right"
-                    />
+                        android:drawableEnd="@drawable/ic_arrow_right" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_ClickableItem_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider"
+                    android:onClick="@{()->click.onUserProtocolClick()}">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        android:text="用户协议" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Value_Style"
+                        android:drawableEnd="@drawable/ic_arrow_right" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_ClickableItem_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider"
+                    android:onClick="@{()->click.onPrivacyPolicyClick()}">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        android:text="隐私政策" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Value_Style"
+                        android:drawableEnd="@drawable/ic_arrow_right" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -88,10 +115,9 @@
                         style="@style/Common_ClickableItem_Title_Style"
                         android:text="个人信息收集清单" />
 
-                  <com.google.android.material.textview.MaterialTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        android:drawableEnd="@drawable/ic_arrow_right"
-                    />
+                        android:drawableEnd="@drawable/ic_arrow_right" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -105,8 +131,7 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        android:drawableEnd="@drawable/ic_arrow_right"
-                    />
+                        android:drawableEnd="@drawable/ic_arrow_right" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -121,8 +146,7 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        android:drawableEnd="@drawable/ic_arrow_right"
-                    />
+                        android:drawableEnd="@drawable/ic_arrow_right" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -134,10 +158,9 @@
                         style="@style/Common_ClickableItem_Title_Style"
                         android:text="系统与设备日志" />
 
-                        <com.google.android.material.textview.MaterialTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        android:drawableEnd="@drawable/ic_arrow_right"
-                    />
+                        android:drawableEnd="@drawable/ic_arrow_right" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -147,12 +170,11 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        android:text="关于我们" />
+                        android:text="关于米易通" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        android:drawableEnd="@drawable/ic_arrow_right"
-                    />
+                        android:drawableEnd="@drawable/ic_arrow_right" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
             </androidx.appcompat.widget.LinearLayoutCompat>

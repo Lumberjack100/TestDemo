@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Always reply in Chinese.
+
 ## 通用原则
 - **代码整洁**: 遵循 Clean Code 原则，编写可读、可维护的代码。
 - **错误处理**: 实施完善的错误处理机制，确保应用的健壮性。

@@ -103,7 +103,7 @@ flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbo
 getActivity-xxpermission = { module = "com.github.getActivity:XXPermissions", version.ref = "xxPermission" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
 glide-ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glideVersion" }
-hms-scan = { module = "com.huawei.hms:scan", version.ref = "hmsScan" }
+hms-scan = { module = "com.huawei.hms:scanplus", version.ref = "hmsScan" }
 immersionbar = { module = "com.geyifeng.immersionbar:immersionbar", version.ref = "immersionbar" }
 immersionbar-ktx = { module = "com.geyifeng.immersionbar:immersionbar-ktx", version.ref = "immersionbar" }
 junit = { module = "junit:junit", version.ref = "junit" }

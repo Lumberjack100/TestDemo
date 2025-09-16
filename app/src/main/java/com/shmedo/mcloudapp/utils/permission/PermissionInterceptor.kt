@@ -13,12 +13,12 @@ import com.hjq.permissions.permission.PermissionNames
 import com.hjq.permissions.permission.base.IPermission
 import com.hjq.toast.Toaster
 import com.shmedo.lib.core.R
-import com.shmedo.mcloudapp.extensions.showWarn
+import com.shmedo.mcloudapp.extensions.showMessage
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2023/7/25 <br/>
- * 描述：     TODO
+ * 描述：    权限申请拦截器
  */
 class PermissionInterceptor : OnPermissionInterceptor {
 
@@ -63,32 +63,39 @@ class PermissionInterceptor : OnPermissionInterceptor {
         val dialogTitle = activity.getString(R.string.common_permission_alert)
         val confirmButtonText = activity.getString(R.string.common_permission_go_to_authorization)
 
-        (activity as AppCompatActivity).showWarn(
-            dialogTitle,
-            permissionHint,
+        (activity as AppCompatActivity).showMessage(
+            title = dialogTitle,
+            message = permissionHint,
             positiveButtonText = confirmButtonText,
             positiveAction = {
-                XXPermissions.startPermissionActivity(activity, deniedList, object : OnPermissionCallback {
-                    override fun onResult(grantedList: List<IPermission>, deniedList: List<IPermission>) {
-                        val latestDeniedList = XXPermissions.getDeniedPermissions(activity, requestList)
-                        val allGranted = latestDeniedList.isEmpty()
+                XXPermissions.startPermissionActivity(
+                    activity,
+                    deniedList,
+                    object : OnPermissionCallback {
+                        override fun onResult(
+                            grantedList: List<IPermission>,
+                            deniedList: List<IPermission>
+                        ) {
+                            val latestDeniedList =
+                                XXPermissions.getDeniedPermissions(activity, requestList)
+                            val allGranted = latestDeniedList.isEmpty()
 
-                        if (!allGranted) {
-                            // 递归显示对话框，让提示用户授权，只不过对话框是可取消的，用户不想授权了，随时可以点击返回键或者对话框蒙层来取消显示
-                            showPermissionSettingDialog(
-                                activity,
-                                requestList,
-                                latestDeniedList,
-                                callback,
-                                generatePermissionHint(activity, latestDeniedList, true)
-                            )
-                            return
+                            if (!allGranted) {
+                                // 递归显示对话框，让提示用户授权，只不过对话框是可取消的，用户不想授权了，随时可以点击返回键或者对话框蒙层来取消显示
+                                showPermissionSettingDialog(
+                                    activity,
+                                    requestList,
+                                    latestDeniedList,
+                                    callback,
+                                    generatePermissionHint(activity, latestDeniedList, true)
+                                )
+                                return
+                            }
+
+                            // 用户全部授权了，回调成功给外层监听器，免得用户还要再发起权限申请
+                            callback?.onResult(requestList, latestDeniedList)
                         }
-
-                        // 用户全部授权了，回调成功给外层监听器，免得用户还要再发起权限申请
-                        callback?.onResult(requestList, latestDeniedList)
-                    }
-                })
+                    })
             })
     }
 
@@ -122,15 +129,22 @@ class PermissionInterceptor : OnPermissionInterceptor {
         if (deniedLocationPermissionCount == deniedPermissionCount && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (deniedLocationPermissionCount == 1) {
                 when {
-                    XXPermissions.equalsPermission(deniedList[0], PermissionNames.ACCESS_BACKGROUND_LOCATION) -> {
+                    XXPermissions.equalsPermission(
+                        deniedList[0],
+                        PermissionNames.ACCESS_BACKGROUND_LOCATION
+                    ) -> {
                         return activity.getString(
                             R.string.common_permission_fail_hint_1,
                             activity.getString(R.string.common_permission_location_background),
                             getBackgroundPermissionOptionLabel(activity)
                         )
                     }
+
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-                            XXPermissions.equalsPermission(deniedList[0], PermissionNames.ACCESS_FINE_LOCATION) -> {
+                            XXPermissions.equalsPermission(
+                                deniedList[0],
+                                PermissionNames.ACCESS_FINE_LOCATION
+                            ) -> {
                         // 如果请求的定位权限中，既包含了精确定位权限，又包含了模糊定位权限或者后台定位权限，
                         // 但是用户只同意了模糊定位权限的情况或者后台定位权限，并没有同意精确定位权限的情况，就提示用户开启确切位置选项
                         // 需要注意的是 Android 12 才将模糊定位权限和精确定位权限的授权选项进行分拆，之前的版本没有区分得那么仔细
@@ -142,9 +156,17 @@ class PermissionInterceptor : OnPermissionInterceptor {
                     }
                 }
             } else {
-                if (XXPermissions.containsPermission(deniedList, PermissionNames.ACCESS_BACKGROUND_LOCATION)) {
+                if (XXPermissions.containsPermission(
+                        deniedList,
+                        PermissionNames.ACCESS_BACKGROUND_LOCATION
+                    )
+                ) {
                     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-                        XXPermissions.containsPermission(deniedList, PermissionNames.ACCESS_FINE_LOCATION)) {
+                        XXPermissions.containsPermission(
+                            deniedList,
+                            PermissionNames.ACCESS_FINE_LOCATION
+                        )
+                    ) {
                         activity.getString(
                             R.string.common_permission_fail_hint_2,
                             activity.getString(R.string.common_permission_location),
@@ -162,7 +184,11 @@ class PermissionInterceptor : OnPermissionInterceptor {
             }
         } else if (deniedSensorsPermissionCount == deniedPermissionCount && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (deniedPermissionCount == 1) {
-                if (XXPermissions.equalsPermission(deniedList[0], PermissionNames.BODY_SENSORS_BACKGROUND)) {
+                if (XXPermissions.equalsPermission(
+                        deniedList[0],
+                        PermissionNames.BODY_SENSORS_BACKGROUND
+                    )
+                ) {
                     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
                         activity.getString(
                             R.string.common_permission_fail_hint_1,
@@ -198,14 +224,21 @@ class PermissionInterceptor : OnPermissionInterceptor {
             when (deniedPermissionCount) {
                 1 -> {
                     when {
-                        XXPermissions.equalsPermission(deniedList[0], PermissionNames.READ_HEALTH_DATA_IN_BACKGROUND) -> {
+                        XXPermissions.equalsPermission(
+                            deniedList[0],
+                            PermissionNames.READ_HEALTH_DATA_IN_BACKGROUND
+                        ) -> {
                             return activity.getString(
                                 R.string.common_permission_fail_hint_3,
                                 activity.getString(R.string.common_permission_health_data_background),
                                 activity.getString(R.string.common_permission_health_data_background_option)
                             )
                         }
-                        XXPermissions.equalsPermission(deniedList[0], PermissionNames.READ_HEALTH_DATA_HISTORY) -> {
+
+                        XXPermissions.equalsPermission(
+                            deniedList[0],
+                            PermissionNames.READ_HEALTH_DATA_HISTORY
+                        ) -> {
                             return activity.getString(
                                 R.string.common_permission_fail_hint_3,
                                 activity.getString(R.string.common_permission_health_data_past),
@@ -214,10 +247,17 @@ class PermissionInterceptor : OnPermissionInterceptor {
                         }
                     }
                 }
+
                 2 -> {
                     when {
-                        XXPermissions.containsPermission(deniedList, PermissionNames.READ_HEALTH_DATA_HISTORY) &&
-                                XXPermissions.containsPermission(deniedList, PermissionNames.READ_HEALTH_DATA_IN_BACKGROUND) -> {
+                        XXPermissions.containsPermission(
+                            deniedList,
+                            PermissionNames.READ_HEALTH_DATA_HISTORY
+                        ) &&
+                                XXPermissions.containsPermission(
+                                    deniedList,
+                                    PermissionNames.READ_HEALTH_DATA_IN_BACKGROUND
+                                ) -> {
                             return activity.getString(
                                 R.string.common_permission_fail_hint_3,
                                 activity.getString(R.string.common_permission_health_data_past) +
@@ -228,7 +268,11 @@ class PermissionInterceptor : OnPermissionInterceptor {
                                         activity.getString(R.string.common_permission_health_data_background_option)
                             )
                         }
-                        XXPermissions.containsPermission(deniedList, PermissionNames.READ_HEALTH_DATA_HISTORY) -> {
+
+                        XXPermissions.containsPermission(
+                            deniedList,
+                            PermissionNames.READ_HEALTH_DATA_HISTORY
+                        ) -> {
                             return activity.getString(
                                 R.string.common_permission_fail_hint_2,
                                 activity.getString(R.string.common_permission_health_data) +
@@ -238,7 +282,11 @@ class PermissionInterceptor : OnPermissionInterceptor {
                                 activity.getString(R.string.common_permission_health_data_background_option)
                             )
                         }
-                        XXPermissions.containsPermission(deniedList, PermissionNames.READ_HEALTH_DATA_IN_BACKGROUND) -> {
+
+                        XXPermissions.containsPermission(
+                            deniedList,
+                            PermissionNames.READ_HEALTH_DATA_IN_BACKGROUND
+                        ) -> {
                             return activity.getString(
                                 R.string.common_permission_fail_hint_2,
                                 activity.getString(R.string.common_permission_health_data) +
@@ -250,9 +298,17 @@ class PermissionInterceptor : OnPermissionInterceptor {
                         }
                     }
                 }
+
                 else -> {
-                    if (XXPermissions.containsPermission(deniedList, PermissionNames.READ_HEALTH_DATA_HISTORY) &&
-                        XXPermissions.containsPermission(deniedList, PermissionNames.READ_HEALTH_DATA_IN_BACKGROUND)) {
+                    if (XXPermissions.containsPermission(
+                            deniedList,
+                            PermissionNames.READ_HEALTH_DATA_HISTORY
+                        ) &&
+                        XXPermissions.containsPermission(
+                            deniedList,
+                            PermissionNames.READ_HEALTH_DATA_IN_BACKGROUND
+                        )
+                    ) {
                         return activity.getString(
                             R.string.common_permission_fail_hint_2,
                             activity.getString(R.string.common_permission_health_data) +
