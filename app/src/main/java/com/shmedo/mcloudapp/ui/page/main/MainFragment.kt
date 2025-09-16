@@ -19,6 +19,7 @@ import com.shmedo.mcloudapp.ui.page.userprofile.MineFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.AppUpdateViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.ProductConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.utils.permission.PermissionDescription
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -88,10 +89,9 @@ class MainFragment : BaseFragment() {
     }
 
     override fun lazyLoadData() {
-        requestPermission()
         //加载外部配置
-        productConfigViewModel.loadProductGroupConfig()
         productConfigViewModel.loadMR702SensorConfig()
+        requestPermission()
         launchWithViewLifecycle {
             delay(1500)
             appUpdateViewModel.requestCheckAppVersion(false)
@@ -107,6 +107,7 @@ class MainFragment : BaseFragment() {
             .permission(PermissionLists.getPostNotificationsPermission())
             // 设置权限请求拦截器（局部设置）
             .interceptor(PermissionInterceptor())
+            .description(PermissionDescription())
             .request(OnPermissionCallback { grantedList, deniedList ->
                 val allGranted = deniedList.isEmpty()
                 if (!allGranted) {

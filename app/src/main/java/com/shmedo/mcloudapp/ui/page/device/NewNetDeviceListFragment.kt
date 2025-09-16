@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.ResourceUtils
 import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
@@ -16,8 +17,8 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.impl.PartShadowPopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
+import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.core.model.ProductGroupConfig
 import com.shmedo.lib.network.response.DataResult
@@ -263,8 +264,12 @@ class NewNetDeviceListFragment : BaseFragment() {
     private fun loadProductGroupConfig() {
         launchWithViewLifecycle(Dispatchers.IO) {
             try {
-                val sensorConfigList: List<ProductGroupConfig> =
-                    MmkvCacheUtil.getProductGroupConfig()
+                val localConfigInfo =
+                    ResourceUtils.readAssets2String("product_group_config.json")
+//                Timber.d("loadProductGroupConfig: $localConfigInfo")
+                val sensorConfigList =
+                    MoshiUtil.fromJson<List<ProductGroupConfig>>(localConfigInfo)
+                        ?: arrayListOf()
 
                 productGroupList.clear()
                 productSeriesIdMap.clear()

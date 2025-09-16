@@ -64,6 +64,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.ExecutionStatus
 import com.shmedo.mcloudapp.ui.viewmodel.state.QuickConfigCommandParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.utils.CommandExcelExporter
+import com.shmedo.mcloudapp.utils.permission.PermissionDescription
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -235,6 +236,7 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
             .permission(PermissionLists.getReadMediaVisualUserSelectedPermission())
             // 设置权限请求拦截器（局部设置）
             .interceptor(PermissionInterceptor())
+            .description(PermissionDescription())
             .request(object : OnPermissionCallback {
                 override fun onResult(
                     grantedList: List<IPermission>, deniedList: List<IPermission>

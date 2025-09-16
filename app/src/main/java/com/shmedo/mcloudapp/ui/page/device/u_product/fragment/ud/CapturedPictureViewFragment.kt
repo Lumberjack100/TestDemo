@@ -28,6 +28,7 @@ import com.shmedo.mcloudapp.ui.adapter.CustomPreviewAdapter
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.CapturedPictureViewViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.utils.permission.PermissionDescription
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import kotlin.math.abs
 
@@ -148,7 +149,9 @@ class CapturedPictureViewFragment : BaseFragment() {
             //申请存储权限
             XXPermissions.with(this@CapturedPictureViewFragment)
                 .permission(PermissionLists.getWriteExternalStoragePermission())
+                // 设置权限请求拦截器（局部设置）
                 .interceptor(PermissionInterceptor())
+                .description(PermissionDescription())
                 .request(OnPermissionCallback { grantedList, deniedList ->
                     val allGranted = deniedList.isEmpty()
                     if (!allGranted) {
@@ -164,7 +167,6 @@ class CapturedPictureViewFragment : BaseFragment() {
         val media = mStates.mData.getOrNull(curPosition) ?: return
 
         try {
-            val fileName = "${media.fileName}.jpg"
             val path = media.availablePath
             if (PictureMimeType.isHasHttp(path)) {
                 showLoadingDialog("下载中...")

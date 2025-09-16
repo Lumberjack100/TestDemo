@@ -50,6 +50,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.DeviceManageHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
+import com.shmedo.mcloudapp.utils.permission.PermissionDescription
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper.REQUEST_CODE_SCAN
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
@@ -279,9 +280,11 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
             .permission(PermissionLists.getReadMediaVisualUserSelectedPermission())
             // 设置权限请求拦截器（局部设置）
             .interceptor(PermissionInterceptor())
+            .description(PermissionDescription())
             .request(object : OnPermissionCallback {
                 override fun onResult(
-                    grantedList: List<IPermission>, deniedList: List<IPermission>) {
+                    grantedList: List<IPermission>, deniedList: List<IPermission>
+                ) {
                     val allGranted = deniedList.isEmpty()
                     if (!allGranted) {
                         return
