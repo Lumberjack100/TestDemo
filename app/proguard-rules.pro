@@ -20,24 +20,32 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-#百度开放平台 3D地图SDK、定位SDK 避免混淆配置
--keep class com.baidu.** {*;}
--keep class vi.com.** {*;}
--keep class com.baidu.vi.** {*;}
--dontwarn com.baidu.**
+#=========================================基础不变的混淆配置=========================================##
+#保留行号和源文件属性
+-keepattributes SourceFile, LineNumberTable
 
-#钉钉分享避免混淆配置
--keep class  com.android.dingtalk.share.ddsharemodule.** {
-       *;
+# --------------- AgentWeb Proguard Rules ---------------
+#AgentWeb 避免混淆配置
+-keep class com.just.agentweb.** {
+        *;
 }
+-dontwarn com.just.agentweb.**
 
-#NordicSemiconductor 相关库避免混淆配置
--keep class no.nordicsemi.android.log.** { *; }
-
+# --------------- Bugly Proguard Rules ---------------
 #Bugly 避免混淆配置
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
 
+# --------------- Glide Proguard Rules ---------------
+#Glide 避免混淆配置
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+
+# --------------- HMS Core SDK(华为扫码服务) Proguard Rules ---------------
 #HMS Core SDK(华为扫码服务) 避免混淆配置
 -ignorewarnings
 -keepattributes *Annotation*
@@ -49,30 +57,30 @@
 -keep class com.huawei.updatesdk.**{*;}
 -keep class com.huawei.hms.**{*;}
 
-#AgentWeb 避免混淆配置
--keep class com.just.agentweb.** {
-        *;
-}
--dontwarn com.just.agentweb.**
-
-
-#Glide 避免混淆配置
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep public class * extends com.bumptech.glide.module.AppGlideModule
--keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
-  **[] $VALUES;
-  public *;
-}
-#如果你的 target API 低于 Android API 27，请添加：
--dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
-
-#PictureSelector 3.0 避免混淆配置
+# --------------- PictureSelector Proguard Rules ---------------
+#PictureSelector 避免混淆配置
 -keep class com.luck.picture.lib.** { *; }
 
-#如果引入了Camerax库请添加混淆
+#PictureSelector 如果引入了Camerax库请添加混淆配置
 -keep class com.luck.lib.camerax.** { *; }
 
-#如果引入了Ucrop库请添加混淆
+#PictureSelector 如果引入了Ucrop库请添加混淆配置
 -dontwarn com.yalantis.ucrop**
 -keep class com.yalantis.ucrop** { *; }
 -keep interface com.yalantis.ucrop** { *; }
+
+# --------------- AndroidUtilCode Proguard Rules ---------------
+#AndroidUtilCode  避免混淆配置
+#-keep class com.blankj.utilcode.** { *; }
+
+# --------------- xpopup Proguard Rules ---------------
+#xpopup 避免混淆配置
+-dontwarn com.lxj.xpopup.widget.**
+-keep class com.lxj.xpopup.widget.**{*;}
+
+
+
+
+
+
+
