@@ -16,10 +16,14 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.hjq.permissions.OnPermissionDescription
 import com.hjq.permissions.permission.PermissionPageType
 import com.hjq.permissions.permission.base.IPermission
 import com.shmedo.mcloudapp.R
+import java.lang.ref.WeakReference
 
 
 /**
@@ -51,6 +55,8 @@ class PermissionDescription : OnPermissionDescription {
 
     /** 权限申请说明对话框 */
     private var mPermissionDialog: Dialog? = null
+
+    // 不缓存生命周期观察者，按需绑定；重复绑定也仅会多次回调，清理方法是幂等的
 
     override fun askWhetherRequestPermission(
         activity: Activity,
@@ -86,8 +92,12 @@ class PermissionDescription : OnPermissionDescription {
             return
         }
 
+        // 使用弱引用避免 Handler 中的 Runnable 持有 Activity 强引用导致泄漏
+        val activityRef = WeakReference(activity)
         val showPopupRunnable = Runnable {
-            showPopupWindow(activity, generatePermissionDescription(activity, requestList))
+            val act = activityRef.get() ?: return@Runnable
+            if (act.isFinishing || act.isDestroyed) return@Runnable
+            showPopupWindow(act, generatePermissionDescription(act, requestList))
         }
         // 这里解释一下为什么要延迟一段时间再显示 PopupWindow，这是因为系统没有开放任何 API 给外层直接获取权限是否永久拒绝
         // 目前只有申请过了权限才能通过 shouldShowRequestPermissionRationale 判断是不是永久拒绝，如果此前没有申请过权限，则无法判断
@@ -97,6 +107,9 @@ class PermissionDescription : OnPermissionDescription {
         // 最后补充一点：350 毫秒只是一个经验值，经过测试可覆盖大部分机型，具体可根据实际情况进行调整，这里不做强制要求
         // 相关 Github issue 地址：https://github.com/getActivity/XXPermissions/issues/366
         HANDLER.postAtTime(showPopupRunnable, mHandlerToken, SystemClock.uptimeMillis() + 350)
+
+        // 绑定生命周期，确保 Activity 销毁时移除回调并清理窗口，避免泄漏
+        bindLifecycleIfNeeded(activity)
     }
 
     override fun onRequestPermissionEnd(activity: Activity, requestList: List<IPermission>) {
@@ -155,11 +168,16 @@ class PermissionDescription : OnPermissionDescription {
                 .create()
         }
 
-        mPermissionDialog?.show()
+        mPermissionDialog?.let { dialog ->
+            dialog.setOnDismissListener { mPermissionDialog = null }
+            if (!activity.isFinishing && !activity.isDestroyed) {
+                dialog.show()
+            }
+        }
 
         // 将 Activity 和 Dialog 生命周期绑定在一起，避免可能会出现的内存泄漏
         // 当然如果上面创建的 Dialog 已经有做了生命周期管理，则不需要执行下面这行代码
-//        mPermissionDialog?.let { WindowLifecycleManager.bindDialogLifecycle(activity, it) }
+        bindLifecycleIfNeeded(activity)
     }
 
     /**
@@ -182,29 +200,35 @@ class PermissionDescription : OnPermissionDescription {
         mPermissionPopupWindow?.let { dismissPopupWindow() }
         if (activity.isFinishing || activity.isDestroyed) return
 
-        val decorView = activity.window.decorView as ViewGroup
+        val decorView = activity.window?.decorView as? ViewGroup ?: return
         val contentView = LayoutInflater.from(activity)
             .inflate(R.layout.permission_description_popup, decorView, false)
 
-        mPermissionPopupWindow = PopupWindow(activity).apply {
-            setContentView(contentView)
-            width = WindowManager.LayoutParams.MATCH_PARENT
-            height = WindowManager.LayoutParams.WRAP_CONTENT
+        // 使用以 contentView 构造的 PopupWindow，避免直接持有 Activity 引用
+        mPermissionPopupWindow = PopupWindow(
+            contentView,
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            true
+        ).apply {
             animationStyle = android.R.style.Animation_Dialog
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             isTouchable = true
             isOutsideTouchable = true
+            setOnDismissListener { mPermissionPopupWindow = null }
         }
 
         val messageView: TextView =
             mPermissionPopupWindow!!.contentView.findViewById(R.id.tv_permission_description_message)
         messageView.text = content
 
-        mPermissionPopupWindow!!.showAtLocation(decorView, Gravity.TOP, 0, 0)
+        if (!(activity.isFinishing || activity.isDestroyed)) {
+            mPermissionPopupWindow!!.showAtLocation(decorView, Gravity.TOP, 0, 0)
+        }
 
         // 将 Activity 和 PopupWindow 生命周期绑定在一起，避免可能会出现的内存泄漏
         // 当然如果上面创建的 PopupWindow 已经有做了生命周期管理，则不需要执行下面这行代码
-//        WindowLifecycleManager.bindPopupWindowLifecycle(activity, mPermissionPopupWindow!!)
+        bindLifecycleIfNeeded(activity)
     }
 
     /**
@@ -216,6 +240,26 @@ class PermissionDescription : OnPermissionDescription {
             popup.dismiss()
         }
         mPermissionPopupWindow = null
+    }
+
+    /**
+     * 将窗口清理与 Activity 生命周期绑定（只绑定一次）
+     */
+    private fun bindLifecycleIfNeeded(activity: Activity) {
+        if (activity is LifecycleOwner) {
+            val observer = object : LifecycleEventObserver {
+                override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                    if (event == Lifecycle.Event.ON_DESTROY) {
+                        // Activity 销毁时，移除回调并清理窗口，避免 Window/Context 泄漏
+                        HANDLER.removeCallbacksAndMessages(mHandlerToken)
+                        dismissPopupWindow()
+                        dismissDialog()
+                        source.lifecycle.removeObserver(this)
+                    }
+                }
+            }
+            activity.lifecycle.addObserver(observer)
+        }
     }
 
 }
