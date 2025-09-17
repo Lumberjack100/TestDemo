@@ -31,3 +31,6 @@
 # Moshi/Kotlin 反射与注解元数据（保守做法，避免误删必要元信息）
 -keep class kotlin.Metadata { *; }
 -keepattributes *Annotation*, Signature, Exceptions, InnerClasses, EnclosingMethod
+
+# 保留所有继承自 MoshiUtil.MoshiTypeReference 的匿名类/内部类，确保泛型信息不被擦除（供上层应用合并）
+-keep class * extends com.shmedo.core.commonlib.jsonhelper.MoshiUtil$MoshiTypeReference { *; }
