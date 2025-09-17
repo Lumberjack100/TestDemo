@@ -35,6 +35,7 @@ import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleScannerListViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
+import com.shmedo.mcloudapp.utils.permission.PermissionDescription
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -253,6 +254,7 @@ class BleScannerListFragment : BaseFragment() {
             .permission(PermissionLists.getBluetoothConnectPermission())
             // 设置权限请求拦截器（局部设置）
             .interceptor(PermissionInterceptor())
+            .description(PermissionDescription())
             .request(object : OnPermissionCallback {
                 override fun onResult(
                     grantedList: List<IPermission>, deniedList: List<IPermission>) {

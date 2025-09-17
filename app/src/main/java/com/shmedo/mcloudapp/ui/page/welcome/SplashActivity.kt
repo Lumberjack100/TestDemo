@@ -4,11 +4,17 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
+import com.baidu.location.LocationClient
+import com.baidu.mapapi.CoordType
+import com.baidu.mapapi.SDKInitializer
+import com.baidu.mapapi.common.BaiduMapSDKException
+import com.blankj.utilcode.util.DeviceUtils
 import com.blankj.utilcode.util.NetworkUtils
 import com.gyf.immersionbar.ktx.immersionBar
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -55,17 +61,47 @@ class SplashActivity : BaseActivity() {
 
     override fun initData() {
         logViewModel.insertSystemLogSession()
-//        if (!CommonMMKVOwner.isAgreePrivate) {
-//            showPrivateDialog()
-//        } else {
-//            goToLogin()
-//        }
-        goToLogin()
+        if (!CommonMMKVOwner.isAgreePrivate) {
+            showPrivateDialog()
+        } else {
+            initThirdSDK()
+            goToLogin()
+        }
+//        goToLogin()
+    }
+
+    /**
+     * 初始化异常上报
+     */
+    private fun initThirdSDK() {
+        initBugly()
+        initBaiduMapSDK()
+    }
+
+    private fun initBugly() {
+        //初始化腾讯Bugly异常上报组件
+        CrashReport.initCrashReport(applicationContext)
+        //腾讯Bugly 设置设备id
+        CrashReport.setDeviceId(applicationContext, DeviceUtils.getUniqueDeviceId())
+        //腾讯Bugly 设置手机型号
+        CrashReport.setDeviceModel(applicationContext, DeviceUtils.getModel())
+    }
+
+    private fun initBaiduMapSDK() {
+        try {
+            SDKInitializer.setAgreePrivacy(applicationContext, true)
+            LocationClient.setAgreePrivacy(true)
+            //在使用SDK各组件之前初始化context信息，传入ApplicationContext
+            SDKInitializer.initialize(applicationContext)
+            SDKInitializer.setCoordType(CoordType.GCJ02);
+        } catch (e: BaiduMapSDKException) {
+        }
     }
 
     override fun createObserver() {
         mMessenger.isAgreePolicy.observe(this) { aBoolean: Boolean ->
             if (aBoolean) {
+                initThirdSDK()
                 goToLogin()
             } else {
                 finish()

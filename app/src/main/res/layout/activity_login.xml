@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="vm"
+            name="stateVM"
             type="com.shmedo.mcloudapp.ui.viewmodel.state.LoginViewModel" />
 
         <variable
@@ -69,7 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="36dp"
-                android:text="@{vm.isAccountLogin?@string/login_way_account_zh:@string/login_way_phone_zh}"
+                android:text="@{stateVM.isAccountLogin?@string/login_way_account_zh:@string/login_way_phone_zh}"
                 android:textColor="#2F3033"
                 android:textSize="@dimen/text_size_18" />
 
@@ -78,7 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@{vm.isAccountLogin?@string/login_way_account_en:@string/login_way_phone_en}"
+                android:text="@{stateVM.isAccountLogin?@string/login_way_account_en:@string/login_way_phone_en}"
                 android:textColor="#ABADB3"
                 android:textSize="@dimen/text_size_13" />
 
@@ -89,7 +89,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/ll_account_login"
-                    visible="@{vm.isAccountLogin}"
+                    visible="@{stateVM.isAccountLogin}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -117,13 +117,13 @@
                             android:hint="请输入账号"
                             android:imeOptions="actionNext"
                             android:maxLength="20"
-                            android:singleLine="true"
                             android:paddingStart="10dp"
                             android:paddingEnd="20dp"
-                            android:text="@={vm.account}"
+                            android:singleLine="true"
+                            android:text="@={stateVM.account}"
                             android:textColor="@color/title_text_color"
                             android:textColorHint="@color/text_color_CCCCCC"
-                            android:textSize="@dimen/text_size_18"
+                            android:textSize="@dimen/text_size_15"
                             app:inputTypeFilter='@{"character"}' />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -152,13 +152,13 @@
                             android:imeOptions="actionDone"
                             android:inputType="textPassword"
                             android:maxLength="30"
-                            android:singleLine="true"
                             android:paddingStart="10dp"
                             android:paddingEnd="20dp"
-                            android:text="@={vm.password}"
+                            android:singleLine="true"
+                            android:text="@={stateVM.password}"
                             android:textColor="@color/title_text_color"
                             android:textColorHint="@color/text_color_CCCCCC"
-                            android:textSize="@dimen/text_size_18" />
+                            android:textSize="@dimen/text_size_15" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_eye_password"
@@ -166,7 +166,7 @@
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:layout_marginEnd="25dp"
-                            android:src="@{vm.eyeOpen?@drawable/icon_eye_open:@drawable/icon_eye_close}" />
+                            android:src="@{stateVM.eyeOpen?@drawable/icon_eye_open:@drawable/icon_eye_close}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -174,7 +174,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/ll_phone_login"
-                    visible="@{!vm.isAccountLogin}"
+                    visible="@{!stateVM.isAccountLogin}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -206,10 +206,10 @@
                             android:paddingStart="10dp"
                             android:paddingEnd="20dp"
                             android:singleLine="true"
-                            android:text="@={vm.phone}"
+                            android:text="@={stateVM.phone}"
                             android:textColor="@color/title_text_color"
                             android:textColorHint="@color/text_color_CCCCCC"
-                            android:textSize="@dimen/text_size_18" />
+                            android:textSize="@dimen/text_size_15" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -231,13 +231,13 @@
                             android:imeOptions="actionDone"
                             android:inputType="number"
                             android:maxLength="8"
-                            android:singleLine="true"
                             android:paddingStart="25dp"
                             android:paddingEnd="20dp"
-                            android:text="@={vm.code}"
+                            android:singleLine="true"
+                            android:text="@={stateVM.code}"
                             android:textColor="@color/title_text_color"
                             android:textColorHint="@color/text_color_CCCCCC"
-                            android:textSize="@dimen/text_size_18" />
+                            android:textSize="@dimen/text_size_15" />
 
                         <View
                             android:layout_width="1dp"
@@ -274,15 +274,31 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_17" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:visibility="invisible"
-                android:id="@+id/tv_user_protocol"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/login_protocol_desc"
-                android:textColor="@color/text_color_B3B3B3"
-                android:textSize="@dimen/text_size_13" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:layout_marginEnd="@dimen/dimen_size_5"
+                    android:checked="@={stateVM.agreeProtocol}"
+                    app:buttonCompat="@drawable/radiobutton_selector" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_user_protocol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_protocol_desc"
+                    android:textColor="@color/text_color_B3B3B3"
+                    android:textSize="@dimen/text_size_13" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <View
                 android:layout_width="match_parent"
@@ -294,14 +310,14 @@
                 onClickWithDebouncing="@{()->click.onSwitchLoginWayClick()}"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                android:src="@{vm.isAccountLogin?@drawable/icon_account_login:@drawable/icon_phone_login}" />
+                android:src="@{stateVM.isAccountLogin?@drawable/icon_account_login:@drawable/icon_phone_login}" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_login_way_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="@{vm.isAccountLogin?@string/login_way_phone_zh:@string/login_way_account_zh}"
+                android:text="@{stateVM.isAccountLogin?@string/login_way_phone_zh:@string/login_way_account_zh}"
                 android:textColor="@color/sub_title_text_color"
                 android:textSize="@dimen/text_size_13" />
 
@@ -311,14 +327,14 @@
                 android:layout_weight="1" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:visibility="invisible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:gravity="center"
                 android:text="@string/login_medo_copyright"
                 android:textColor="@color/text_color_CCCCCC"
-                android:textSize="11sp" />
+                android:textSize="11sp"
+                android:visibility="invisible" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -1,10 +1,17 @@
 package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import android.util.Log
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
+import com.kongzue.dialogx.dialogs.PopTip
+import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.utils.AppContants
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.md_cmd.assemble.entity.das.AuthenticationEntity
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
@@ -20,10 +27,12 @@ import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.DeviceError
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
+import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CollectorConfigModule
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
@@ -35,10 +44,13 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.SensorConfigModule
+import com.shmedo.mcloudapp.model.TelemetryDataModule
 import com.shmedo.mcloudapp.model.toUnified
-import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
+import com.shmedo.mcloudapp.ui.dialog.TelemetryPopupView
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.nio.charset.StandardCharsets
@@ -56,6 +68,8 @@ import java.nio.charset.StandardCharsets
  * 5. 完整的蓝牙认证流程
  */
 class DASHomeFragment : BaseDeviceHomeFragment() {
+    private val responseViewModel: CommandResponseViewModel by viewModels()
+
     private val mdParseManager: MDParserManager by inject()
     private var collectorModel = ""
 
@@ -141,6 +155,14 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
         val configModuleTree = ConfigModuleTree()
 
         configModuleTree.configModules.add(
+            TelemetryDataModule(
+                name = "遥测设备",
+                resID = R.drawable.ic_module_data_storage,
+                navId = R.id.action_global_to_dasCollectorSettingFragment
+            ).toUnified()
+        )
+
+        configModuleTree.configModules.add(
             CollectorConfigModule(
                 name = "采集配置",
                 resID = R.drawable.ic_module_collect_setting,
@@ -207,17 +229,8 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
 
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {
         when (configModule) {
-            is DataCenterModule -> {
-                nav().safeNavigate(
-                    configModule.navId,
-                    BaseDataCenterHomeFragment.newBundleArguments(
-                        centerNum = 3,
-                        productType,
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice
-                    )
-                )
+            is TelemetryDataModule -> {//遥测数据
+                doTelemetryCmd()
             }
 
             is CollectorConfigModule -> {//采集器配置
@@ -229,6 +242,19 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                     bleDevice,
                 )
                 nav().safeNavigate(configModule.navId, bundle)
+            }
+
+            is DataCenterModule -> {
+                nav().safeNavigate(
+                    configModule.navId,
+                    BaseDataCenterHomeFragment.newBundleArguments(
+                        centerNum = 3,
+                        productType,
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice
+                    )
+                )
             }
 
             is SensorConfigModule -> {//传感器配置
@@ -340,6 +366,43 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
         )
     }
 
+
+    /**
+     * 显示遥测数据弹窗
+     */
+    private fun showTelemetryDataPopup() {
+        val popupView = TelemetryPopupView(requireContext())
+        popupView.setTitle("遥测", responseViewModel)
+        XPopup.Builder(context)
+            .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
+            .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
+            .enableDrag(false)
+            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+            .asCustom(popupView)
+            .show()
+    }
+
+    private fun doTelemetryCmd() {
+        val command = if (communicateWay is NetPlatformConnect)
+            IOTCommandUtil.getCommand(IOTCommandType.SAMPLE)
+        else MDCommandUtil.getCommand(MDCommandType.INSTANT_COLLEACTOR)
+
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                timeout = AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.customConfig { error ->
+                    if (error is DeviceError.Timeout) {
+                        showMessageDialog("设备未响应")
+                    } else {
+                        showMessageDialog("遥测出错: ${error.message}")
+                    }
+                }
+            )
+        )
+    }
+
     /**
      * 处理指令响应 - 重写父类方法处理DAS特定的指令
      */
@@ -356,6 +419,31 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
      */
     private fun handle4GCommandResult(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.SAMPLE -> {
+                val result = iotParseManager.parse<String>(
+                    cmdStr,
+                    IOTCommandType.SAMPLE
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "遥测出错!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        if (result.data.isEmpty()) {
+                            PopTip.show("遥测成功!").setMarginBottom(ConvertUtils.dp2px(300f))
+                                .autoDismiss(2000).iconSuccess()
+                        } else {
+                            responseViewModel.isResponseLoading.set(false)
+                            responseViewModel.isResponseSuccess.set(true)
+                            responseViewModel.responseContent.set(result.data)
+                            showTelemetryDataPopup()
+                        }
+                    }
+                }
+            }
+
             else -> {
                 // 其他4G指令交给父类处理
                 super.handleCommandResponse(cmdStr)
@@ -436,6 +524,27 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                         Timber.d("位置自动同步成功")
                         isLocationSyncInProgress = false
                         locationViewModel.stopLocation()
+                    }
+                }
+            }
+
+            MDCommandType.INSTANT_COLLEACTOR -> {//
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "遥测出错!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    is MDCommandResult.Success -> {
+                        if (result.data.isEmpty()) {
+                            PopTip.show("遥测成功!").setMarginBottom(ConvertUtils.dp2px(300f))
+                                .autoDismiss(2000).iconSuccess()
+                        } else {
+                            responseViewModel.isResponseLoading.set(false)
+                            responseViewModel.isResponseSuccess.set(true)
+                            responseViewModel.responseContent.set(result.data)
+                            showTelemetryDataPopup()
+                        }
                     }
                 }
             }

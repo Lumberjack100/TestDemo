@@ -12,7 +12,6 @@ import com.shmedo.core.data.repository.ProductConfigRepositoryImp
 import com.shmedo.core.model.AdmeConfigInfo
 import com.shmedo.core.model.DeviceCmdOrderInfo
 import com.shmedo.core.model.DeviceDebugAddress
-import com.shmedo.core.model.ProductGroupConfig
 import com.shmedo.core.model.SensorModel
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.lib.network.util.BaseURL
@@ -154,33 +153,6 @@ class ProductConfigViewModel(
         }
     }
     // </editor-fold>
-
-    /**
-     * 加载产品配置
-     */
-    fun loadProductGroupConfig() {
-        viewModelScope.launch(Dispatchers.Default) {
-            try {
-                val localConfigInfo =
-                    ResourceUtils.readAssets2String("product_group_config.json")
-//                Timber.d("loadProductGroupConfig: $localConfigInfo")
-                val localConfigList =
-                    MoshiUtil.fromJson<List<ProductGroupConfig>>(localConfigInfo)
-                        ?: arrayListOf()
-
-                MmkvCacheUtil.setProductGroupConfig(localConfigList)
-            } catch (e: Exception) {
-                Timber.e(e)
-                val msg =
-                    "call loadProductGroupConfig() error: ${e.localizedMessage}" //这里的msg是网络请求的错误信息
-                addLogItem(
-                    sessionId = CommonMMKVOwner.appLogSessionId,
-                    priority = Log.ERROR,
-                    data = msg
-                )
-            }
-        }
-    }
 
 
     //<editor-fold desc="孙建伟通用配置接口">

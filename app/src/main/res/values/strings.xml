@@ -3,9 +3,11 @@
     <!--  <string name="app_name"> 米易通</string>-->
     <string name="device_module_navi">设备</string>
     <string name="mine_module_navi">我的</string>
-    <string name="privacy_agreement_title">温馨提示</string>
-    <string name="privacy_agreement_desc">欢迎您使用米易通！\n\n我们高度重视并保护您的个人隐私，我们将严格在国家法律允许范围内，且只以为您提供服务为目的，收集必要的相关信息。为了便于您详细了解您的权利和义务，请您仔细阅读米易通《用户协议和免责条款》，并做出是否同意授权的决定。</string>
-    <string name="login_protocol_desc">登录即代表已阅读并同意《用户协议与免责条款》</string>
+    <string name="privacy_agreement_dialog_title">用户隐私保护提示</string>
+    <string name="privacy_agreement_dialog_content_head">欢迎你使用本应用，你使用本应用前应当阅读并同意！</string>
+    <string name="privacy_agreement_dialog_content_file_name">《用户隐私保护指引》</string>
+    <string name="privacy_agreement_dialog_content_foot">当你点击同意并开始使用产品服务时，即表示你已理解并同意该条款内容，该条款将对你产生法律约束力。如你拒绝，将无法正常使用应用。</string>
+    <string name="login_protocol_desc">我已阅读并同意《用户隐私保护指引》</string>
     <string name="user_agreement">用户协议</string>
     <string name="privacy_policy">隐私协议</string>
     <string name="login_way_account_zh">账号登录</string>

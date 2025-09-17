@@ -92,12 +92,42 @@ class SettingFragment : BaseFragment() {
         }
 
         /**
+         * 用户协议
+         */
+        fun onUserProtocolClick() {
+            val url = "https://appassets.androidplatform.net/assets/private/user_protocol.html"
+            val bundle = WebViewFragment.newBundleArguments(
+                "米易通",
+                url
+            )
+            nav().safeNavigate(
+                R.id.action_global_to_webViewFragment,
+                bundle
+            )
+        }
+
+        /** 隐私政策 */
+        fun onPrivacyPolicyClick() {
+//            val url = "https://mduser.shmedo.cn/privacy.html"
+            val url = "https://appassets.androidplatform.net/assets/private/privacy.html"
+            val bundle = WebViewFragment.newBundleArguments(
+                "米易通",
+                url
+            )
+            nav().safeNavigate(
+                R.id.action_global_to_webViewFragment,
+                bundle
+            )
+        }
+
+        /**
          * 个人信息收集清单
          */
         fun onPersonalInformationCollectionListClick() {
-            val url = "https://appassets.androidplatform.net/assets/private/personal_information_collection_list.html"
+            val url =
+                "https://appassets.androidplatform.net/assets/private/personal_information_collection_list.html"
             val bundle = WebViewFragment.newBundleArguments(
-                "个人信息收集清单",
+                "米易通",
                 url
             )
             nav().safeNavigate(
@@ -111,9 +141,10 @@ class SettingFragment : BaseFragment() {
          */
         fun onThirdPartyInformationSharingListClick() {
 //            val url = "file:///android_asset/private/third_party_sharing_list.html"
-            val url = "https://appassets.androidplatform.net/assets/private/third_party_sharing_list.html"
+            val url =
+                "https://appassets.androidplatform.net/assets/private/third_party_sharing_list.html"
             val bundle = WebViewFragment.newBundleArguments(
-                "第三方信息共享清单",
+                "米易通",
                 url
             )
             nav().safeNavigate(
