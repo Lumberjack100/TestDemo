@@ -23,14 +23,3 @@
 # 警告：此规则会完全禁用对该库的混淆、压缩和优化。仅作为最后手段使用。
 -dontwarn com.shmedo.core.commonlib.**
 -keep class com.shmedo.core.commonlib.** { *; }
-
-# --------------- Moshi Proguard Rules ---------------
-# 保留 Moshi 生成的 JsonAdapter（例如 FooJsonAdapter）
--keep class **JsonAdapter { *; }
-
-# Moshi/Kotlin 反射与注解元数据（保守做法，避免误删必要元信息）
--keep class kotlin.Metadata { *; }
--keepattributes *Annotation*, Signature, Exceptions, InnerClasses, EnclosingMethod
-
-# 保留所有继承自 MoshiUtil.MoshiTypeReference 的匿名类/内部类，确保泛型信息不被擦除（供上层应用合并）
--keep class * extends com.shmedo.core.commonlib.jsonhelper.MoshiUtil$MoshiTypeReference { *; }

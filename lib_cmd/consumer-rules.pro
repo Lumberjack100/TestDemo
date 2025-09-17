@@ -1,10 +1,6 @@
 #-keep public class com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.** { *; }
 #-keep public class com.shmedo.lib.cmd.base.md_cmd.assemble.entity.** { *; }
 
-# 警告：此规则会完全禁用对该库的混淆、压缩和优化。仅作为最后手段使用。
--dontwarn com.shmedo.lib.cmd.base.**
--keep class com.shmedo.lib.cmd.base.** { *; }
-
 # --------------- Moshi Proguard Rules ---------------
 # 保留 Moshi 生成的 JsonAdapter（例如 FooJsonAdapter）
 -keep class **JsonAdapter { *; }
