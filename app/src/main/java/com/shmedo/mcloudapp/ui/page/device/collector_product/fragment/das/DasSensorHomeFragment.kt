@@ -26,7 +26,6 @@ import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.adapter.PageAdapter
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.BaseDasSensorListFragment
 import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.BleDasDigitalSensorListFragment
 import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.BleDasVibratingSensorListFragment
@@ -97,60 +96,32 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
     private fun initViewPager() {
         val fragmentList = mutableListOf<Fragment>()
+        val bundle = BaseDasSensorListFragment.newBundleArguments(
+            collectorModel,
+            productType,
+            communicateWay,
+            deviceInfo,
+            bleDevice
+        )
+        fragmentList.add(DasIOSensorFragment.newInstance().apply {
+            arguments = bundle
+        })
+        fragmentList.add(DasDigitalOsmometerFragment.newInstance().apply {
+            arguments = bundle
+        })
 
         if (communicateWay == BleConnect) {
-            // 蓝牙模式使用蓝牙相关的Fragment
-            val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                productType,
-                communicateWay,
-                deviceInfo,
-                bleDevice
-            )
-
-            fragmentList.add(DasIOSensorFragment.newInstance().apply {
-                arguments = bundle
-            })
-            fragmentList.add(DasDigitalOsmometerFragment.newInstance().apply {
-                arguments = bundle
-            })
-
             // 根据collectorModel决定使用哪种扩展传感器Fragment
             val externalSensorFragment =
                 if (collectorModel == "0${IOTSensorType.VIBRATING_SENSOR.code}")
                     BleDasVibratingSensorListFragment.newInstance().apply {
-                        arguments =
-                            BaseDasSensorListFragment.newBundleArguments(
-                                productType,
-                                communicateWay,
-                                deviceInfo,
-                                bleDevice,
-                            )
+                        arguments = bundle
                     } else
                     BleDasDigitalSensorListFragment.newInstance().apply {
-                        arguments =
-                            BaseDasSensorListFragment.newBundleArguments(
-                                productType,
-                                communicateWay,
-                                deviceInfo,
-                                bleDevice,
-                            )
+                        arguments = bundle
                     }
             fragmentList.add(externalSensorFragment)
         } else {
-            // 4G模式使用原有的Fragment
-            val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                productType,
-                communicateWay,
-                deviceInfo,
-                bleDevice
-            )
-
-            fragmentList.add(DasIOSensorFragment.newInstance().apply {
-                arguments = bundle
-            })
-            fragmentList.add(DasDigitalOsmometerFragment.newInstance().apply {
-                arguments = bundle
-            })
             if (deviceInfo.productName.contains("MR701")) {
                 fragmentList.add(DasMCUAddressFragment.newInstance().apply {
                     arguments = bundle

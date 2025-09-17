@@ -13,6 +13,7 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        //把库自己的 consumer 规则暴露出去
         consumerProguardFiles("consumer-rules.pro")
     }
     buildFeatures {
@@ -21,7 +22,6 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
         }
     }
     compileOptions {

@@ -1,8 +1,8 @@
 package com.shmedo.mcloudapp.ui.page.device.common
 
 import android.app.Activity
+import android.content.ClipData
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -14,7 +14,6 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.PathUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.UriUtils
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -34,6 +33,7 @@ import com.shmedo.core.model.CmdParamInfo
 import com.shmedo.core.model.DeviceCmdOrderInfo
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
+import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandResult
@@ -845,14 +845,12 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
      * 显示导出成功对话框
      */
     private fun showExportSuccessDialog(file: java.io.File) {
-        val uri = UriUtils.file2Uri(file)
-
         showMessage(
             title = "导出成功",
             message = "Excel文件已导出成功！\n文件路径：${file.absolutePath}",
             positiveButtonText = "分享文件",
             positiveAction = {
-                shareFile(uri)
+                shareFile(file)
             },
             negativeButtonText = "确定"
         )
@@ -861,18 +859,31 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
     /**
      * 分享文件
      */
-    private fun shareFile(uri: Uri) {
+    private fun shareFile(file: java.io.File) {
         try {
+            val uri = androidx.core.content.FileProvider.getUriForFile(
+                requireContext(),
+                "${BuildConfig.APPLICATION_ID}.fileprovider",
+                file
+            )
+
             val shareIntent = Intent().apply {
                 action = Intent.ACTION_SEND
-                type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                type = "text/csv"
                 putExtra(Intent.EXTRA_STREAM, uri)
                 putExtra(Intent.EXTRA_SUBJECT, "指令配置结果")
                 putExtra(Intent.EXTRA_TEXT, "请查收指令配置结果Excel文件")
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                // 关键：把同一个 uri 放到 ClipData，方便系统/目标 App 正确继承权限
+                clipData = ClipData.newUri(requireContext().contentResolver, file.name, uri)
             }
 
-            startActivity(Intent.createChooser(shareIntent, "分享配置结果"))
+            // 注意：把授权 flag 同时也加在 chooser 上（某些系统实现更“挑”）
+            val chooser = Intent.createChooser(shareIntent, "分享配置结果").apply {
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            startActivity(chooser)
+
         } catch (e: Exception) {
             Timber.e(e, "分享文件失败")
             Toaster.show("分享失败：${e.message}")

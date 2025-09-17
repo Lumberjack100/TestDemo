@@ -88,7 +88,11 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            // 1. 启用代码混淆
+            isMinifyEnabled = true // R8 会在构建 release 版本时自动执行压缩（移除无用代码）、优化（字节码级别）和混淆（重命名）。
+            // 2. 启用资源压缩（可选，但建议与代码压缩一起使用）
+            isShrinkResources = true
+            // 3. 指定混淆规则文件
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
