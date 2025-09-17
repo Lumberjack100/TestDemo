@@ -19,6 +19,7 @@ import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import timber.log.Timber
+import java.math.BigDecimal
 
 /**
  * @author：gonghe
@@ -161,8 +162,11 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
     private fun initRunningData2(content: String) {
         try {
             // {"sw":1,"mode":8,"initENU":"0.000000,0.000000,0.000000","baseLine":0.000000,"fixRate":0.0,"gap_fixRate":0.0,"result":"0.000,0.000,0.000","status":"not-fix","dataSource":"mqtt"}
-            val resultMap = MoshiUtil.fromJson<Map<String, String>>(content) ?: return
-            if (resultMap.isEmpty()) return
+            val rawResultMap = MoshiUtil.fromJson<Map<String, Any?>>(content) ?: return
+            if (rawResultMap.isEmpty()) return
+            val resultMap: Map<String, String?> = rawResultMap.mapValues { (_, value) ->
+                toReadableString(value)
+            }
             val groupList = mutableListOf<Any>()
 
             // 数据解算
@@ -284,6 +288,18 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    private fun toReadableString(value: Any?): String? {
+        return when (value) {
+            null -> null
+            is String -> value
+            is Number -> runCatching {
+                BigDecimal(value.toString()).stripTrailingZeros().toPlainString()
+            }.getOrDefault(value.toString())
+            is Boolean -> value.toString()
+            else -> null
         }
     }
 }
