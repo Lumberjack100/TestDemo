@@ -83,8 +83,7 @@ class TimeCalibrationFragment : OptimizedBaseIOTDeviceFragment() {
             if (isBleDas()) {
                 isDoSetTimeCmd = true
                 initDasBleSaveCommand()
-            }
-            else{
+            } else {
                 initSaveCommand()
             }
         }
@@ -187,9 +186,9 @@ class TimeCalibrationFragment : OptimizedBaseIOTDeviceFragment() {
                     is MDCommandResult.Success -> {
                         if (!isDoSetTimeCmd) {
                             initDeviceTime(result.data.time)
-                        }else{
+                        } else {
                             if (!isCommunicationExecuting())
-                            processNavigateUp("校准成功")
+                                processNavigateUp("校准成功")
                         }
                     }
                 }
