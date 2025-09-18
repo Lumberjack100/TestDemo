@@ -5,6 +5,7 @@
     android:id="@+id/u_product_graph"
     app:startDestination="@id/uProductHomeFragment">
 
+    <include app:graph="@navigation/include_query_data_graph" />
     <include app:graph="@navigation/include_time_calibration_graph" />
     <include app:graph="@navigation/include_lora_graph" />
     <include app:graph="@navigation/include_alarm_setting_graph" />
@@ -323,4 +324,11 @@
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
+    <action
+        android:id="@+id/action_global_to_queryDeviceDataFragment"
+        app:destination="@id/query_data_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
 </navigation>
