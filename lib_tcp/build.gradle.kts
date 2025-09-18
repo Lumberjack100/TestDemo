@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -24,8 +26,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
     }
 }
 
@@ -36,7 +40,9 @@ dependencies {
     implementation(libs.koin.android)
 
     //AndroidUtilCode 是一个强大易用的安卓工具类库
-    implementation(libs.utilcodex)
+    implementation(libs.utilcodex){
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
+    }
     //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
     implementation(libs.timber)
 
