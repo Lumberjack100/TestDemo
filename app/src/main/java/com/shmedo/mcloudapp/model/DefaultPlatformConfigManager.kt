@@ -53,24 +53,6 @@ object DefaultPlatformConfigManager {
     }
 
     /**
-     * 检查平台是否被MR702支持
-     * @param platform 平台类型
-     * @return 是否支持
-     */
-    fun isPlatformSupportedByMR702(platform: DataCenterPlatform): Boolean {
-        return DefaultPlatformConfig.getMR702DefaultConfigs().containsKey(platform)
-    }
-
-    /**
-     * 检查平台名称是否被MR702支持
-     * @param platformName 平台名称
-     * @return 是否支持
-     */
-    fun isPlatformNameSupportedByMR702(platformName: String): Boolean {
-        return getMR702SupportedPlatformNames().contains(platformName)
-    }
-
-    /**
      * 根据数据协议获取支持的平台
      * @param protocol 数据协议
      * @param forMR702 是否为MR702设备
