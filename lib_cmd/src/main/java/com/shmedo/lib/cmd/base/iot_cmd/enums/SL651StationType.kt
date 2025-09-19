@@ -24,8 +24,9 @@ enum class SL651StationType(private val stationName: String, private val code: S
     ),
     WATER_QUALITY("水质", "Q"),
     WATER_INTAKE("取水口", "I"),
-    DRAIN("排水口", "O"),
-    CUSTOM("自定义", "1");
+    DRAIN("排水口", "O")
+
+    ;
 
     fun getStationName(): String {
         return stationName
@@ -38,20 +39,20 @@ enum class SL651StationType(private val stationName: String, private val code: S
     companion object {
         @JvmStatic
         fun valueByStationName(name: String): SL651StationType {
-            if (TextUtils.isEmpty(name)) return CUSTOM
+            if (TextUtils.isEmpty(name)) return PRECIPITATION
             for (station in entries) {
                 if (station.stationName == name) return station
             }
-            return CUSTOM
+            return PRECIPITATION
         }
 
         @JvmStatic
         fun valueByCode(code: String): SL651StationType {
-            if (TextUtils.isEmpty(code)) return CUSTOM
+            if (TextUtils.isEmpty(code)) return PRECIPITATION
             for (station in entries) {
                 if (station.code == code) return station
             }
-            return CUSTOM
+            return PRECIPITATION
         }
 
         @JvmStatic
