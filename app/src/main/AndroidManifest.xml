@@ -192,18 +192,26 @@
                 tools:replace="android:resource" />
         </provider>
 
-        <provider
-            android:name=".utils.AppContentProvider"
-            android:authorities="${applicationId}.appContentProvider"
-            android:exported="false" />
-
+        <!-- Jetpack Startup Provider：统一调度各个 Initializer -->
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
             tools:node="merge">
+
+            <!-- MMKV -->
             <meta-data
                 android:name="com.shmedo.core.commonlib.mmkv.MMKVInitializer"
+                android:value="androidx.startup" />
+
+            <!-- 网络监听 -->
+            <meta-data
+                android:name="com.shmedo.mcloudapp.startup.NetworkInitializer"
+                android:value="androidx.startup" />
+
+            <!-- 应用前后台生命周期 -->
+            <meta-data
+                android:name="com.shmedo.mcloudapp.startup.AppLifecycleInitializer"
                 android:value="androidx.startup" />
         </provider>
     </application>

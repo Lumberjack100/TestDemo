@@ -16,7 +16,6 @@ import com.blankj.utilcode.util.FileIOUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.UriUtils
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.mutable
@@ -31,6 +30,7 @@ import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
+import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseCommandLogPrintClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
@@ -463,19 +463,28 @@ class BleCustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun shareFile(file: File) {
         try {
-            val uri = UriUtils.file2Uri(file)
+            val uri = androidx.core.content.FileProvider.getUriForFile(
+                requireContext(),
+                "${BuildConfig.APPLICATION_ID}.fileprovider",
+                file
+            )
             val shareIntent = Intent().apply {
                 action = Intent.ACTION_SEND
                 type = "text/plain"
                 putExtra(Intent.EXTRA_STREAM, uri)
+                putExtra(Intent.EXTRA_SUBJECT, "调试日志")
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 // 设置剪贴板数据以授予接收应用对URI的访问权限
-                val clip = ClipData.newRawUri("", uri)
-                clipData = clip
+                clipData =  ClipData.newRawUri("", uri)
+            }
+
+            // 注意：把授权 flag 同时也加在 chooser 上（某些系统实现更“挑”）
+            val chooser = Intent.createChooser(shareIntent, "分享日志").apply {
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
-            startActivity(Intent.createChooser(shareIntent, "分享到"))
+            startActivity(chooser)
+
         } catch (e: Exception) {
             Timber.e(e, "分享文件失败")
             Toaster.show("分享失败")

@@ -5,6 +5,7 @@
     android:id="@+id/mr702_graph"
     app:startDestination="@id/mR702HomeFragment">
 
+    <include app:graph="@navigation/include_query_data_graph" />
     <include app:graph="@navigation/include_quick_config_cmd_graph" />
     <include app:graph="@navigation/include_time_calibration_graph" />
     <include app:graph="@navigation/include_advanced_setting_graph" />
@@ -338,6 +339,14 @@
     <action
         android:id="@+id/action_global_to_commandDebug"
         app:destination="@id/ble_command_debug_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_queryDeviceDataFragment"
+        app:destination="@id/query_data_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

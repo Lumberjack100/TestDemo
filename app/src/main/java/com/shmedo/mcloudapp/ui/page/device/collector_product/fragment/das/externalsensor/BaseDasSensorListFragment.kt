@@ -62,6 +62,11 @@ abstract class BaseDasSensorListFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        arguments?.let {
+            val model = it.getString(COLLECTOR_MODEL, "-1")
+            // 处理采集器模型
+            onCollectorTypeInitialized(model)
+        }
         resetDefaultData()
     }
 
@@ -383,19 +388,24 @@ abstract class BaseDasSensorListFragment : BaseIOTDeviceFragment() {
 
     companion object {
         const val MAX_SENSOR_COUNT = 16
+        const val COLLECTOR_MODEL = "collector_model"
 
         fun newBundleArguments(
+            collectorModel: String,
             type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
             deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
+            putString(COLLECTOR_MODEL, collectorModel)
             putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
             putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
             putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
             putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
+
+
     }
 }

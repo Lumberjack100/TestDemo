@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.PathUtils
-import com.blankj.utilcode.util.UriUtils
+import com.blankj.utilcode.util.Utils
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
 import com.shmedo.core.data.repository.MonitoringDataRepository
@@ -16,6 +16,7 @@ import com.shmedo.core.model.TransferState
 import com.shmedo.lib.ble.communicate.service.MedoBleRepository
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.ui.manager.MonitoringDataTransferManager
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 import com.shmedo.mcloudapp.utils.DataFormatUtils
@@ -208,7 +209,12 @@ class MonitoringDataExportViewModel(
                         file.length(),
                         duration
                     )
-                    updateUIState(UiState.ExportSuccess(file.absolutePath, UriUtils.file2Uri(file)))
+                    val uri = androidx.core.content.FileProvider.getUriForFile(
+                        Utils.getApp(),
+                        "${BuildConfig.APPLICATION_ID}.fileprovider",
+                        file
+                    )
+                    updateUIState(UiState.ExportSuccess(file.absolutePath, uri))
                 } else {
                     val duration = System.currentTimeMillis() - exportStartTime
                     TransferLogger.logExportError(currentDeviceSn, "导出失败", duration)

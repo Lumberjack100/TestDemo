@@ -3,7 +3,12 @@ package com.shmedo.mcloudapp.ui.page.device.common
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import com.baidu.location.BDLocation
@@ -56,6 +61,7 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.UnifiedDeviceModule
+import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
@@ -121,6 +127,8 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUniversalDeviceHomeNewBinding
+        (mActivity as BaseActivity).setToolBar(binding.llToolbar.toolbar)
+        addMenu()
         binding.llToolbar.toolbar.title = "返回"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             if (bleViewModel.isConnected()) {
@@ -136,6 +144,34 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
         }
         initDeviceLogoDoubleClickListener()
         initModuleAdapter()
+    }
+
+    private fun addMenu() {
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+            override fun onPrepareMenu(menu: Menu) {
+                super.onPrepareMenu(menu)
+            }
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.device_home_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.action_mcloud_data -> {
+                        val bundle = QueryDeviceDataFragment.newBundleArguments(
+                            deviceInfo.deviceToken
+                        )
+                        nav(binding.llToolbar.ivAction).safeNavigate(
+                            R.id.action_global_to_queryDeviceDataFragment, bundle
+                        )
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun initDeviceLogoDoubleClickListener() {

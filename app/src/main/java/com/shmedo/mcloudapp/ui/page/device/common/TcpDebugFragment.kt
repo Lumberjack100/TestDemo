@@ -9,7 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.FileIOUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.UriUtils
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.mutable
@@ -34,6 +33,7 @@ import com.shmedo.lib.tcp.TcpIdleResult
 import com.shmedo.lib.tcp.TcpSuccessDataResult
 import com.shmedo.lib.tcp.TcpSuccessRawDataResult
 import com.shmedo.mcloudapp.BR
+import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseCommandLogPrintClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentTcpDebugBinding
@@ -719,17 +719,20 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
      */
     private fun shareFile(file: File) {
         try {
-            val uri = UriUtils.file2Uri(file)
+            val uri = androidx.core.content.FileProvider.getUriForFile(
+                requireContext(),
+                "${BuildConfig.APPLICATION_ID}.fileprovider",
+                file
+            )
             val shareIntent = Intent().apply {
                 action = Intent.ACTION_SEND
                 type = "text/plain"
                 putExtra(Intent.EXTRA_STREAM, uri)
+                putExtra(Intent.EXTRA_SUBJECT, "调试日志")
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-                // 设置剪贴板数据以授予接收应用对URI的访问权限
-                val clip = ClipData.newRawUri("", uri)
-                clipData = clip
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                // 设置剪贴板数据以授予接收应用对URI的访问权限
+                clipData =  ClipData.newRawUri("", uri)
             }
             startActivity(Intent.createChooser(shareIntent, "分享到"))
         } catch (e: Exception) {
