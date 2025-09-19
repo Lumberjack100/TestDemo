@@ -1,20 +1,25 @@
 package com.shmedo.mcloudapp.utils.network
 
-import com.kunminx.architecture.domain.message.MutableResult
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * 作者　: hegaojian
  * 时间　: 2020/5/2
  * 描述　: 网络变化管理者
  */
-class NetworkStateManager private constructor() {
+object NetworkStateManager {
 
-    val mNetworkStateCallback = MutableResult<NetState>()
+    private val _networkState = MutableStateFlow(NetState(isSuccess = false))
+    val networkState: StateFlow<NetState> = _networkState.asStateFlow()
 
-    companion object {
-        val instance: NetworkStateManager by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
-            NetworkStateManager()
-        }
+    /** 仅在变化时才发射 */
+    fun updateIfChanged(newState: NetState) {
+        val old = _networkState.value
+        // 去重：仅在变化时才发
+        if (old.isSuccess == newState.isSuccess) return
+
+        _networkState.value = newState
     }
-
 }

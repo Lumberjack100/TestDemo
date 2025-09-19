@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.shmedo.mcloudapp.ui.page.base.activity.BaseVmDbActivity
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseVmDbFragment
@@ -15,7 +15,7 @@ import com.shmedo.mcloudapp.ui.page.base.fragment.BaseVmDbFragment
  * 描述　:
  */
 fun BaseVmDbActivity.nav(resId: Int): NavController {
-    return Navigation.findNavController(this, resId)
+    return this.findNavController(resId)
 }
 
 fun BaseVmDbFragment.nav(): NavController {
@@ -23,7 +23,7 @@ fun BaseVmDbFragment.nav(): NavController {
 }
 
 fun nav(view: View): NavController {
-    return Navigation.findNavController(view)
+    return view.findNavController()
 }
 
 var lastNavTime = 0L

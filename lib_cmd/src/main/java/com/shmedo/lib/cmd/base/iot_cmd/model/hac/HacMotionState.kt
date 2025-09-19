@@ -1,7 +1,7 @@
 package com.shmedo.lib.cmd.base.iot_cmd.model.hac
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * 创建者:   gonghe <br></br>

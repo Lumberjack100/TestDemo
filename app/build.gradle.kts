@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -88,7 +89,11 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            // 1. 启用代码混淆
+            isMinifyEnabled = true // R8 会在构建 release 版本时自动执行压缩（移除无用代码）、优化（字节码级别）和混淆（重命名）。
+            // 2. 启用资源压缩（可选，但建议与代码压缩一起使用）
+            isShrinkResources = true
+            // 3. 指定混淆规则文件
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -106,8 +111,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
     }
     buildFeatures {
         viewBinding = true
@@ -201,11 +208,15 @@ dependencies {
     //Material Dialog
     implementation(libs.bundles.material.dialogs)
     //Powerful and Beautiful Popup for Android，can absolutely replace Dialog，PopupWindow，PopupMenu，BottomSheet，DrawerLayout，Spinner...
-    implementation(libs.xpopup)
+    implementation(libs.xpopup) {
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
+    }
     implementation(libs.dialogx)
     //Toast 吐司
     implementation(libs.toastutils)
-    implementation(libs.datetime.picker)
+    implementation(libs.datetime.picker){
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
+    }
 
     //Android 快速构建 RecyclerView, 比 BRVAH 更简单强大 https://github.com/liangjingkanji/BRV
     implementation(libs.liangjingkanji.brv)
@@ -243,7 +254,9 @@ dependencies {
 
 
     //AndroidUtilCode 是一个强大易用的安卓工具类库
-    implementation(libs.utilcodex)
+    implementation(libs.utilcodex) {
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
+    }
     //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
     implementation(libs.timber)
     implementation(libs.mmkv)

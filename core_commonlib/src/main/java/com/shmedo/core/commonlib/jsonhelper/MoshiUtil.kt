@@ -92,12 +92,24 @@ object MoshiUtil {
 
 
     inline fun <reified T> getGenericType(): Type {
-        return object :
-            MoshiTypeReference<T>() {}::class.java
-            .genericSuperclass
-            .let { it as ParameterizedType }
-            .actualTypeArguments
-            .first()
+        // 常规路径：通过匿名子类的泛型签名拿到实际类型参数
+        val superType: Type = object : MoshiTypeReference<T>() {}::class.java.genericSuperclass
+        if (superType is ParameterizedType) {
+            return superType.actualTypeArguments.first()
+        }
 
+        // 兜底路径（混淆后可能擦除了匿名类的泛型信息）：
+        // 1) 对常用容器类型提供保守的参数化类型，确保解析不崩溃；
+        // 2) 其它类型退回到原始 Class 类型。
+        @Suppress("UNCHECKED_CAST")
+        return when {
+            Map::class.java.isAssignableFrom(T::class.java) -> {
+                Types.newParameterizedType(Map::class.java, String::class.java, Any::class.java)
+            }
+            List::class.java.isAssignableFrom(T::class.java) -> {
+                Types.newParameterizedType(List::class.java, Any::class.java)
+            }
+            else -> T::class.java
+        }
     }
 }
