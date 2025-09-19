@@ -1,3 +1,4 @@
+
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
 import java.util.Properties
@@ -10,55 +11,35 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
 }
 
-val majorVersion = 5
-val minorVersion = 3
-val patchVersion = 8
-
-val testMajorVersion = 5
-val testMinorVersion = 3
-val testPatchVersion = 20
-
-/**
- * 获取Git库HEAD的SHA1码前5位
- */
-fun gitShortCommitId(): String {
-    val cmd = "git rev-parse --short HEAD"
-    return Runtime.getRuntime().exec(cmd).inputStream.reader().use { it.readText().trim() }
-}
-
-fun getReversion(): Int {
-    var buildnum = 1
-    try {
-        // 使用 ProcessBuilder 更可靠地执行指令
-        val processBuilder = ProcessBuilder("git", "rev-list", "--count", "HEAD")
-        processBuilder.redirectErrorStream(true) // 将错误输出和标准输出合并
-        val process = processBuilder.start()
-        val output = process.inputStream.reader().use { it.readText().trim() } // 读取指令输出
-
-        // 确保正确地关闭了进程的输入输出流
-        process.inputStream.close()
-        process.outputStream.close()
-        process.errorStream.close()
-        process.waitFor() // 等待进程结束
-
-        if (output == "") {
-            buildnum = majorVersion * 10000 + minorVersion * 1000 + patchVersion * 100
-        } else {
-            buildnum = output.toInt()
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
+/** ===== 读取 version.properties（持久化 VERSION_NAME versionCode 等）===== */
+val versionProps = Properties().apply {
+    val f = file("version.properties")
+    require(f.exists()) {
+        "version.properties 不存在，请在 app/ 目录下创建，并包含 VERSION_CODE=xxxx 等"
     }
-    return buildnum
+    f.inputStream().use(::load)
 }
+// 通用 versionCode
+val versionCodeFromFile = versionProps["VERSION_CODE"].toString().toInt()
 
-// Create a variable called keystorePropertiesFile, and initialize it to your
+// 提取正式版本号
+val majorVersion = versionProps["MAJOR_VERSION"].toString().toInt()
+val minorVersion = versionProps["MINOR_VERSION"].toString().toInt()
+val patchVersion = versionProps["PATCH_VERSION"].toString().toInt()
+
+// 提取测试版本号
+val testMajorVersion = versionProps["TEST_MAJOR_VERSION"].toString().toInt()
+val testMinorVersion = versionProps["TEST_MINOR_VERSION"].toString().toInt()
+val testPatchVersion = versionProps["TEST_PATCH_VERSION"].toString().toInt()
+
+
+/** ===== 读取 keystore.properties（签名配置）===== */
 // keystore.properties file, in the rootProject folder.
 val keystorePropertiesFile = rootProject.file("keystore.properties")
-// Initialize a new Properties() object called keystoreProperties.
-val keystoreProperties = Properties()
-// Load your keystore.properties file into the keystoreProperties object.
-keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+val keystoreProperties = Properties().apply {
+    FileInputStream(keystorePropertiesFile).use(::load)
+}
+
 
 android {
     namespace = "com.shmedo.mcloudapp"
@@ -135,8 +116,10 @@ android {
     productFlavors {
         create("production") {//正式发布版本
             dimension = "version"
-            versionCode = getReversion()
+            versionCode = versionCodeFromFile
             versionName = "$majorVersion.$minorVersion.$patchVersion"
+
+            // 名称/常量/占位
             resValue("string", "app_name", "米易通")   // 设置默认的app_name
             buildConfigField("String", "APP_NAME", "\"米易通\"")
             buildConfigField("String", "PGY_API_KEY", "\"64454bf76fe2abd8dec45200c11fc93b\"")
@@ -146,29 +129,30 @@ android {
         create("demo") {//测试版本
             dimension = "version"
             applicationIdSuffix = ".v5"
-            versionCode = getReversion()
+
+            versionCode = versionCodeFromFile
             versionName = "$testMajorVersion.$testMinorVersion.$testPatchVersion"
+
             resValue("string", "app_name", "米易通V5")   // 设置默认的app_name
             buildConfigField("String", "APP_NAME", "\"米易通V5\"")
             buildConfigField("String", "PGY_API_KEY", "\"db9ce8a6bd3b8b95c20c66e4205194d9\"")
             buildConfigField("String", "PGY_APP_KEY", "\"a8508805883003fdd3e223b6f9e85a60\"")
             manifestPlaceholders["mapApikey"] = "kOEHOjIEoj8JHieMUqF3qMINFqkmxOoW"
         }
-    }
 
-    applicationVariants.all {
-        val variant = this
-        variant.outputs.map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
-            .onEach { output ->
-                val appName =
-                    productFlavors.first().buildConfigFields["APP_NAME"]?.value?.toString()
-                        ?.replace("\"", "")
+        applicationVariants.all {
+            val flavor = flavorName ?: "noflavor"
+            val buildTypeName = buildType.name
+            outputs.all {
+                val outputImpl = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+                val appName = if (flavor.contains("demo", ignoreCase = true)) "米易通V5" else "米易通"
 
                 // 设置输出文件名
-                val outputFileName =
-                    "${appName}_${variant.versionName}_${gitShortCommitId()}_${getReversion()}_${variant.flavorName}_${variant.buildType.name}.apk"
-                output.outputFileName = outputFileName
+                outputImpl.outputFileName =
+                    "${appName}_${versionName}_${versionCode}_${flavor}_${buildTypeName}.apk"
             }
+        }
+
     }
 }
 
@@ -214,7 +198,7 @@ dependencies {
     implementation(libs.dialogx)
     //Toast 吐司
     implementation(libs.toastutils)
-    implementation(libs.datetime.picker){
+    implementation(libs.datetime.picker) {
         exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
     }
 
