@@ -91,7 +91,7 @@ enum class DataCenterPlatform(private val platName: String, private val cmdValue
                     HUBEI_ECO_PLATFORM
                 )
 
-                PlatformDataProtocol.NTRIP -> listOf(
+                PlatformDataProtocol.NTRIP, PlatformDataProtocol.NTRIP_C, PlatformDataProtocol.NTRIP_S -> listOf(
                     CORS_PLATFORM
                 )
 

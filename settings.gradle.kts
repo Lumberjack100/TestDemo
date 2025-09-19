@@ -10,12 +10,12 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        google()
-        mavenCentral()
+        google()//https://dl.google.com/dl/android/maven2/
+        mavenCentral()//https://repo.maven.apache.org/maven2/
         maven(url = "https://jitpack.io")
         maven(url = "https://maven.aliyun.com/repository/public")
         maven(url = "https://developer.huawei.com/repo/")
-        jcenter()
+//        jcenter()//https://jcenter.bintray.com/
     }
 }
 

@@ -30,6 +30,11 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.cmd.base.md_cmd.model.das.DeviceStatusInfoTwo
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -44,6 +49,7 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.extensions.toGcj02LatLng
+import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommonLocationInfoViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -61,7 +67,7 @@ import timber.log.Timber
  * @author：gonghe
  * @time: 2024/8/21
  * @desc: 查询位置信息 - 优化版本
- * 
+ *
  * 优化特点：
  * 1. 使用新的通信架构，代码更简洁
  * 2. 统一的错误处理策略
@@ -73,6 +79,7 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: CommonLocationInfoViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
+    private val mdParseManager: MDParserManager by inject()
 
     private lateinit var baiduMap: BaiduMap // 地图控制器对象
     private var curMaker: Marker? = null
@@ -158,10 +165,20 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun queryLocationInfo() {
         val command = when (productType) {
-            ProductType.U_D_1, ProductType.U_D_2 -> IOTCommandUtil.getCommand(
+            ProductType.U_D_1,
+            ProductType.U_D_2 -> IOTCommandUtil.getCommand(
                 IOTCommandType.MD_GET_DEVICE_STATUS,
                 "method=3"
             )
+
+            ProductType.COLLECTOR_R_1,
+            ProductType.DAS,
+            ProductType.BHY -> {
+                if (communicateWay is BleConnect)
+                    MDCommandUtil.getCommand(MDCommandType.QUERY_DAS_STATUS_2)
+                else IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+            }
+
             else -> IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
         }
 
@@ -178,13 +195,15 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
      * 测量位置更新
      */
     private fun measureLocation(method: String) {
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_INSTALL_LOCATION, "method=$method")
+        val command =
+            IOTCommandUtil.getCommand(IOTCommandType.MD_GET_INSTALL_LOCATION, "method=$method")
 
         if (method == "1") {
-            measureLoadingDialogId = showLoadingWithUUID(StringUtils.getString(R.string.processing)) {
-                clearQueryMeasureResultTimeoutJob()
-            }
-        }else {
+            measureLoadingDialogId =
+                showLoadingWithUUID(StringUtils.getString(R.string.processing)) {
+                    clearQueryMeasureResultTimeoutJob()
+                }
+        } else {
             Timber.d("查询位置更新结果轮询次数：$repeatPollNum")
         }
 
@@ -200,10 +219,42 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
         )
     }
 
+    override fun handleCommandResponse(cmdStr: String) {
+        if (isBleDas()) {
+            handleDasBleCommandResult(cmdStr)
+        } else {
+            handleCommandResult(cmdStr)
+        }
+    }
+
+    private fun handleDasBleCommandResult(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.QUERY_DAS_STATUS_2 -> {//##042\r\n：查询设备状态2
+                val result = mdParseManager.parse<DeviceStatusInfoTwo>(
+                    cmdStr,
+                    MDCommandType.QUERY_DAS_STATUS_2
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询信息出错"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    is MDCommandResult.Success -> {
+                        initDASBleStatusInfo(result.data)
+                    }
+                }
+            }
+
+            else -> {
+            }
+        }
+    }
+
     /**
      * 处理指令响应
      */
-    override fun handleCommandResponse(cmdStr: String) {
+    private fun handleCommandResult(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DEVICE_STATUS -> {
                 val result = iotParseManager.parse<String>(
@@ -215,6 +266,7 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
                         val errMsg = "查询位置信息出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
                     }
+
                     is IOTCommandResult.Success -> {
                         initUDStatusInfo(result.data)
                     }
@@ -231,6 +283,7 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
                         val errMsg = "查询位置信息出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
                     }
+
                     is IOTCommandResult.Success -> {
                         when (productType) {
                             ProductType.GNSS_M_5 -> initM50StatusInfo(result.data)
@@ -252,6 +305,7 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
                         val errMsg = "位置更新出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
                     }
+
                     is IOTCommandResult.Success -> {
                         processUpdateLocationResponse(result.data)
                     }
@@ -378,7 +432,8 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
     private fun initCommonStatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
-                val resultMap = MoshiUtil.fromJson<Map<String, Any>>(content) ?: return@launchWithViewLifecycle
+                val resultMap =
+                    MoshiUtil.fromJson<Map<String, Any>>(content) ?: return@launchWithViewLifecycle
 
                 if (resultMap.containsKey("location")) {
                     resultMap["location"].toString().split(",".toRegex())
@@ -387,14 +442,17 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
                                 mStates.longitude.set("E ${it[0].replace("E", "")}°")
                                 mStates.latitude.set("N ${it[1].replace("N", "")}°")
 
-                                var longitude = it[0].replace("E", "").toDoubleOrNull() ?: 121.59840681
-                                var latitude = it[1].replace("N", "").toDoubleOrNull() ?: 31.21032874
+                                var longitude =
+                                    it[0].replace("E", "").toDoubleOrNull() ?: 121.59840681
+                                var latitude =
+                                    it[1].replace("N", "").toDoubleOrNull() ?: 31.21032874
                                 if (longitude < 1) longitude = 121.59840681
                                 if (latitude < 1) latitude = 31.21032874
 
-                                gcjLatLng = CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
-                                    addMarker(this)
-                                }
+                                gcjLatLng =
+                                    CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
+                                        addMarker(this)
+                                    }
                             }
                         }
                 }
@@ -402,6 +460,28 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
                 Timber.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
+        }
+    }
+
+    /**
+     * 处理 DAS 设备蓝牙通讯下状态信息
+     */
+    private fun initDASBleStatusInfo(info: DeviceStatusInfoTwo) {
+        try {
+            mStates.longitude.set("E ${info.longitude.replace("E", "")}°")
+            mStates.latitude.set("N ${info.latitude.replace("N", "")}°")
+
+            var longitude = info.longitude.replace("E", "").toDoubleOrNull() ?: 121.59840681
+            var latitude = info.latitude.replace("N", "").toDoubleOrNull() ?: 31.21032874
+            if (longitude < 1) longitude = 121.59840681
+            if (latitude < 1) latitude = 31.21032874
+
+            gcjLatLng = CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
+                addMarker(this)
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -551,7 +631,9 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
             }
 
             when (productType) {
-                ProductType.U_D_1, ProductType.U_D_2 -> measureLocation("1")
+                ProductType.U_D_1,
+                ProductType.U_D_2 -> measureLocation("1")
+
                 else -> queryLocationInfo()
             }
         }

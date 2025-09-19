@@ -74,13 +74,8 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
 
     private val dataTypeList =
         arrayListOf("CMD", "NMEA", "DIFF_IN", "DIFF_OUT", "RAW_OUT", "RES_OUT")
-    private val dataProtocolList = arrayListOf(
-        PlatformDataProtocol.MQTT.toString(),
-        PlatformDataProtocol.TCP_C.toString(),
-        PlatformDataProtocol.SL651.toString(),
-        PlatformDataProtocol.NTRIP.toString(),
-        PlatformDataProtocol.HTTP.toString()
-    )
+
+    private val dataProtocolList: MutableList<String> = arrayListOf()
 
     // 使用 DataCenterPlatform 枚举类替换硬编码的数组资源
 
@@ -140,7 +135,10 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             productType == ProductType.GNSS_E_1 || productType == ProductType.GNSS_E_2 || productType == ProductType.GNSS_E_3
         )
         mStates.dataType.set(dataTypeList.last())
-        mStates.dataProtocol.set(PlatformDataProtocol.MQTT.toString())//默认选择
+
+        dataProtocolList.clear()
+        dataProtocolList.addAll(PlatformDataProtocol.getDataProtocolNamesByProduct(productType))
+        mStates.dataProtocol.set(PlatformDataProtocol.MQTT.getCmdValue())//默认选择
 
         platformList.clear()
         platformList.addAll(DataCenterPlatform.getPlatformNamesByProtocol(PlatformDataProtocol.MQTT))
@@ -168,7 +166,6 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
         mStates.reissuingDataValidDays.set("180")//数据补发有效天数
         mStates.reissuingDataInterval.set("30")//数据补发间隔（分钟）
     }
-
 
     inner class ClickProxy : BaseClickProxy() {
         /**
@@ -207,7 +204,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                     { position, text ->
                         mStates.dataProtocol.set(text)
                         when (text) {
-                            PlatformDataProtocol.MQTT.toString() -> {
+                            PlatformDataProtocol.MQTT.getCmdValue() -> {
                                 platformList.clear()
                                 platformList.addAll(
                                     DataCenterPlatform.getPlatformNamesByProtocol(
@@ -217,7 +214,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                                 mStates.platformType.set(platformList.first())
                             }
 
-                            PlatformDataProtocol.TCP_C.toString() -> {
+                            PlatformDataProtocol.TCP_C.getCmdValue() -> {
                                 platformList.clear()
                                 platformList.addAll(
                                     DataCenterPlatform.getPlatformNamesByProtocol(
@@ -227,7 +224,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                                 mStates.platformType.set(platformList.first())
                             }
 
-                            PlatformDataProtocol.SL651.toString() -> {//SL651
+                            PlatformDataProtocol.SL651.getCmdValue() -> {//SL651
                                 platformList.clear()
                                 platformList.addAll(
                                     DataCenterPlatform.getPlatformNamesByProtocol(
@@ -237,7 +234,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                                 mStates.platformType.set(platformList.first())
                             }
 
-                            PlatformDataProtocol.NTRIP.toString() -> {//NTRIP
+                            PlatformDataProtocol.NTRIP.getCmdValue() -> {//NTRIP
                                 platformList.clear()
                                 platformList.addAll(
                                     DataCenterPlatform.getPlatformNamesByProtocol(
@@ -247,7 +244,27 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                                 mStates.platformType.set(platformList.first())
                             }
 
-                            PlatformDataProtocol.HTTP.toString() -> {
+                            PlatformDataProtocol.NTRIP_C.getCmdValue() -> {//NTRIP_C
+                                platformList.clear()
+                                platformList.addAll(
+                                    DataCenterPlatform.getPlatformNamesByProtocol(
+                                        PlatformDataProtocol.NTRIP_C
+                                    )
+                                )
+                                mStates.platformType.set(platformList.first())
+                            }
+
+                            PlatformDataProtocol.NTRIP_S.getCmdValue() -> {//NTRIP_S
+                                platformList.clear()
+                                platformList.addAll(
+                                    DataCenterPlatform.getPlatformNamesByProtocol(
+                                        PlatformDataProtocol.NTRIP_S
+                                    )
+                                )
+                                mStates.platformType.set(platformList.first())
+                            }
+
+                            PlatformDataProtocol.HTTP.getCmdValue() -> {
                                 platformList.clear()
                                 platformList.addAll(
                                     DataCenterPlatform.getPlatformNamesByProtocol(
@@ -383,7 +400,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                 .getCmdValue()
         )
 
-        if (mStates.dataProtocol.get() == PlatformDataProtocol.MQTT.toString()) {
+        if (mStates.dataProtocol.get() == PlatformDataProtocol.MQTT.getCmdValue()) {
             //当产品 ID、设备 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
             if (mStates.isRegisterVisible.get() && mStates.productId.get()
                     .isEmpty() && mStates.deviceId.get().isEmpty()
@@ -422,8 +439,9 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             entity.httpport =
                 if (mStates.isRegisterVisible.get()) mStates.registerPort.get() else ""
 
-        } else if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.toString()) {//SL651
-            entity.type_code = SL651StationType.valueByStationName(mStates.stationType.get()).getCode()
+        } else if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.getCmdValue()) {//SL651
+            entity.type_code =
+                SL651StationType.valueByStationName(mStates.stationType.get()).getCode()
             entity.co_address = mStates.centerStationAddr.get()
             entity.password = mStates.password.get()
             entity.taddress = mStates.telemetryStationAddr.get()
@@ -432,11 +450,11 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             entity.valid_day = mStates.reissuingDataValidDays.get()
             entity.reissue_time = mStates.reissuingDataInterval.get()
 
-        } else if (mStates.dataProtocol.get() == PlatformDataProtocol.NTRIP.toString()) {//NTRIP
+        } else if (mStates.dataProtocol.get() == PlatformDataProtocol.NTRIP.getCmdValue() || mStates.dataProtocol.get() == PlatformDataProtocol.NTRIP_C.getCmdValue() || mStates.dataProtocol.get() == PlatformDataProtocol.NTRIP_S.getCmdValue()) {//NTRIP
             entity.projid = mStates.productId.get()
             entity.deviceid = mStates.deviceId.get()
             entity.devicekey = mStates.deviceKey.get()
-        } else if (mStates.dataProtocol.get() == PlatformDataProtocol.HTTP.toString()) {
+        } else if (mStates.dataProtocol.get() == PlatformDataProtocol.HTTP.getCmdValue()) {
             entity.taddress = mStates.telemetryStationAddr.get()
         }
 
@@ -530,7 +548,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
         }
         mStates.dataProtocol.set(data.protocol)
         when (data.protocol) {
-            PlatformDataProtocol.MQTT.toString() -> {//
+            PlatformDataProtocol.MQTT.getCmdValue() -> {//
                 platformList.clear()
                 platformList.addAll(
                     DataCenterPlatform.getPlatformNamesByProtocol(
@@ -539,7 +557,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                 )
             }
 
-            PlatformDataProtocol.TCP_C.toString() -> {//
+            PlatformDataProtocol.TCP_C.getCmdValue() -> {//
                 platformList.clear()
                 platformList.addAll(
                     DataCenterPlatform.getPlatformNamesByProtocol(
@@ -548,7 +566,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                 )
             }
 
-            PlatformDataProtocol.SL651.toString() -> {//SL651
+            PlatformDataProtocol.SL651.getCmdValue() -> {//SL651
                 platformList.clear()
                 platformList.addAll(
                     DataCenterPlatform.getPlatformNamesByProtocol(
@@ -557,7 +575,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                 )
             }
 
-            PlatformDataProtocol.NTRIP.toString() -> {//NTRIP
+            PlatformDataProtocol.NTRIP.getCmdValue()-> {//NTRIP
                 platformList.clear()
                 platformList.addAll(
                     DataCenterPlatform.getPlatformNamesByProtocol(
@@ -566,7 +584,25 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                 )
             }
 
-            PlatformDataProtocol.HTTP.toString() -> {//HTTP
+            PlatformDataProtocol.NTRIP_C.getCmdValue() -> {//NTRIP_C
+                platformList.clear()
+                platformList.addAll(
+                    DataCenterPlatform.getPlatformNamesByProtocol(
+                        PlatformDataProtocol.NTRIP_C
+                    )
+                )
+            }
+
+            PlatformDataProtocol.NTRIP_S.getCmdValue() -> {//NTRIP_S
+                platformList.clear()
+                platformList.addAll(
+                    DataCenterPlatform.getPlatformNamesByProtocol(
+                        PlatformDataProtocol.NTRIP_S
+                    )
+                )
+            }
+
+            PlatformDataProtocol.HTTP.getCmdValue() -> {//HTTP
                 platformList.clear()
                 platformList.addAll(
                     DataCenterPlatform.getPlatformNamesByProtocol(
@@ -588,7 +624,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
         mStates.registerPort.set(data.httpport)
 
         //重庆地灾平台不显示注册码、注册地址、注册端口号
-        mStates.isRegisterVisible.set(mStates.platformType.get() !=DataCenterPlatform.CHONGQING_DISASTER_PLATFORM.getPlatName())
+        mStates.isRegisterVisible.set(mStates.platformType.get() != DataCenterPlatform.CHONGQING_DISASTER_PLATFORM.getPlatName())
 
         //SL651 水文协议参数
         mStates.stationType.set(SL651StationType.valueByCode(data.type_code).getStationName())

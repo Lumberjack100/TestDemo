@@ -28,6 +28,6 @@ class ProductInfo(
     val eventNum: Int = 0,
     val servicesNum: Int = 0,
     val modelNum: Int = 0,
-    @Json(ignore = true)
+    @field:Json(ignore = true)
     var isChecked: Boolean = false
 )

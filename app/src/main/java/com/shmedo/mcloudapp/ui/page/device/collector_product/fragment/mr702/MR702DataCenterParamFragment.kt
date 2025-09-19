@@ -23,6 +23,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.DataCenterPlatform
 import com.shmedo.lib.cmd.base.iot_cmd.enums.GuangdongWaterPlatformStationType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.SL651StationType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDataCenterParam
@@ -76,13 +77,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
     private val ipLevelList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_ip_level) }
     private val transferProtocolList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_transfer_protocol) }
 
-    private val dataProtocolList = arrayListOf(
-        PlatformDataProtocol.MQTT.toString(),
-        PlatformDataProtocol.TCP_C.toString(),
-        PlatformDataProtocol.SL651.toString(),
-        PlatformDataProtocol.SZY206.toString(),
-        PlatformDataProtocol.MQTTS.toString()
-    )
+    private val dataProtocolList: MutableList<String> = arrayListOf()
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -129,6 +124,9 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     private fun resetDefaultParams() {
+        dataProtocolList.clear()
+        dataProtocolList.addAll(PlatformDataProtocol.getDataProtocolNamesByProduct(ProductType.COLLECTOR_R_2))
+
         mStates.isCenterOpened.set(statusItem.status != "0")
         mStates.communicateWay.set(communicateWayList[0]) //通信方式 默认选择4G
         mStates.ipLeve.set(ipLevelList[0]) //网络协议 默认选择IPV4
@@ -146,7 +144,9 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             mStates.platformType.set(DataCenterPlatform.MEDO_IOT_PLATFORM.getPlatName()) //平台类型 默认选择米度物联平台
             mStates.centerServerAddress.set("47.96.80.48")//链路地址
             mStates.centerServerPort.set("1883")//链路端口
-            mStates.dataProtocol.set(PlatformDataProtocol.MQTT.toString()) //数据协议 默认选择MQTT
+
+            mStates.dataProtocol.set(PlatformDataProtocol.MQTT.getCmdValue()) //数据协议 默认选择MQTT
+
             mStates.guangdongWaterPlatformStationType.set(GuangdongWaterPlatformStationType.FLOOD_MONITORING.getStationName()) //测站类型 默认选择山洪灾害监测站
 
             // MQTT 协议特有配置参数
@@ -241,7 +241,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
         )
 
         // MQTT/MQTTS 协议特有配置参数
-        if (mStates.dataProtocol.get() == PlatformDataProtocol.MQTT.toString() || mStates.dataProtocol.get() == PlatformDataProtocol.MQTTS.toString()) {
+        if (mStates.dataProtocol.get() == PlatformDataProtocol.MQTT.getCmdValue() || mStates.dataProtocol.get() == PlatformDataProtocol.MQTTS.getCmdValue()) {
             // 当产品 ID、设备 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
             if (mStates.productId.get().isEmpty() && mStates.deviceId.get().isEmpty()) {
                 if (mStates.registerCode.get().isEmpty()) {
@@ -278,17 +278,17 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             entity.httpaddr = mStates.registerAddress.get()
             entity.httpport = mStates.registerPort.get()
 
-            if (mStates.dataProtocol.get() == PlatformDataProtocol.MQTTS.toString())
+            if (mStates.dataProtocol.get() == PlatformDataProtocol.MQTTS.getCmdValue())
                 entity.taddress = mStates.telemetryStationAddr.get() //测站编码
 
-        } else if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.toString() || mStates.dataProtocol.get() == PlatformDataProtocol.SZY206.toString()) {
+        } else if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.getCmdValue() || mStates.dataProtocol.get() == PlatformDataProtocol.SZY206.getCmdValue()) {
             // SL651/SZY206 协议特有配置参数
             entity.type_code =
-                if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.toString())
+                if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.getCmdValue())
                     SL651StationType.valueByStationName(mStates.stationType.get())
                         .getCode() else IOTConstants.NULL_KEY
             entity.co_address =
-                if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.toString())
+                if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.getCmdValue())
                     mStates.centerStationAddr.get() else IOTConstants.NULL_KEY
             entity.password =
                 if (mStates.platformType.get() == DataCenterPlatform.HUBEI_WATER_PLATFORM.getPlatName()) {

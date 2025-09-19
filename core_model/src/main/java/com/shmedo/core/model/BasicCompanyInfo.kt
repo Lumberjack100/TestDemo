@@ -22,6 +22,6 @@ import com.squareup.moshi.JsonClass
 data class BasicCompanyInfo(
     val companyID: Int = 0,
     val companyName: String = "",
-    @Json(ignore = true)
+    @field:Json(ignore = true)
     var isChecked: Boolean = false,
 )
