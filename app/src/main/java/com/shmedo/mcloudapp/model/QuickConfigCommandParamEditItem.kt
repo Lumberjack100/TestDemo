@@ -13,7 +13,7 @@ data class QuickConfigCommandParamEditItem(
     val cmdEngName: String = "",
     var value: String = "",
     val inputHint: String = "请输入",
-    val inputLengthFilter: Int = 20,
+    val inputLengthFilter: Int = 100,
     val inputEnable: Boolean = true,
     val bgResId: Int = R.drawable.layer_common_click_item_with_divider,
 ) : BaseObservable() {
