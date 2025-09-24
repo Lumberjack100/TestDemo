@@ -30,7 +30,7 @@ dialogX = "0.0.49"
 espresso = "3.7.0"
 fastscroll = "2.1.0"
 flexbox = "3.0.0"
-fragmentKtx = "1.8.6"
+fragmentKtx = "1.8.9"
 glideVersion = "5.0.5"
 hmsScan = "2.12.0.301"
 immersionbar = "3.2.2"
@@ -47,7 +47,7 @@ materialDialogs = "3.3.0"
 minSdk = "26"
 mmkv = "2.2.3"
 moshiVersion = "1.15.2"
-navigation = "2.7.7"
+navigation = "2.9.4"
 nettyAll = "4.1.110.Final"
 nordicsemiBleKtx = "2.11.0"
 nordicsemiScanner = "1.6.0"
@@ -85,7 +85,8 @@ androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", 
 androidx-lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "lifecycle" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 androidx-legacy-support = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacyV4" }
-androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
+androidx-navigation-runtime-ktx = { module = "androidx.navigation:navigation-runtime-ktx", version.ref = "navigation" }
+androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
 #androidx-navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigation" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
