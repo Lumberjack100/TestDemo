@@ -182,9 +182,9 @@ class DasReportConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 return false
             }
             try {
-                val value = mStates.reportStartTimeMinute.get().toDouble()
-                if (value < 0 || value > 60) {
-                    showMessageDialog("起始时间（分钟）数值范围[0,60]!")
+                val minute = mStates.reportStartTimeMinute.get().toDouble()
+                if (minute < 0 || minute > 59) {
+                    showMessageDialog("起始时间（分钟）数值范围[0,59]!")
                     return false
                 }
             } catch (ex: Exception) {
@@ -199,9 +199,22 @@ class DasReportConfigFragment : OptimizedBaseIOTDeviceFragment() {
         }
 
         try {
-            val value = mStates.interval.get().toDouble()
-            if (value < 0 || value > 1440) {
-                showMessageDialog("时间间隔（分钟）数值范围[0,1440]!")
+            val intervalMinutes = mStates.interval.get().toDouble()
+            if (intervalMinutes <= 0 || intervalMinutes > 1440) {
+                showMessageDialog("时间间隔（分钟）数值范围(0,1440]!")
+                return false
+            }
+
+            // 验证时间间隔是否为整数
+            if (intervalMinutes != intervalMinutes.toInt().toDouble()) {
+                showMessageDialog("时间间隔（分钟）必须为整数!")
+                return false
+            }
+
+            // 固定间隔上报方式：验证时间间隔是否为合理值（能够整除1440分钟/一天）
+            val dayMinutes = 1440
+            if (dayMinutes % intervalMinutes.toInt() != 0) {
+                showMessageDialog("时间间隔（${intervalMinutes.toInt()}分钟）必须能被 1440（一天分钟数）整除，以确保每日规律上报!")
                 return false
             }
         } catch (ex: Exception) {
@@ -209,7 +222,7 @@ class DasReportConfigFragment : OptimizedBaseIOTDeviceFragment() {
             return false
         }
 
-        return true;
+        return true
     }
 
     /**
@@ -248,7 +261,7 @@ class DasReportConfigFragment : OptimizedBaseIOTDeviceFragment() {
 
         command = MDCommandUtil.getCommand(
             MDCommandType.SAVE_CONFIG_INFO,
-            SaveConfigMode.SAVE_REBOOT.toString()
+            SaveConfigMode.SAVE_NO_REBOOT.toString()
         )
         commands.add(command)
 

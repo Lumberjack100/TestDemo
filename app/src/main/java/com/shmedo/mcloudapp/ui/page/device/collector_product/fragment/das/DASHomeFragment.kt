@@ -534,7 +534,7 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        if (result.data.isEmpty()) {
+                        if (result.data.isEmpty() || result.data.length <= 5) {
                             PopTip.show("遥测成功!").setMarginBottom(ConvertUtils.dp2px(300f))
                                 .autoDismiss(2000).iconSuccess()
                         } else {
