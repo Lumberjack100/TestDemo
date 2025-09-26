@@ -76,13 +76,31 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="起始时间" />
+                            android:text="起始时间（小时）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_start_time"
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:text="@{stateVM.startTime}"
+                            android:text="@{stateVM.reportStartTimeHour}"
                             tools:text="08:00" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        visible='@{stateVM.reportMethod.contains("定时定点")}'
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="起始时间（分钟）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            android:hint="数值范围[0-60]"
+                            android:inputType="number"
+                            android:text="@={stateVM.reportStartTimeMinute}"
+                            app:lengthFilter="@{4}" />
+
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -95,8 +113,10 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            android:hint="数值范围[0-1440]"
+                            android:inputType="number"
                             android:text="@={stateVM.interval}"
-                            app:lengthFilter="@{100}" />
+                            app:lengthFilter="@{4}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

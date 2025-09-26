@@ -19,6 +19,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.common.DataReportType
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -90,7 +91,8 @@ class DasReportConfigFragment : OptimizedBaseIOTDeviceFragment() {
 
     private fun resetDefaultParams() {
         mStates.reportMethod.set(reportMethodList[0])
-        mStates.startTime.set("0")
+        mStates.reportStartTimeHour.set("0")
+        mStates.reportStartTimeMinute.set("0")
         mStates.interval.set("")
     }
 
@@ -123,7 +125,7 @@ class DasReportConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 mActivity,
                 { view, hourOfDay, minute ->
                     val time = String.Companion.format(Locale.getDefault(), "%2d", hourOfDay)
-                    mStates.startTime.set(time)
+                    mStates.reportStartTimeHour.set(hourOfDay.toString())
                 }, 0, 0, true
             ).show()
         }
@@ -147,20 +149,48 @@ class DasReportConfigFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     private fun initSaveCommand() {
-        if (mStates.reportMethod.get().contains("定时定点") && mStates.startTime.get()
-                .isEmpty()
-        ) {
-            showMessageDialog("请选择上报起始时间!")
-            return
+        if (mStates.reportMethod.get().contains("定时定点")) {
+            if (mStates.reportStartTimeHour.get().isEmpty()) {
+                showMessageDialog("请选择起始时间（小时）!")
+                return
+            }
+            if (mStates.reportStartTimeMinute.get().isEmpty()) {
+                showMessageDialog("请输入起始时间（分钟）!")
+                return
+            }
+            try {
+                val value = mStates.reportStartTimeMinute.get().toDouble()
+                if (value < 0 || value > 60) {
+                    showMessageDialog("起始时间（分钟）数值范围[0,60]!")
+                    return
+                }
+            } catch (ex: Exception) {
+                showMessageDialog("请输入正确的起始时间（分钟）!")
+                return
+            }
         }
 
         if (mStates.interval.get().isEmpty()) {
-            showMessageDialog("请输入上报时间间隔!")
+            showMessageDialog("请输入时间间隔（分钟）!")
             return
         }
+        try {
+            val value = mStates.interval.get().toDouble()
+            if (value < 0 || value > 1440) {
+                showMessageDialog("时间间隔（分钟）数值范围[0,1440]!")
+                return
+            }
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的时间间隔（分钟）!")
+            return
+        }
+
         val entity = DataReportTypeEntity(
             type = (reportMethodList.indexOf(mStates.reportMethod.get())).toString(),
-            timepoint = mStates.startTime.get(),
+            timepoint = if (mStates.reportMethod.get().contains("定时定点"))
+                mStates.reportStartTimeHour.get() else IOTConstants.NULL_KEY,
+            timemin = if (mStates.reportMethod.get().contains("定时定点"))
+                mStates.reportStartTimeMinute.get() else IOTConstants.NULL_KEY,
             timegap = mStates.interval.get(),
         )
         val command = IOTCommandUtil.getCommand(
@@ -234,12 +264,13 @@ class DasReportConfigFragment : OptimizedBaseIOTDeviceFragment() {
 
     private fun initReportMethod(info: DataReportType) {
         try {
-            info.type.toInt().let {
-                if (it in 0..reportMethodList.size - 1) {
+            info.type.toIntOrNull()?.let {
+                if (it in reportMethodList.indices) {
                     mStates.reportMethod.set(reportMethodList[it])
                 }
             }
-            mStates.startTime.set(info.timepoint)
+            mStates.reportStartTimeHour.set(info.timepoint)
+            mStates.reportStartTimeMinute.set(info.timemin)
             mStates.interval.set(info.timegap)
 
             // 保存初始状态
