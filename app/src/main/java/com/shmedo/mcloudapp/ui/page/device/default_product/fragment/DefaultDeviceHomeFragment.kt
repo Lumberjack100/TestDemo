@@ -10,6 +10,7 @@ import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
+import com.shmedo.mcloudapp.model.ConfigBannerItem
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
@@ -63,6 +64,11 @@ class DefaultDeviceHomeFragment : BaseDeviceHomeFragment() {
 
     override fun initModuleData() {
         val groupList = mutableListOf<Any>()
+
+        // 添加配置提示Banner
+        groupList.add(ConfigBannerItem())
+        groupList.add(GapItem(height = ConvertUtils.dp2px(10f)))
+
         groupList.add(DeviceStatusInfoGroupItem("设备信息"))
         groupList.add(
             ConfigModuleTree(
