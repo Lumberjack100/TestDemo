@@ -63,49 +63,50 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
 
     //复杂模式数据模型 - 支持定时定点和固定间隔两种上报方式
     private var dataReportingPeriodItem: DataReportingPeriodItem = DataReportingPeriodItem()
+
     // 上报方式列表
     private val reportMethodList = listOf("固定间隔上报", "定时定点上报")
+
     // 起始时间选项列表
     private val reportStartTimeList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_report_start_time) }
 
-    /**
-     * 是否需要配置上报间隔 (简单模式)
-     */
-    private fun isReportIntervalMode(): Boolean {
-        return productType == ProductType.U_I_1
-                || productType == ProductType.U_R_1
-    }
 
     /**
-     * 是否使用复杂模式 (支持定时定点和固定间隔两种上报方式)
+     * 是否需要加载复杂的上报周期配置布局 (支持定时定点和固定间隔两种上报方式)
      */
-    private fun isReportingPeriodMode(): Boolean {
+    private fun isSupportComplexReportingPeriodMode(): Boolean {
         return productType == ProductType.GNSS_M_5
                 || productType == ProductType.GNSS_M_1
                 || productType == ProductType.GNSS_M_2
     }
 
+    /**
+     * 是否需要加载简单的上报周期配置布局 (支持上报间隔)
+     */
+    private fun isSupportSimpleReportingPeriodMode(): Boolean {
+        return productType == ProductType.U_I_1
+                || productType == ProductType.U_R_1
+    }
+
     override fun initRecyclerViewAdapterData() {
         // 根据产品类型添加相应的适配器类型支持
-        if (isReportingPeriodMode()) {
+        if (isSupportComplexReportingPeriodMode()) {
             // 复杂模式：支持复杂的上报周期配置
             binding.recyclerView.bindingAdapter.addType<DataReportingPeriodItem>(R.layout.item_data_reporting_period)
-        } else {
+        } else if (isSupportSimpleReportingPeriodMode()) {
             // 简单模式：支持基础的上报间隔配置
             binding.recyclerView.bindingAdapter.addType<BeidouDataTransmissionItem>(R.layout.item_beidou_data_transmission)
         }
 
-
-
         val groupList = mutableListOf<Any>()
 
         // 根据产品类型添加相应的配置项
-        if (isReportingPeriodMode()) {
+        if (isSupportComplexReportingPeriodMode()) {
             // 复杂模式：添加复杂的上报周期配置
             groupList.add(DeviceStatusInfoGroupItem("上报周期"))
             groupList.add(dataReportingPeriodItem)
             groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-        } else if (isReportIntervalMode()) {
+        } else if (isSupportSimpleReportingPeriodMode()) {
             // 简单模式：添加基础的上报间隔配置
             groupList.add(DeviceStatusInfoGroupItem("上报周期"))
             groupList.add(beidouDataTransmissionItem)
@@ -116,7 +117,7 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
         groupList.addAll(getAdapterData())
 
         // 如果需要配置上报参数，添加提交按钮
-        if (isReportingPeriodMode() || isReportIntervalMode()) {
+        if (isSupportComplexReportingPeriodMode() || isSupportSimpleReportingPeriodMode()) {
             groupList.add(GapItem(height = ConvertUtils.dp2px(60f)))
             groupList.add(ParamSubmitButtonItem(btnText = "确定"))
         }
@@ -126,18 +127,18 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
 
     override fun BindingViewHolder.processOtherItemViewBind(itemViewType: Int) {
         when (itemViewType) {
-            R.layout.item_beidou_data_transmission -> {
-                val binding = getBinding<ItemBeidouDataTransmissionBinding>()
-                // 设置数据绑定参数
-                binding.setVariable(BR.m, beidouDataTransmissionItem)
-                binding.executePendingBindings()
-            }
-
             R.layout.item_data_reporting_period -> {
                 val binding = getBinding<ItemDataReportingPeriodBinding>()
                 // 设置数据绑定参数
                 binding.setVariable(BR.m, dataReportingPeriodItem)
                 binding.setVariable(BR.click, ClickProxy())
+                binding.executePendingBindings()
+            }
+
+            R.layout.item_beidou_data_transmission -> {
+                val binding = getBinding<ItemBeidouDataTransmissionBinding>()
+                // 设置数据绑定参数
+                binding.setVariable(BR.m, beidouDataTransmissionItem)
                 binding.executePendingBindings()
             }
         }
@@ -151,10 +152,10 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
         val commands = mutableListOf<String>()
 
         // 根据产品类型获取相应的上报信息
-        if (isReportingPeriodMode()) {
+        if (isSupportComplexReportingPeriodMode()) {
             // 复杂模式：获取复杂的上报周期信息
             commands.add(IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TYPE))
-        } else if (isReportIntervalMode()) {
+        } else if (isSupportSimpleReportingPeriodMode()) {
             // 简单模式：获取基础的上报时间信息
             commands.add(IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TIME))
         }
@@ -204,7 +205,7 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
 
         val commands = mutableListOf<String>()
 
-        if (isReportingPeriodMode()) {
+        if (isSupportComplexReportingPeriodMode()) {
             // 复杂模式：保存复杂的上报周期配置
             val timehourValue =
                 if (dataReportingPeriodItem.getReportMethodStr().contains("定时定点")) {
@@ -236,7 +237,7 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
                     entity.toCommandString()
                 )
             )
-        } else {
+        } else if (isSupportSimpleReportingPeriodMode()) {
             // 简单模式：保存基础的上报间隔配置
             val entity = DasDataReportEntity(
                 report_intv = beidouDataTransmissionItem.getReportIntervalStr()
@@ -424,7 +425,7 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
      * 验证输入数据
      */
     private fun validateInput(): Boolean {
-        if (isReportingPeriodMode()) {
+        if (isSupportComplexReportingPeriodMode()) {
             // 复杂模式：验证复杂的上报周期配置
             if (dataReportingPeriodItem.getReportMethodStr().contains("定时定点")) {
                 if (dataReportingPeriodItem.getReportStartTimeHourStr().isEmpty()) {
@@ -461,7 +462,7 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
                     return false
                 }
             }
-        } else {
+        } else if (isSupportSimpleReportingPeriodMode()) {
             // 简单模式：验证基础的上报间隔配置
             if (beidouDataTransmissionItem.getReportIntervalStr().isEmpty()) {
                 showMessageDialog("请输入上报间隔!")

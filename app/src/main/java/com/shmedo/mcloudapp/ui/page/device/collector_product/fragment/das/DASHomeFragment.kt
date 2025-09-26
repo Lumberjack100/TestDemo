@@ -37,6 +37,7 @@ import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CollectorConfigModule
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
+import com.shmedo.mcloudapp.model.ConfigBannerItem
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
@@ -112,6 +113,10 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
     override fun initModuleData() {
         val groupList = mutableListOf<Any>()
 
+        // 添加配置提示Banner
+        groupList.add(ConfigBannerItem())
+        groupList.add(GapItem(height = ConvertUtils.dp2px(10f)))
+
         // 设备信息模块
         groupList.add(DeviceStatusInfoGroupItem("设备信息"))
         groupList.add(
@@ -149,7 +154,6 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
         )
 
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-
         // 设备配置模块
         groupList.add(DeviceStatusInfoGroupItem("设备配置"))
         val configModuleTree = ConfigModuleTree()
@@ -181,15 +185,13 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
             ).toUnified()
         )
 
-        if (communicateWay is NetPlatformConnect) {
-            configModuleTree.configModules.add(
-                CommonModule(
-                    name = "上报配置",
-                    resID = R.drawable.ic_module_work_mode_new,
-                    navId = R.id.action_global_to_dasReportConfigFragment
-                ).toUnified()
-            )
-        }
+        configModuleTree.configModules.add(
+            CommonModule(
+                name = "上报配置",
+                resID = R.drawable.ic_module_work_mode_new,
+                navId = R.id.action_global_to_dasReportConfigFragment
+            ).toUnified()
+        )
 
         configModuleTree.configModules.add(
             SensorConfigModule(
@@ -536,7 +538,7 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        if (result.data.isEmpty()) {
+                        if (result.data.isEmpty() || result.data.length <= 5) {
                             PopTip.show("遥测成功!").setMarginBottom(ConvertUtils.dp2px(300f))
                                 .autoDismiss(2000).iconSuccess()
                         } else {

@@ -329,7 +329,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
 
     protected open fun processNavigateUp(toastMsg: String = "", isShowToast: Boolean = true) {
         if (isShowToast) Toaster.show(ToastParams().apply {
-            text = toastMsg.ifEmpty { "数据保存成功" }
+            text = toastMsg.ifEmpty { "保存成功" }
             duration = 1000
         })
         launchWithViewLifecycle {
