@@ -67,7 +67,6 @@ class SplashActivity : BaseActivity() {
             initThirdSDK()
             goToLogin()
         }
-//        goToLogin()
     }
 
     /**

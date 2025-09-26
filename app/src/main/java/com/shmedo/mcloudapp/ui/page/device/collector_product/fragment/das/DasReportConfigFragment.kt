@@ -19,6 +19,12 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.common.DataReportType
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.cmd.base.md_cmd.enums.SaveConfigMode
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -29,6 +35,7 @@ import com.shmedo.mcloudapp.databinding.FragmentDasTerminalParameterBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasTerminalParameterViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -47,6 +54,7 @@ class DasReportConfigFragment : OptimizedBaseIOTDeviceFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: DasTerminalParameterViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
+    private val mdParseManager: MDParserManager by inject()
     private val reportMethodList: MutableList<String> = arrayListOf("固定间隔上报", "定时定点上报")
 
 
@@ -90,7 +98,8 @@ class DasReportConfigFragment : OptimizedBaseIOTDeviceFragment() {
 
     private fun resetDefaultParams() {
         mStates.reportMethod.set(reportMethodList[0])
-        mStates.startTime.set("0")
+        mStates.reportStartTimeHour.set("0")
+        mStates.reportStartTimeMinute.set("0")
         mStates.interval.set("")
     }
 
@@ -123,7 +132,7 @@ class DasReportConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 mActivity,
                 { view, hourOfDay, minute ->
                     val time = String.Companion.format(Locale.getDefault(), "%2d", hourOfDay)
-                    mStates.startTime.set(time)
+                    mStates.reportStartTimeHour.set(hourOfDay.toString())
                 }, 0, 0, true
             ).show()
         }
@@ -147,20 +156,134 @@ class DasReportConfigFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     private fun initSaveCommand() {
-        if (mStates.reportMethod.get().contains("定时定点") && mStates.startTime.get()
-                .isEmpty()
-        ) {
-            showMessageDialog("请选择上报起始时间!")
+        // 参数验证
+        if (!validateInputs()) {
             return
         }
 
-        if (mStates.interval.get().isEmpty()) {
-            showMessageDialog("请输入上报时间间隔!")
-            return
+        if (communicateWay == BleConnect) {
+            initBleSaveCommand()
+        } else {
+            init4GSaveCommand()
         }
+    }
+
+    /**
+     * 输入参数验证
+     */
+    private fun validateInputs(): Boolean {
+        if (mStates.reportMethod.get().contains("定时定点")) {
+            if (mStates.reportStartTimeHour.get().isEmpty()) {
+                showMessageDialog("请选择起始时间（小时）!")
+                return false
+            }
+            if (mStates.reportStartTimeMinute.get().isEmpty()) {
+                showMessageDialog("请输入起始时间（分钟）!")
+                return false
+            }
+            try {
+                val minute = mStates.reportStartTimeMinute.get().toDouble()
+                if (minute < 0 || minute > 59) {
+                    showMessageDialog("起始时间（分钟）数值范围[0,59]!")
+                    return false
+                }
+            } catch (ex: Exception) {
+                showMessageDialog("请输入正确的起始时间（分钟）!")
+                return false
+            }
+        }
+
+        if (mStates.interval.get().isEmpty()) {
+            showMessageDialog("请输入时间间隔（分钟）!")
+            return false
+        }
+
+        try {
+            val intervalMinutes = mStates.interval.get().toDouble()
+            if (intervalMinutes <= 0 || intervalMinutes > 1440) {
+                showMessageDialog("时间间隔（分钟）数值范围(0,1440]!")
+                return false
+            }
+
+            // 验证时间间隔是否为整数
+            if (intervalMinutes != intervalMinutes.toInt().toDouble()) {
+                showMessageDialog("时间间隔（分钟）必须为整数!")
+                return false
+            }
+
+            // 固定间隔上报方式：验证时间间隔是否为合理值（能够整除1440分钟/一天）
+            val dayMinutes = 1440
+            if (dayMinutes % intervalMinutes.toInt() != 0) {
+                showMessageDialog("时间间隔（${intervalMinutes.toInt()}分钟）必须能被 1440（一天分钟数）整除，以确保每日规律上报!")
+                return false
+            }
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的时间间隔（分钟）!")
+            return false
+        }
+
+        return true
+    }
+
+    /**
+     * 蓝牙通讯模式保存指令
+     */
+    private fun initBleSaveCommand() {
+        val commands = mutableListOf<String>()
+
+        var command = MDCommandUtil.getCommand(
+            MDCommandType.DATA_REPORT_TYPE,
+            if (mStates.reportMethod.get().contains("定时定点")) "11" else "10"
+        )
+        commands.add(command)
+        Timber.d("设置上报方式===%s", command)
+
+        if (mStates.reportMethod.get().contains("定时定点")) {
+            command = MDCommandUtil.getCommand(
+                MDCommandType.DATA_REPORT_TYPE, "2${mStates.reportStartTimeHour.get()}"
+            )
+            commands.add(command)
+            Timber.d("设置起始时间（小时）===%s", command)
+
+            command = MDCommandUtil.getCommand(
+                MDCommandType.DATA_REPORT_TYPE, "3${mStates.reportStartTimeMinute.get()}"
+            )
+            commands.add(command)
+            Timber.d("设置起始时间（分钟）===%s", command)
+        }
+
+        command = MDCommandUtil.getCommand(
+            MDCommandType.DATA_REPORT_INTERVAL,
+            mStates.interval.get()
+        )
+        Timber.d("设置上报时间间隔===%s", command)
+        commands.add(command)
+
+        command = MDCommandUtil.getCommand(
+            MDCommandType.SAVE_CONFIG_INFO,
+            SaveConfigMode.SAVE_NO_REBOOT.toString()
+        )
+        commands.add(command)
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
+    }
+
+    /**
+     * 4G通讯模式保存指令
+     */
+    private fun init4GSaveCommand() {
         val entity = DataReportTypeEntity(
             type = (reportMethodList.indexOf(mStates.reportMethod.get())).toString(),
-            timepoint = mStates.startTime.get(),
+            timepoint = if (mStates.reportMethod.get().contains("定时定点"))
+                mStates.reportStartTimeHour.get() else IOTConstants.NULL_KEY,
+            timemin = if (mStates.reportMethod.get().contains("定时定点"))
+                mStates.reportStartTimeMinute.get() else IOTConstants.NULL_KEY,
             timegap = mStates.interval.get(),
         )
         val command = IOTCommandUtil.getCommand(
@@ -182,6 +305,27 @@ class DasReportConfigFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     private fun queryData() {
+        if (communicateWay == BleConnect) {
+            queryBleInfo()
+        } else {
+            query4GInfo()
+        }
+    }
+
+    private fun queryBleInfo() {
+        val command = MDCommandUtil.getCommand(MDCommandType.DATA_REPORT_TYPE, "0")
+
+        Timber.d("查询上报配置参数===%s", command)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig() // 查询失败显示Dialog
+            )
+        )
+    }
+
+    private fun query4GInfo() {
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TYPE)
 
         sendCommandSequence(
@@ -194,6 +338,77 @@ class DasReportConfigFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     override fun handleCommandResponse(cmdStr: String) {
+        if (communicateWay == BleConnect) {
+            handleBleCommandResult(cmdStr)
+        } else {
+            handle4GCommandResult(cmdStr)
+        }
+    }
+
+    /**
+     * 处理蓝牙通讯指令结果
+     */
+    private fun handleBleCommandResult(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.DATA_REPORT_TYPE -> {
+                val result = if (cmdStr.contains("${MDCommandType.DATA_REPORT_TYPE}0"))
+                    mdParseManager.parse<DataReportType>(
+                        cmdStr,
+                        MDCommandType.DATA_REPORT_TYPE
+                    )
+                else mdParseManager.parse<String>(cmdStr)
+
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "出错了"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    is MDCommandResult.Success -> {
+                        if (result.data is DataReportType) {
+                            (result.data as? DataReportType)?.let { initReportMethod(it) }
+                        }
+                    }
+                }
+            }
+
+            MDCommandType.DATA_REPORT_INTERVAL -> {//设置数据上报间隔
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "时间间隔配置错误!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+
+            MDCommandType.SAVE_CONFIG_INFO -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "保存出错!"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        if (!isCommunicationExecuting()) {
+                            processNavigateUp()
+                        }
+                    }
+                }
+            }
+
+            else -> {
+
+            }
+        }
+    }
+
+    private fun handle4GCommandResult(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DATA_REPORT_TYPE -> {
                 val result = iotParseManager.parse<DataReportType>(
@@ -234,12 +449,13 @@ class DasReportConfigFragment : OptimizedBaseIOTDeviceFragment() {
 
     private fun initReportMethod(info: DataReportType) {
         try {
-            info.type.toInt().let {
-                if (it in 0..reportMethodList.size - 1) {
+            info.type.toIntOrNull()?.let {
+                if (it in reportMethodList.indices) {
                     mStates.reportMethod.set(reportMethodList[it])
                 }
             }
-            mStates.startTime.set(info.timepoint)
+            mStates.reportStartTimeHour.set(info.timepoint)
+            mStates.reportStartTimeMinute.set(info.timemin)
             mStates.interval.set(info.timegap)
 
             // 保存初始状态

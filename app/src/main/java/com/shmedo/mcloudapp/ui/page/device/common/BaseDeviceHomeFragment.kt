@@ -54,6 +54,7 @@ import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.model.BleConnect
+import com.shmedo.mcloudapp.model.ConfigBannerItem
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusEnum
@@ -277,6 +278,7 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
             addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group)
             addType<ConfigModuleTree>(R.layout.item_sub_config_module)
             addType<GapItem>(R.layout.item_device_status_info_gap)
+            addType<ConfigBannerItem>(R.layout.item_config_banner)
             onCreate {
                 when (itemViewType) {
                     R.layout.item_sub_config_module -> {

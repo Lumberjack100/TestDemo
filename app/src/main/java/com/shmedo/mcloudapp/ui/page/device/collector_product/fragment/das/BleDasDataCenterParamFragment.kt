@@ -80,7 +80,6 @@ class BleDasDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             processBack(true)
         }
         toolbarViewModel.toolbarIvActionVisible.set(false)
-        mStates.isEditable.set(true)
         initRefresh()
     }
 

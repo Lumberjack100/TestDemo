@@ -174,8 +174,9 @@ dependencies {
     implementation(libs.androidx.legacy.support)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.navigation.runtime.ktx)
     //通过 exclude 把对官方 java 包的依赖排除了，引用默认指向 smooth-Navigation
-    implementation(libs.androidx.navigation.fragment) {
+    implementation(libs.androidx.navigation.fragment.ktx) {
         exclude(group = "androidx.navigation", module = "navigation-fragment")
     }
 

@@ -334,27 +334,27 @@ abstract class BaseDasDigitalSensorFragment : BaseIOTDeviceFragment() {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值（度）",
-                            value = sensorInfo.threshold.formatDoubleValue("", 2)
+                            value = sensorInfo.threshold.formatDoubleValue("", 3)
                         )
                     )
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "X轴初始角度（度）",
-                            value = sensorInfo.initvalx.formatDoubleValue("", 2),
+                            value = sensorInfo.initvalx.formatDoubleValue("", 3),
                             tipDesc = "初始值大于 360，设备将自动计算!"
                         )
                     )
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "Y轴初始角度（度）",
-                            value = sensorInfo.initvaly.formatDoubleValue("", 2),
+                            value = sensorInfo.initvaly.formatDoubleValue("", 3),
                             tipDesc = "初始值大于 360，设备将自动计算!"
                         )
                     )
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "Z轴初始角度（度）",
-                            value = sensorInfo.initvalz.formatDoubleValue("", 2),
+                            value = sensorInfo.initvalz.formatDoubleValue("", 3),
                             tipDesc = "初始值大于 360，设备将自动计算!",
                             bgResId = R.drawable.shape_common_click_item_bottom_corner_4
                         )

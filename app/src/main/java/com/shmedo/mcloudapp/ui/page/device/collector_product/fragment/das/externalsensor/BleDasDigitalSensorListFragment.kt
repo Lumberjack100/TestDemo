@@ -363,8 +363,18 @@ class BleDasDigitalSensorListFragment : BaseDasSensorListFragment() {
                                 //X轴初始值、Y轴初始值
                                 initSingleInitialReadingValue2(
                                     sensorInfo.addr,
-                                    sensorInfo.initvalx,
-                                    sensorInfo.initvaly
+                                    "${sensorInfo.initvalx},${sensorInfo.initvaly}"
+                                )
+                            }
+
+                            IOTSensorType.LUYAN_INCLINOMETER,//倾角仪
+                                -> {
+                                //触发值
+                                initSingleTriggerThreshold(sensorInfo)
+                                //X轴初始值、Y轴初始值
+                                initSingleInitialReadingValue2(
+                                    sensorInfo.addr,
+                                    "${sensorInfo.initvalx},${sensorInfo.initvaly},${sensorInfo.initvalz}"
                                 )
                             }
 
@@ -469,8 +479,7 @@ class BleDasDigitalSensorListFragment : BaseDasSensorListFragment() {
      */
     private fun initSingleInitialReadingValue2(
         address: String,
-        initvalx: String,
-        initvaly: String
+        initValue: String
     ) {
         val command = MDCommandUtil.getCommand(
             MDCommandType.COLLECTOR_SENSOR_REVISED,
@@ -478,7 +487,7 @@ class BleDasDigitalSensorListFragment : BaseDasSensorListFragment() {
                 MDCommandUtil.formatStringTwo(
                     address
                 )
-            }${initvalx},${initvaly}"
+            }${initValue}"
         )
         commandDescItems.add("地址${MDCommandUtil.formatStringTwo(address)} 初始值")
         commandItems.add(command)
