@@ -181,15 +181,13 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
             ).toUnified()
         )
 
-        if (communicateWay is NetPlatformConnect) {
-            configModuleTree.configModules.add(
-                CommonModule(
-                    name = "上报配置",
-                    resID = R.drawable.ic_module_work_mode_new,
-                    navId = R.id.action_global_to_dasReportConfigFragment
-                ).toUnified()
-            )
-        }
+        configModuleTree.configModules.add(
+            CommonModule(
+                name = "上报配置",
+                resID = R.drawable.ic_module_work_mode_new,
+                navId = R.id.action_global_to_dasReportConfigFragment
+            ).toUnified()
+        )
 
         configModuleTree.configModules.add(
             SensorConfigModule(

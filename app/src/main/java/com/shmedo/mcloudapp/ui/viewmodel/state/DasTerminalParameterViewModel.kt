@@ -6,9 +6,9 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class DasTerminalParameterViewModel : BaseStateViewModel() {
     val reportMethod = NonNullObservableField("定时定点上报")
-    val interval = NonNullObservableField("")
     val reportStartTimeHour = NonNullObservableField("")
     val reportStartTimeMinute = NonNullObservableField("")
+    val interval = NonNullObservableField("")
 
 
     init {

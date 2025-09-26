@@ -365,6 +365,10 @@ enum class MDCommandType(private val commandCode: String) {
      */
     SET_COLLECTOR_SENSITIVITY("923"),
 
+    /** 上报配置 */
+    DATA_REPORT_TYPE("924"),
+
+
     /**
      * 自定义心跳包指令
      */
