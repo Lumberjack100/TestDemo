@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.exter
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
-import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasExternalSensorEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
@@ -18,7 +17,8 @@ import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.ExternalDigitalSensorParamEditItem
 import org.koin.android.ext.android.inject
@@ -66,14 +66,12 @@ class DasDigitalSensorFragment : BaseDasDigitalSensorFragment() {
                         MDCommandUtil.formatStringTwo(address)
                     }0,0"
                 )
-
-        commandItems.clear()
-        commandItems.add(command)
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(
-            isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_10000_MILLIS
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
         )
     }
 
@@ -97,13 +95,12 @@ class DasDigitalSensorFragment : BaseDasDigitalSensorFragment() {
             entity.toCommandString()
         )
 
-        commandItems.clear()
-        commandItems.add(command)
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(
-            isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_10000_MILLIS
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
         )
     }
 
@@ -122,32 +119,40 @@ class DasDigitalSensorFragment : BaseDasDigitalSensorFragment() {
      * 蓝牙通讯模式 - 刷新数据
      */
     private fun refreshDataBle() {
-        commandItems.clear()
         val command = MDCommandUtil.getCommand(
             MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER,
             "${MDCommandUtil.formatStringTwo(iotSensorType.code)}${
                 MDCommandUtil.formatStringTwo(sensorIndex.toString())
             }"
         )
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false,
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     /**
      * 4G通讯模式 - 刷新数据
      */
     private fun refreshData4G() {
-        commandItems.clear()
         val command =
             IOTCommandUtil.getCommand(
                 IOTCommandType.DAS_MD_GET_EXTERNAL_SENSOR,
                 "index=$sensorIndex"
             )
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                showLoadingDialog = false,
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
-    override fun setResultData(cmdStr: String) {
+    override fun handleCommandResponse(cmdStr: String) {
         if (communicateWay == BleConnect) {
             handleBleCommandResult(cmdStr)
         } else {
@@ -164,27 +169,26 @@ class DasDigitalSensorFragment : BaseDasDigitalSensorFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "初始值重置出错"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("初始值已重置")
                         }
                     }
                 }
             }
+
             MDCommandType.COLLECTOR_SENSOR_REVISED -> {//垂线坐标仪 重置初始值 165
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "初始值重置出错"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("初始值已重置")
                         }
                     }
@@ -199,22 +203,18 @@ class DasDigitalSensorFragment : BaseDasDigitalSensorFragment() {
                 when (result) {
                     is MDCommandResult.Failure -> {
                         val errMsg = "刷新传感器参数出错"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     is MDCommandResult.Success -> {
                         //处理此通道的传感器配置参数
                         initSensorInfo(result.data)
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+                // no-op
             }
         }
     }
@@ -228,12 +228,11 @@ class DasDigitalSensorFragment : BaseDasDigitalSensorFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "初始值重置出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        if (!isCommunicationExecuting()) {
                             Toaster.show("初始值已重置")
                         }
                     }
@@ -248,22 +247,18 @@ class DasDigitalSensorFragment : BaseDasDigitalSensorFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "刷新传感器参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     is IOTCommandResult.Success -> {
                         //处理此通道的传感器配置参数
                         initSensorInfo(result.data)
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
                     }
                 }
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+                // no-op
             }
         }
     }
