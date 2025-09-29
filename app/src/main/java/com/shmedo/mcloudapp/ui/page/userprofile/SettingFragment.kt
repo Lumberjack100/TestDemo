@@ -173,7 +173,7 @@ class SettingFragment : BaseFragment() {
          * 关于
          */
         fun onAboutUsClick() {
-            nav().safeNavigate(R.id.action_settingFragment_to_aboutFragment)
+            nav().safeNavigate(R.id.action_global_to_aboutFragment)
         }
 
         /**
