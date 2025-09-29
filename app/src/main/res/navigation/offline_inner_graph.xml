@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/offline_inner_graph"
+    app:startDestination="@id/bleScannerListFragment">
+
+    <fragment
+        android:id="@+id/bleScannerListFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.BleScannerListFragment"
+        android:label="BleScannerListFragment"
+        tools:layout="@layout/fragment_ble_scanner_list" />
+
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.userprofile.SettingFragment"
+        android:label="SettingFragment"
+        tools:layout="@layout/fragment_setting" />
+</navigation>
