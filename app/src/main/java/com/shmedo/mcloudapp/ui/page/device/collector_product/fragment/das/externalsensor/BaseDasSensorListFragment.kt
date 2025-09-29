@@ -21,6 +21,8 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.communication.model.CommandSequenceCallbacks
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.databinding.FragmentDasExternalSensorListBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
@@ -30,7 +32,7 @@ import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.DASSensorItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.RVEmptyFooter
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import timber.log.Timber
@@ -40,11 +42,37 @@ import timber.log.Timber
  * 创建时间：2024/4/18
  * 描述：物联网采集器(DAS)扩展传感器列表页面 - 支持4G和蓝牙两种通讯方式
  */
-abstract class BaseDasSensorListFragment : BaseIOTDeviceFragment() {
+abstract class BaseDasSensorListFragment : OptimizedBaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasExternalSensorListBinding
     protected val mStates: DasExternalSensorListViewModel<DasExternalSensorInfo> by activityViewModels()
 
     protected var deleteItemIndex = 0
+    private var nextActionAfterCollectorInfo: (() -> Unit)? = null
+
+    protected fun scheduleCollectorFollowUp(action: (() -> Unit)?) {
+        nextActionAfterCollectorInfo = action
+    }
+
+    protected fun executeCollectorInfoCommands(
+        commands: List<String>,
+        config: CommandSequenceConfig = CommandSequenceConfig()
+    ) {
+        val adjustedConfig = config.copy(autoFinishRefreshLayoutOnComplete = false)
+        sendCommandSequence(
+            commands = commands,
+            config = adjustedConfig,
+            callbacks = CommandSequenceCallbacks(
+                onComplete = {
+                    val action = nextActionAfterCollectorInfo
+                    nextActionAfterCollectorInfo = null
+                    action?.invoke() ?: finishRefresh()
+                },
+                onError = { _, _ ->
+                    nextActionAfterCollectorInfo = null
+                }
+            )
+        )
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -74,7 +102,7 @@ abstract class BaseDasSensorListFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 finishRefresh()
                 return@onRefresh
@@ -93,7 +121,7 @@ abstract class BaseDasSensorListFragment : BaseIOTDeviceFragment() {
             addType<RVEmptyFooter>(R.layout.item_sensor_add_footer)
 
             R.id.item.onClick {
-                if (isBleDisconnected()) {
+                if (!isDeviceConnected()) {
                     Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                     return@onClick
                 }
@@ -115,7 +143,7 @@ abstract class BaseDasSensorListFragment : BaseIOTDeviceFragment() {
             }
 
             R.id.item_del.onClick {
-                if (isBleDisconnected()) {
+                if (!isDeviceConnected()) {
                     Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                     return@onClick
                 }
@@ -197,7 +225,7 @@ abstract class BaseDasSensorListFragment : BaseIOTDeviceFragment() {
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onSubmitButtonClick() {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -287,9 +315,9 @@ abstract class BaseDasSensorListFragment : BaseIOTDeviceFragment() {
      */
     protected fun handleCollectorInfo(collectorInfo: DasCollectorInfo) {
         try {
+            scheduleCollectorFollowUp(null)
             // 采集器地址为 0 时，表示采集器未启用
             if (collectorInfo.addr == "0") {
-                cancelNearbyCommunicationTimeoutJob()
                 showMessageDialog("采集器地址为0,无法配置扩展传感器,请先修改采集器地址!")
                 return
             }
@@ -297,18 +325,21 @@ abstract class BaseDasSensorListFragment : BaseIOTDeviceFragment() {
             // 处理采集器类型（子类可能需要不同的处理逻辑）
             onCollectorTypeInitialized(collectorInfo.type)
 
-            if (collectorInfo.sensornum.isEmpty() || collectorInfo.sensornum.toInt() == 0) {
-                cancelNearbyCommunicationTimeoutJob()
+            val sensorNum = collectorInfo.sensornum.toIntOrNull() ?: 0
+            if (sensorNum == 0) {
                 initEmptySensor()
                 return
             }
 
             // 查询采集器接入的传感器配置信息
-            queryExtendSensorConfigInfo(collectorInfo.sensornum.toInt())
+            scheduleCollectorFollowUp {
+                queryExtendSensorConfigInfo(sensorNum)
+            }
         } catch (e: Exception) {
-            cancelNearbyCommunicationTimeoutJob()
-            Timber.Forest.e(e)
+            Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
+            nextActionAfterCollectorInfo = null
+            finishRefresh()
         }
     }
 
@@ -405,7 +436,5 @@ abstract class BaseDasSensorListFragment : BaseIOTDeviceFragment() {
             putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
-
-
     }
 }

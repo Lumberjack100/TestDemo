@@ -81,8 +81,8 @@
     <string name="empty_no_usb_device">没有 USB 设备</string>
     <string name="reboot_failed">重启失败!</string>
     <string name="reset_failed">恢复出厂设置失败!</string>
-    <string name="device_reboot_tip">设备即将重启,请稍后重新连接</string>
-    <string name="device_reset_tip">设备即将恢复出厂设置,请稍后重新连接</string>
+    <string name="device_reboot_tip">设备即将重启，请稍后重新连接设备</string>
+    <string name="device_reset_tip">设备即将恢复出厂设置，请稍后重新连接设备</string>
     <string name="retry">重试</string>
     <string name="loading_requesting_network">请求网络中</string>
     <string name="loading">加载中…</string>
@@ -92,6 +92,11 @@
     <string name="lora_station_node_edittext_input_filter">0123456789QWERTZUIOPASDFGHJKLYXCVBNM</string>
     <string name="data_modified_warn">数据已修改尚未保存，是否确认离开？</string>
     <string name="device_config_banner_text">当对设备进行各种功能配置时，只要变更了设备的配置参数，都需要重启设备才能使配置生效。</string>
+    <string name="collector_closed_warn">采集器已关闭(地址设置为0)！如果想再次配置传感器，请先到"采集配置"页面打开采集器(地址不为0)!</string>
+
+
+
+
 
     <!-- USB Serial 通信 -->
     <string name="any_characters">数据格式: 任意字符</string>
@@ -101,10 +106,6 @@
     <string name="usb_serial_exit_command">AT+ENTM</string>
     <string name="usb_serial_query_voltage">电压</string>
 
-    <!-- 语音播报 -->
-    <string name="listen_to_speech">请说，我在聆听…</string>
-    <string name="speech_network_error">网络连接失败</string>
-    <string name="no_speech_detected">未检测到语音，请点击麦克风重试</string>
 
     <!-- 声光报警器 -->
     <string name="rain_level1_hint">请输入0~1000之间数值</string>
