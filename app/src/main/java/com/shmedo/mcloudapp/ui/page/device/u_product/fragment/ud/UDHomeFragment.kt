@@ -100,10 +100,6 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
         groupList.add(measureDataItem)
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
 
-        // 添加配置提示Banner
-        groupList.add(ConfigBannerItem())
-        groupList.add(GapItem(height = ConvertUtils.dp2px(10f)))
-
         // 设备信息模块
         groupList.add(DeviceStatusInfoGroupItem("设备信息"))
         groupList.add(

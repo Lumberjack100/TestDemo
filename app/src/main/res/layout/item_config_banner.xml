@@ -11,16 +11,16 @@
         android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_common_click_item_top_corner_4"
+        android:background="@color/white"
         android:gravity="center_vertical"
         android:paddingHorizontal="@dimen/page_content_item_padding_horizontal_16"
-        android:paddingVertical="@dimen/dimen_size_8">
+        android:paddingVertical="@dimen/dimen_size_3">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_warning"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="@dimen/dimen_size_10"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginEnd="@dimen/dimen_size_5"
             app:srcCompat="@drawable/ic_warning" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:text="@string/device_config_banner_text"
             android:textColor="@color/warn_FF9D00"
-            android:textSize="12sp"
+            android:textSize="11sp"
             tools:text="当对 DAS 产品设备进行各种功能配置时，只要变更了设备的配置参数，都需要重启设备才能使能配置生效。" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

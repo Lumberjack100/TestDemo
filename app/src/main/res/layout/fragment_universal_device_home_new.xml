@@ -44,6 +44,13 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar"
             app:stateVM="@{stateVM}" />
 
+        <include
+            android:id="@+id/ll_config_banner"
+            layout="@layout/item_config_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/ll_device_info" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_module"
             android:layout_width="match_parent"
@@ -53,8 +60,8 @@
             android:paddingTop="@dimen/page_content_container_padding_top_12"
             android:paddingBottom="@dimen/dimen_size_30"
             android:splitMotionEvents="false"
-            app:layout_constraintTop_toBottomOf="@+id/ll_device_info"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_config_banner"
             tools:itemCount="1"
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_sub_config_module" />
