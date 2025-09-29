@@ -59,19 +59,22 @@ class MainActivity : BaseActivity() {
     private fun processBackPressed() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val nav = nav(binding.navHostFragment)
-                if (nav.currentDestination != null && nav.currentDestination!!.id != R.id.mainFragment) {
-                    //如果当前界面不是主页，那么直接调用返回即可
-                    nav.navigateUp()
-                } else { //是主页
-                    //与上次点击返回键时刻作差
-                    //大于2000ms则认为是误操作，使用Toast进行提示
-                    if (System.currentTimeMillis() - mExitTime > 2000) {
-                        Toaster.show("再按一次退出程序")
-                        mExitTime = System.currentTimeMillis()
-                    } else {
-                        finish()
-                    }
+                val navController = nav(binding.navHostFragment)
+                val destinationId = navController.currentDestination?.id
+                val isHome = destinationId == R.id.mainFragment || destinationId == R.id.offlineMainFragment
+
+                //如果当前界面不是主页，那么直接调用返回即可
+                if (!isHome && navController.navigateUp()) {
+                    return
+                }
+
+                //是主页，与上次点击返回键时刻作差，大于2000ms则认为是误操作，使用Toast进行提示
+                val now = System.currentTimeMillis()
+                if (now - mExitTime > EXIT_INTERVAL) {
+                    Toaster.show("再按一次退出程序")
+                    mExitTime = now
+                } else {
+                    finish()
                 }
             }
         })
@@ -83,6 +86,8 @@ class MainActivity : BaseActivity() {
     }
 
     companion object {
+        private const val EXIT_INTERVAL = 2_000L
+
         fun start(context: Context) {
             val intent = Intent()
             intent.setClass(context, MainActivity::class.java)
