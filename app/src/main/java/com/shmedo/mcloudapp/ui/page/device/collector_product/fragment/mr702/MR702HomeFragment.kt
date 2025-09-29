@@ -37,10 +37,6 @@ class MR702HomeFragment : BaseDeviceHomeFragment() {
     override fun initModuleData() {
         val groupList = mutableListOf<Any>()
 
-        // 添加配置提示Banner
-        groupList.add(ConfigBannerItem())
-        groupList.add(GapItem(height = ConvertUtils.dp2px(10f)))
-
         groupList.add(DeviceStatusInfoGroupItem("设备信息"))
         groupList.add(
             ConfigModuleTree(

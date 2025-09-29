@@ -40,7 +40,7 @@ import com.shmedo.mcloudapp.model.ExternalDigitalSensorParamEditItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.ParamSubmitButtonItem
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import timber.log.Timber
@@ -50,7 +50,7 @@ import timber.log.Timber
  * 创建时间：2024/6/7
  * 描述： 物联网采集器(DAS)数字式传感器参数配置页面基类 - 支持4G和蓝牙两种通讯方式
  */
-abstract class BaseDasDigitalSensorFragment : BaseIOTDeviceFragment() {
+abstract class BaseDasDigitalSensorFragment : OptimizedBaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentBaseExternalDigitalSensorBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo> by activityViewModels()
@@ -138,7 +138,7 @@ abstract class BaseDasDigitalSensorFragment : BaseIOTDeviceFragment() {
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.setEnableRefresh(sensorEditMode)
         binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
+            if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_refresh_fail_warn))
                 finishRefresh()
                 return@onRefresh
@@ -1062,6 +1062,8 @@ abstract class BaseDasDigitalSensorFragment : BaseIOTDeviceFragment() {
     protected open fun resetInitValue() {}
 
     protected open fun refreshData() {}
+
+    abstract override fun handleCommandResponse(cmdStr: String)
 
     override fun onResume() {
         super.onResume()
