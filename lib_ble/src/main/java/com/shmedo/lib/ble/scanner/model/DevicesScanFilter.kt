@@ -5,8 +5,11 @@ package com.shmedo.lib.ble.scanner.model
  * 创建时间：2024/4/19
  * 描述： TODO
  */
+enum class SortMode { ByRssiDesc, None }
+
 data class DevicesScanFilter(
-    val filterUuidRequired: Boolean?,
-    val filterNearbyOnly: Boolean,
-    val filterWithNames: Boolean
+    val filterUuidRequired: Boolean? = null,
+    val filterNearbyOnly: Boolean = false,
+    val filterWithNames: Boolean = false,
+    val sortMode: SortMode = SortMode.ByRssiDesc
 )

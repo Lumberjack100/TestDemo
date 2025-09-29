@@ -4,6 +4,8 @@ import android.os.ParcelUuid
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shmedo.lib.ble.scanner.model.DevicesScanFilter
+import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
+import com.shmedo.lib.ble.scanner.model.SortMode
 import com.shmedo.lib.ble.scanner.repository.ScannerRepository
 import com.shmedo.lib.ble.scanner.repository.ScanningState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,21 +44,6 @@ class ScannerViewModel(private val scannerRepository: ScannerRepository) : ViewM
     // scanner is not visible. Scanner state stops scanning when it is not observed.
     // .stateIn(viewModelScope, SharingStarted.Lazily, ScanningState.Loading)
 
-
-//    private fun ScanningState.DevicesDiscovered.applyFilters(config: DevicesScanFilter) =
-//        ScanningState.DevicesDiscovered(
-//            devices
-//            .filter {
-//                uuid == null ||
-//                        config.filterUuidRequired == false ||
-//                        it.scanResult?.scanRecord?.serviceUuids?.contains(uuid) == true
-//            }
-//            .filter { !config.filterNearbyOnly || it.highestRssi >= FILTER_RSSI }
-//            .filter {
-//                !config.filterWithNames || (it.hadName && (it.name?.contains(deviceName) ?: true))
-//            }
-//        )
-
     //优化后
     private fun ScanningState.DevicesDiscovered.applyFilters(config: DevicesScanFilter): ScanningState.DevicesDiscovered {
         val filteredDevices = devices
@@ -74,17 +61,22 @@ class ScannerViewModel(private val scannerRepository: ScannerRepository) : ViewM
             .filter { device ->
                 // 名称过滤
                 !config.filterWithNames ||
-                        (device.hadName && (deviceName.isEmpty() || device.name?.contains(
-                            deviceName,
-                            ignoreCase = true
-                        ) == true))
+                        (device.hadName && (deviceName.isEmpty() ||
+                                device.name?.contains(deviceName, ignoreCase = true) == true))
             }
-//            .sortedByDescending { it.highestRssi } // 按信号强度排序
             .toList()
 
-        val result = ScanningState.DevicesDiscovered(filteredDevices)
+        val sorted = when (config.sortMode) {
+            SortMode.ByRssiDesc -> // RSSI 数值越大代表信号越强，额外使用最高 RSSI 与设备标识保证排序稳定
+                filteredDevices.sortedWith(
+                    compareByDescending<DiscoveredBluetoothDevice> { it.rssi }
+                        .thenByDescending { it.highestRssi }
+                        .thenBy { it.displayNameOrAddress }
+                )
+            SortMode.None -> filteredDevices
+        }
 
-        return result
+        return ScanningState.DevicesDiscovered(sorted)
     }
 
     fun setFilterUuid(uuid: ParcelUuid?) {
