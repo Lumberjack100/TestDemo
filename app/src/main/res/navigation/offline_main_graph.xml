@@ -5,10 +5,81 @@
     android:id="@+id/offline_main_graph"
     app:startDestination="@id/offlineMainFragment">
 
+    <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_webview_graph" />
+    <include app:graph="@navigation/include_log_session_graph" />
+
     <fragment
         android:id="@+id/offlineMainFragment"
         android:name="com.shmedo.mcloudapp.ui.page.main.OfflineMainFragment"
         android:label="OfflineMainFragment"
         tools:layout="@layout/fragment_offline_main" />
+
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.userprofile.SettingFragment"
+        android:label="SettingFragment"
+        tools:layout="@layout/fragment_setting" />
+
+    <fragment
+        android:id="@+id/appPermissionSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.userprofile.AppPermissionSettingFragment"
+        android:label="AppPermissionSettingFragment"
+        tools:layout="@layout/fragment_app_permission_setting" />
+
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.userprofile.AboutFragment"
+        android:label="AboutFragment"
+        tools:layout="@layout/fragment_about" />
+
+    <action
+        android:id="@+id/action_global_to_queryDeviceDataFragment"
+        app:destination="@id/query_data_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_settingFragment"
+        app:destination="@id/settingFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_appPermissionSettingFragment"
+        app:destination="@id/appPermissionSettingFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_webViewFragment"
+        app:destination="@id/webview_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_logSessionListFragment"
+        app:destination="@id/log_session_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_aboutFragment"
+        app:destination="@id/aboutFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
 
 </navigation>

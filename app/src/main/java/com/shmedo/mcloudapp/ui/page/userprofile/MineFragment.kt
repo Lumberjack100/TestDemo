@@ -110,7 +110,7 @@ class MineFragment : BaseFragment() {
         }
 
         fun onSettingClick() {
-            nav().safeNavigate(R.id.action_mainFragment_to_settingFragment)
+            nav().safeNavigate(R.id.action_global_to_settingFragment)
         }
 
         fun logout() {

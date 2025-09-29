@@ -9,7 +9,10 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentOfflineMainBinding
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
+import com.shmedo.mcloudapp.ui.page.device.BleScannerListFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.utils.permission.PermissionDescription
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
@@ -18,11 +21,6 @@ class OfflineMainFragment : BaseFragment() {
     private lateinit var binding: FragmentOfflineMainBinding
     private val mStates: EmptyViewModel by viewModels()
 
-    private val innerNavController by lazy {
-        val host = childFragmentManager.findFragmentById(R.id.inner_nav_host)
-                as androidx.navigation.fragment.NavHostFragment
-        host.navController
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_offline_main, BR.vm, mStates)
@@ -31,24 +29,24 @@ class OfflineMainFragment : BaseFragment() {
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentOfflineMainBinding
         addMenu()
+
+        if (childFragmentManager.findFragmentByTag("child") == null) {
+            val child = BleScannerListFragment.newInstance() // 你的子 Fragment
+            childFragmentManager.beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.childFragmentContainer, child, "child")
+                .commit()
+        }
     }
 
     private fun addMenu() {
         // 顶部菜单 → 设置页
         binding.topAppBar.setOnMenuItemClickListener { item ->
             if (item.itemId == R.id.action_settings) {
-                if (innerNavController.currentDestination?.id != R.id.settingFragment) {
-                    innerNavController.navigate(R.id.settingFragment)
-                }
-//                nav().safeNavigate(R.id.action_mainFragment_to_userInfoHomeFragment)
+                nav().safeNavigate(R.id.action_global_to_settingFragment)
 
                 true
             } else false
-        }
-
-        // 根据内层目的地自动更新标题（可选）
-        innerNavController.addOnDestinationChangedListener { _, dest, _ ->
-            binding.topAppBar.title = dest.label ?: "Main"
         }
     }
 
@@ -72,5 +70,12 @@ class OfflineMainFragment : BaseFragment() {
                     return@OnPermissionCallback
                 }
             })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.root.post {
+            initImmersionBar(binding.topAppBar)
+        }
     }
 }
