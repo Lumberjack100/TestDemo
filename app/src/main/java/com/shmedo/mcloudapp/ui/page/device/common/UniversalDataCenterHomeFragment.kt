@@ -76,6 +76,9 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
      */
     private fun isSupportComplexReportingPeriodMode(): Boolean {
         return productType == ProductType.GNSS_M_5
+                || productType == ProductType.GNSS_M_6
+                || productType == ProductType.GNSS_M_7
+                || productType == ProductType.GNSS_M_8
                 || productType == ProductType.GNSS_M_1
                 || productType == ProductType.GNSS_M_2
     }

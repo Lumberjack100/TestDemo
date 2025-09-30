@@ -46,7 +46,7 @@ class M50BaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "设备型号",
-                    value = stateInfo.deviceType,
+                    value = productType.productToken.ifEmpty { stateInfo.deviceType }, //stateInfo.deviceType
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,

@@ -80,8 +80,10 @@
     <string name="refresh_failed_while_device_disconnected">设备已断开连接，刷新失败</string>
     <string name="empty_no_usb_device">没有 USB 设备</string>
     <string name="reboot_failed">重启失败!</string>
+    <string name="hibernate_failed">休眠模式设置失败!</string>
     <string name="reset_failed">恢复出厂设置失败!</string>
     <string name="device_reboot_tip">设备即将重启，请稍后重新连接设备</string>
+    <string name="device_hibernation_tip">休眠模式设置成功</string>
     <string name="device_reset_tip">设备即将恢复出厂设置，请稍后重新连接设备</string>
     <string name="retry">重试</string>
     <string name="loading_requesting_network">请求网络中</string>

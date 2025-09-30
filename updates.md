@@ -1,3 +1,9 @@
+## 5.3.14
+### 一体式自供电 GNSS 接收机(M50)
+- 高级设置页面新增设备休眠功能，支持设置设备进入休眠模式
+- 扩展一体式GNSS监测站产品类型，新增GM6、GM7、GM8型号，分别对应M50(全星频)、T50(单北斗)、T50(全星频)版本
+- 优化产品类型描述，将M20产品描述从"全星座"更新为"全星频"
+
 ## 5.3.13
 ### 物联网采集器(DAS)
 - 优化传感器信息解析逻辑，统一小数格式化处理，threshold、corrval、spacing、tubealti、ropelen、lsycsds、lsyysst、initval、initvalx、initvaly、initvalz 字段的数值如果是浮点数，只保留三位小数
