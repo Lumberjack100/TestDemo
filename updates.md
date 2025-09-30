@@ -1,3 +1,7 @@
+## 5.3.13
+### 物联网采集器(DAS)
+- 优化传感器信息解析逻辑，统一小数格式化处理，threshold、corrval、spacing、tubealti、ropelen、lsycsds、lsyysst、initval、initvalx、initvaly、initvalz 字段的数值如果是浮点数，只保留三位小数
+
 ## 5.3.12
 ### 物联网采集器(DAS)
 - 优化数字式水位计配置逻辑，新增关闭开关功能，完善状态管理机制
