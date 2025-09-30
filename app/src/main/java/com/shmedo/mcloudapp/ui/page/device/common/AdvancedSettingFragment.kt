@@ -167,7 +167,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
             )
         )
 
-        if (isSupportHibernation()) {
+        if (communicateWay is BleConnect && isSupportHibernation()) {
             moduleList.add(
                 AdvancedSettingItem(
                     "设备休眠",
@@ -505,7 +505,8 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
      * 执行休眠指令
      */
     private fun executeHibernate() {
-        val command = IOTCommandUtil.getCommand(IOTCommandType.SET_WORK_MODE, "sw=0&factory_sw=1&mode=3")
+        val command =
+            IOTCommandUtil.getCommand(IOTCommandType.SET_WORK_MODE, "sw=0&factory_sw=1&mode=3")
         sendCommandSequence(
             commands = listOf(command),
             config = CommandSequenceConfig(
@@ -637,7 +638,8 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                 val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = StringUtils.getString(R.string.hibernate_failed) + result.message
+                        val errMsg =
+                            StringUtils.getString(R.string.hibernate_failed) + result.message
                         handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
