@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.ui.page.device.common
 
 import android.os.Bundle
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
@@ -259,7 +258,7 @@ class CommonSensorDataHistoryFragment : BaseFragment() {
                 )
             }
 
-            ProductType.GNSS_M_5 -> {
+            ProductType.GNSS_M_5, ProductType.GNSS_M_6, ProductType.GNSS_M_7, ProductType.GNSS_M_8 -> {
                 modelNameList.addAll(
                     arrayListOf(
                         "合位移量",

@@ -48,7 +48,7 @@ enum class PlatformDataProtocol(private val cmdValue: String) {
         @JvmStatic
         fun getDataProtocolsByProduct(type: ProductType): List<PlatformDataProtocol> {
             return when (type) {
-                ProductType.GNSS_M_5 -> listOf(
+                ProductType.GNSS_M_5, ProductType.GNSS_M_6, ProductType.GNSS_M_7, ProductType.GNSS_M_8 -> listOf(
                     MQTT,
                     TCP_C,
                     SL651,

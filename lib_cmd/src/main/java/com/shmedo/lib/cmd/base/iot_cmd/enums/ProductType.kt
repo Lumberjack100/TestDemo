@@ -95,15 +95,39 @@ enum class ProductType(
         oldSuffix = "",
         newSuffix = "GM2",
         productName = "普适型GNSS接收机",
-        productToken = "M20(全星座)",
-        description = "全星座，对应UM960D版本"
+        productToken = "M20(全星频)",
+        description = "全星频，对应UM960D版本"
     ),
     GNSS_M_5(
         prefix = "",
         oldSuffix = "",
         newSuffix = "GM5",
         productName = "一体式GNSS监测站",
-        productToken = "M50",
+        productToken = "M50(单北斗)",
+        description = "自供电版"
+    ),
+    GNSS_M_6(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "GM6",
+        productName = "一体式GNSS监测站",
+        productToken = "M50(全星频)",
+        description = "自供电版"
+    ),
+    GNSS_M_7(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "GM7",
+        productName = "一体式GNSS监测站",
+        productToken = "T50(单北斗)",
+        description = "自供电版"
+    ),
+    GNSS_M_8(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "GM8",
+        productName = "一体式GNSS监测站",
+        productToken = "T50(全星频)",
         description = "自供电版"
     ),
 

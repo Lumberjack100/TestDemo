@@ -286,7 +286,10 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
 
                     is IOTCommandResult.Success -> {
                         when (productType) {
-                            ProductType.GNSS_M_5 -> initM50StatusInfo(result.data)
+                            ProductType.GNSS_M_5, ProductType.GNSS_M_6, ProductType.GNSS_M_7, ProductType.GNSS_M_8 -> initM50StatusInfo(
+                                result.data
+                            )
+
                             ProductType.LB20S -> initLB20StatusInfo(result.data)
                             else -> initCommonStatusInfo(result.data)
                         }
