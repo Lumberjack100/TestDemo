@@ -167,6 +167,15 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
             )
         )
 
+        if (isSupportHibernation()) {
+            moduleList.add(
+                AdvancedSettingItem(
+                    "设备休眠",
+                    AdvancedSettingItem.Type.HIBERNATION,
+                )
+            )
+        }
+
         if (productType != ProductType.COLLECTOR_G_0) {
             moduleList.add(
                 AdvancedSettingItem(
@@ -228,17 +237,6 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 是否支持监测数据导出
-     */
-    private fun isSupportMonitoringDataExport(): Boolean {
-        // TODO: 根据需要启用相应的设备类型
-        // return productType == ProductType.COLLECTOR_R_1
-        //         || productType == ProductType.DAS
-        //         || productType == ProductType.GNSS_M_5
-        return false
-    }
-
-    /**
      * 是否需要同步位置
      */
     private fun isNeedSyncLocation(): Boolean {
@@ -260,13 +258,22 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                 || productType == ProductType.GNSS_M_2
     }
 
-
     /**
      * 是否支持固件升级
      */
     private fun isSupportFirmwareUpgrade(): Boolean {
         return productType != ProductType.U_L_1
                 && productType != ProductType.COLLECTOR_G_0
+    }
+
+    /**
+     * 是否支持休眠
+     */
+    private fun isSupportHibernation(): Boolean {
+        return productType == ProductType.GNSS_M_5
+                || productType == ProductType.GNSS_M_6
+                || productType == ProductType.GNSS_M_7
+                || productType == ProductType.GNSS_M_8
     }
 
 
@@ -277,6 +284,19 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
         return productType == ProductType.GNSS_M_1
                 || productType == ProductType.GNSS_M_2
                 || productType == ProductType.GNSS_M_5
+                || productType == ProductType.GNSS_M_6
+                || productType == ProductType.GNSS_M_7
+                || productType == ProductType.GNSS_M_8
+    }
+
+    /**
+     * 是否支持监测数据导出
+     */
+    private fun isSupportMonitoringDataExport(): Boolean {
+        // TODO: 根据需要启用相应的设备类型
+        // return productType == ProductType.COLLECTOR_R_1
+        //         || productType == ProductType.DAS
+        return false
     }
 
     /**
@@ -330,19 +350,17 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
         }
 
         when (item.type) {
-            AdvancedSettingItem.Type.REBOOT -> {
-                showMessage("确定重启吗？", "温馨提示", "确定", {
-                    executeReboot()
+            AdvancedSettingItem.Type.SYNC_INSTALL_POSITION -> {//同步安装位置
+                showSyncInstallationLocationPopup()
+            }
+
+            AdvancedSettingItem.Type.OFFSET_INITIALIZATION -> {//偏移初始化
+                showMessage("确定进行告警偏移初始化吗？", "温馨提示", "确定", {
+                    executeOffsetInitialization()
                 }, "取消")
             }
 
-            AdvancedSettingItem.Type.RESET -> {
-                showMessage("确定恢复出厂设置吗？", "温馨提示", "确定", {
-                    executeReset()
-                }, "取消")
-            }
-
-            AdvancedSettingItem.Type.FIRMWARE_UPGRADE -> {
+            AdvancedSettingItem.Type.FIRMWARE_UPGRADE -> {//固件升级
                 val bundle = newBundleArguments(
                     productType,
                     communicateWay,
@@ -352,33 +370,37 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                 nav().safeNavigate(R.id.action_global_to_firmwareUpgradeFragment, bundle)
             }
 
-            AdvancedSettingItem.Type.SYNC_INSTALL_POSITION -> {
-                showSyncInstallationLocationPopup()
-            }
-
-            AdvancedSettingItem.Type.OFFSET_INITIALIZATION -> {
-                showMessage("确定进行告警偏移初始化吗？", "温馨提示", "确定", {
-                    executeOffsetInitialization()
+            AdvancedSettingItem.Type.REBOOT -> {//重启
+                showMessage("确定重启吗？", "温馨提示", "确定", {
+                    executeReboot()
                 }, "取消")
             }
 
-            AdvancedSettingItem.Type.REMOTE_DEBUG -> {
-                val bundle = newBundleArguments(
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().safeNavigate(R.id.action_global_to_remoteDebugFragment, bundle)
+            AdvancedSettingItem.Type.HIBERNATION -> {//休眠
+                showMessage("确定休眠吗？", "温馨提示", "确定", {
+                    executeHibernate()
+                }, "取消")
             }
 
-            AdvancedSettingItem.Type.STANDBY -> {
+            AdvancedSettingItem.Type.RESET -> {//恢复出厂设置
+                showMessage("确定恢复出厂设置吗？", "温馨提示", "确定", {
+                    executeReset()
+                }, "取消")
+            }
+
+            AdvancedSettingItem.Type.FORMAT_DATA_STORAGE -> {//格式化数据存储
+                showMessage("确定格式化数据吗？", "温馨提示", "确定", {
+                    executeFormatDataStorage()
+                }, "取消")
+            }
+
+            AdvancedSettingItem.Type.STANDBY -> {//待机进入仓储模式
                 showMessage("确定进入仓储模式吗？", "温馨提示", "确定", {
                     executeStandByMode()
                 }, "取消")
             }
 
-            AdvancedSettingItem.Type.MONITORING_DATA_EXPORT -> {
+            AdvancedSettingItem.Type.MONITORING_DATA_EXPORT -> {//监测数据导出
                 // 跳转到监测数据导出页面
                 val bundle = newBundleArguments(
                     productType,
@@ -392,24 +414,69 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                 nav().safeNavigate(R.id.action_global_to_monitoringDataExportFragment, bundle)
             }
 
-            AdvancedSettingItem.Type.FORMAT_DATA_STORAGE -> {
-                showMessage("确定格式化数据吗？", "温馨提示", "确定", {
-                    executeFormatDataStorage()
-                }, "取消")
+            AdvancedSettingItem.Type.REMOTE_DEBUG -> {//远程调试
+                val bundle = newBundleArguments(
+                    productType,
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+                nav().safeNavigate(R.id.action_global_to_remoteDebugFragment, bundle)
             }
 
-            AdvancedSettingItem.Type.REPLACE_DEVICE -> {
+            AdvancedSettingItem.Type.REPLACE_DEVICE -> { //更换设备
                 val bundle = DeviceReplacementFragment.newBundleArguments(
                     deviceInfo
                 )
                 nav().safeNavigate(R.id.action_global_to_deviceReplacementFragment, bundle)
             }
 
+
             else -> {}
         }
     }
 
     // ==================== 指令执行方法 ====================
+    /**
+     * 执行设置安装位置
+     */
+    private fun executeSetInstallationLocation() {
+        val command = if (productType == ProductType.U_R_1 || productType == ProductType.U_I_1) {
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_RAW, "content=##9161${mStates.location.get()}"
+            )
+        } else {
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_INSTALL_LOCATION,
+                "lat=${mStates.latitude.get()}&lng=${mStates.longitude.get()}"
+            )
+        }
+
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
+    }
+
+    /**
+     * 执行告警偏移初始化
+     */
+    private fun executeOffsetInitialization() {
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_SENSOR_INITIAL,
+            "method=1&type=gnss"
+        )
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
+    }
 
     /**
      * 执行重启指令
@@ -432,6 +499,20 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                 )
             )
         }
+    }
+
+    /**
+     * 执行休眠指令
+     */
+    private fun executeHibernate() {
+        val command = IOTCommandUtil.getCommand(IOTCommandType.SET_WORK_MODE, "sw=0&factory_sw=1&mode=3")
+        sendCommandSequence(
+            commands = listOf(command),
+            config = CommandSequenceConfig(
+                loadingMessage = StringUtils.getString(R.string.processing),
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
     }
 
     /**
@@ -458,37 +539,10 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 执行告警偏移初始化
+     * 执行格式化数据存储
      */
-    private fun executeOffsetInitialization() {
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_SENSOR_INITIAL,
-            "method=1&type=gnss"
-        )
-        sendCommandSequence(
-            commands = listOf(command),
-            config = CommandSequenceConfig(
-                loadingMessage = StringUtils.getString(R.string.processing),
-                errorConfig = ErrorConfig.dialogConfig()
-            )
-        )
-    }
-
-    /**
-     * 执行设置安装位置
-     */
-    private fun executeSetInstallationLocation() {
-        val command = if (productType == ProductType.U_R_1 || productType == ProductType.U_I_1) {
-            IOTCommandUtil.getCommand(
-                IOTCommandType.MD_RAW, "content=##9161${mStates.location.get()}"
-            )
-        } else {
-            IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_INSTALL_LOCATION,
-                "lat=${mStates.latitude.get()}&lng=${mStates.longitude.get()}"
-            )
-        }
-
+    private fun executeFormatDataStorage() {
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_FORMAT_DATA_STORAGE, "type=1")
         sendCommandSequence(
             commands = listOf(command),
             config = CommandSequenceConfig(
@@ -514,19 +568,6 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
         )
     }
 
-    /**
-     * 执行格式化数据存储
-     */
-    private fun executeFormatDataStorage() {
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_FORMAT_DATA_STORAGE, "type=1")
-        sendCommandSequence(
-            commands = listOf(command),
-            config = CommandSequenceConfig(
-                loadingMessage = StringUtils.getString(R.string.processing),
-                errorConfig = ErrorConfig.dialogConfig()
-            )
-        )
-    }
 
     // ==================== 响应处理 ====================
 
@@ -588,6 +629,20 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
 
                     else -> {
                         Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
+                    }
+                }
+            }
+
+            IOTCommandType.SET_WORK_MODE -> {
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = StringUtils.getString(R.string.hibernate_failed) + result.message
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    else -> {
+                        Toaster.show(StringUtils.getString(R.string.device_hibernation_tip))
                     }
                 }
             }
@@ -733,7 +788,8 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
             .description(PermissionDescription())
             .request(object : OnPermissionCallback {
                 override fun onResult(
-                    grantedList: List<IPermission>, deniedList: List<IPermission>) {
+                    grantedList: List<IPermission>, deniedList: List<IPermission>
+                ) {
                     val allGranted = deniedList.isEmpty()
                     if (!allGranted) {
                         return

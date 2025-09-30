@@ -53,7 +53,7 @@ class FindDeviceBeepDialog : BaseVmDbDialogFragment() {
                 )
             }
 
-            ProductType.GNSS_M_5 -> {
+            ProductType.GNSS_M_5, ProductType.GNSS_M_6, ProductType.GNSS_M_7, ProductType.GNSS_M_8 -> {
                 logoResIdList.addAll(
                     arrayListOf(
                         R.drawable.device_logo_m50,

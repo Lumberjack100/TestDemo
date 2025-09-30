@@ -20,6 +20,9 @@ data class AdvancedSettingItem(
         //重启
         data object REBOOT : Type()
 
+        //休眠
+        data object HIBERNATION : Type()
+
         //重置
         data object RESET : Type()
 
