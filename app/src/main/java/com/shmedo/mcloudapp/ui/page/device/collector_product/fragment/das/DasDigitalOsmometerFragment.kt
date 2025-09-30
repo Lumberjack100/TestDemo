@@ -105,13 +105,36 @@ class DasDigitalOsmometerFragment : OptimizedBaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
+            if (!mStates.isOpened.get()) {
+                closeSwitch()
+                return
+            }
             initSaveCommand()
+        }
+    }
+
+    private fun closeSwitch() {
+        if (communicateWay == BleConnect) {
+            val command = MDCommandUtil.getCommand(
+                MDCommandType.DIGITAL_OSMOMETER_FUNCTION,
+                MDOsmometerStatus.OSMOMETER_CLOSE.toString()
+            )
+
+            sendCommandSequence(
+                commands = listOf(command),
+                config = CommandSequenceConfig(
+                    loadingMessage = StringUtils.getString(R.string.processing),
+                    errorConfig = ErrorConfig.dialogConfig()
+                )
+            )
+        } else {
+            init4GSaveCommand()
         }
     }
 
     private fun initSaveCommand() {
         // 参数验证
-        if (mStates.isOpened.get() && !validateInputs()) {
+        if (!validateInputs()) {
             return
         }
 
@@ -127,6 +150,12 @@ class DasDigitalOsmometerFragment : OptimizedBaseIOTDeviceFragment() {
         val commands = mutableListOf<String>()
 
         var command = MDCommandUtil.getCommand(
+            MDCommandType.DIGITAL_OSMOMETER_FUNCTION,
+            MDOsmometerStatus.OSMOMETER_OPEN.toString()
+        )
+        commands.add(command)
+
+        command = MDCommandUtil.getCommand(
             MDCommandType.SET_OSMOMETER_ADDRESS,
             mStates.address.get()
         )
@@ -327,7 +356,6 @@ class DasDigitalOsmometerFragment : OptimizedBaseIOTDeviceFragment() {
                     is MDCommandResult.Failure -> {
                         val errMsg = "查询参数出错"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     is MDCommandResult.Success -> {
@@ -343,7 +371,6 @@ class DasDigitalOsmometerFragment : OptimizedBaseIOTDeviceFragment() {
                             if (cmdStr.contains("4011")) "开启数字水位计出错"
                             else "关闭数字水位计出错" //4012
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
@@ -361,7 +388,6 @@ class DasDigitalOsmometerFragment : OptimizedBaseIOTDeviceFragment() {
                     is MDCommandResult.Failure -> {
                         val errMsg = "地址配置出错!"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
@@ -379,7 +405,6 @@ class DasDigitalOsmometerFragment : OptimizedBaseIOTDeviceFragment() {
                     is MDCommandResult.Failure -> {
                         val errMsg = "水位报警值配置出错!"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
@@ -397,7 +422,6 @@ class DasDigitalOsmometerFragment : OptimizedBaseIOTDeviceFragment() {
                     is MDCommandResult.Failure -> {
                         val errMsg = "水深修正值配置出错!"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
@@ -415,7 +439,6 @@ class DasDigitalOsmometerFragment : OptimizedBaseIOTDeviceFragment() {
                     is MDCommandResult.Failure -> {
                         val errMsg = "绳长配置出错!"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
@@ -433,7 +456,6 @@ class DasDigitalOsmometerFragment : OptimizedBaseIOTDeviceFragment() {
                     is MDCommandResult.Failure -> {
                         val errMsg = "安装高程配置出错!"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
@@ -454,7 +476,7 @@ class DasDigitalOsmometerFragment : OptimizedBaseIOTDeviceFragment() {
 
     private fun initBleParamData(digitalPiezometerInfo: MDDasDigitalPiezometerInfo) {
         try {
-            MDOsmometerStatus.Companion.value(digitalPiezometerInfo.osmometerStatus).let {
+            MDOsmometerStatus.value(digitalPiezometerInfo.osmometerStatus).let {
                 mStates.isOpened.set(it == MDOsmometerStatus.OSMOMETER_OPEN)
             }
             mStates.address.set(digitalPiezometerInfo.osmometerAddress)
@@ -494,8 +516,7 @@ class DasDigitalOsmometerFragment : OptimizedBaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询参数出错: ${result.message}"
-                        handleFailureResult("$errMsg: ${result.message}")
-                        return
+                        handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     is IOTCommandResult.Success -> {
@@ -509,7 +530,6 @@ class DasDigitalOsmometerFragment : OptimizedBaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "配置参数出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
-                        return
                     }
 
                     else -> {
