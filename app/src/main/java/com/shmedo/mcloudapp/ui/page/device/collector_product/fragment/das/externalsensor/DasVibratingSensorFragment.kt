@@ -176,7 +176,7 @@ class DasVibratingSensorFragment : BaseFragment() {
 
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("触发值（毫米）")
-                    mStates.extension1Value.set(sensorInfo.threshold.formatDoubleValue("", 0))
+                    mStates.extension1Value.set(sensorInfo.threshold.formatDoubleValue("", 2))
 
                     mStates.isExtension2Support.set(true)
                     mStates.extension2Title.set("修正值（米）")
@@ -230,7 +230,7 @@ class DasVibratingSensorFragment : BaseFragment() {
 
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("触发值（毫米）")
-                    mStates.extension1Value.set(sensorInfo.threshold.formatDoubleValue("0", 0))
+                    mStates.extension1Value.set(sensorInfo.threshold.formatDoubleValue("0", 2))
 
                     mStates.isExtension2Support.set(true)
                     mStates.extension2Title.set("修正值（米）")
@@ -430,7 +430,7 @@ class DasVibratingSensorFragment : BaseFragment() {
                     //修正值、绳长、安装高程
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("修正值（毫米）")
-                    mStates.extension1Value.set(sensorInfo.corrval.formatDoubleValue("0", 0))
+                    mStates.extension1Value.set(sensorInfo.corrval.formatDoubleValue("0", 2))
 
                     mStates.isExtension2Support.set(true)
                     mStates.extension2Title.set("绳长（毫米）")
@@ -438,7 +438,7 @@ class DasVibratingSensorFragment : BaseFragment() {
 
                     mStates.isExtension3Support.set(true)
                     mStates.extension3Title.set("安装高程（毫米）")
-                    mStates.extension3Value.set(sensorInfo.tubealti.formatDoubleValue("0", 0))
+                    mStates.extension3Value.set(sensorInfo.tubealti.formatDoubleValue("0", 2))
 
                     mStates.isExtension4Support.set(false)
                     mStates.isExtension5Support.set(false)
