@@ -223,7 +223,7 @@ abstract class BaseDasDigitalSensorFragment : OptimizedBaseIOTDeviceFragment() {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值（毫米）",
-                            value = sensorInfo.threshold.formatDoubleValue("", 1)
+                            value = sensorInfo.threshold.formatDoubleValue("", 2)
                         )
                     )
                     groupList.add(
@@ -257,7 +257,7 @@ abstract class BaseDasDigitalSensorFragment : OptimizedBaseIOTDeviceFragment() {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值（毫米）",
-                            value = sensorInfo.threshold.formatDoubleValue("", 1)
+                            value = sensorInfo.threshold.formatDoubleValue("", 2)
                         )
                     )
                     groupList.add(
@@ -269,7 +269,7 @@ abstract class BaseDasDigitalSensorFragment : OptimizedBaseIOTDeviceFragment() {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "测段长（毫米）",
-                            value = sensorInfo.spacing.formatDoubleValue("", 1)
+                            value = sensorInfo.spacing.formatDoubleValue("", 2)
                         )
                     )
                     sensorInfo.model_type.notNullKeyEmpty { type ->
@@ -306,7 +306,7 @@ abstract class BaseDasDigitalSensorFragment : OptimizedBaseIOTDeviceFragment() {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值（毫米）",
-                            value = sensorInfo.threshold.formatDoubleValue("", 1)
+                            value = sensorInfo.threshold.formatDoubleValue("", 2)
                         )
                     )
                     groupList.add(
@@ -389,7 +389,7 @@ abstract class BaseDasDigitalSensorFragment : OptimizedBaseIOTDeviceFragment() {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "修正值（毫米）",
-                            value = sensorInfo.corrval.formatDoubleValue("", 1),
+                            value = sensorInfo.corrval.formatDoubleValue("", 2),
                             tipDesc = "修正浮子高度"
                         )
                     )
@@ -397,7 +397,7 @@ abstract class BaseDasDigitalSensorFragment : OptimizedBaseIOTDeviceFragment() {
                         groupList.add(
                             ExternalDigitalSensorParamEditItem(
                                 name = "初始读数（毫米）",
-                                value = it.formatDoubleValue("", 1),
+                                value = it.formatDoubleValue("", 2),
                                 tipDesc = "当初始读数设置值小于 0  时，设备将自动计算初始值!"
                             )
                         )
@@ -406,7 +406,7 @@ abstract class BaseDasDigitalSensorFragment : OptimizedBaseIOTDeviceFragment() {
                         groupList.add(
                             ExternalDigitalSensorParamEditItem(
                                 name = "初始堰上水头（毫米）",
-                                value = it.formatDoubleValue("", 1),
+                                value = it.formatDoubleValue("", 2),
                                 tipDesc = "当水经堰顶点流出时，设置值为堰顶点到水面的距离；否则，设置值为堰顶点到浮子距离的负值"
                             )
                         )
@@ -536,13 +536,13 @@ abstract class BaseDasDigitalSensorFragment : OptimizedBaseIOTDeviceFragment() {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "触发值（毫米）",
-                            value = sensorInfo.threshold.formatDoubleValue("", 1),
+                            value = sensorInfo.threshold.formatDoubleValue("", 2),
                         )
                     )
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "修正值（毫米）",
-                            value = sensorInfo.corrval.formatDoubleValue("", 1),
+                            value = sensorInfo.corrval.formatDoubleValue("", 2),
                         )
                     )
                     groupList.add(
