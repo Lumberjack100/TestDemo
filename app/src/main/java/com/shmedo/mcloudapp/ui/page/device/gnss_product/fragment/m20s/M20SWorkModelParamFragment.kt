@@ -220,8 +220,7 @@ class M20SWorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
                     networkMode = "0", // M20S固定使用4G传输模式
                     mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
                     frontCalc = "1",
-                    baseStationMode = initializationModeList.indexOf(mStates.initializationMode.get())
-                        .toString(),
+                    // baseStationMode = initializationModeList.indexOf(mStates.initializationMode.get()).toString(),
                     latitude = if (mStates.initializationMode.get() == "手动") mStates.latitude.get() else "0",
                     longitude = if (mStates.initializationMode.get() == "手动") mStates.longitude.get() else "0",
                     height = if (mStates.initializationMode.get() == "手动") mStates.altitude.get() else "0",
