@@ -203,77 +203,12 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.dataProtocol.set(text)
-                        when (text) {
-                            PlatformDataProtocol.MQTT.getCmdValue() -> {
-                                platformList.clear()
-                                platformList.addAll(
-                                    DataCenterPlatform.getPlatformNamesByProtocol(
-                                        PlatformDataProtocol.MQTT
-                                    )
-                                )
-                                mStates.platformType.set(platformList.first())
-                            }
 
-                            PlatformDataProtocol.TCP_C.getCmdValue() -> {
-                                platformList.clear()
-                                platformList.addAll(
-                                    DataCenterPlatform.getPlatformNamesByProtocol(
-                                        PlatformDataProtocol.TCP_C
-                                    )
-                                )
-                                mStates.platformType.set(platformList.first())
-                            }
+                        val protocol = PlatformDataProtocol.valueByCmdValue(text)
+                        platformList.clear()
+                        platformList.addAll(DataCenterPlatform.getPlatformNamesByProtocol(protocol))
+                        mStates.platformType.set(platformList.first())
 
-                            PlatformDataProtocol.SL651.getCmdValue() -> {//SL651
-                                platformList.clear()
-                                platformList.addAll(
-                                    DataCenterPlatform.getPlatformNamesByProtocol(
-                                        PlatformDataProtocol.SL651
-                                    )
-                                )
-                                mStates.platformType.set(platformList.first())
-                            }
-
-                            PlatformDataProtocol.NTRIP.getCmdValue() -> {//NTRIP
-                                platformList.clear()
-                                platformList.addAll(
-                                    DataCenterPlatform.getPlatformNamesByProtocol(
-                                        PlatformDataProtocol.NTRIP
-                                    )
-                                )
-                                mStates.platformType.set(platformList.first())
-                            }
-
-                            PlatformDataProtocol.NTRIP_C.getCmdValue() -> {//NTRIP_C
-                                platformList.clear()
-                                platformList.addAll(
-                                    DataCenterPlatform.getPlatformNamesByProtocol(
-                                        PlatformDataProtocol.NTRIP_C
-                                    )
-                                )
-                                mStates.platformType.set(platformList.first())
-                            }
-
-                            PlatformDataProtocol.NTRIP_S.getCmdValue() -> {//NTRIP_S
-                                platformList.clear()
-                                platformList.addAll(
-                                    DataCenterPlatform.getPlatformNamesByProtocol(
-                                        PlatformDataProtocol.NTRIP_S
-                                    )
-                                )
-                                mStates.platformType.set(platformList.first())
-                            }
-
-                            PlatformDataProtocol.HTTP.getCmdValue() -> {
-                                platformList.clear()
-                                platformList.addAll(
-                                    DataCenterPlatform.getPlatformNamesByProtocol(
-                                        PlatformDataProtocol.HTTP
-                                    )
-                                )
-                                mStates.platformType.set(platformList.first())
-                            }
-                        }
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -450,10 +385,13 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             entity.valid_day = mStates.reissuingDataValidDays.get()
             entity.reissue_time = mStates.reissuingDataInterval.get()
 
-        } else if (mStates.dataProtocol.get() == PlatformDataProtocol.NTRIP.getCmdValue() || mStates.dataProtocol.get() == PlatformDataProtocol.NTRIP_C.getCmdValue() || mStates.dataProtocol.get() == PlatformDataProtocol.NTRIP_S.getCmdValue()) {//NTRIP
-            entity.projid = mStates.productId.get()
-            entity.deviceid = mStates.deviceId.get()
-            entity.devicekey = mStates.deviceKey.get()
+        } else if (mStates.isNtripProtocol.get()) {//NTRIP 系列协议
+            entity.projid = mStates.productId.get()     //站点信息
+            //NTRIP_S 协议基站不需要填写用户名
+            entity.deviceid =
+                if (mStates.dataProtocol.get() == PlatformDataProtocol.NTRIP_S.getCmdValue()) IOTConstants.NULL_KEY else mStates.deviceId.get() //用户名
+            entity.devicekey = mStates.deviceKey.get()  //密码
+
         } else if (mStates.dataProtocol.get() == PlatformDataProtocol.HTTP.getCmdValue()) {
             entity.taddress = mStates.telemetryStationAddr.get()
         }
@@ -547,70 +485,10 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             }
         }
         mStates.dataProtocol.set(data.protocol)
-        when (data.protocol) {
-            PlatformDataProtocol.MQTT.getCmdValue() -> {//
-                platformList.clear()
-                platformList.addAll(
-                    DataCenterPlatform.getPlatformNamesByProtocol(
-                        PlatformDataProtocol.MQTT
-                    )
-                )
-            }
+        val protocol = PlatformDataProtocol.valueByCmdValue(data.protocol)
+        platformList.clear()
+        platformList.addAll(DataCenterPlatform.getPlatformNamesByProtocol(protocol))
 
-            PlatformDataProtocol.TCP_C.getCmdValue() -> {//
-                platformList.clear()
-                platformList.addAll(
-                    DataCenterPlatform.getPlatformNamesByProtocol(
-                        PlatformDataProtocol.TCP_C
-                    )
-                )
-            }
-
-            PlatformDataProtocol.SL651.getCmdValue() -> {//SL651
-                platformList.clear()
-                platformList.addAll(
-                    DataCenterPlatform.getPlatformNamesByProtocol(
-                        PlatformDataProtocol.SL651
-                    )
-                )
-            }
-
-            PlatformDataProtocol.NTRIP.getCmdValue()-> {//NTRIP
-                platformList.clear()
-                platformList.addAll(
-                    DataCenterPlatform.getPlatformNamesByProtocol(
-                        PlatformDataProtocol.NTRIP
-                    )
-                )
-            }
-
-            PlatformDataProtocol.NTRIP_C.getCmdValue() -> {//NTRIP_C
-                platformList.clear()
-                platformList.addAll(
-                    DataCenterPlatform.getPlatformNamesByProtocol(
-                        PlatformDataProtocol.NTRIP_C
-                    )
-                )
-            }
-
-            PlatformDataProtocol.NTRIP_S.getCmdValue() -> {//NTRIP_S
-                platformList.clear()
-                platformList.addAll(
-                    DataCenterPlatform.getPlatformNamesByProtocol(
-                        PlatformDataProtocol.NTRIP_S
-                    )
-                )
-            }
-
-            PlatformDataProtocol.HTTP.getCmdValue() -> {//HTTP
-                platformList.clear()
-                platformList.addAll(
-                    DataCenterPlatform.getPlatformNamesByProtocol(
-                        PlatformDataProtocol.HTTP
-                    )
-                )
-            }
-        }
         // 使用 DataCenterPlatform 枚举类处理 plattype
         val platform = DataCenterPlatform.valueByCmdValue(data.plattype)
         mStates.platformType.set(platform.getPlatName())
