@@ -1,5 +1,7 @@
 package com.shmedo.lib.cmd.base.iot_cmd.enums
 
+import android.text.TextUtils
+
 /**
  * @author：gonghe
  * @time: 2025/6/20
@@ -37,6 +39,15 @@ enum class PlatformDataProtocol(private val cmdValue: String) {
     }
 
     companion object {
+        @JvmStatic
+        fun valueByCmdValue(cmdValue: String): PlatformDataProtocol {
+            if (TextUtils.isEmpty(cmdValue)) return MQTT
+            for (protocol in entries) {
+                if (protocol.cmdValue == cmdValue) return protocol
+            }
+            return MQTT
+        }
+
         @JvmStatic
         val protocolNames: List<String>
             get() = PlatformDataProtocol.entries.map { it.cmdValue }

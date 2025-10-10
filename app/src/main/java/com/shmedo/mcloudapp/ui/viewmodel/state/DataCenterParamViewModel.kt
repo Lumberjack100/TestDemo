@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.viewmodel.state
 
 import androidx.databinding.Observable
+import com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 /**
@@ -27,6 +28,7 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
     val maintainReportInterval = NonNullObservableField("")//维持上报间隔
     val reissuingDataValidDays = NonNullObservableField("")//数据补发有效天数
     val reissuingDataInterval = NonNullObservableField("")//数据补发间隔
+    val isNtripProtocol = NonNullObservableField(false)
 
     init {
         // 在所有字段初始化后调用 registerField()
@@ -98,10 +100,14 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
         ).forEach { field ->
             field.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
                 override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+                    if (sender === dataProtocol) {
+                        refreshProtocolVisibility()
+                    }
                     updateModificationStatus()
                 }
             })
         }
+        refreshProtocolVisibility()
     }
 
     override fun updateModificationStatus() {
@@ -138,4 +144,16 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
             }
         }
     }
+
+    private fun refreshProtocolVisibility() {
+        val protocol = dataProtocol.get()
+        val isNtrip = protocol == PlatformDataProtocol.NTRIP.getCmdValue() ||
+                protocol == PlatformDataProtocol.NTRIP_C.getCmdValue() ||
+                protocol == PlatformDataProtocol.NTRIP_S.getCmdValue()
+
+        if (isNtripProtocol.get() != isNtrip) {
+            isNtripProtocol.set(isNtrip)
+        }
+    }
+
 }
