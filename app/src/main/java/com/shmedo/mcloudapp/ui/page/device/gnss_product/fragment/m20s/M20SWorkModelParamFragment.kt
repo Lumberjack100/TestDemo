@@ -216,8 +216,6 @@ class M20SWorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
             if (mStates.workModel.get() == "基站") {
                 // 构建基站模式下的保存命令
                 val entity = RtkParamEntity(
-                    reportMode = "0", // M20S固定使用常在线模式
-                    networkMode = "0", // M20S固定使用4G传输模式
                     mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
                     frontCalc = "1",
                     // baseStationMode = initializationModeList.indexOf(mStates.initializationMode.get()).toString(),
@@ -235,8 +233,6 @@ class M20SWorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
             if (mStates.workModel.get() == "测站") {
                 // 构建测站模式下的保存命令
                 val entity = RtkParamEntity(
-                    reportMode = "0", // M20S固定使用常在线模式
-                    networkMode = "0", // M20S固定使用4G传输模式
                     mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
                     frontCalc = "1",
                     basearc = (initializationTimeList.indexOf(mStates.initializationTime.get()) + 1).toString(),
@@ -255,8 +251,6 @@ class M20SWorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
         } else {
             // 前端解算为"关"或坐标初始化为"否"时的基础配置
             val entity = RtkParamEntity(
-                reportMode = "0", // M20S固定使用常在线模式
-                networkMode = "0", // M20S固定使用4G传输模式
                 mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
                 frontCalc = frontendCalculationList.indexOf(mStates.frontendCalculation.get()).toString(),
             )

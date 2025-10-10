@@ -8,12 +8,14 @@ import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.RtkParamInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.extensions.formatDoubleValue
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
@@ -35,21 +37,53 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
     }
 
     override fun queryStatusInfo() {
-        val commands = mutableListOf<String>()
-        
-        // 查询设备状态
-        val statusCommand = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
-        commands.add(statusCommand)
-        
-        // 召测数据（method=2）
-        val sampleCommand = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=2")
-        commands.add(sampleCommand)
+        val commands = listOf(
+            // 查询设备状态
+            IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+        )
 
         sendCommandSequence(
             commands = commands,
             config = CommandSequenceConfig(
                 showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                autoFinishRefreshLayoutOnComplete = false,
                 errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
+    }
+
+    /**
+     * 查询测站额外信息
+     */
+    fun queryStationExtraInfo() {
+        val commands = listOf(
+            // 召测数据（method=2）
+            IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=2")
+        )
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig() // 查询失败显示Dialog
+            )
+        )
+    }
+
+    /**
+     * 查询基站额外信息
+     */
+    fun queryBaseStationExtraInfo() {
+        val commands = listOf(
+            // 查询RTK配置
+            IOTCommandUtil.getCommand(IOTCommandType.GM_MD_CFG_RTK, "method=0")
+        )
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig() // 查询失败显示Dialog
             )
         )
     }
@@ -67,18 +101,20 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                         handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
+
                     is IOTCommandResult.Success -> {
-                        initRunningData1(result.data)
-                        // 基站仅获取工作信息
+                        initRunningData(result.data)
+                        // 查询基站额外信息
                         if (result.data.contains("\"work_mode\":1")) {
-                            cancelCommunication()
+                            queryBaseStationExtraInfo()
+                        } else {
+                            // 查询测站额外信息
+                            queryStationExtraInfo()
                         }
-                        // 测站：除了获取工作信息即可，还需要获取数据解算和初始坐标信息
-                        // 这些信息会在SAMPLE指令响应中处理
                     }
                 }
             }
-            
+
             IOTCommandType.SAMPLE -> {
                 val result = iotParseManager.parse<String>(
                     cmdStr,
@@ -90,21 +126,40 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                         handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
+
                     is IOTCommandResult.Success -> {
                         if (cmdStr.contains("method=2")) {
-                            initRunningData2(result.data)
+                            initStationExtraInfo(result.data)
                         }
                     }
                 }
             }
-            
+
+            IOTCommandType.GM_MD_CFG_RTK -> {
+                val result =
+                    iotParseManager.parse<RtkParamInfo>(cmdStr, IOTCommandType.GM_MD_CFG_RTK)
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询状态出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        if (cmdStr.contains("method=0")) {
+                            initBaseStationExtraInfo(result.data)
+                        }
+                    }
+                }
+            }
+
             else -> {
                 // 其他指令类型忽略
             }
         }
     }
 
-    private fun initRunningData1(content: String) {
+    private fun initRunningData(content: String) {
         try {
             val stateInfo = MoshiUtil.fromJson<M50CurrentStateInfo>(content)
             if (stateInfo == null) {
@@ -159,7 +214,7 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         }
     }
 
-    private fun initRunningData2(content: String) {
+    private fun initStationExtraInfo(content: String) {
         try {
             // {"sw":1,"mode":8,"initENU":"0.000000,0.000000,0.000000","baseLine":0.000000,"fixRate":0.0,"gap_fixRate":0.0,"result":"0.000,0.000,0.000","status":"not-fix","dataSource":"mqtt"}
             val rawResultMap = MoshiUtil.fromJson<Map<String, Any?>>(content) ?: return
@@ -263,22 +318,59 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                             groupList,
                             name = "东（E）",
                             value = it[0],
+                            unit = "°"
                         )
 
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
                             name = "北（N）",
                             value = it[1],
+                            unit = "°"
                         )
 
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
                             name = "天（U）",
                             value = it[2],
+                            unit = "°",
                             isBottomItem = true
                         )
                     }
                 }
+
+            // 使用bindingAdapter添加数据，避免重复刷新
+            binding.recyclerview.bindingAdapter.apply {
+                mutable.addAll(groupList)
+                notifyItemRangeInserted(itemCount, groupList.size)
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    private fun initBaseStationExtraInfo(info: RtkParamInfo) {
+        try {
+            val groupList = mutableListOf<Any>()
+
+            groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+            groupList.add(DeviceStatusInfoGroupItem("基站坐标"))
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "经度(°)",
+                value = info.rtkbase_lon
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "纬度(°)",
+                value = info.rtkbase_lat
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "高程(m)",
+                value = info.rtkbase_hgt.formatDoubleValue("", 3),
+                isBottomItem = true
+            )
 
             // 使用bindingAdapter添加数据，避免重复刷新
             binding.recyclerview.bindingAdapter.apply {
@@ -298,6 +390,7 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
             is Number -> runCatching {
                 BigDecimal(value.toString()).stripTrailingZeros().toPlainString()
             }.getOrDefault(value.toString())
+
             is Boolean -> value.toString()
             else -> null
         }
