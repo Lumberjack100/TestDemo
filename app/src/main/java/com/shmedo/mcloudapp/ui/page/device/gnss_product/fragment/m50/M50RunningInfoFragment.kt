@@ -8,7 +8,6 @@ import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.RtkParamInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -70,24 +69,6 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         )
     }
 
-    /**
-     * 查询基站额外信息
-     */
-    fun queryBaseStationExtraInfo() {
-        val commands = listOf(
-            // 查询RTK配置
-            IOTCommandUtil.getCommand(IOTCommandType.GM_MD_CFG_RTK, "method=0")
-        )
-
-        sendCommandSequence(
-            commands = commands,
-            config = CommandSequenceConfig(
-                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
-                errorConfig = ErrorConfig.dialogConfig() // 查询失败显示Dialog
-            )
-        )
-    }
-
     override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
@@ -104,11 +85,8 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
                     is IOTCommandResult.Success -> {
                         initRunningData(result.data)
-                        // 查询基站额外信息
-                        if (result.data.contains("\"work_mode\":1")) {
-                            queryBaseStationExtraInfo()
-                        } else {
-                            // 查询测站额外信息
+                        // 查询测站额外信息
+                        if (result.data.contains("\"work_mode\":2")) {
                             queryStationExtraInfo()
                         }
                     }
@@ -130,24 +108,6 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     is IOTCommandResult.Success -> {
                         if (cmdStr.contains("method=2")) {
                             initStationExtraInfo(result.data)
-                        }
-                    }
-                }
-            }
-
-            IOTCommandType.GM_MD_CFG_RTK -> {
-                val result =
-                    iotParseManager.parse<RtkParamInfo>(cmdStr, IOTCommandType.GM_MD_CFG_RTK)
-                when (result) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "查询状态出错: ${result.message}"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    is IOTCommandResult.Success -> {
-                        if (cmdStr.contains("method=0")) {
-                            initBaseStationExtraInfo(result.data)
                         }
                     }
                 }
@@ -207,11 +167,48 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 isBottomItem = true
             )
 
+            //基站额外信息
+            if (stateInfo.workMode == "1") {
+                initBaseStationExtraInfo(groupList, stateInfo.location)
+            }
+
             binding.recyclerview.models = groupList
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
+    }
+
+    /**
+     *  展示基站额外信息
+     */
+    private fun initBaseStationExtraInfo(groupList: MutableList<Any>, content: String) {
+        content.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+            .let {
+                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                groupList.add(DeviceStatusInfoGroupItem("基站坐标"))
+
+                if (it.size == 3) {
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                        groupList,
+                        name = "经度(°)",
+                        value = it[0],
+                    )
+
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                        groupList,
+                        name = "纬度(°)",
+                        value = it[1],
+                    )
+
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                        groupList,
+                        name = "高程(m)",
+                        value = it[2].formatDoubleValue("", 3),
+                        isBottomItem = true
+                    )
+                }
+            }
     }
 
     private fun initStationExtraInfo(content: String) {
@@ -337,40 +334,6 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                         )
                     }
                 }
-
-            // 使用bindingAdapter添加数据，避免重复刷新
-            binding.recyclerview.bindingAdapter.apply {
-                mutable.addAll(groupList)
-                notifyItemRangeInserted(itemCount, groupList.size)
-            }
-        } catch (e: Exception) {
-            Timber.e(e)
-            addDeviceLogItem(Log.ERROR, e.errorMsg)
-        }
-    }
-
-    private fun initBaseStationExtraInfo(info: RtkParamInfo) {
-        try {
-            val groupList = mutableListOf<Any>()
-
-            groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-            groupList.add(DeviceStatusInfoGroupItem("基站坐标"))
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                groupList,
-                name = "经度(°)",
-                value = info.rtkbase_lon
-            )
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                groupList,
-                name = "纬度(°)",
-                value = info.rtkbase_lat
-            )
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                groupList,
-                name = "高程(m)",
-                value = info.rtkbase_hgt.formatDoubleValue("", 3),
-                isBottomItem = true
-            )
 
             // 使用bindingAdapter添加数据，避免重复刷新
             binding.recyclerview.bindingAdapter.apply {
