@@ -228,8 +228,8 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 groupList,
                 name = "前端解算功能",
                 value = when (resultMap["sw"]) {
-                    "0" -> "启用"
-                    "1" -> "未启用"
+                    "0" -> "未启用"
+                    "1" -> "启用"
                     else -> AppContants.PLACE_HOLDER_VALUE
                 }
             )
@@ -269,7 +269,7 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 value = DeviceStatusInfoProcessor.formatDoubleValue(
                     baseLine.toString(),
                     AppContants.PLACE_HOLDER_VALUE,
-                    2
+                    6
                 ),
                 unit = if (kmValue == AppContants.PLACE_HOLDER_VALUE) "" else "km"
             )
@@ -315,21 +315,21 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                             groupList,
                             name = "东（E）",
                             value = it[0],
-                            unit = "°"
+                            unit = "m"
                         )
 
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
                             name = "北（N）",
                             value = it[1],
-                            unit = "°"
+                            unit = "m"
                         )
 
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
                             name = "天（U）",
                             value = it[2],
-                            unit = "°",
+                            unit = "m",
                             isBottomItem = true
                         )
                     }
