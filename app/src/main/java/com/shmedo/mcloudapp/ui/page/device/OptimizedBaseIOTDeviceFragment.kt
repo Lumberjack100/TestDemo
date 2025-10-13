@@ -134,6 +134,10 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
         )
 
         Timber.d("页面 $fragmentId 发送指令序列: ${commands.size} 条指令")
+        addDeviceLogItem(
+            Log.DEBUG,
+            "页面 ${this::class.simpleName}，发送指令序列: ${commands.size} 条指令"
+        )
 
         communicationManager.executeCommandSequence(
             commands = commands,
@@ -180,10 +184,6 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
                     callbacks.onComplete(results)
                 },
                 onError = { error, command ->
-                    addDeviceLogItem(
-                        Log.ERROR,
-                        "页面 $fragmentId 指令执行失败: $command, 错误: ${error.message}"
-                    )
                     if (enhancedConfig.stopOnFirstCmdError) {
                         // 统一的清理逻辑
                         cancelCommunication()

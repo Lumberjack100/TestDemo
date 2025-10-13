@@ -5,7 +5,6 @@ import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.util.Log
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
@@ -581,10 +580,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                     }
                     updateCommandExecutionProgress(commands.size, nextCommand)
 
-                    addDeviceLogItem(
-                        Log.INFO,
-                        "[${mStates.executionResults.size}/${commands.size}] 成功: ${result.command}"
-                    )
                     true // 继续执行
                 },
                 onComplete = { results ->
@@ -608,11 +603,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
                         null
                     }
                     updateCommandExecutionProgress(commands.size, nextCommand)
-
-                    addDeviceLogItem(
-                        Log.ERROR,
-                        "[${mStates.executionResults.size}/${commands.size}] 失败: $command, ${error.message}"
-                    )
                 }
             )
         )

@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.communication.strategy
 
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.mcloudapp.communication.model.CommandConfig
 import com.shmedo.mcloudapp.communication.model.CommandResult
@@ -100,5 +101,11 @@ class NetCommunicationStrategy(
     override fun cleanup() {
         // 清理网络相关资源
         netViewModel.clearCommandQueue()
+    }
+
+    override fun addDeviceLogItem(priority: Int, data: String) {
+        netViewModel.addLogItem(
+            sessionId = CommonMMKVOwner.iotDeviceLogSessionId, priority = priority, data = data
+        )
     }
 } 
