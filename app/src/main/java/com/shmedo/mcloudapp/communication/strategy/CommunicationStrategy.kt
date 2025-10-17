@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.communication.strategy
 
+import android.util.Log
 import com.shmedo.mcloudapp.communication.model.CommandConfig
 import com.shmedo.mcloudapp.communication.model.CommandResult
 import com.shmedo.mcloudapp.communication.model.DeviceConnectionState
@@ -38,4 +39,6 @@ interface CommunicationStrategy {
      * 清理资源
      */
     fun cleanup()
+
+    fun addDeviceLogItem(priority: Int = Log.INFO, data: String)
 } 

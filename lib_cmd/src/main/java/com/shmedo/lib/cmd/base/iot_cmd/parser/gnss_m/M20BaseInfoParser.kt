@@ -1,4 +1,4 @@
-package com.shmedo.lib.cmd.base.iot_cmd.parser.m20
+package com.shmedo.lib.cmd.base.iot_cmd.parser.gnss_m
 
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
@@ -24,5 +24,3 @@ class M20BaseInfoParser : IOTCommandParser<M20BaseInfo> {
 
     override val commandType: IOTCommandType = IOTCommandType.M20_MD_GET_BASE_INFO
 }
-
-

@@ -11,7 +11,7 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.m50.M50SerialPortParamEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gnss_m.M50SerialPortParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50SerialPortParam

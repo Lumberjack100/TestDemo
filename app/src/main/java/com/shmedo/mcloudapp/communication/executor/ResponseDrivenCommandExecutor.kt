@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.communication.executor
 
+import android.util.Log
 import com.shmedo.mcloudapp.communication.error.DeviceErrorHandler
 import com.shmedo.mcloudapp.communication.model.CommandConfig
 import com.shmedo.mcloudapp.communication.model.CommandResult
@@ -93,6 +94,7 @@ class ResponseDrivenCommandExecutor(
                 }
 
                 Timber.i("执行第 ${index + 1}/${commands.size} 条指令: $command")
+                strategy.addDeviceLogItem(Log.INFO, "执行第 ${index + 1}/${commands.size} 条指令: $command")
 
                 // 执行单条指令
                 val result = executeSingleCommand(command, config)
@@ -102,6 +104,7 @@ class ResponseDrivenCommandExecutor(
                 when (result) {
                     is CommandResult.Success -> {
                         Timber.i("指令执行成功: $command")
+                        strategy.addDeviceLogItem(Log.INFO, "响应内容: ${result.responseData}")
 
                         // 检查是否是最后一条指令
                         if (index == commands.size - 1) {
@@ -129,18 +132,21 @@ class ResponseDrivenCommandExecutor(
 
                     is CommandResult.Error -> {
                         Timber.e("指令执行失败: $command, 错误: ${result.error.message}")
+                        strategy.addDeviceLogItem(Log.ERROR, "指令执行失败, 错误: ${result.error.message}")
+
                         if (config.stopOnFirstCmdError) {
                             handleExecutionError(result.error, command, config, callbacks)
                             return
                         }
 
                         callbacks.onError(result.error, command)
-                        // 记录错误但继续执行
                         Timber.w("忽略错误，继续执行下一条指令")
                     }
 
                     is CommandResult.Timeout -> {
                         Timber.e("指令超时: $command")
+                        strategy.addDeviceLogItem(Log.ERROR, "指令超时")
+
                         val timeoutError = DeviceError.Timeout(command, result.timeoutMs)
                         if (config.stopOnFirstCmdError) {
                             handleExecutionError(timeoutError, command, config, callbacks)

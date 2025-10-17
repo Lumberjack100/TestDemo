@@ -4,13 +4,12 @@ import androidx.databinding.Observable
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseStateViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
-class M50RadioSettingViewModel : BaseStateViewModel() {
+class M50LORASettingViewModel : BaseStateViewModel() {
     val isOpened = NonNullObservableField(true)
-    val frequency = NonNullObservableField("")//通讯频率
-    val airRate = NonNullObservableField("")//空中速率
+    val rtcmChannel = NonNullObservableField("")//RTCM数据频点
+    val alarmChannel = NonNullObservableField("")//报警频点
     val localAddress = NonNullObservableField("")//本机地址
-    val targetAddress = NonNullObservableField("")//目标地址
-    
+
     init {
         // 在所有字段初始化后调用 registerField()
         registerField()
@@ -21,10 +20,9 @@ class M50RadioSettingViewModel : BaseStateViewModel() {
         isInitializing = true
         initialState = mapOf(
             "isOpened" to isOpened.get(),
-            "frequency" to frequency.get(),
-            "airRate" to airRate.get(),
-            "localAddress" to localAddress.get(),
-            "targetAddress" to targetAddress.get()
+            "rtcmChannel" to rtcmChannel.get(),
+            "alarmChannel" to alarmChannel.get(),
+            "localAddress" to localAddress.get()
         )
         isDataModified.value = false
         isInitializing = false
@@ -33,10 +31,9 @@ class M50RadioSettingViewModel : BaseStateViewModel() {
     override fun registerField() {
         listOf(
             isOpened,
-            frequency,
-            airRate,
-            localAddress,
-            targetAddress
+            rtcmChannel,
+            alarmChannel,
+            localAddress
         ).forEach { field ->
             field.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
                 override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
@@ -51,12 +48,11 @@ class M50RadioSettingViewModel : BaseStateViewModel() {
         isDataModified.value = initialState.any { (key, value) ->
             when (key) {
                 "isOpened" -> isOpened.get() != value
-                "frequency" -> frequency.get() != value
-                "airRate" -> airRate.get() != value
+                "rtcmChannel" -> rtcmChannel.get() != value
+                "alarmChannel" -> alarmChannel.get() != value
                 "localAddress" -> localAddress.get() != value
-                "targetAddress" -> targetAddress.get() != value
                 else -> false
             }
         }
     }
-} 
+}

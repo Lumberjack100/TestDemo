@@ -155,20 +155,6 @@ enum class IOTCommandType(val value: String) {
     DAS_MD_SET_AUDIBLE_ALARM("md_setalarm"),
     // </editor-fold>
 
-    // <editor-fold desc="RN20 指令">
-    /** 获取终端基本信息 */
-    RN20_MD_GET_TERMINAL_BASE("md_getterminalbase"),
-
-    /** 获取设备模块状态信息 */
-    RN20_MD_GET_TERMINAL_MODULE_STATUS("md_getterminalmodule"),
-
-    /** 获取终端经纬度参数 */
-    RN20_MD_GET_TERMINAL_LOCAL("md_getterminallocal"),
-
-    /** 设置终端经纬度参数 */
-    RN20_MD_SET_TERMINAL_LOCAL("md_setterminallocal"),
-    // </editor-fold>
-
     // <editor-fold desc="ADME 指令">
     /** 获取ADME的基本信息 */
     ADME_MD_GET_EQUIPMENT_BASIS("md_getequipmentbasis"),
@@ -301,9 +287,6 @@ enum class IOTCommandType(val value: String) {
      */
     ADME_MD_CLEAR_DEVICE_RUNNING_DATA("md_clearrundata"),
 
-    // </editor-fold>
-
-    // <editor-fold desc="ADME HAC 指令">
     /** 获取HAC的预警配置参数 */
     ADME_HAC_MD_GET_WARN("md_hac_getwarn"),
 
@@ -347,6 +330,33 @@ enum class IOTCommandType(val value: String) {
 
     /** M20水平初始化设置 */
     M20_MD_LEVEL_INITIAL("md_levelinit"),
+    // </editor-fold>
+
+    // <editor-fold desc="M50 指令">
+
+    /** GNSS-RTK模式配置 */
+    GM_MD_CFG_RTK("md_cfgrtkparam"),
+
+    /** M50 电台参数 */
+    M50_MD_RADIO_PARAM("md_cfgradioparam"),
+
+    /** M50 串口参数 */
+    M50_MD_SET_SERIAL_PORT("md_gm_setportparam"),
+
+    /** 获取/设置 M50 的 CORS 服务参数 */
+    M50_MD_GET_CORS("md_getcors"),
+    M50_MD_SET_CORS("md_setcors"),
+
+    /** 获取设备卫星状态 */
+    M50_MD_GET_SATELITE_INFO("md_getskyinfo"),
+
+    /** 查询/设置采样率 */
+    MD_GET_SAMPLING_RATE("md_getgnssraw"),
+    MD_SET_SAMPLING_RATE("md_setgnssraw"),
+
+    /** 查询/设置截止高度角 */
+    MD_GET_ELEVATION_ANGLE("md_getmoduleparam"),
+    MD_SET_ELEVATION_ANGLE("md_setmoduleparam"),
     // </editor-fold>
 
     // <editor-fold desc="E40 指令">
@@ -586,26 +596,6 @@ enum class IOTCommandType(val value: String) {
     SET_VOICE_BROADCAST_VOLUME("volume"),
     SET_VOICE_BROADCAST_VOLUME_LEVEL("volumelevel"),
 
-    /** GNSS-RTK模式配置 */
-    GM_MD_CFG_RTK("md_cfgrtkparam"),
-
-    /** M50 串口参数 */
-    M50_MD_SET_SERIAL_PORT("md_gm_setportparam"),
-
-    /** 获取/设置 M50 的 CORS 服务参数 */
-    M50_MD_GET_CORS("md_getcors"),
-    M50_MD_SET_CORS("md_setcors"),
-
-    /** 获取设备卫星状态 */
-    M50_MD_GET_SATELITE_INFO("md_getskyinfo"),
-
-    /** 查询/设置采样率 */
-    MD_GET_SAMPLING_RATE("md_getgnssraw"),
-    MD_SET_SAMPLING_RATE("md_setgnssraw"),
-
-    /** 查询/设置截止高度角 */
-    MD_GET_ELEVATION_ANGLE("md_getmoduleparam"),
-    MD_SET_ELEVATION_ANGLE("md_setmoduleparam"),
 
     /** 指令透传 */
     MD_RAW("md_raw"),

@@ -1,4 +1,4 @@
-package com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.m50
+package com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gnss_m
 
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
@@ -27,4 +27,3 @@ data class M50CorsEntity(
         return jsonStr
     }
 }
-

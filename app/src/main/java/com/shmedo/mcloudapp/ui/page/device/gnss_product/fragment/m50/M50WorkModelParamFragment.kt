@@ -19,6 +19,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.common.RtkParamInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -40,7 +41,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2025/7/29
- * @desc: M50上报工作模式参数设置页面（优化版）
+ * @desc: M50工作模式参数设置页面（优化版）
  *
  * 优化特点：
  * 1. 使用新的通信架构，代码更简洁
@@ -58,8 +59,15 @@ class M50WorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
     // 配置选项列表
     private val reportModelList = arrayListOf("常在线", "低功耗", "自适应")
     private val networkModelList = arrayListOf("4G传输", "电台传输", "自动")
-    private val workModelList = arrayListOf("基站", "测站")
+    private val siteTypeList = arrayListOf("基站", "测站")  // 站点类型
     private val frontendCalculationList = arrayListOf("关", "开")
+    private val diffSourceList = arrayListOf("MQTT", "NTRIP", "LORA")
+    private val diffSourceCodeMap = mapOf(
+        "MQTT" to "2",
+        "NTRIP" to "0",
+        "LORA" to "1"
+    )
+    private val codeToDiffSourceMap = diffSourceCodeMap.entries.associate { it.value to it.key }
     private val coordinateInitializationList = arrayListOf("是", "否")
     private val initializationModeList = arrayListOf("手动", "自动")
     private val initializationTimeList =
@@ -115,8 +123,9 @@ class M50WorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
     private fun resetDefaultParams() {
         mStates.reportModel.set(reportModelList[0]) // 默认常在线
         mStates.networkModel.set(networkModelList[2]) // 默认自动
-        mStates.workModel.set(workModelList[1]) // 默认测站
+        mStates.siteType.set(siteTypeList[1]) // 默认测站
         mStates.frontendCalculation.set(frontendCalculationList[0]) // 默认关
+        mStates.diffSource.set(diffSourceList[0]) // 默认MQTT
         mStates.coordinateInitialization.set(coordinateInitializationList[1]) // 默认否
         mStates.initializationMode.set(initializationModeList[1]) // 默认自动
         mStates.longitude.set("") // 经度
@@ -185,7 +194,7 @@ class M50WorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
 
         // 验证坐标初始化相关配置（仅当前端解算为"开"时）
         if (mStates.frontendCalculation.get() == "开" && mStates.coordinateInitialization.get() == "是") {
-            if (mStates.workModel.get() == "基站" && mStates.initializationMode.get() == "手动") {
+            if (mStates.siteType.get() == "基站" && mStates.initializationMode.get() == "手动") {
                 // 验证手动模式下的坐标输入
                 if (mStates.longitude.get().isEmpty()) {
                     showMessageDialog("请输入经度!")
@@ -220,20 +229,21 @@ class M50WorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun buildSaveCommands(): List<String> {
         val commands = mutableListOf<String>()
+        val diffDataCode = getDiffDataCode()
 
         if (mStates.frontendCalculation.get() == "开" && mStates.coordinateInitialization.get() == "是") {
             // 前端解算开启且坐标初始化为"是"时的完整配置
-            if (mStates.workModel.get() == "基站") {
+            if (mStates.siteType.get() == "基站") {
                 // 构建基站模式下的保存命令
                 val entity = RtkParamEntity(
                     reportMode = reportModelList.indexOf(mStates.reportModel.get()).toString(),
                     networkMode = networkModelList.indexOf(mStates.networkModel.get()).toString(),
-                    mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
+                    mode = (siteTypeList.indexOf(mStates.siteType.get()) + 1).toString(),
                     frontCalc = "1",
-//                    baseStationMode = initializationModeList.indexOf(mStates.initializationMode.get()).toString(),
                     latitude = if (mStates.initializationMode.get() == "手动") mStates.latitude.get() else "0",
                     longitude = if (mStates.initializationMode.get() == "手动") mStates.longitude.get() else "0",
                     height = if (mStates.initializationMode.get() == "手动") mStates.altitude.get() else "0",
+                    diffdata = diffDataCode
                 )
                 val command = IOTCommandUtil.getCommand(
                     IOTCommandType.GM_MD_CFG_RTK,
@@ -242,15 +252,16 @@ class M50WorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
                 commands.add(command)
             }
 
-            if (mStates.workModel.get() == "测站") {
+            if (mStates.siteType.get() == "测站") {
                 // 构建测站模式下的保存命令
                 val entity = RtkParamEntity(
                     reportMode = reportModelList.indexOf(mStates.reportModel.get()).toString(),
                     networkMode = networkModelList.indexOf(mStates.networkModel.get()).toString(),
-                    mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
+                    mode = (siteTypeList.indexOf(mStates.siteType.get()) + 1).toString(),
                     frontCalc = "1",
                     basearc = (initializationTimeList.indexOf(mStates.initializationTime.get()) + 1).toString(),
                     arc = (calculationIntervalTimeList.indexOf(mStates.calculationIntervalTime.get()) + 1).toString(),
+                    diffdata = diffDataCode
                 )
                 var command = IOTCommandUtil.getCommand(
                     IOTCommandType.GM_MD_CFG_RTK,
@@ -267,8 +278,9 @@ class M50WorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
             val entity = RtkParamEntity(
                 reportMode = reportModelList.indexOf(mStates.reportModel.get()).toString(),
                 networkMode = networkModelList.indexOf(mStates.networkModel.get()).toString(),
-                mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
+                mode = (siteTypeList.indexOf(mStates.siteType.get()) + 1).toString(),
                 frontCalc = frontendCalculationList.indexOf(mStates.frontendCalculation.get()).toString(),
+                diffdata = diffDataCode
             )
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.GM_MD_CFG_RTK,
@@ -278,6 +290,14 @@ class M50WorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
         }
 
         return commands
+    }
+
+    /** 获取差分源对应的命令参数值 */
+    private fun getDiffDataCode(): String {
+        if (mStates.frontendCalculation.get() != "开" || mStates.siteType.get() != "测站") {
+            return IOTConstants.NULL_KEY
+        }
+        return diffSourceCodeMap[mStates.diffSource.get()] ?: IOTConstants.NULL_KEY
     }
 
     /**
@@ -408,8 +428,8 @@ class M50WorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
                 }
             }
             info.mode.toIntOrNull()?.let {
-                if (it in 1..workModelList.size) {
-                    mStates.workModel.set(workModelList[it - 1])
+                if (it in 1..siteTypeList.size) {
+                    mStates.siteType.set(siteTypeList[it - 1])
                 }
             }
             info.frontCalc.toIntOrNull()?.let {
@@ -434,6 +454,11 @@ class M50WorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
             info.arc.toIntOrNull()?.let {
                 if (it in 1..calculationIntervalTimeList.size) {
                     mStates.calculationIntervalTime.set(calculationIntervalTimeList[it - 1])
+                }
+            }
+            info.diffdata.takeIf { it.isNotEmpty() }?.let { code ->
+                codeToDiffSourceMap[code]?.let { diff ->
+                    mStates.diffSource.set(diff)
                 }
             }
 
@@ -503,17 +528,17 @@ class M50WorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
 
         /** 选择工作模式 */
         fun onWorkModelChooseClick() {
-            val selectedIndex = workModelList.indexOf(mStates.workModel.get())
+            val selectedIndex = siteTypeList.indexOf(mStates.siteType.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true)
                 .enableDrag(false)
                 .asBottomList(
-                    "", workModelList.toTypedArray(),
+                    "", siteTypeList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.workModel.set(text)
+                        mStates.siteType.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -536,6 +561,24 @@ class M50WorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
                         if (text == "关") {
                             mStates.coordinateInitialization.set("否")
                         }
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        /** 选择差分源 */
+        fun onDiffSourceChooseClick() {
+            val selectedIndex = diffSourceList.indexOf(mStates.diffSource.get()).takeIf { it >= 0 } ?: 0
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true)
+                .enableDrag(false)
+                .asBottomList(
+                    "", diffSourceList.toTypedArray(),
+                    null, selectedIndex,
+                    { _, text ->
+                        mStates.diffSource.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()

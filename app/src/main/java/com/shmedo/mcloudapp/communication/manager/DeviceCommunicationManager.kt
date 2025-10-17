@@ -35,7 +35,7 @@ class DeviceCommunicationManager(
     private val strategy: CommunicationStrategy = createCommunicationStrategy()
 
     // 错误处理器
-    private val errorHandler = DeviceErrorHandler(fragment)
+    private val errorHandler = DeviceErrorHandler()
 
     // 指令执行器
     private val executor = ResponseDrivenCommandExecutor(
