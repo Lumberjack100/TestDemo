@@ -1,4 +1,4 @@
-package com.shmedo.lib.cmd.base.iot_cmd.parser.m50
+package com.shmedo.lib.cmd.base.iot_cmd.parser.gnss_m
 
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
