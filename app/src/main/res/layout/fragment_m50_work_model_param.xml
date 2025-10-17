@@ -94,7 +94,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:text="@{stateVM.workModel}"
+                            android:text="@{stateVM.siteType}"
                             tools:text="测站" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -112,6 +112,23 @@
                             style="@style/Common_ClickableItem_Value_Style"
                             android:text="@{stateVM.frontendCalculation}"
                             tools:text="关" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- 差分源选择项 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        visible="@{stateVM.frontendCalculation.equals(`开`) &amp;&amp; stateVM.siteType.equals(`测站`)}"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:onClick="@{()->click.onDiffSourceChooseClick()}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="差分源" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.diffSource}"
+                            tools:text="MQTT" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <!-- 坐标初始化选择项 -->
@@ -140,7 +157,7 @@
 
                         <!-- 基站模式下的配置项 -->
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            visible="@{stateVM.workModel.equals(`基站`)}"
+                            visible="@{stateVM.siteType.equals(`基站`)}"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
@@ -220,7 +237,7 @@
 
                         <!-- 测站模式下的配置项 -->
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            visible="@{stateVM.workModel.equals(`测站`)}"
+                            visible="@{stateVM.siteType.equals(`测站`)}"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">

@@ -37,6 +37,7 @@ data class RtkParamEntity(
     val networkMode: String = IOTConstants.NULL_KEY, //网络模式 0:4G传输 1:电台传输 2:自动
     val basearc: String = IOTConstants.NULL_KEY, //基准坐标初始化时间
     val arc: String = IOTConstants.NULL_KEY, //前端解算结果输出间隔
+    val diffdata: String = IOTConstants.NULL_KEY, //差分源 0:ntrip 1:lora 2:mqtt
 ) {
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)
@@ -48,4 +49,3 @@ data class RtkParamEntity(
         return jsonStr
     }
 }
-
