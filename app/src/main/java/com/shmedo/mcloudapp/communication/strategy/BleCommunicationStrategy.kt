@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.communication.strategy
 
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.communicate.data.BleCommandSession
 import com.shmedo.lib.ble.communicate.data.CommandData
@@ -146,4 +147,11 @@ class BleCommunicationStrategy(
         // 清理蓝牙相关资源
         // BleViewModel 的清理由其自身生命周期管理
     }
+
+    override fun addDeviceLogItem(priority: Int, data: String) {
+        bleViewModel.addLogItem(
+            sessionId = CommonMMKVOwner.iotDeviceLogSessionId, priority = priority, data = data
+        )
+    }
+
 } 

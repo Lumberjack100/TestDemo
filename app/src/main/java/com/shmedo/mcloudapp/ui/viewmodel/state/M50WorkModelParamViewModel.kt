@@ -8,11 +8,12 @@ class M50WorkModelParamViewModel : BaseStateViewModel() {
     val isRadioEnable = NonNullObservableField(true)//电台是否启用
 
     val reportModel = NonNullObservableField("")//上报模式
-    val workModel = NonNullObservableField("")//工作模式
+    val siteType = NonNullObservableField("")//站点类型
     val networkModel = NonNullObservableField("")//网络模式
     
     // 新增前端解算字段
     val frontendCalculation = NonNullObservableField("")//前端解算
+    val diffSource = NonNullObservableField("")//差分源
     
     // 坐标初始化相关字段
     val coordinateInitialization = NonNullObservableField("")//坐标初始化
@@ -35,9 +36,10 @@ class M50WorkModelParamViewModel : BaseStateViewModel() {
         isInitializing = true
         initialState = mapOf(
             "reportModel" to reportModel.get(),
-            "workModel" to workModel.get(),
+            "siteType" to siteType.get(),
             "networkModel" to networkModel.get(),
             "frontendCalculation" to frontendCalculation.get(),
+            "diffSource" to diffSource.get(),
             "coordinateInitialization" to coordinateInitialization.get(),
             "initializationMode" to initializationMode.get(),
             "longitude" to longitude.get(),
@@ -53,9 +55,10 @@ class M50WorkModelParamViewModel : BaseStateViewModel() {
     override fun registerField() {
         listOf(
             reportModel,
-            workModel,
+            siteType,
             networkModel,
             frontendCalculation,
+            diffSource,
             coordinateInitialization,
             initializationMode,
             longitude,
@@ -77,9 +80,10 @@ class M50WorkModelParamViewModel : BaseStateViewModel() {
         isDataModified.value = initialState.any { (key, value) ->
             when (key) {
                 "reportModel" -> reportModel.get() != value
-                "workModel" -> workModel.get() != value
+                "siteType" -> siteType.get() != value
                 "networkModel" -> networkModel.get() != value
                 "frontendCalculation" -> frontendCalculation.get() != value
+                "diffSource" -> diffSource.get() != value
                 "coordinateInitialization" -> coordinateInitialization.get() != value
                 "initializationMode" -> initializationMode.get() != value
                 "longitude" -> longitude.get() != value

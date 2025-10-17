@@ -11,11 +11,11 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.M50RadioSettingViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.M50LORASettingViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50RadioSettingFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50LORASettingFragment.ClickProxy" />
 
     </data>
 
@@ -72,80 +72,62 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
-                        onClickWithDebouncing="@{()->click.onFrequencyChooseClick()}"
+                        onClickWithDebouncing="@{()->click.onRTCMDataChannelChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isOpened }">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened }"
-                            android:text="通讯频率" />
+                            android:text="RTCM频点" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isOpened }"
 
-                            android:text="@{stateVM.frequency}"
-                            tools:text="472MHz" />
+                            android:text="@{stateVM.rtcmChannel}"
+                            tools:text="451.15MHz" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
-                        onClickWithDebouncing="@{()->click.onAirRateChooseClick()}"
+                        onClickWithDebouncing="@{()->click.onAlarmChannelChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isOpened }">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened }"
-                            android:text="空中速率" />
+                            android:text="报警频点" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isOpened }"
 
-                            android:text="@{stateVM.airRate}"
-                            tools:text="2.4Kbps" />
+                            android:text="@{stateVM.alarmChannel}"
+                            tools:text="451.15MHz" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onLocalAddressChooseClick()}"
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4"
+                        android:enabled="@{stateVM.isOpened }">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:text="本机地址" />
 
-                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isOpened }"
-                            android:hint="请输入"
-                            android:inputType="number"
-                            android:maxLength="5"
-                            android:text="@={stateVM.localAddress}"
-                            tools:text="1" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
-
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isOpened }"
-                            android:text="目标地址" />
+                            style="@style/Common_ClickableItem_Value_Style"
 
-                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
-                            android:hint="请输入"
-                            android:inputType="number"
-                            android:maxLength="5"
-                            android:text="@={stateVM.targetAddress}"
-                            tools:text="2" />
+
+                            android:text="@{stateVM.localAddress}"
+                            tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <com.google.android.material.button.MaterialButton
@@ -167,4 +149,4 @@
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</layout> 
+</layout>

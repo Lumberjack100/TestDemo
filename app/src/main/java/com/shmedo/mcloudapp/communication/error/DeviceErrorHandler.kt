@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.communication.error
 
-import androidx.fragment.app.Fragment
 import com.hjq.toast.Toaster
 import com.shmedo.mcloudapp.communication.model.DeviceError
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
@@ -12,7 +11,7 @@ import timber.log.Timber
  * 设备错误处理器
  * 负责根据配置统一处理各种设备错误
  */
-class DeviceErrorHandler(private val fragment: Fragment) {
+class DeviceErrorHandler() {
 
     /**
      * 处理单个错误
