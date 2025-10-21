@@ -70,7 +70,6 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/Common_EditItem_Layout_Style"
-            visible='@{!m.reportMethod.contains("定时定点")}'
             android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
             <com.google.android.material.textview.MaterialTextView

@@ -70,19 +70,6 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
     // 起始时间选项列表
     private val reportStartTimeList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_report_start_time) }
 
-
-    /**
-     * 是否需要加载复杂的上报周期配置布局 (支持定时定点和固定间隔两种上报方式)
-     */
-    private fun isSupportComplexReportingPeriodMode(): Boolean {
-        return productType == ProductType.GNSS_M_5
-                || productType == ProductType.GNSS_M_6
-                || productType == ProductType.GNSS_M_7
-                || productType == ProductType.GNSS_M_8
-                || productType == ProductType.GNSS_M_1
-                || productType == ProductType.GNSS_M_2
-    }
-
     /**
      * 是否需要加载简单的上报周期配置布局 (支持上报间隔)
      */
@@ -91,28 +78,41 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
                 || productType == ProductType.U_R_1
     }
 
+    /**
+     * 是否需要加载复杂的上报周期配置布局 (支持定时定点和固定间隔两种上报方式)
+     */
+    private fun isSupportComplexReportingPeriodMode(): Boolean {
+        return productType == ProductType.GNSS_M_1
+                || productType == ProductType.GNSS_M_2
+                || productType == ProductType.GNSS_M_5
+                || productType == ProductType.GNSS_M_6
+                || productType == ProductType.GNSS_M_7
+                || productType == ProductType.GNSS_M_8
+    }
+
+
     override fun initRecyclerViewAdapterData() {
         // 根据产品类型添加相应的适配器类型支持
-        if (isSupportComplexReportingPeriodMode()) {
-            // 复杂模式：支持复杂的上报周期配置
-            binding.recyclerView.bindingAdapter.addType<DataReportingPeriodItem>(R.layout.item_data_reporting_period)
-        } else if (isSupportSimpleReportingPeriodMode()) {
+        if (isSupportSimpleReportingPeriodMode()) {
             // 简单模式：支持基础的上报间隔配置
             binding.recyclerView.bindingAdapter.addType<BeidouDataTransmissionItem>(R.layout.item_beidou_data_transmission)
+        } else if (isSupportComplexReportingPeriodMode()) {
+            // 复杂模式：支持复杂的上报周期配置
+            binding.recyclerView.bindingAdapter.addType<DataReportingPeriodItem>(R.layout.item_data_reporting_period)
         }
 
         val groupList = mutableListOf<Any>()
 
         // 根据产品类型添加相应的配置项
-        if (isSupportComplexReportingPeriodMode()) {
-            // 复杂模式：添加复杂的上报周期配置
-            groupList.add(DeviceStatusInfoGroupItem("上报周期"))
-            groupList.add(dataReportingPeriodItem)
-            groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-        } else if (isSupportSimpleReportingPeriodMode()) {
+        if (isSupportSimpleReportingPeriodMode()) {
             // 简单模式：添加基础的上报间隔配置
             groupList.add(DeviceStatusInfoGroupItem("上报周期"))
             groupList.add(beidouDataTransmissionItem)
+            groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+        } else if (isSupportComplexReportingPeriodMode()) {
+            // 复杂模式：添加复杂的上报周期配置
+            groupList.add(DeviceStatusInfoGroupItem("上报周期"))
+            groupList.add(dataReportingPeriodItem)
             groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
         }
 
@@ -155,12 +155,12 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
         val commands = mutableListOf<String>()
 
         // 根据产品类型获取相应的上报信息
-        if (isSupportComplexReportingPeriodMode()) {
-            // 复杂模式：获取复杂的上报周期信息
-            commands.add(IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TYPE))
-        } else if (isSupportSimpleReportingPeriodMode()) {
+        if (isSupportSimpleReportingPeriodMode()) {
             // 简单模式：获取基础的上报时间信息
             commands.add(IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TIME))
+        } else if (isSupportComplexReportingPeriodMode()) {
+            // 复杂模式：获取复杂的上报周期信息
+            commands.add(IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TYPE))
         }
 
         // 获取数据链路状态
@@ -208,9 +208,21 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
 
         val commands = mutableListOf<String>()
 
-        if (isSupportComplexReportingPeriodMode()) {
+        if (isSupportSimpleReportingPeriodMode()) {
+            // 简单模式：保存基础的上报间隔配置
+            val entity = DasDataReportEntity(
+                report_intv = beidouDataTransmissionItem.getReportIntervalStr()
+            )
+            commands.add(
+                IOTCommandUtil.getCommand(
+                    IOTCommandType.MD_SET_DATA_REPORT_TIME,
+                    entity.toCommandString()
+                )
+            )
+
+        } else if (isSupportComplexReportingPeriodMode()) {
             // 复杂模式：保存复杂的上报周期配置
-            val timehourValue =
+            val timeHourValue =
                 if (dataReportingPeriodItem.getReportMethodStr().contains("定时定点")) {
                     try {
                         val timeStr = dataReportingPeriodItem.getReportStartTimeHourStr()
@@ -227,27 +239,15 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
             val entity = DataReportTypeEntity(
                 type = reportMethodList.indexOf(dataReportingPeriodItem.getReportMethodStr())
                     .toString(),
-                timehour = timehourValue,
+                timehour = timeHourValue,
                 timemin = if (dataReportingPeriodItem.getReportMethodStr().contains("定时定点"))
                     dataReportingPeriodItem.getReportStartTimeMinuteStr() else IOTConstants.NULL_KEY,
-                timegap = if (dataReportingPeriodItem.getReportMethodStr().contains("定时定点"))
-                    IOTConstants.NULL_KEY else dataReportingPeriodItem.getReportIntervalStr()
+                timegap = dataReportingPeriodItem.getReportIntervalStr()
             )
 
             commands.add(
                 IOTCommandUtil.getCommand(
                     IOTCommandType.MD_SET_DATA_REPORT_TYPE,
-                    entity.toCommandString()
-                )
-            )
-        } else if (isSupportSimpleReportingPeriodMode()) {
-            // 简单模式：保存基础的上报间隔配置
-            val entity = DasDataReportEntity(
-                report_intv = beidouDataTransmissionItem.getReportIntervalStr()
-            )
-            commands.add(
-                IOTCommandUtil.getCommand(
-                    IOTCommandType.MD_SET_DATA_REPORT_TIME,
                     entity.toCommandString()
                 )
             )
@@ -428,8 +428,18 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
      * 验证输入数据
      */
     private fun validateInput(): Boolean {
+        // 简单配置模式：验证基础的上报间隔配置
+        if (isSupportSimpleReportingPeriodMode()) {
+            if (beidouDataTransmissionItem.getReportIntervalStr().isEmpty()) {
+                showMessageDialog("请输入上报间隔!")
+                return false
+            }
+
+            return true
+        }
+
+        // 复杂配置模式：验证复杂的上报周期配置
         if (isSupportComplexReportingPeriodMode()) {
-            // 复杂模式：验证复杂的上报周期配置
             if (dataReportingPeriodItem.getReportMethodStr().contains("定时定点")) {
                 if (dataReportingPeriodItem.getReportStartTimeHourStr().isEmpty()) {
                     showMessageDialog("请选择起始时间（小时）!")
@@ -449,29 +459,26 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
                     showMessageDialog("请输入正确的起始时间（分钟）!")
                     return false
                 }
-            } else {
-                if (dataReportingPeriodItem.getReportIntervalStr().isEmpty()) {
-                    showMessageDialog("请输入时间间隔（分钟）!")
-                    return false
-                }
-                try {
-                    val value = dataReportingPeriodItem.getReportIntervalStr().toDouble()
-                    if (value < 0 || value > 1440) {
-                        showMessageDialog("时间间隔（分钟）数值范围[0,1440]!")
-                        return false
-                    }
-                } catch (ex: Exception) {
-                    showMessageDialog("请输入正确的时间间隔（分钟）!")
-                    return false
-                }
             }
-        } else if (isSupportSimpleReportingPeriodMode()) {
-            // 简单模式：验证基础的上报间隔配置
-            if (beidouDataTransmissionItem.getReportIntervalStr().isEmpty()) {
-                showMessageDialog("请输入上报间隔!")
+
+            if (dataReportingPeriodItem.getReportIntervalStr().isEmpty()) {
+                showMessageDialog("请输入时间间隔（分钟）!")
                 return false
             }
+            try {
+                val value = dataReportingPeriodItem.getReportIntervalStr().toDouble()
+                if (value < 0 || value > 1440) {
+                    showMessageDialog("时间间隔（分钟）数值范围[0,1440]!")
+                    return false
+                }
+            } catch (ex: Exception) {
+                showMessageDialog("请输入正确的时间间隔（分钟）!")
+                return false
+            }
+
+            return true
         }
+
         return true
     }
 
