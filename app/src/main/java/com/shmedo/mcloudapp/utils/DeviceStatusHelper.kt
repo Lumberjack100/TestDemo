@@ -333,7 +333,7 @@ object DeviceStatusHelper {
         }
 
         // 检查SIM卡
-        val simCard = statusMap["simCard"] as? String
+        val simCard = statusMap["sim_status"] as? String
         if (simCard?.uppercase()?.contains("FAIL") ?: false) {
             deviceAbnormalList.add("SIM卡故障")
         }

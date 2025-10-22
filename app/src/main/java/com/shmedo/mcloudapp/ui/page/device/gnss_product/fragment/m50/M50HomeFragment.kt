@@ -176,6 +176,12 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
                 ).toUnified(),
 
                 CommonModule(
+                    name = "GNSS配置",
+                    resID = R.drawable.ic_module_cors,
+                    navId = R.id.action_global_to_m50GNSSConfigFragment,
+                ).toUnified(),
+
+                CommonModule(
                     name = "网络配置",
                     resID = R.drawable.ic_module_network_setting,
                     navId = R.id.action_global_to_m50NetworkConfigFragment
@@ -193,11 +199,6 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
                     navId = R.id.action_global_to_m50RadioSettingFragment
                 ).toUnified(),
 
-                CommonModule(
-                    name = "GNSS配置",
-                    resID = R.drawable.ic_module_cors,
-                    navId = R.id.action_global_to_m50GNSSConfigFragment,
-                ).toUnified(),
 
                 CommonModule(
                     name = "倾斜触发",
@@ -215,7 +216,8 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
                 CommonModule(
                     name = "报警配置",
                     resID = R.drawable.ic_module_alarm_new,
-                    navId = R.id.action_global_to_m50AlarmParamSettingFragment
+                    navId = R.id.action_global_to_m50AlarmParamSettingFragment,
+                    isSupport = false
                 ).toUnified(),
 
                 CommonModule(

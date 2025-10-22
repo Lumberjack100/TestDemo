@@ -60,11 +60,6 @@ class M50BaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
-                    name = "固件日期",
-                    value = stateInfo.firmwareDate,
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
                     name = "启动代码",
                     value = stateInfo.bootCode,
                 )
