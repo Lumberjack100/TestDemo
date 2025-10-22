@@ -29,7 +29,6 @@ import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
-import com.shmedo.mcloudapp.model.ConfigBannerItem
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
@@ -493,23 +492,26 @@ class M20SHomeFragment : BaseDeviceHomeFragment() {
                     MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
-                // 检查电台模块是否可用
+                // 检查电台模块功能是否可用
                 updateRadioModuleStatus(stateInfo.self_check.uppercase().contains("RADIO:1"))
 
+                //提取出故障信息
                 val deviceAbnormalList = if (stateInfo.self_check.isEmpty()) {
                     arrayListOf<String>()
                 } else {
                     DeviceStatusHelper.checkDeviceAbnormal(stateInfo.self_check)
                 }
-                //移除特定的故障信息
+                //暂时移除特定的故障信息
                 deviceAbnormalList.remove("电台模块故障")
                 deviceAbnormalList.remove("太阳能控制器故障")
 
+                //提取出告警信息
                 val deviceWarnList =
                     if (content.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkM20Warn(
                         content
                     )
-                // 添加角度告警检查
+
+                // 角度告警检查
                 val angleWarnings = calculateAngleWarnings()
 
                 // 合并告警列表，但如果倾角加速度模块故障，则不显示角度告警
@@ -521,8 +523,8 @@ class M20SHomeFragment : BaseDeviceHomeFragment() {
                     deviceWarnList + angleWarnings
                 }
 
-                // 合并故障和告警信息，并进行过滤
-                val mergedList = DeviceStatusHelper.mergeM50StatusInfo(
+                // 最后合并故障和告警信息
+                val mergedList = DeviceStatusHelper.mergeM20StatusInfo(
                     deviceAbnormalList,
                     warnListWithAngles as ArrayList<String>
                 )

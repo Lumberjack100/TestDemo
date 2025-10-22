@@ -210,7 +210,7 @@ object DeviceStatusHelper {
 
     /**
      * 兼容方法：通过JSON字符串检查设备异常状态
-     * @param statusInfo CommonCurrentStateInfo2 的 JSON 字符串
+     * @param statusInfo  JSON 字符串
      * @return 设备异常信息列表
      */
     fun checkM50Abnormal(statusInfo: String): ArrayList<String> {
