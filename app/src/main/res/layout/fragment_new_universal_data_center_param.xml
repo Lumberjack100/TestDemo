@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol" />
+
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.DataCenterParamViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.ui.page.device.common.NewUniversalDataCenterParamFragment.ClickProxy" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
+
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_container_padding_top_12"
+                    android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
+
+                    <RelativeLayout
+                        style="@style/SwitchButton_Item_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/SwitchButton_Item_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="链路启用" />
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/statusSB"
+                            style="@style/SwitchButton_Item_Button_Style"
+                            android:checked="@={stateVM.isCenterOpened}"
+                            android:enabled="@{stateVM.isEditable}"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+
+                    </RelativeLayout>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onPlatformTypeChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="平台类型" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="@{stateVM.platformType}"
+                            tools:text="成都理工平台" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="链路地址" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            android:id="@+id/et_data_server_address"
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="@={stateVM.centerServerAddress}"
+                            app:lengthFilter="@{100}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="链路端口" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            android:id="@+id/et_data_server_port"
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:inputType="number"
+                            android:text="@={stateVM.centerServerPort}"
+                            app:lengthFilter="@{5}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onDataProtocolChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="数据协议" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="@{stateVM.dataProtocol}"
+                            tools:text="MQTT" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- MQTT 协议特有参数 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/ll_mqtt"
+                        visible='@{stateVM.dataProtocol.equals(PlatformDataProtocol.MQTT.toString())}'
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="产品ID" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="@={stateVM.productId}"
+                                app:lengthFilter="@{100}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="设备ID" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="@={stateVM.deviceId}"
+                                app:lengthFilter="@{100}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="设备Key" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="@={stateVM.deviceKey}"
+                                app:lengthFilter="@{100}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            visible="@{stateVM.isRegisterVisible}"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="设备注册码" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="@={stateVM.registerCode}"
+                                app:lengthFilter="@{100}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            visible="@{stateVM.isRegisterVisible}"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="设备注册地址" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="@={stateVM.registerAddress}"
+                                app:lengthFilter="@{100}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            visible="@{stateVM.isRegisterVisible}"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="设备注册端口" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:inputType="number"
+                                android:text="@={stateVM.registerPort}"
+                                app:lengthFilter="@{5}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- SL651 协议特有参数 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/ll_sl651"
+                        visible='@{stateVM.dataProtocol.equals(PlatformDataProtocol.SL651.toString())}'
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_ClickableItem_Layout_Style"
+                            onClickWithDebouncing="@{()->click.onStationClassificationChooseClick()}"
+                            android:background="@drawable/layer_common_click_item_with_divider"
+                            android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="测站分类" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Value_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="@{stateVM.stationType}"
+                                tools:text="降水" />
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="中心站地址" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:inputType="number"
+                                android:text="@={stateVM.centerStationAddr}"
+                                app:lengthFilter="@{3}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="密码" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:inputType="number"
+                                android:text="@={stateVM.password}"
+                                app:lengthFilter="@{5}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="测站编码" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="@={stateVM.telemetryStationAddr}"
+                                app:inputTypeFilter='@{"character"}'
+                                app:lengthFilter="@{20}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_ClickableItem_Layout_Style"
+                            onClickWithDebouncing="@{()->click.onToggleAdvancedClick()}"
+                            android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                            android:background="@drawable/shape_common_click_item_top_corner_4"
+                            android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
+
+                            <View
+                                android:layout_width="3dp"
+                                android:layout_height="14dp"
+                                android:background="@color/black" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:layout_marginStart="@dimen/dimen_size_8"
+                                android:text="高级设置" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Value_Style"
+                                android:drawableEnd="@{stateVM.isAdvancedItemVisible ? @drawable/ic_arrow_up_blue : @drawable/ic_arrow_down_blue}"
+                                android:text='@{stateVM.isAdvancedItemVisible ? "收起" : "展开"}'
+                                android:textColor="@color/colorPrimary"
+                                tools:drawableEnd="@drawable/ic_arrow_down_blue"
+                                tools:text="展开" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/ll_advanced_items"
+                            visible="@{stateVM.isAdvancedItemVisible}"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:layout_marginStart="@dimen/page_content_item_padding_horizontal_16"
+                                android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                                android:text="报文选择" />
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="@dimen/page_content_item_padding_horizontal_16"
+                                android:layout_marginVertical="@dimen/dimen_size_8"
+                                android:paddingHorizontal="@dimen/dimen_size_12"
+                                app:drawable_radius="@{4}"
+                                app:drawable_solidColor="@{@color/gray_F5F6F8}"
+                                tools:background="@color/gray_F5F6F8">
+
+                                <com.google.android.material.checkbox.MaterialCheckBox
+                                    android:id="@+id/hourlyReportCheckBox"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:button="@drawable/radiobutton_selector"
+                                    android:checked="@={stateVM.hourlyReport}"
+                                    android:text="小时报"
+                                    android:textColor="@color/title_text_color_black_90"
+                                    android:textSize="@dimen/text_size_14"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    tools:checked="true" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.6dp"
+                                android:background="@color/divider_line_bg" />
+
+                            <androidx.appcompat.widget.LinearLayoutCompat
+                                style="@style/Common_EditItem_Layout_Style"
+                                android:background="@drawable/layer_common_click_item_with_divider">
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/Common_ClickableItem_Title_Style"
+                                    textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                    android:text="维持上报间隔（秒）" />
+
+                                <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                    style="@style/Common_EditItem_EditText_Style"
+                                    textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                    android:inputType="number"
+                                    android:text="@={stateVM.maintainReportInterval}"
+                                    app:lengthFilter="@{3}" />
+
+                            </androidx.appcompat.widget.LinearLayoutCompat>
+
+                            <androidx.appcompat.widget.LinearLayoutCompat
+                                style="@style/Common_EditItem_Layout_Style"
+                                android:background="@drawable/layer_common_click_item_with_divider">
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/Common_ClickableItem_Title_Style"
+                                    textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                    android:text="数据补发有效时间（日）" />
+
+                                <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                    style="@style/Common_EditItem_EditText_Style"
+                                    textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                    android:inputType="number"
+                                    android:text="@={stateVM.reissuingDataValidDays}"
+                                    app:lengthFilter="@{3}" />
+
+                            </androidx.appcompat.widget.LinearLayoutCompat>
+
+                            <androidx.appcompat.widget.LinearLayoutCompat
+                                style="@style/Common_EditItem_Layout_Style"
+                                android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/Common_ClickableItem_Title_Style"
+                                    textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                    android:text="数据补发间隔（分钟）" />
+
+                                <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                    style="@style/Common_EditItem_EditText_Style"
+                                    textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                    android:inputType="number"
+                                    android:text="@={stateVM.reissuingDataInterval}"
+                                    app:lengthFilter="@{4}" />
+
+                            </androidx.appcompat.widget.LinearLayoutCompat>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- NTRIP 协议特有参数 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/ll_ntrip"
+                        visible='@{stateVM.isNtripProtocol}'
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            visible='@{!stateVM.dataProtocol.equals(PlatformDataProtocol.NTRIP_S.toString())}'
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="用户名" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="@={stateVM.deviceId}"
+                                app:lengthFilter="@{100}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="密码" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="@={stateVM.deviceKey}"
+                                app:lengthFilter="@{100}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="站点信息" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="@={stateVM.productId}"
+                                app:lengthFilter="@{100}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- HTTP 协议特有参数 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        visible='@{stateVM.dataProtocol.equals(PlatformDataProtocol.HTTP.toString())}'
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="测站编码" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="@={stateVM.telemetryStationAddr}"
+                            app:inputTypeFilter='@{"character"}'
+                            app:lengthFilter="@{20}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reset"
+                        style="@style/ResetButton_Style"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:enabled="@{stateVM.isEditable }"
+                        android:onClick="@{()->click.onResetButtonClick()}"
+                        android:text="@string/button_reset_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_confirm"
+                        style="@style/SubmitButton_Style"
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isDataModified}"
+                        android:text="@string/button_save_text" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.core.widget.NestedScrollView>
+        </com.drake.brv.PageRefreshLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

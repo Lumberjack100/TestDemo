@@ -12,7 +12,7 @@ enum class DataCenterPlatform(private val platName: String, private val cmdValue
     CHINA_MOBILE_PLATFORM("中移物联平台", "1"),
     MEDO_IOT_PLATFORM("米度物联平台", "2"),
     DIDA2_PLATFORM("地大平台2", "3"),
-    HENAN_WATER_PLATFORM("河南水利平台", "4"),
+    HENAN_WATER_PLATFORM("河南水文平台", "4"),
     MEDO_WATER_PLATFORM("米度水文平台", "5"),
     AMS_PLATFORM("米度解算平台", "6"),
     CHONGQING_DISASTER_PLATFORM("重庆地灾平台", "7"),
