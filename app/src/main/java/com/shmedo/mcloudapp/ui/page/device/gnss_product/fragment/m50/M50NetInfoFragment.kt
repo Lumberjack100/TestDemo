@@ -8,7 +8,7 @@ import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
-import com.shmedo.lib.cmd.base.iot_cmd.enums.DataCenterPlatform
+import com.shmedo.lib.cmd.base.iot_cmd.enums.NewDataCenterPlatform
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
@@ -141,8 +141,9 @@ class M50NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     onlineStatusList.forEachIndexed { index, status ->
                         val platformIndex = platformTypeList.getOrNull(index)?.toIntOrNull() ?: 0
                         val platformType =
-                            DataCenterPlatform.valueByCmdValue(platformIndex.toString())
-                                .getPlatName()
+                            NewDataCenterPlatform.valueByPlatType(platformIndex.toString())
+                                .getPlatFormName()
+
                         val statusText = status.compareAndReturn(
                             "1",
                             "已连接",
@@ -152,7 +153,7 @@ class M50NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
                             name = "数据链路${index + 1}",
-                            value = "$statusText($platformType)",
+                            value = statusText,
                             textColorRes = if (status == "0" || statusText == "未连接") 0 else ColorUtils.getColor(
                                 R.color.online_colorPrimary
                             ),

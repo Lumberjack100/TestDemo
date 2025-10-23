@@ -76,7 +76,14 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
     private val ipLevelList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_ip_level) }
     private val transferProtocolList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_transfer_protocol) }
 
-    private val dataProtocolList: MutableList<String> = arrayListOf()
+    private val dataProtocolList = arrayListOf(
+        PlatformDataProtocol.MQTT.toString(),
+        PlatformDataProtocol.TCP_C.toString(),
+        PlatformDataProtocol.SL651.toString(),
+        PlatformDataProtocol.SZY206.toString(),
+        PlatformDataProtocol.MQTTS.toString()
+    )
+
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -123,9 +130,6 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     private fun resetDefaultParams() {
-        dataProtocolList.clear()
-        dataProtocolList.addAll(PlatformDataProtocol.getDataProtocolNamesByProduct(productType))
-
         mStates.isCenterOpened.set(statusItem.status != "0")
         mStates.communicateWay.set(communicateWayList[0]) //通信方式 默认选择4G
         mStates.ipLeve.set(ipLevelList[0]) //网络协议 默认选择IPV4
@@ -205,21 +209,6 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
 
         // MQTT/MQTTS 协议特有配置参数
         if (mStates.dataProtocol.get() == PlatformDataProtocol.MQTT.getCmdValue() || mStates.dataProtocol.get() == PlatformDataProtocol.MQTTS.getCmdValue()) {
-            // 当产品 ID、设备 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
-            if (mStates.productId.get().isEmpty() && mStates.deviceId.get().isEmpty()) {
-                if (mStates.registerCode.get().isEmpty()) {
-                    showMessageDialog("请输入设备注册码!")
-                    return
-                }
-                if (mStates.registerAddress.get().isEmpty()) {
-                    showMessageDialog("请输入设备注册地址!")
-                    return
-                }
-                if (mStates.registerPort.get().isEmpty()) {
-                    showMessageDialog("请输入设备注册端口号!")
-                    return
-                }
-            }
             // MQTT/MQTTS 协议注册端口验证
             if (mStates.registerPort.get().isNotEmpty()) {
                 try {
@@ -250,15 +239,18 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                 if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.getCmdValue())
                     SL651StationType.valueByStationName(mStates.stationType.get())
                         .getCode() else IOTConstants.NULL_KEY
+
             entity.co_address =
                 if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.getCmdValue())
                     mStates.centerStationAddr.get() else IOTConstants.NULL_KEY
+
             entity.password =
                 if (mStates.platformType.get() == NewDataCenterPlatform.HUBEI_WATER_PLATFORM.getPlatFormName()) {
                     mStates.password.get().hexStringToDecimalString()
                 } else {
                     mStates.password.get()
                 }
+
             entity.taddress = mStates.telemetryStationAddr.get()
             entity.hour_report = if (mStates.hourlyReport.get()) "1" else "0"
             entity.timed_report = if (mStates.timingReport.get()) "1" else "0"
@@ -387,19 +379,19 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             mStates.dataProtocol.set(
                 when (data.datatype) {
                     "1", "5" -> { // MQTT, MQTTS
-                        if (data.datatype == "1") dataProtocolList[0] else dataProtocolList[4]
+                        if (data.datatype == "1") PlatformDataProtocol.MQTT.getCmdValue() else  PlatformDataProtocol.MQTTS.getCmdValue()
                     }
 
                     "2" -> { // TCP-C
-                        dataProtocolList[1]
+                        PlatformDataProtocol.TCP_C.getCmdValue()
                     }
 
                     "3" -> { // SL651
-                        dataProtocolList[2]
+                        PlatformDataProtocol.SL651.getCmdValue()
                     }
 
                     else -> { // SZY206
-                        dataProtocolList[3]
+                        PlatformDataProtocol.SZY206.getCmdValue()
                     }
                 }
             )
@@ -420,8 +412,8 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             mStates.registerAddress.set(data.httpaddr)
             mStates.registerPort.set(data.httpport)
 
-            // SL651/SZY206 协议参数
-            if (mStates.dataProtocol.get() == dataProtocolList[2]) {
+            // SL651 协议参数
+            if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.getCmdValue()) {
                 mStates.stationType.set(
                     SL651StationType.valueByCode(data.type_code).getStationName()
                 )//测站分类
@@ -444,6 +436,7 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             mStates.maintainReportInterval.set(data.keepalive)
             mStates.reissuingDataValidDays.set(data.valid_day)
             mStates.reissuingDataInterval.set(data.reissue_time)
+
 
             if (communicateWay is NetPlatformConnect && mStates.platformType.get() == NewDataCenterPlatform.MEDO_IOT_PLATFORM.getPlatFormName() && statusItem.status == "1") {
                 mStates.isEditable.set(false)
@@ -575,14 +568,19 @@ class MR702DataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
          * 数据协议选择
          */
         fun onDataProtocolChooseClick() {
-            val selectedIndex = dataProtocolList.indexOf(mStates.dataProtocol.get())
+            val supportedDataProtocolNames =
+                DefaultPlatformConfigManager.getSupportedDataProtocolNames(
+                    mStates.platformType.get(),
+                    productType
+                ).toTypedArray()
+            val selectedIndex = supportedDataProtocolNames.indexOf(mStates.dataProtocol.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true)
                 .enableDrag(false)
                 .asBottomList(
-                    "请选择数据协议", dataProtocolList.toTypedArray(),
+                    "请选择数据协议", supportedDataProtocolNames,
                     null, selectedIndex,
                     { position, text ->
                         mStates.dataProtocol.set(text)

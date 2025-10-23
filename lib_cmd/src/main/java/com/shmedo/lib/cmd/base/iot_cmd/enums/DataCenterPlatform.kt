@@ -60,55 +60,5 @@ enum class DataCenterPlatform(private val platName: String, private val cmdValue
         val platNames: List<String>
             get() = entries.map { it.platName }
 
-        /**
-         * 根据协议类型获取支持的平台列表
-         */
-        @JvmStatic
-        fun getPlatformsByProtocol(protocol: PlatformDataProtocol): List<DataCenterPlatform> {
-            return when (protocol) {
-                PlatformDataProtocol.MQTT -> listOf(
-                    DIDA_PLATFORM,
-                    CHINA_MOBILE_PLATFORM,
-                    MEDO_IOT_PLATFORM,
-                    DIDA2_PLATFORM,
-                    CHONGQING_DISASTER_PLATFORM,
-                    GUIZHOU_ENCRYPT_PLATFORM,
-                    BEIJING_LUAN_PLATFORM
-                )
-
-                PlatformDataProtocol.TCP_C -> listOf(
-                    AMS_PLATFORM
-                )
-
-                PlatformDataProtocol.SL651 -> listOf(
-                    HENAN_WATER_PLATFORM,
-                    GUANGDONG_WATER_PLATFORM,
-                    GUANGXI_WATER_PLATFORM,
-                    HUBEI_WATER_PLATFORM
-                )
-
-                PlatformDataProtocol.SZY206 -> listOf(
-                    HUBEI_ECO_PLATFORM
-                )
-
-                PlatformDataProtocol.NTRIP, PlatformDataProtocol.NTRIP_C, PlatformDataProtocol.NTRIP_S -> listOf(
-                    CORS_PLATFORM
-                )
-
-                PlatformDataProtocol.HTTP -> listOf(
-                    GUANGDONG_FLOOD_PLATFORM
-                )
-
-                else -> entries
-            }
-        }
-
-        /**
-         * 根据协议类型获取支持的平台名称列表
-         */
-        @JvmStatic
-        fun getPlatformNamesByProtocol(protocol: PlatformDataProtocol): List<String> {
-            return getPlatformsByProtocol(protocol).map { it.platName }
-        }
     }
 }
