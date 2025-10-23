@@ -7,7 +7,7 @@
 
         <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol" />
 
-        <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.DataCenterPlatform" />
+        <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.NewDataCenterPlatform" />
 
         <variable
             name="toolbarVM"
@@ -209,7 +209,7 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onGuangdongWaterPlatformStationTypeChooseClick()}"
-                        visible='@{stateVM.platformType.equals(DataCenterPlatform.GUANGDONG_WATER_PLATFORM.getPlatName())}'
+                        visible='@{stateVM.platformType.equals(NewDataCenterPlatform.GUANGDONG_WATER_PLATFORM.getPlatFormName())}'
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 

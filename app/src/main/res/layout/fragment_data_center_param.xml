@@ -75,6 +75,25 @@
                     </RelativeLayout>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onPlatformTypeChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="平台类型" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="@{stateVM.platformType}"
+                            tools:text="成都理工平台" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -113,25 +132,6 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
-                        onClickWithDebouncing="@{()->click.onDataTypeChooseClick()}"
-                        visible="@{stateVM.isDataTypeVisible}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:text="数据类型" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Value_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:text="@{stateVM.dataType}"
-                            tools:text="NMEA" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onDataProtocolChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
@@ -146,25 +146,6 @@
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="@{stateVM.dataProtocol}"
                             tools:text="MQTT" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_Layout_Style"
-                        onClickWithDebouncing="@{()->click.onPlatformTypeChooseClick()}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:text="平台类型" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Value_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:text="@{stateVM.platformType}"
-                            tools:text="成都理工平台" />
-
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <!-- MQTT 协议特有参数 -->
