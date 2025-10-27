@@ -12,6 +12,7 @@ enum class NewDataCenterPlatform(
     GUIZHOU_DISASTER_PLATFORM("贵州地灾平台", "3", "iot.gz1155.cn", "61.243.11.86", "1883"),
     GUANGXI_DISASTER_PLATFORM("广西地灾平台", "3", "218.65.206.87", "218.65.206.87", "1883"),
     YUNNAN_DISASTER_PLATFORM("云南地灾平台", "3", "222.221.241.110", "222.221.241.110", "1883"),
+    GANSU_DISASTER_PLATFORM("甘肃地灾平台", "3", "61.178.41.182", "61.178.41.182", "21807"),
     HENAN_WATER_PLATFORM("河南水文平台", "4", "data.skaqjc.cn", "222.143.64.147", "9888"),
     HENAN_DAM_MONITOR_PLATFORM("河南大坝监测平台", "4", "data.skaqjc.cn", "222.143.64.147", "1883"),
     MEDO_SOLVER_PLATFORM("米度解算平台", "6", null, null, null),

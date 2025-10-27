@@ -69,6 +69,13 @@ data class DefaultPlatformConfig(
                     dataProtocol = PlatformDataProtocol.MQTT,
                 ),
 
+                NewDataCenterPlatform.GANSU_DISASTER_PLATFORM to DefaultPlatformConfig(
+                    platform = NewDataCenterPlatform.GANSU_DISASTER_PLATFORM,
+                    address = "61.178.41.182",
+                    port = "21807",
+                    dataProtocol = PlatformDataProtocol.MQTT,
+                ),
+
                 NewDataCenterPlatform.HENAN_WATER_PLATFORM to DefaultPlatformConfig(
                     platform = NewDataCenterPlatform.HENAN_WATER_PLATFORM,
                     address = "data.skaqjc.cn",

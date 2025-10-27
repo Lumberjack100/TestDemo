@@ -55,14 +55,6 @@ fun ProductType.isGNSSProduct(): Boolean {
 }
 
 // ==================== UD 产品线 ====================
-
-/**
- * 判断是否为 UD 系列产品（U_D_1、U_D_2、U_D_3）
- */
-fun ProductType.isUDSeries(): Boolean {
-    return this == ProductType.U_D_1 || this == ProductType.U_D_2 || this == ProductType.U_D_3
-}
-
 /**
  * 判断是否为 DR030 系列产品（雷达水位计：U_D_1、U_D_2）
  */
@@ -75,6 +67,13 @@ fun ProductType.isDR030Series(): Boolean {
  */
 fun ProductType.isLL030(): Boolean {
     return this == ProductType.U_D_3
+}
+
+/**
+ * 判断是否为 UD 系列产品（U_D_1、U_D_2、U_D_3）
+ */
+fun ProductType.isUDSeries(): Boolean {
+    return this == ProductType.U_D_1 || this == ProductType.U_D_2 || this == ProductType.U_D_3
 }
 
 // ==================== 采集器产品线 ====================

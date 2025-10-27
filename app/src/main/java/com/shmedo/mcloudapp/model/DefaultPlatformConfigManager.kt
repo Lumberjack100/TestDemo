@@ -6,6 +6,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.extensions.isM50Series
 import com.shmedo.mcloudapp.extensions.isMR702
+import com.shmedo.mcloudapp.extensions.isUDSeries
 import com.shmedo.mcloudapp.ui.viewmodel.state.DataCenterParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702DataCenterParamViewModel
 
@@ -37,6 +38,15 @@ object DefaultPlatformConfigManager {
                 NewDataCenterPlatform.MEDO_SOLVER_PLATFORM.getPlatFormName(),
                 NewDataCenterPlatform.CHONGQING_DISASTER_PLATFORM.getPlatFormName(),
                 NewDataCenterPlatform.CORS_PLATFORM.getPlatFormName()
+            )
+
+            productType.isUDSeries() -> arrayListOf(
+                NewDataCenterPlatform.MEDO_IOT_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.GUIZHOU_DISASTER_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.GUANGXI_DISASTER_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.YUNNAN_DISASTER_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.GANSU_DISASTER_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.CHONGQING_DISASTER_PLATFORM.getPlatFormName(),
             )
 
             else -> arrayListOf(
@@ -76,6 +86,10 @@ object DefaultPlatformConfigManager {
             )
 
             NewDataCenterPlatform.YUNNAN_DISASTER_PLATFORM.getPlatFormName() -> listOf(
+                PlatformDataProtocol.MQTT.getCmdValue()
+            )
+
+            NewDataCenterPlatform.GANSU_DISASTER_PLATFORM.getPlatFormName() -> listOf(
                 PlatformDataProtocol.MQTT.getCmdValue()
             )
 
