@@ -22,6 +22,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.NewDataCenterPlatform
 import com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.mcloudapp.extensions.isLB20S
 import com.shmedo.lib.cmd.base.iot_cmd.enums.SL651StationType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.DataCenterInfo
@@ -524,7 +525,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun isNeedRefreshDataCenterStatus(): Boolean {
         return communicateWay is BleConnect &&
-                (productType != ProductType.LB20S)
+                (!productType.isLB20S())
     }
 
     companion object {

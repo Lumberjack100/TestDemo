@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.mcloudapp.extensions.getDeviceLogoResIds
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseVmDbDialogFragment
@@ -42,147 +43,7 @@ class FindDeviceBeepDialog : BaseVmDbDialogFragment() {
 
     private fun initLogoResIds() {
         logoResIdList.clear()
-        when (productType) {
-            ProductType.M20, ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {
-                logoResIdList.addAll(
-                    arrayListOf(
-                        R.drawable.device_logo_m20,
-                        R.drawable.device_logo_m20_alarm,
-                        R.drawable.device_logo_m20_error
-                    )
-                )
-            }
-
-            ProductType.GNSS_M_5, ProductType.GNSS_M_6, ProductType.GNSS_M_7, ProductType.GNSS_M_8 -> {
-                logoResIdList.addAll(
-                    arrayListOf(
-                        R.drawable.device_logo_m50,
-                        R.drawable.device_logo_m50_alarm,
-                        R.drawable.device_logo_m50_error
-                    )
-                )
-            }
-
-            ProductType.GNSS_E_1, ProductType.GNSS_E_2-> {
-                logoResIdList.addAll(
-                    arrayListOf(
-                        R.drawable.device_logo_e40,
-                        R.drawable.device_logo_e40_alarm,
-                        R.drawable.device_logo_e40_error
-                    )
-                )
-            }
-
-            ProductType.GNSS_E_3 -> {
-                logoResIdList.addAll(
-                    arrayListOf(
-                        R.drawable.device_logo_e50_pro,
-                        R.drawable.device_logo_e50_pro_alarm,
-                        R.drawable.device_logo_e50_pro_error
-                    )
-                )
-            }
-
-            ProductType.GNSS_T_1-> {
-                logoResIdList.addAll(
-                    arrayListOf(
-                        R.drawable.device_logo_gt600,
-                        R.drawable.device_logo_gt600_alarm,
-                        R.drawable.device_logo_gt600_error
-                    )
-                )
-            }
-
-
-            ProductType.COLLECTOR_G_0 -> {//自组网报警网关
-                logoResIdList.addAll(
-                    arrayListOf(
-                        R.drawable.device_logo_gateway,
-                        R.drawable.device_logo_gateway_alarm,
-                        R.drawable.device_logo_gateway_error
-                    )
-                )
-            }
-
-            ProductType.DAS, ProductType.BHY -> {
-                logoResIdList.addAll(
-                    arrayListOf(
-                        R.drawable.device_logo_das,
-                        R.drawable.device_logo_das_alarm,
-                        R.drawable.device_logo_das_error
-                    )
-                )
-            }
-
-            ProductType.COLLECTOR_R_1 -> {
-                logoResIdList.addAll(
-                    arrayListOf(
-                        R.drawable.device_logo_mr701_new,
-                        R.drawable.device_logo_mr701_new_alarm,
-                        R.drawable.device_logo_mr701_new_error
-                    )
-                )
-            }
-
-            ProductType.COLLECTOR_R_2 -> {
-                logoResIdList.addAll(
-                    arrayListOf(
-                        R.drawable.device_logo_mr702,
-                        R.drawable.device_logo_mr702_alarm,
-                        R.drawable.device_logo_mr702_error
-                    )
-                )
-            }
-
-            ProductType.LR200 -> {
-                logoResIdList.addAll(
-                    arrayListOf(
-                        R.drawable.device_logo_bhy_3_lr200,
-                        R.drawable.device_logo_bhy_3_lr200_alarm,
-                        R.drawable.device_logo_bhy_3_lr200_error
-                    )
-                )
-            }
-
-            ProductType.U_I_1, ProductType.U_R_1 -> {
-                logoResIdList.addAll(
-                    arrayListOf(
-                        R.drawable.device_logo_bhy_3s,
-                        R.drawable.device_logo_bhy_3s_alarm,
-                        R.drawable.device_logo_bhy_3s_error
-                    )
-                )
-            }
-
-            ProductType.U_D_1, ProductType.U_D_2, ProductType.U_D_3 -> {
-                logoResIdList.addAll(
-                    arrayListOf(
-                        R.drawable.device_logo_dr030,
-                        R.drawable.device_logo_dr030_alarm,
-                        R.drawable.device_logo_dr030_error
-                    )
-                )
-            }
-
-            ProductType.LB20S -> {
-                logoResIdList.addAll(
-                    arrayListOf(
-                        R.drawable.device_logo_lb20s,
-                        R.drawable.device_logo_lb20s_alarm,
-                        R.drawable.device_logo_lb20s_error
-                    )
-                )
-            }
-            else -> {
-                logoResIdList.addAll(
-                    arrayListOf(
-                        R.drawable.device_logo_default,
-                        R.drawable.device_logo_default_alarm,
-                        R.drawable.device_logo_default_error
-                    )
-                )
-            }
-        }
+        logoResIdList.addAll(productType.getDeviceLogoResIds())
     }
 
     override val dataBindingConfig: DataBindingConfig

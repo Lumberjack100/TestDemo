@@ -17,6 +17,8 @@ import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.mcloudapp.extensions.isM50Series
+import com.shmedo.mcloudapp.extensions.isUDSeries
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
@@ -117,7 +119,7 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
-            ProductType.GNSS_M_5, ProductType.GNSS_M_6, ProductType.GNSS_M_7, ProductType.GNSS_M_8 -> {
+            in ProductType.entries.filter { it.isM50Series() } -> {
                 navController.setGraph(
                     R.navigation.m50_graph,
                     bundle2
@@ -149,7 +151,7 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
-            ProductType.U_D_1, ProductType.U_D_2, ProductType.U_D_3 -> {
+            in ProductType.entries.filter { it.isUDSeries() } -> {
                 navController.setGraph(
                     R.navigation.ud_graph,
                     bundle2

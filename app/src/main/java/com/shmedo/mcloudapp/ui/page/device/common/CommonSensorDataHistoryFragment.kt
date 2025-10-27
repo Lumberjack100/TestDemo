@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentCommonSensorDataHistoryBinding
 import com.shmedo.mcloudapp.databinding.ItemUdSensorDataBinding
 import com.shmedo.mcloudapp.databinding.ItemUdSensorDataHeaderBinding
+import com.shmedo.mcloudapp.extensions.getSensorDataConfig
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -196,99 +197,12 @@ class CommonSensorDataHistoryFragment : BaseFragment() {
             productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
             deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
         }
-        when (productType) {
-            ProductType.U_D_1, ProductType.U_D_2, ProductType.U_D_3 -> {
-                modelNameList.addAll(
-                    arrayListOf(
-                        "液位海拔",
-                        "空高距离",
-                        "安装角度",
-                        "抓拍图片"
-                    )
-                )
-                modelTokenList.addAll(
-                    arrayListOf(
-                        "904",
-                        "904",
-                        "206",
-                        "10001"
-                    )
-                )
-                modelValueDescList.addAll(
-                    arrayListOf(
-                        "高度（米）",
-                        "高度（米）",
-                        "角度（度）",
-                        "操作"
-                    )
-                )
-                modelFieldJsonPathList.addAll(
-                    arrayListOf(
-                        "liquid_surface_alt",
-                        "ullage",
-                        "z"
-                    )
-                )
-            }
-
-            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {
-                modelNameList.addAll(
-                    arrayListOf(
-                        "合位移量",
-                        "安装角度"
-                    )
-                )
-                modelTokenList.addAll(
-                    arrayListOf(
-                        "904",
-                        "103"
-                    )
-                )
-                modelValueDescList.addAll(
-                    arrayListOf(
-                        "高度（毫米）",
-                        "角度（度）"
-                    )
-                )
-                modelFieldJsonPathList.addAll(
-                    arrayListOf(
-                        "liquid_surface_alt",
-                        "z"
-                    )
-                )
-            }
-
-            ProductType.GNSS_M_5, ProductType.GNSS_M_6, ProductType.GNSS_M_7, ProductType.GNSS_M_8 -> {
-                modelNameList.addAll(
-                    arrayListOf(
-                        "合位移量",
-                        "安装角度",
-                        "抓拍图片"
-                    )
-                )
-                modelTokenList.addAll(
-                    arrayListOf(
-                        "904",
-                        "103",
-                        "10001"
-                    )
-                )
-                modelValueDescList.addAll(
-                    arrayListOf(
-                        "高度（毫米）",
-                        "角度（度）",
-                        "操作"
-                    )
-                )
-                modelFieldJsonPathList.addAll(
-                    arrayListOf(
-                        "liquid_surface_alt",
-                        "z"
-                    )
-                )
-            }
-
-            else -> {}
+        // 使用扩展方法获取传感器数据配置
+        productType.getSensorDataConfig()?.let { config ->
+            modelNameList.addAll(config.modelNames)
+            modelTokenList.addAll(config.modelTokens)
+            modelValueDescList.addAll(config.valueDescs)
+            modelFieldJsonPathList.addAll(config.fieldPaths)
         }
         resetDefaultParams()
     }

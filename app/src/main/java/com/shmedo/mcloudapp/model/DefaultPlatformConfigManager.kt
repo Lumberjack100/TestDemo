@@ -4,6 +4,8 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.GuangdongWaterPlatformStationType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.NewDataCenterPlatform
 import com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.mcloudapp.extensions.isM50Series
+import com.shmedo.mcloudapp.extensions.isMR702
 import com.shmedo.mcloudapp.ui.viewmodel.state.DataCenterParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702DataCenterParamViewModel
 
@@ -18,8 +20,8 @@ object DefaultPlatformConfigManager {
      * @return 支持的平台名称列表
      */
     fun getSupportedPlatformNames(productType: ProductType): List<String> {
-        return when (productType) {
-            ProductType.COLLECTOR_R_2 -> arrayListOf(
+        return when {
+            productType.isMR702() -> arrayListOf(
                 NewDataCenterPlatform.MEDO_IOT_PLATFORM.getPlatFormName(),
                 NewDataCenterPlatform.GUANGDONG_WATER_PLATFORM.getPlatFormName(),
                 NewDataCenterPlatform.GUANGXI_WATER_PLATFORM.getPlatFormName(),
@@ -27,7 +29,7 @@ object DefaultPlatformConfigManager {
                 NewDataCenterPlatform.HUBEI_ECO_PLATFORM.getPlatFormName()
             )
 
-            ProductType.GNSS_M_5, ProductType.GNSS_M_6, ProductType.GNSS_M_7, ProductType.GNSS_M_8 -> arrayListOf(
+            productType.isM50Series() -> arrayListOf(
                 NewDataCenterPlatform.MEDO_IOT_PLATFORM.getPlatFormName(),
                 NewDataCenterPlatform.GUIZHOU_DISASTER_PLATFORM.getPlatFormName(),
                 NewDataCenterPlatform.GUANGXI_DISASTER_PLATFORM.getPlatFormName(),
@@ -121,7 +123,7 @@ object DefaultPlatformConfigManager {
             )
 
 
-            NewDataCenterPlatform.CORS_PLATFORM.getPlatFormName() -> if (productType == ProductType.GNSS_M_5 || productType == ProductType.GNSS_M_6 || productType == ProductType.GNSS_M_7 || productType == ProductType.GNSS_M_8) listOf(
+            NewDataCenterPlatform.CORS_PLATFORM.getPlatFormName() -> if (productType.isM50Series()) listOf(
                 PlatformDataProtocol.NTRIP_C.getCmdValue(),
                 PlatformDataProtocol.NTRIP_S.getCmdValue()
             ) else listOf(PlatformDataProtocol.NTRIP.getCmdValue())

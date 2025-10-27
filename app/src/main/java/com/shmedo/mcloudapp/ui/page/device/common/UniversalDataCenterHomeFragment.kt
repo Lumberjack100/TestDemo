@@ -16,7 +16,6 @@ import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.CenterNumberEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.DataReportTypeEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasDataReportEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerFive
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerFour
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerOne
@@ -38,6 +37,9 @@ import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.databinding.ItemBeidouDataTransmissionBinding
 import com.shmedo.mcloudapp.databinding.ItemDataReportingPeriodBinding
+import com.shmedo.mcloudapp.extensions.isM20Series
+import com.shmedo.mcloudapp.extensions.isM50Series
+import com.shmedo.mcloudapp.extensions.isUIURSeries
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BeidouDataTransmissionItem
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
@@ -74,20 +76,14 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
      * 是否需要加载简单的上报周期配置布局 (支持上报间隔)
      */
     private fun isSupportSimpleReportingPeriodMode(): Boolean {
-        return productType == ProductType.U_I_1
-                || productType == ProductType.U_R_1
+        return productType.isUIURSeries()
     }
 
     /**
      * 是否需要加载复杂的上报周期配置布局 (支持定时定点和固定间隔两种上报方式)
      */
     private fun isSupportComplexReportingPeriodMode(): Boolean {
-        return productType == ProductType.GNSS_M_1
-                || productType == ProductType.GNSS_M_2
-                || productType == ProductType.GNSS_M_5
-                || productType == ProductType.GNSS_M_6
-                || productType == ProductType.GNSS_M_7
-                || productType == ProductType.GNSS_M_8
+        return productType.isM20Series() || productType.isM50Series()
     }
 
 

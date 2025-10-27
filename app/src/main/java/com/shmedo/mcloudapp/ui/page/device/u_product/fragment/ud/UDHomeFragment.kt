@@ -11,7 +11,7 @@ import com.hjq.toast.Toaster
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.mcloudapp.extensions.isLL030
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -101,26 +101,22 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
 
     override fun initModuleData() {
         // 扩展适配器支持 UDMeasureDataItem
-        when (productType) {
-            ProductType.U_D_3 //一体可视化雷达流量计
-                -> {
-                binding.rvModule.bindingAdapter.addType<LL030MeasureDataItem>(R.layout.item_ll030_measure_data)
-                sensorTypeList.addAll(ll030SensorTypeList)
-            }
-
-            else -> {
-                binding.rvModule.bindingAdapter.addType<DR030MeasureDataItem>(R.layout.item_dr030_measure_data)
-                sensorTypeList.addAll(dr030SensorTypeList)
-            }
+        if (productType.isLL030()) {
+            binding.rvModule.bindingAdapter.addType<LL030MeasureDataItem>(R.layout.item_ll030_measure_data)
+            sensorTypeList.addAll(ll030SensorTypeList)
+        } else {
+            binding.rvModule.bindingAdapter.addType<DR030MeasureDataItem>(R.layout.item_dr030_measure_data)
+            sensorTypeList.addAll(dr030SensorTypeList)
         }
 
 
         val groupList = mutableListOf<Any>()
 
         // 根据产品类型添加对应的测量数据作为第一个项目
-        when (productType) {
-            ProductType.U_D_3 -> groupList.add(ll030MeasureDataItem)
-            else -> groupList.add(dR030MeasureDataItem)
+        if (productType.isLL030()) {
+            groupList.add(ll030MeasureDataItem)
+        } else {
+            groupList.add(dR030MeasureDataItem)
         }
 
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
@@ -318,7 +314,7 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
         val measurementTime = resultMap["time"]?.replace(".000", "")?.replace("-", ".")
             ?: AppContants.PLACE_HOLDER_VALUE
 
-        if (productType == ProductType.U_D_3)
+        if (productType.isLL030())
             ll030MeasureDataItem.refreshLL030MeasureData(
                 waterSurfaceElevation,
                 airDistance,
@@ -574,7 +570,7 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
                     val measurementTime =
                         resultMap["time"]?.replace("-", ".") ?: AppContants.PLACE_HOLDER_VALUE
 
-                    if (productType == ProductType.U_D_3)
+                    if (productType.isLL030())
                         ll030MeasureDataItem.refreshLL030MeasureData(
                             waterSurfaceElevation,
                             airDistance,
@@ -609,7 +605,7 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
      */
     private fun startMeasurementAnimation() {
         // 显示进度条并开始动画
-        if (productType == ProductType.U_D_3) {
+        if (productType.isLL030()) {
             ll030MeasureDataItem.setMeasuringStatus(true)
             binding.rvModule.bindingAdapter.getModel<LL030MeasureDataItem>(0).let {
                 val viewHolder = binding.rvModule.findViewHolderForAdapterPosition(0)
@@ -634,7 +630,7 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
     private fun stopMeasurementAnimation() {
         dismissLoadingDialog(measureDataLoadingDialogId)
         // 隐藏进度条并停止动画
-        if (productType == ProductType.U_D_3)
+        if (productType.isLL030())
             ll030MeasureDataItem.setMeasuringStatus(false)
         else dR030MeasureDataItem.setMeasuringStatus(false)
 
