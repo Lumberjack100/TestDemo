@@ -11,7 +11,6 @@ import com.hjq.toast.Toaster
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.mcloudapp.extensions.isLL030
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -25,6 +24,7 @@ import com.shmedo.mcloudapp.communication.session.CommandPriority
 import com.shmedo.mcloudapp.databinding.ItemDr030MeasureDataBinding
 import com.shmedo.mcloudapp.databinding.ItemLl030MeasureDataBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
+import com.shmedo.mcloudapp.extensions.isLL030
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
@@ -161,69 +161,96 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
 
         // 设备配置模块
         groupList.add(DeviceStatusInfoGroupItem("设备配置"))
-        val configModuleTree = ConfigModuleTree(
-            configModules = arrayListOf(
-                CommonModule(
-                    name = "工作模式",
-                    resID = R.drawable.ic_module_work_mode_new,
-                    navId = R.id.action_global_to_udWorkModelParamFragment
-                ).toUnified(),
+        val configModuleTree = ConfigModuleTree()
+        configModuleTree.configModules.add(
+            CommonModule(
+                name = "工作模式",
+                resID = R.drawable.ic_module_work_mode_new,
+                navId = R.id.action_global_to_udWorkModelParamFragment
+            ).toUnified()
+        )
 
-                CommonModule(
-                    name = "网络配置",
-                    resID = R.drawable.ic_module_network_setting,
-                    navId = R.id.action_global_to_udMobileNetworkParamFragment
-                ).toUnified(),
+         configModuleTree.configModules.add(
+            CommonModule(
+                name = "网络配置",
+                resID = R.drawable.ic_module_network_setting,
+                navId = R.id.action_global_to_udMobileNetworkParamFragment
+            ).toUnified()
+        )
+        
+        configModuleTree.configModules.add(
+            DataCenterModule(
+                name = "链路配置",
+                resID = R.drawable.ic_module_datacenter_new,
+                navId = R.id.action_global_to_udProductDataCenterHomeFragment
+            ).toUnified()
+        )
+        
+        configModuleTree.configModules.add(
+            CommonModule(
+                name = "高程配置",
+                resID = R.drawable.ic_module_cors,
+                navId = R.id.action_global_to_udCORSParamFragment
+            ).toUnified()
+        )
+        
+        configModuleTree.configModules.add(
+            CommonModule(
+                name = "传感配置",
+                resID = R.drawable.ic_module_sensor_setting_new,
+                navId = R.id.action_global_to_udProductSensorParamFragment
+            ).toUnified()
+        )
+        
+        configModuleTree.configModules.add(
+            CommonModule(
+                name = "串口配置",
+                resID = R.drawable.ic_module_serial_port,
+                navId = R.id.action_global_to_udSerialPortParamFragment,
+                isSupport = false
+            ).toUnified()
+        )
+        
+        configModuleTree.configModules.add(
+            CommonModule(
+                name = "LORA配置",
+                resID = R.drawable.ic_module_lora_new,
+                navId = R.id.action_global_to_loraSettingFragment
+            ).toUnified()
+        )
+        
+        configModuleTree.configModules.add(
+            CommonModule(
+                name = "报警配置",
+                resID = R.drawable.ic_module_alarm_new,
+                navId = R.id.action_global_to_alarmSettingFragment
+            ).toUnified()
+        )
 
-                DataCenterModule(
-                    name = "链路配置",
-                    resID = R.drawable.ic_module_datacenter_new,
-                    navId = R.id.action_global_to_udProductDataCenterHomeFragment
-                ).toUnified(),
-
+        if(productType.isLL030()){
+            configModuleTree.configModules.add(
                 CommonModule(
-                    name = "高程配置",
-                    resID = R.drawable.ic_module_cors,
-                    navId = R.id.action_global_to_udCORSParamFragment
-                ).toUnified(),
-
-                CommonModule(
-                    name = "传感配置",
-                    resID = R.drawable.ic_module_sensor_setting_new,
-                    navId = R.id.action_global_to_udProductSensorParamFragment
-                ).toUnified(),
-
-                CommonModule(
-                    name = "串口配置",
-                    resID = R.drawable.ic_module_serial_port,
-                    navId = R.id.action_global_to_udSerialPortParamFragment,
-                    isSupport = false
-                ).toUnified(),
-
-                CommonModule(
-                    name = "LORA配置",
-                    resID = R.drawable.ic_module_lora_new,
-                    navId = R.id.action_global_to_loraSettingFragment
-                ).toUnified(),
-
-                CommonModule(
-                    name = "报警配置",
-                    resID = R.drawable.ic_module_alarm_new,
-                    navId = R.id.action_global_to_alarmSettingFragment
-                ).toUnified(),
-
-                CommonModule(
-                    name = "时间校准",
-                    resID = R.drawable.ic_module_time_calibration_new,
-                    navId = R.id.action_global_to_time_calibration
-                ).toUnified(),
-
-                CommonModule(
-                    name = "系统配置",
+                    name = "流量配置",
                     resID = R.drawable.ic_module_system_setting,
-                    navId = R.id.action_global_to_advancedSettingFragment
+                    navId = R.id.action_global_to_udFlowCalculationFragment
                 ).toUnified()
             )
+        }
+        
+        configModuleTree.configModules.add(
+            CommonModule(
+                name = "时间校准",
+                resID = R.drawable.ic_module_time_calibration_new,
+                navId = R.id.action_global_to_time_calibration
+            ).toUnified()
+        )
+        
+        configModuleTree.configModules.add(
+            CommonModule(
+                name = "系统配置",
+                resID = R.drawable.ic_module_system_setting,
+                navId = R.id.action_global_to_advancedSettingFragment
+            ).toUnified()
         )
 
         // 蓝牙连接时添加指令调试模块

@@ -560,6 +560,9 @@ enum class IOTCommandType(val value: String) {
     /** 配置参数初始值指令 */
     MD_SET_SENSOR_INITIAL("md_cfginitval"),
 
+    /** 米度一体式泥位计流量计算参数查询 */
+    MD_GET_MUD_LEVEL_METER_SENSOR("md_getsense"),
+
     /** 米度一体式泥位计上报模式配置 */
     MD_SET_MUD_LEVEL_METER_SENSOR("md_setsense"),
 
