@@ -197,7 +197,7 @@ class CommonSensorDataHistoryFragment : BaseFragment() {
             deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
         }
         when (productType) {
-            ProductType.U_D_1, ProductType.U_D_2 -> {
+            ProductType.U_D_1, ProductType.U_D_2, ProductType.U_D_3 -> {
                 modelNameList.addAll(
                     arrayListOf(
                         "液位海拔",

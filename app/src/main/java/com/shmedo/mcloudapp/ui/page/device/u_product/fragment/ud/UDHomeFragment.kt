@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
-import android.os.Bundle
 import android.util.Log
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.NetworkUtils
@@ -12,6 +11,7 @@ import com.hjq.toast.Toaster
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -22,7 +22,8 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.communication.session.CommandPriority
-import com.shmedo.mcloudapp.databinding.ItemUdMeasureDataBinding
+import com.shmedo.mcloudapp.databinding.ItemDr030MeasureDataBinding
+import com.shmedo.mcloudapp.databinding.ItemLl030MeasureDataBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -32,13 +33,13 @@ import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
-import com.shmedo.mcloudapp.model.ConfigBannerItem
 import com.shmedo.mcloudapp.model.ConfigModuleTree
+import com.shmedo.mcloudapp.model.DR030MeasureDataItem
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.model.UDMeasureDataItem
+import com.shmedo.mcloudapp.model.LL030MeasureDataItem
 import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
@@ -57,13 +58,17 @@ import timber.log.Timber
  * 描述：一体式雷达水位计(DR030)设备主页
  */
 class UDHomeFragment : BaseDeviceHomeFragment() {
-
-    private var measureDataItem: UDMeasureDataItem = UDMeasureDataItem()
+    private var dR030MeasureDataItem: DR030MeasureDataItem = DR030MeasureDataItem()
+    private var ll030MeasureDataItem: LL030MeasureDataItem = LL030MeasureDataItem()
     private var measureDataLoadingDialogId = ""
 
     private var abnormalInfoJob: Job? = null
     private var queryMeasureResultTimeoutJob: Job? = null
     private var repeatPollNum = 0 // 重复轮询次数
+
+    private val sensorTypeList = arrayListOf<String>()
+    private val dr030SensorTypeList = arrayListOf("904", "206")
+    private val ll030SensorTypeList = arrayListOf("904", "206", "217", "220")
 
     override fun initData() {
         super.initData()
@@ -75,29 +80,49 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
         mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
     }
 
-    override fun initView(savedInstanceState: Bundle?) {
-        super.initView(savedInstanceState)
-
-        // 扩展适配器支持 UDMeasureDataItem
-        binding.rvModule.bindingAdapter.addType<UDMeasureDataItem>(R.layout.item_ud_measure_data)
-    }
-
     override fun BindingViewHolder.processOtherItemViewBind(itemViewType: Int) {
-        if (itemViewType == R.layout.item_ud_measure_data) {
-            val binding = getBinding<ItemUdMeasureDataBinding>()
+        if (itemViewType == R.layout.item_dr030_measure_data) {
+            val binding = getBinding<ItemDr030MeasureDataBinding>()
 
             // 设置数据绑定参数
-            binding.setVariable(BR.m, measureDataItem)
+            binding.setVariable(BR.m, dR030MeasureDataItem)
+            binding.setVariable(BR.click, ClickProxy())
+            binding.executePendingBindings()
+
+        } else if (itemViewType == R.layout.item_ll030_measure_data) {
+            val binding = getBinding<ItemLl030MeasureDataBinding>()
+
+            // 设置数据绑定参数
+            binding.setVariable(BR.m, ll030MeasureDataItem)
             binding.setVariable(BR.click, ClickProxy())
             binding.executePendingBindings()
         }
     }
 
     override fun initModuleData() {
+        // 扩展适配器支持 UDMeasureDataItem
+        when (productType) {
+            ProductType.U_D_3 //一体可视化雷达流量计
+                -> {
+                binding.rvModule.bindingAdapter.addType<LL030MeasureDataItem>(R.layout.item_ll030_measure_data)
+                sensorTypeList.addAll(ll030SensorTypeList)
+            }
+
+            else -> {
+                binding.rvModule.bindingAdapter.addType<DR030MeasureDataItem>(R.layout.item_dr030_measure_data)
+                sensorTypeList.addAll(dr030SensorTypeList)
+            }
+        }
+
+
         val groupList = mutableListOf<Any>()
 
-        // 添加测量数据作为第一个项目
-        groupList.add(measureDataItem)
+        // 根据产品类型添加对应的测量数据作为第一个项目
+        when (productType) {
+            ProductType.U_D_3 -> groupList.add(ll030MeasureDataItem)
+            else -> groupList.add(dR030MeasureDataItem)
+        }
+
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
 
         // 设备信息模块
@@ -161,7 +186,7 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
                 ).toUnified(),
 
                 CommonModule(
-                    name = "海拔配置",
+                    name = "高程配置",
                     resID = R.drawable.ic_module_cors,
                     navId = R.id.action_global_to_udCORSParamFragment
                 ).toUnified(),
@@ -173,9 +198,10 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
                 ).toUnified(),
 
                 CommonModule(
-                    name = "端口配置",
+                    name = "串口配置",
                     resID = R.drawable.ic_module_serial_port,
-                    navId = R.id.action_global_to_udSerialPortParamFragment
+                    navId = R.id.action_global_to_udSerialPortParamFragment,
+                    isSupport = false
                 ).toUnified(),
 
                 CommonModule(
@@ -269,7 +295,7 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
                 val resultMap: Map<String, String> =
                     deviceRequestViewModel.queryLatestSensorData(
                         deviceInfo.deviceToken,
-                        iotSensorTypeList = arrayListOf("904", "206")
+                        iotSensorTypeList = sensorTypeList
                     )
                 if (resultMap.isEmpty())
                     return@launchWithViewLifecycle
@@ -289,18 +315,25 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
             resultMap["ullage"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
         val installationAngle =
             resultMap["z"]?.let { "$it °" } ?: AppContants.PLACE_HOLDER_VALUE
-        val todayRainfall =
-            resultMap["today_rain"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
         val measurementTime = resultMap["time"]?.replace(".000", "")?.replace("-", ".")
             ?: AppContants.PLACE_HOLDER_VALUE
 
-        measureDataItem.refreshMeasureData(
-            waterSurfaceElevation,
-            airDistance,
-            installationAngle,
-            todayRainfall,
-            measurementTime
-        )
+        if (productType == ProductType.U_D_3)
+            ll030MeasureDataItem.refreshLL030MeasureData(
+                waterSurfaceElevation,
+                airDistance,
+                installationAngle,
+                "",
+                "",
+                measurementTime
+            )
+        else
+            dR030MeasureDataItem.refreshDR030MeasureData(
+                waterSurfaceElevation,
+                airDistance,
+                installationAngle,
+                measurementTime
+            )
     }
 
     /**
@@ -528,7 +561,6 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
                 if (resultMap.containsKey("obj_alt")
                     || resultMap.containsKey("ld_value")
                     || resultMap.containsKey("z_angle")
-                    || resultMap.containsKey("today_rain")
                     || resultMap.containsKey("time")
                 ) {
                     stopMeasurementAnimation()
@@ -539,18 +571,26 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
                         resultMap["ld_value"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
                     val installationAngle =
                         resultMap["z_angle"]?.let { "$it °" } ?: AppContants.PLACE_HOLDER_VALUE
-                    val todayRainfall =
-                        resultMap["today_rain"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
                     val measurementTime =
                         resultMap["time"]?.replace("-", ".") ?: AppContants.PLACE_HOLDER_VALUE
 
-                    measureDataItem .refreshMeasureData(
+                    if (productType == ProductType.U_D_3)
+                        ll030MeasureDataItem.refreshLL030MeasureData(
                             waterSurfaceElevation,
                             airDistance,
                             installationAngle,
-                            todayRainfall,
+                            "",
+                            "",
                             measurementTime
                         )
+                    else
+                        dR030MeasureDataItem.refreshDR030MeasureData(
+                            waterSurfaceElevation,
+                            airDistance,
+                            installationAngle,
+                            measurementTime
+                        )
+
                     return
                 }
 
@@ -569,12 +609,22 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
      */
     private fun startMeasurementAnimation() {
         // 显示进度条并开始动画
-        measureDataItem.setMeasuringStatus(true)
-        binding.rvModule.bindingAdapter.getModel<UDMeasureDataItem>(0).let {
-            val viewHolder = binding.rvModule.findViewHolderForAdapterPosition(0)
-            viewHolder?.itemView?.findViewById<com.shmedo.mcloudapp.ui.widget.ProgressMaterialButton>(
-                R.id.btn_measure_data
-            )?.startProgressAnimation()
+        if (productType == ProductType.U_D_3) {
+            ll030MeasureDataItem.setMeasuringStatus(true)
+            binding.rvModule.bindingAdapter.getModel<LL030MeasureDataItem>(0).let {
+                val viewHolder = binding.rvModule.findViewHolderForAdapterPosition(0)
+                viewHolder?.itemView?.findViewById<com.shmedo.mcloudapp.ui.widget.ProgressMaterialButton>(
+                    R.id.btn_measure_data
+                )?.startProgressAnimation()
+            }
+        } else {
+            dR030MeasureDataItem.setMeasuringStatus(true)
+            binding.rvModule.bindingAdapter.getModel<DR030MeasureDataItem>(0).let {
+                val viewHolder = binding.rvModule.findViewHolderForAdapterPosition(0)
+                viewHolder?.itemView?.findViewById<com.shmedo.mcloudapp.ui.widget.ProgressMaterialButton>(
+                    R.id.btn_measure_data
+                )?.startProgressAnimation()
+            }
         }
     }
 
@@ -584,7 +634,9 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
     private fun stopMeasurementAnimation() {
         dismissLoadingDialog(measureDataLoadingDialogId)
         // 隐藏进度条并停止动画
-        measureDataItem.setMeasuringStatus(false)
+        if (productType == ProductType.U_D_3)
+            ll030MeasureDataItem.setMeasuringStatus(false)
+        else dR030MeasureDataItem.setMeasuringStatus(false)
 
         val viewHolder = binding.rvModule.findViewHolderForAdapterPosition(0)
         viewHolder?.itemView?.findViewById<com.shmedo.mcloudapp.ui.widget.ProgressMaterialButton>(
@@ -636,7 +688,7 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            if (measureDataItem.isMeasuring.get())
+            if (dR030MeasureDataItem.isMeasuring.get() || ll030MeasureDataItem.isMeasuring.get())
                 return
 
             measureData()

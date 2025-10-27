@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.model.LL030MeasureDataItem" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/page_content_item_padding_horizontal_16"
+        app:drawable_radius="@{4}"
+        app:drawable_solidColor="@{@color/white}"
+        tools:background="@color/white">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="14dp"
+                android:background="@color/black" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/Common_GroupItem_Title_Style"
+                android:layout_marginStart="@dimen/dimen_size_8"
+                android:text="测量数据" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ll_water_surface_elevation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_8">
+
+            <View
+                android:id="@+id/vertical_divider_line1"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_marginVertical="@dimen/dimen_size_2"
+                android:background="@color/divider_line_bg2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_water_surface_elevation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{"液位海拔："+m.waterSurfaceElevation}'
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/measure_data_item_text_size_12"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="液位海拔：5.38 m" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_16"
+                android:text='@{"瞬时流速："+m.instantFlowVelocity}'
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/measure_data_item_text_size_12"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/vertical_divider_line1"
+                tools:text="瞬时流速：20.5 m/s" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ll_air_distance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_8">
+
+            <View
+                android:id="@+id/vertical_divider_line2"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_marginVertical="@dimen/dimen_size_2"
+                android:background="@color/divider_line_bg2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_air_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{"空高距离："+m.airDistance}'
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/measure_data_item_text_size_12"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="空高距离：5.38 m" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_16"
+                android:text='@{"瞬时流量："+m.instantFlowRate}'
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/measure_data_item_text_size_12"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/vertical_divider_line2"
+                tools:text="瞬时流量：2.35 m³/s" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_installation_angle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_8"
+            android:text='@{"安装角度："+m.installationAngle}'
+            android:textColor="@color/title_text_color_black_90"
+            android:textSize="@dimen/measure_data_item_text_size_12"
+            tools:text="安装角度：89.3 °" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_8"
+            android:text='@{"测量时间："+m.measurementTime}'
+            android:textColor="@color/title_text_color_black_90"
+            android:textSize="@dimen/measure_data_item_text_size_12"
+            tools:text="测量时间：2023-08-07 12:36:00" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10">
+
+            <com.shmedo.mcloudapp.ui.widget.ProgressMaterialButton
+                android:id="@+id/btn_measure_data"
+                style="@style/MeasureData_Button_Style"
+                android:onClick="@{()->click.onMeasureDataClick()}"
+                android:text='@{m.isMeasuring() ? "测量中" : "测量"}'
+                app:icon="@drawable/ic_device_measure_data"
+                tools:text="测量中" />
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/MeasureData_Button_Style"
+                android:layout_marginStart="@dimen/dimen_size_10"
+                android:onClick="@{()->click.onTakePhotoClick()}"
+                android:text='拍照'
+                app:icon="@drawable/ic_device_take_photo" />
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/MeasureData_Button_Style"
+                android:layout_marginStart="@dimen/dimen_size_10"
+                android:onClick="@{()->click.onGoToSensorDataHistoryClick()}"
+                android:text='历史'
+                app:icon="@drawable/ic_device_sensor_data_history" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>
