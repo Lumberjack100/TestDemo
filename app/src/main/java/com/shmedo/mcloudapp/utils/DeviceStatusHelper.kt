@@ -11,6 +11,11 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UProductCurrentStateInfo
  */
 object DeviceStatusHelper {
 
+    /**
+     * 检查设备异常状态
+     * @param selfCheck 设备自检状态字符串
+     * @return 设备异常信息列表
+     */
     fun checkDeviceAbnormal(selfCheck: String): ArrayList<String> {
         //"self_check": "GPS:1,eMMC:1,4g:1,RTC:1,solar485:0,G-Sensor:1,BT:1,GNSS:1,QMC:0,SHT21:1,product_time:20240411"
         val deviceAbnormalList: ArrayList<String> = ArrayList()
@@ -138,6 +143,11 @@ object DeviceStatusHelper {
         return deviceAbnormalList
     }
 
+    /**
+     * 检查设备异常状态
+     * @param currentStateInfo 设备当前状态信息
+     * @return 设备异常信息列表
+     */
     fun checkDeviceAbnormal(currentStateInfo: UProductCurrentStateInfo): ArrayList<String> {
         val deviceAbnormalList: ArrayList<String> = ArrayList()
 
@@ -372,6 +382,7 @@ object DeviceStatusHelper {
             ArrayList<String>()
         }
     }
+
     /**
      * 通过Map检查M50设备告警状态
      * @param statusMap 状态信息Map
@@ -448,22 +459,26 @@ object DeviceStatusHelper {
 
         return deviceWarnList
     }
+
     /**
      * 合并故障和告警信息，并进行过滤
      * @param abnormalList 故障信息列表
      * @param warnList 告警信息列表
      * @return 过滤后的合并列表
      */
-    fun mergeM50StatusInfo(abnormalList: ArrayList<String>, warnList: ArrayList<String>): ArrayList<String> {
+    fun mergeM50StatusInfo(
+        abnormalList: ArrayList<String>,
+        warnList: ArrayList<String>
+    ): ArrayList<String> {
         val mergedList = ArrayList<String>()
-        
+
         // 添加所有故障信息
         mergedList.addAll(abnormalList)
-        
+
         // 检查电池故障状态
         val hasInternalBatteryFault = abnormalList.any { it.contains("内部电池故障") }
         val hasBackupBatteryFault = abnormalList.any { it.contains("备用电池故障") }
-        
+
         // 过滤告警信息
         warnList.forEach { warn ->
             val shouldAdd = when (warn) {
@@ -471,12 +486,12 @@ object DeviceStatusHelper {
                 "备用电池电量过低", "备用电池健康度过低" -> !hasBackupBatteryFault
                 else -> true
             }
-            
+
             if (shouldAdd) {
                 mergedList.add(warn)
             }
         }
-        
+
         return mergedList
     }
 
@@ -524,7 +539,10 @@ object DeviceStatusHelper {
      * @param warnList 告警信息列表
      * @return 过滤后的合并列表
      */
-    fun mergeM20StatusInfo(abnormalList: ArrayList<String>, warnList: ArrayList<String>): ArrayList<String> {
+    fun mergeM20StatusInfo(
+        abnormalList: ArrayList<String>,
+        warnList: ArrayList<String>
+    ): ArrayList<String> {
         val mergedList = ArrayList<String>()
 
         // 添加所有故障信息
@@ -536,6 +554,49 @@ object DeviceStatusHelper {
         return mergedList
     }
 
+    /**
+     * 处理UD系列设备异常信息
+     * @param deviceError 设备故障信息
+     * @param deviceWarn 设备告警信息
+     * @return 异常信息列表
+     */
+    fun processUDSeriesAbnormalInfo(
+        deviceError: Map<String, String>? = null,
+        deviceWarn: Map<String, String>? = null
+    ): List<String> {
+        val errorInfoList = mutableListOf<String>()
+
+        deviceError?.let { resultMap ->
+            resultMap["bat"]?.let { errorInfoList.add("电池故障") }
+            resultMap["ld"]?.let { errorInfoList.add("雷达模块故障") }
+            resultMap["cam"]?.let { errorInfoList.add("摄像头模块故障") }
+            resultMap["gnss"]?.let { errorInfoList.add("GNSS模块故障") }
+            resultMap["qj"]?.let { errorInfoList.add("倾角加速度模块故障") }
+            resultMap["4G"]?.let { errorInfoList.add("4G模块故障") }
+            resultMap["bt"]?.let { errorInfoList.add("蓝牙模块故障") }
+            resultMap["flash"]?.let { errorInfoList.add("存储卡故障") }
+            resultMap["ath"]?.let { errorInfoList.add("温湿度模块故障") }
+        }
+
+        deviceWarn?.let { resultMap ->
+            resultMap["loc_offset"]?.let { errorInfoList.add("位置偏移") }
+            resultMap["angle_offset"]?.let { errorInfoList.add("角度偏移") }
+            resultMap["extern_volt"]?.let { volt -> errorInfoList.add(if (volt == "-1") "外部电压过高" else "外部电压过低") }
+            resultMap["bat_cap"]?.let { errorInfoList.add("电池电量过低") }
+            resultMap["bat_temp"]?.let { errorInfoList.add("电池温度过高") }
+            resultMap["bat_health"]?.let { errorInfoList.add("电池容量过低") }
+            resultMap["inside_temp"]?.let { temp -> errorInfoList.add(if (temp == "-1") "内部温度过高" else "内部温度过低") }
+            resultMap["sim_card"]?.let { errorInfoList.add("无SIM卡") }
+        }
+
+        return errorInfoList
+    }
+
+    /**
+     * 检查ADME设备异常状态
+     * @param abndiasis 异常状态字符串
+     * @return 设备异常信息列表
+     */
     fun checkAdmeDeviceAbnormal(abndiasis: String): ArrayList<String> {
         if (abndiasis.isEmpty() || abndiasis == "0")
             return ArrayList()

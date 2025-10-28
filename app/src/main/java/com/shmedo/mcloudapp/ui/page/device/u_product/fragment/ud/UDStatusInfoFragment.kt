@@ -245,12 +245,10 @@ class UDStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
-                    name = "电台模块",
-                    value = when (stateInfo.radioStatus) {
-                        "0" -> "正常"
-                        "-2" -> "数据异常"
-                        "-3" -> "模块故障"
-                        else -> AppContants.Companion.PLACE_HOLDER_VALUE
+                    name = "LORA模块",
+                    value = when (stateInfo.loraStatus) {
+                        "-4" -> "无"
+                        else -> "有"
                     },
                     textColorRes = if (stateInfo.radioStatus == "-2" || stateInfo.radioStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400

@@ -19,8 +19,8 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoTextSwitcherItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
+import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
-import com.shmedo.mcloudapp.utils.UDDeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -203,7 +203,7 @@ class UDBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         deviceWarn: Map<String, String>? = null
     ) {
         try {
-            val errorInfoList = UDDeviceStatusHelper.processAbnormalInfo(deviceError, deviceWarn)
+            val errorInfoList = DeviceStatusHelper.processUDSeriesAbnormalInfo(deviceError, deviceWarn)
             handleAbnormalInfo(errorInfoList)
         } catch (e: Exception) {
             Timber.Forest.e(e)

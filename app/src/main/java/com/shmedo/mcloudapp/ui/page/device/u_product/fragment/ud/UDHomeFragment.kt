@@ -44,7 +44,7 @@ import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
-import com.shmedo.mcloudapp.utils.UDDeviceStatusHelper
+import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -520,7 +520,7 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
         deviceWarn: Map<String, String>? = null
     ) {
         try {
-            val errorInfoList = UDDeviceStatusHelper.processAbnormalInfo(deviceError, deviceWarn)
+            val errorInfoList = DeviceStatusHelper.processUDSeriesAbnormalInfo(deviceError, deviceWarn)
             handleAbnormalInfo(errorInfoList)
         } catch (e: Exception) {
             Timber.e(e)

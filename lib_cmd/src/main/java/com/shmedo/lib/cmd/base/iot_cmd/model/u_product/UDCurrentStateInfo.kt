@@ -100,6 +100,8 @@ data class UDCurrentStateInfo(
     val btStatus: String = IOTConstants.NULL_KEY, //蓝牙模块状态   0：正常 -2：数据异常  -3：模块异常
     @Json(name = "radio_sta")
     val radioStatus: String = IOTConstants.NULL_KEY, //电台模块状态   0：正常 -2：数据异常  -3：模块异常
+    @Json(name = "lora_sta")
+    val loraStatus: String = IOTConstants.NULL_KEY, //LORA模块状态   0：正常 -2：数据异常  -3：模块异常
     @Json(name = "flash_sta")
     val flashStatus: String = IOTConstants.NULL_KEY, //内存模块状态   0：正常 -2：数据异常  -3：模块异常
     @Json(name = "ath_sta")
