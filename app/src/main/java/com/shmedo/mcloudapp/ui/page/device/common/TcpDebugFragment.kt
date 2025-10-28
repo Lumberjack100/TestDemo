@@ -445,13 +445,12 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
             val rawModeText = if (isRawMode) "切换到分隔符模式" else "切换到原始模式"
             val menuItems = if (bleViewModel.isConnected()) {
                 arrayOf<String>(
-                    "清空日志",
-                    "分享日志",
-                    rawModeText,
                     "打开debug模式",
                     "打开info模式",
                     "关闭debug模式",
-                    "测试"
+                    "清空日志",
+                    "分享日志",
+                    rawModeText,
                 )
             } else {
                 arrayOf<String>("蓝牙重连", "清空日志", "分享日志", rawModeText)
@@ -732,7 +731,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 // 设置剪贴板数据以授予接收应用对URI的访问权限
-                clipData =  ClipData.newRawUri("", uri)
+                clipData = ClipData.newRawUri("", uri)
             }
             startActivity(Intent.createChooser(shareIntent, "分享到"))
         } catch (e: Exception) {

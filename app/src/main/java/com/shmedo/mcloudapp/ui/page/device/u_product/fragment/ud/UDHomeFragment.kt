@@ -231,7 +231,7 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
             configModuleTree.configModules.add(
                 CommonModule(
                     name = "流量配置",
-                    resID = R.drawable.ic_module_system_setting,
+                    resID = R.drawable.ic_module_flow,
                     navId = R.id.action_global_to_udFlowCalculationFragment
                 ).toUnified()
             )
