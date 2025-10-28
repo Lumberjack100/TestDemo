@@ -600,14 +600,18 @@ class UDHomeFragment : BaseDeviceHomeFragment() {
                         resultMap["z_angle"]?.let { "$it °" } ?: AppContants.PLACE_HOLDER_VALUE
                     val measurementTime =
                         resultMap["time"]?.replace("-", ".") ?: AppContants.PLACE_HOLDER_VALUE
+                    val instantFlowVelocity = resultMap["ls_value"]?.takeUnless { it.isBlank() }?.let { "$it m/s" }
+                        ?: AppContants.PLACE_HOLDER_VALUE
+                    val instantFlowRate = resultMap["ll_value"]?.takeUnless { it.isBlank() }?.let { "$it m3/s" }
+                        ?: AppContants.PLACE_HOLDER_VALUE
 
                     if (productType.isLL030())
                         ll030MeasureDataItem.refreshLL030MeasureData(
                             waterSurfaceElevation,
                             airDistance,
                             installationAngle,
-                            "",
-                            "",
+                            instantFlowVelocity,
+                            instantFlowRate,
                             measurementTime
                         )
                     else
