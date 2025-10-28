@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.permissions.OnPermissionCallback
@@ -181,7 +182,8 @@ class BleScannerListFragment : BaseFragment() {
                 when (state) {
                     ScanningState.Loading -> {
                         Timber.i("scannerViewModel.state: Loading")
-                        binding.refreshLayout.showLoading(refresh = false)
+                        if (binding.recyclerviewDevice.bindingAdapter.modelCount == 0)
+                            binding.refreshLayout.showLoading(refresh = false)
                     }
 
                     is ScanningState.Error -> {
