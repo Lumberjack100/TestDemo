@@ -181,6 +181,7 @@ class BleScannerListFragment : BaseFragment() {
                 when (state) {
                     ScanningState.Loading -> {
                         Timber.i("scannerViewModel.state: Loading")
+                        binding.refreshLayout.showLoading(refresh = false)
                     }
 
                     is ScanningState.Error -> {
@@ -257,7 +258,8 @@ class BleScannerListFragment : BaseFragment() {
             .description(PermissionDescription())
             .request(object : OnPermissionCallback {
                 override fun onResult(
-                    grantedList: List<IPermission>, deniedList: List<IPermission>) {
+                    grantedList: List<IPermission>, deniedList: List<IPermission>
+                ) {
                     val allGranted = deniedList.isEmpty()
                     if (!allGranted) {
                         return
