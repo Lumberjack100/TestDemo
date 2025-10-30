@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.model.UDMeasureDataItem" />
+            type="com.shmedo.mcloudapp.model.DR030MeasureDataItem" />
 
         <variable
             name="click"
@@ -62,46 +62,17 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/ll_air_distance"
-            android:layout_width="match_parent"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_air_distance"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_8">
-
-            <View
-                android:id="@+id/vertical_divider_line"
-                android:layout_width="1dp"
-                android:layout_height="0dp"
-                android:layout_marginVertical="@dimen/dimen_size_2"
-                android:background="@color/divider_line_bg2"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_air_distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{"空高距离："+m.airDistance}'
-                android:textColor="@color/title_text_color_black_90"
-                android:textSize="@dimen/measure_data_item_text_size_12"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:text="空高距离：5.38 m" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_today_rain_fall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_16"
-                android:text='@{"今日雨量："+m.todayRainfall}'
-                android:textColor="@color/title_text_color_black_90"
-                android:textSize="@dimen/measure_data_item_text_size_12"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/vertical_divider_line"
-                tools:text="今日雨量：20.5 mm" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_marginTop="@dimen/dimen_size_8"
+            android:text='@{"空高距离："+m.airDistance}'
+            android:textColor="@color/title_text_color_black_90"
+            android:textSize="@dimen/measure_data_item_text_size_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="空高距离：5.38 m" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_installation_angle"

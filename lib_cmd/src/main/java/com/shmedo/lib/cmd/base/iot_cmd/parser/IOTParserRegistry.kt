@@ -95,8 +95,9 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRReservoirCapacityParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRScreenParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRWiredNetParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRWirelessNetParser
-import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UD485SerialPortInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UDCORSParamParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UDFlowCalculationInfoParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UD485SerialPortInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UDRainGaugeSerialPortInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.ULInitialParamParser
 
@@ -204,6 +205,7 @@ object IOTParserRegistry {
         AlarmTriggerValueInfoParser(),
         AlarmReportIntervalInfoParser(),
         UDCORSParamParser(),
+        UDFlowCalculationInfoParser(),
         UD485SerialPortInfoParser(),
         UDRainGaugeSerialPortInfoParser(),
         SensorInitialParser(),

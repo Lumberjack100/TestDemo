@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.permissions.OnPermissionCallback
@@ -181,6 +182,8 @@ class BleScannerListFragment : BaseFragment() {
                 when (state) {
                     ScanningState.Loading -> {
                         Timber.i("scannerViewModel.state: Loading")
+                        if (binding.recyclerviewDevice.bindingAdapter.modelCount == 0)
+                            binding.refreshLayout.showLoading(refresh = false)
                     }
 
                     is ScanningState.Error -> {
@@ -257,7 +260,8 @@ class BleScannerListFragment : BaseFragment() {
             .description(PermissionDescription())
             .request(object : OnPermissionCallback {
                 override fun onResult(
-                    grantedList: List<IPermission>, deniedList: List<IPermission>) {
+                    grantedList: List<IPermission>, deniedList: List<IPermission>
+                ) {
                     val allGranted = deniedList.isEmpty()
                     if (!allGranted) {
                         return

@@ -40,7 +40,7 @@ class MR702StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
     override fun queryStatusInfo() {
         val commands = mutableListOf<String>()
-        
+
         // 查询设备基本信息（page=1, label=1）
         val entity1 = MRDeviceInfoEntity(pages = 1, label = 1)
         val command1 = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO, entity1)
@@ -73,6 +73,7 @@ class MR702StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                         handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
+
                     is IOTCommandResult.Success -> {
                         val deviceInfo = result.data
                         if (deviceInfo.pages == "1" && deviceInfo.label == "1") {
@@ -83,7 +84,7 @@ class MR702StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     }
                 }
             }
-            
+
             else -> {
                 // 其他指令类型忽略
             }
@@ -92,76 +93,76 @@ class MR702StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
     private fun initBaseInfo(baseInfo: MRBaseInfo) {
         try {
-                val groupList = mutableListOf<Any>()
+            val groupList = mutableListOf<Any>()
 
-                groupList.add(DeviceStatusInfoGroupItem("供电信息"))
-                val externalVoltage = baseInfo.volt.toDoubleOrNull() ?: Double.MAX_VALUE
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "外部电压",
-                    value = if (externalVoltage == 0.0) "0" else baseInfo.volt.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
-                    unit = "V",
-                    textColorRes = if ((externalVoltage >= 9 && externalVoltage < 28) || externalVoltage == Double.MAX_VALUE) 0 else ColorUtils.getColor(
-                        R.color.warn_FF9D00
-                    ),
-                    isBottomItem = true
-                )
+            groupList.add(DeviceStatusInfoGroupItem("供电信息"))
+            val externalVoltage = baseInfo.volt.toDoubleOrNull() ?: Double.MAX_VALUE
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "外部电压",
+                value = if (externalVoltage == 0.0) "0" else baseInfo.volt.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
+                unit = "V",
+                textColorRes = if ((externalVoltage >= 9 && externalVoltage < 28) || externalVoltage == Double.MAX_VALUE) 0 else ColorUtils.getColor(
+                    R.color.warn_FF9D00
+                ),
+                isBottomItem = true
+            )
 
-                binding.recyclerview.models = groupList
-            } catch (e: Exception) {
-                Timber.e(e)
-                addDeviceLogItem(Log.ERROR, e.errorMsg)
-            }
+            binding.recyclerview.models = groupList
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
     }
 
     private fun initModuleStatusInfo(moduleStatusInfo: MRModuleStatusInfo) {
         try {
-                val groupList = mutableListOf<Any>()
+            val groupList = mutableListOf<Any>()
 
-                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                groupList.add(DeviceStatusInfoGroupItem("模块信息"))
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "触摸屏",
-                    value = moduleStatusInfo.screen.compareAndReturn("1", "正常", "故障"),
-                    textColorRes = if (moduleStatusInfo.screen == "1") 0 else ColorUtils.getColor(R.color.error_FF4400)
+            groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+            groupList.add(DeviceStatusInfoGroupItem("模块信息"))
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "触摸屏",
+                value = moduleStatusInfo.screen.compareAndReturn("1", "正常", "故障"),
+                textColorRes = if (moduleStatusInfo.screen == "1") 0 else ColorUtils.getColor(R.color.error_FF4400)
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "4G模块",
+                value = moduleStatusInfo.datanet.compareAndReturn("1", "正常", "故障"),
+                textColorRes = if (moduleStatusInfo.datanet == "1") 0 else ColorUtils.getColor(R.color.error_FF4400)
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "有线网模块",
+                value = moduleStatusInfo.wirednet.compareAndReturn("1", "正常", "故障"),
+                textColorRes = if (moduleStatusInfo.wirednet == "1") 0 else ColorUtils.getColor(
+                    R.color.error_FF4400
                 )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "4G模块",
-                    value = moduleStatusInfo.datanet.compareAndReturn("1", "正常", "故障"),
-                    textColorRes = if (moduleStatusInfo.datanet == "1") 0 else ColorUtils.getColor(R.color.error_FF4400)
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "有线网模块",
-                    value = moduleStatusInfo.wirednet.compareAndReturn("1", "正常", "故障"),
-                    textColorRes = if (moduleStatusInfo.wirednet == "1") 0 else ColorUtils.getColor(
-                        R.color.error_FF4400
-                    )
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "FLASH模块",
-                    value = moduleStatusInfo.flash.compareAndReturn("1", "正常", "故障"),
-                    textColorRes = if (moduleStatusInfo.flash == "1") 0 else ColorUtils.getColor(R.color.error_FF4400)
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "EMMC存储模块",
-                    value = moduleStatusInfo.emmc.compareAndReturn("1", "正常", "故障"),
-                    textColorRes = if (moduleStatusInfo.emmc == "1") 0 else ColorUtils.getColor(R.color.error_FF4400),
-                    isBottomItem = true
-                )
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "FLASH模块",
+                value = moduleStatusInfo.flash.compareAndReturn("1", "正常", "故障"),
+                textColorRes = if (moduleStatusInfo.flash == "1") 0 else ColorUtils.getColor(R.color.error_FF4400)
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "EMMC存储模块",
+                value = moduleStatusInfo.emmc.compareAndReturn("1", "正常", "故障"),
+                textColorRes = if (moduleStatusInfo.emmc == "1") 0 else ColorUtils.getColor(R.color.error_FF4400),
+                isBottomItem = true
+            )
 
-                binding.recyclerview.bindingAdapter.apply {
-                    mutable.addAll(groupList)
-                    notifyItemRangeInserted(itemCount, groupList.size)
-                }
-            } catch (e: Exception) {
-                Timber.e(e)
-                addDeviceLogItem(Log.ERROR, e.errorMsg)
+            binding.recyclerview.bindingAdapter.apply {
+                mutable.addAll(groupList)
+                notifyItemRangeInserted(itemCount, groupList.size)
             }
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
     }
 
 }

@@ -22,7 +22,6 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.lb20s.LB20SCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
@@ -43,6 +42,11 @@ import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentCommonLocationInfoBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
+import com.shmedo.mcloudapp.extensions.isDASBHYSeries
+import com.shmedo.mcloudapp.extensions.isDR030Series
+import com.shmedo.mcloudapp.extensions.isLB20S
+import com.shmedo.mcloudapp.extensions.isM50Series
+import com.shmedo.mcloudapp.extensions.isMR701
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -164,16 +168,13 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
      * 查询位置信息 - 使用新架构
      */
     private fun queryLocationInfo() {
-        val command = when (productType) {
-            ProductType.U_D_1,
-            ProductType.U_D_2 -> IOTCommandUtil.getCommand(
+        val command = when {
+            productType.isDR030Series() -> IOTCommandUtil.getCommand(
                 IOTCommandType.MD_GET_DEVICE_STATUS,
                 "method=3"
             )
 
-            ProductType.COLLECTOR_R_1,
-            ProductType.DAS,
-            ProductType.BHY -> {
+            productType.isDASBHYSeries() || productType.isMR701() -> {
                 if (communicateWay is BleConnect)
                     MDCommandUtil.getCommand(MDCommandType.QUERY_DAS_STATUS_2)
                 else IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
@@ -285,12 +286,12 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        when (productType) {
-                            ProductType.GNSS_M_5, ProductType.GNSS_M_6, ProductType.GNSS_M_7, ProductType.GNSS_M_8 -> initM50StatusInfo(
+                        when {
+                            productType.isM50Series() -> initM50StatusInfo(
                                 result.data
                             )
 
-                            ProductType.LB20S -> initLB20StatusInfo(result.data)
+                            productType.isLB20S() -> initLB20StatusInfo(result.data)
                             else -> initCommonStatusInfo(result.data)
                         }
                     }
@@ -633,9 +634,8 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
                 return
             }
 
-            when (productType) {
-                ProductType.U_D_1,
-                ProductType.U_D_2 -> measureLocation("1")
+            when {
+                productType.isDR030Series() -> measureLocation("1")
 
                 else -> queryLocationInfo()
             }

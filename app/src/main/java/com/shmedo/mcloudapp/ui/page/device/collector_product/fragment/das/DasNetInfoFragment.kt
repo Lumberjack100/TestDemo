@@ -24,11 +24,11 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
-import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.extensions.notNullKeyEmpty
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.OptimizedBaseDeviceStatusInfoStyleFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
@@ -198,55 +198,6 @@ class DasNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         }
     }
 
-    /**
-     * 处理蓝牙通讯指令结果
-     */
-    private fun handleBleCommandResult(cmdStr: String) {
-        when (MDCommandUtil.extractCommandType(cmdStr)) {
-            MDCommandType.QUERY_DAS_STATUS_1 -> {//##041\r\n：查询设备状态1
-                val result = mdParseManager.parse<DeviceStatusInfoOne>(
-                    cmdStr,
-                    MDCommandType.QUERY_DAS_STATUS_1
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "查询基本信息出错"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                    }
-
-                    is MDCommandResult.Success -> {
-                        initBleDeviceStatusOne(result.data)
-                    }
-                }
-            }
-
-            MDCommandType.QUERY_NETWORK_STATUS -> {
-                val result = mdParseManager.parse<DeviceNetStatus>(
-                    cmdStr,
-                    MDCommandType.QUERY_NETWORK_STATUS
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "查询数据链路状态错"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                    }
-
-                    is MDCommandResult.Success -> {
-                        bleNetStatusList.add(result.data)
-                        if (bleNetStatusList.size == 3) {
-                            initBleCommunicationInfo()
-                            bleNetStatusList.clear()
-                        }
-                    }
-                }
-            }
-
-            else -> {
-                // 其他指令类型忽略
-            }
-        }
-    }
-
     private fun init4GBaseInfo(baseInfo: DasBaseInfo) {
         try {
             val groupList = mutableListOf<Any>()
@@ -262,17 +213,20 @@ class DasNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     else -> AppContants.Companion.PLACE_HOLDER_VALUE
                 }
             )
-            baseInfo.csq.notNullKey {
-                var temp = it.toIntOrNull() ?: 0
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "信号强度",
-                    value = when (temp) {
-                        in 26..31 -> "优"
-                        in 19..25 -> "良好"
-                        in 12..18 -> "较差"
-                        else -> "差"
-                    }
+            baseInfo.csq.notNullKeyEmpty {
+                val temp = it.toIntOrNull() ?: 0
+                var dbm = if (temp > 0) 2 * temp - 113 else temp
+                if (dbm !in -110..-50) {
+                    dbm = 0
+                }
+                groupList.add(
+                    DeviceStatusInfoSignalItem(
+                        name = "信号强度",
+                        signalValue = dbm,
+                        textColorRes = if (dbm == 0) ColorUtils.getColor(
+                            R.color.error_FF4400
+                        ) else 0
+                    )
                 )
             }
             groupList.add(
@@ -337,23 +291,78 @@ class DasNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         }
     }
 
+    /**
+     * 处理蓝牙通讯指令结果
+     */
+    private fun handleBleCommandResult(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.QUERY_DAS_STATUS_1 -> {//##041\r\n：查询设备状态1
+                val result = mdParseManager.parse<DeviceStatusInfoOne>(
+                    cmdStr,
+                    MDCommandType.QUERY_DAS_STATUS_1
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询基本信息出错"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    is MDCommandResult.Success -> {
+                        initBleDeviceStatusOne(result.data)
+                    }
+                }
+            }
+
+            MDCommandType.QUERY_NETWORK_STATUS -> {
+                val result = mdParseManager.parse<DeviceNetStatus>(
+                    cmdStr,
+                    MDCommandType.QUERY_NETWORK_STATUS
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询数据链路状态错"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    is MDCommandResult.Success -> {
+                        bleNetStatusList.add(result.data)
+                        if (bleNetStatusList.size == 3) {
+                            initBleCommunicationInfo()
+                            bleNetStatusList.clear()
+                        }
+                    }
+                }
+            }
+
+            else -> {
+                // 其他指令类型忽略
+            }
+        }
+    }
+
     private fun initBleDeviceStatusOne(info: DeviceStatusInfoOne) {
         try {
             val groupList = mutableListOf<Any>()
 
             groupList.add(DeviceStatusInfoGroupItem("数据网络"))
+            //dBm=2*CSQ值-113，数值99表示无信号
             info.signalStrength.notNullKeyEmpty {
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "信号强度",
-                    value = when (info.signalStrength.toInt()) {
-                        in 26..31 -> "优"
-                        in 19..25 -> "良好"
-                        in 12..18 -> "较差"
-                        else -> "差"
-                    }
+                val temp = it.toIntOrNull() ?: 0
+                var dbm = if (temp > 0) 2 * temp - 113 else temp
+                if (dbm !in -110..-50) {
+                    dbm = 0
+                }
+                groupList.add(
+                    DeviceStatusInfoSignalItem(
+                        name = "信号强度",
+                        signalValue = dbm,
+                        textColorRes = if (dbm == 0) ColorUtils.getColor(
+                            R.color.error_FF4400
+                        ) else 0
+                    )
                 )
             }
+
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = "IMEI",

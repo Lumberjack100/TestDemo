@@ -41,8 +41,15 @@
       {
         "productSeriesName": "DR030",
         "productIdList": [
+          602,
           625,
-          602
+          626
+        ]
+      },
+      {
+        "productSeriesName": "LL030",
+        "productIdList": [
+          627
         ]
       },
       {

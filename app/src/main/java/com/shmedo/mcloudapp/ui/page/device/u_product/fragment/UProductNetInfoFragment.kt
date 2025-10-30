@@ -72,7 +72,7 @@ class UProductNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     MoshiUtil.fromJson<List<UProductCurrentStateInfo>>(content as String)
                 }
                 if (commonCurrentStateInfoList.isNullOrEmpty()) {
-                    binding.refreshLayout.showEmpty()
+                    binding.refreshLayout.showError()
                     return@launchWithViewLifecycle
                 }
 

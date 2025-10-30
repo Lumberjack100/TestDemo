@@ -75,12 +75,12 @@ class UProductBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     MoshiUtil.fromJson<List<UProductCurrentStateInfo>>(content as String)
                 }
                 if (commonCurrentStateInfoList.isNullOrEmpty()) {
-                    binding.refreshLayout.showEmpty()
+                    binding.refreshLayout.showError()
                     return@launchWithViewLifecycle
                 }
 
-                val stateInfo = commonCurrentStateInfoList[0]
                 binding.refreshLayout.showContent()
+                val stateInfo = commonCurrentStateInfoList[0]
                 val groupList = mutableListOf<Any>()
 
                 groupList.add(DeviceStatusInfoGroupItem("设备信息"))

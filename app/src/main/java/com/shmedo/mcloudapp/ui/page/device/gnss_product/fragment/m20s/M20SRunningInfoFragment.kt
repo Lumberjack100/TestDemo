@@ -107,7 +107,7 @@ class M20SRunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         try {
             val stateInfo = MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
             if (stateInfo == null) {
-                binding.refreshLayout.showEmpty()
+                binding.refreshLayout.showError()
                 return
             }
             binding.refreshLayout.showContent()

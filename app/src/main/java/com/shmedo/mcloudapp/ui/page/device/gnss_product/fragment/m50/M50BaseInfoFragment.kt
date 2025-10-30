@@ -36,7 +36,7 @@ class M50BaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     MoshiUtil.fromJson<M50CurrentStateInfo>(content as String)
                 }
                 if (stateInfo == null) {
-                    binding.refreshLayout.showEmpty()
+                    binding.refreshLayout.showError()
                     return@launchWithViewLifecycle
                 }
                 binding.refreshLayout.showContent()
@@ -57,11 +57,6 @@ class M50BaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     groupList,
                     name = "固件版本",
                     value = stateInfo.firmwareVersion,
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "固件日期",
-                    value = stateInfo.firmwareDate,
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,

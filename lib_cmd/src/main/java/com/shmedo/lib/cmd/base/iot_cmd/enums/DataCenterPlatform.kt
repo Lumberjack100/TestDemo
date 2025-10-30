@@ -12,9 +12,9 @@ enum class DataCenterPlatform(private val platName: String, private val cmdValue
     CHINA_MOBILE_PLATFORM("中移物联平台", "1"),
     MEDO_IOT_PLATFORM("米度物联平台", "2"),
     DIDA2_PLATFORM("地大平台2", "3"),
-    HENAN_WATER_PLATFORM("河南水利平台", "4"),
+    HENAN_WATER_PLATFORM("河南水文平台", "4"),
     MEDO_WATER_PLATFORM("米度水文平台", "5"),
-    AMS_PLATFORM("AMS解算平台", "6"),
+    AMS_PLATFORM("米度解算平台", "6"),
     CHONGQING_DISASTER_PLATFORM("重庆地灾平台", "7"),
     GUANGDONG_WATER_PLATFORM("广东水文平台", "8"),
     GUANGXI_WATER_PLATFORM("广西水文平台", "9"),
@@ -60,55 +60,5 @@ enum class DataCenterPlatform(private val platName: String, private val cmdValue
         val platNames: List<String>
             get() = entries.map { it.platName }
 
-        /**
-         * 根据协议类型获取支持的平台列表
-         */
-        @JvmStatic
-        fun getPlatformsByProtocol(protocol: PlatformDataProtocol): List<DataCenterPlatform> {
-            return when (protocol) {
-                PlatformDataProtocol.MQTT -> listOf(
-                    DIDA_PLATFORM,
-                    CHINA_MOBILE_PLATFORM,
-                    MEDO_IOT_PLATFORM,
-                    DIDA2_PLATFORM,
-                    CHONGQING_DISASTER_PLATFORM,
-                    GUIZHOU_ENCRYPT_PLATFORM,
-                    BEIJING_LUAN_PLATFORM
-                )
-
-                PlatformDataProtocol.TCP_C -> listOf(
-                    AMS_PLATFORM
-                )
-
-                PlatformDataProtocol.SL651 -> listOf(
-                    HENAN_WATER_PLATFORM,
-                    GUANGDONG_WATER_PLATFORM,
-                    GUANGXI_WATER_PLATFORM,
-                    HUBEI_WATER_PLATFORM
-                )
-
-                PlatformDataProtocol.SZY206 -> listOf(
-                    HUBEI_ECO_PLATFORM
-                )
-
-                PlatformDataProtocol.NTRIP, PlatformDataProtocol.NTRIP_C, PlatformDataProtocol.NTRIP_S -> listOf(
-                    CORS_PLATFORM
-                )
-
-                PlatformDataProtocol.HTTP -> listOf(
-                    GUANGDONG_FLOOD_PLATFORM
-                )
-
-                else -> entries
-            }
-        }
-
-        /**
-         * 根据协议类型获取支持的平台名称列表
-         */
-        @JvmStatic
-        fun getPlatformNamesByProtocol(protocol: PlatformDataProtocol): List<String> {
-            return getPlatformsByProtocol(protocol).map { it.platName }
-        }
     }
 }

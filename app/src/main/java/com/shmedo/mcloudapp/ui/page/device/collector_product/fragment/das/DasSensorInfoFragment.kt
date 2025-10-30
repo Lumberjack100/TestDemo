@@ -202,13 +202,16 @@ class DasSensorInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         }
     }
 
+    /**
+     * 处理4G内部传感器状态信息
+     */
     private fun init4GInternalSensorData(content: String) {
         launchWithViewLifecycle {
             try {
                 if (content.isEmpty() || content == "{}") {
-                    binding.refreshLayout.showEmpty()
                     return@launchWithViewLifecycle
                 }
+
                 val subSensorStatusInfo = withContext(Dispatchers.IO) {
                     MoshiUtil.fromJson<DasSubSensorStatusInfo>(content)
                 } ?: return@launchWithViewLifecycle
@@ -217,180 +220,184 @@ class DasSensorInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
                 //开关量传感器
                 subSensorStatusInfo.io?.let { ioBean ->
-                    if (ioBean.type.isNotEmpty()) {
-                        groupList.add(DeviceStatusInfoGroupItem("开关量传感器"))
-                        when (IOTRainStation.value(ioBean.type)) {
-                            IOTRainStation.CLOSE -> {//关闭
-                                groupList.add(
-                                    DeviceStatusInfoBasicItem(
-                                        name = "状态",
-                                        value = "未接入",
-                                        isBottomItem = true
-                                    )
-                                )
-                            }
+                    if (ioBean.type.isEmpty())
+                        return@let
 
-                            IOTRainStation.RAIN_OPEN -> {//雨量计
-                                groupList.add(
-                                    DeviceStatusInfoBasicItem(
-                                        name = "状态",
-                                        value = "已接入",
-                                        ColorUtils.getColor(R.color.online_colorPrimary)
-                                    )
+                    groupList.add(DeviceStatusInfoGroupItem("开关量传感器"))
+                    when (IOTRainStation.value(ioBean.type)) {
+                        IOTRainStation.CLOSE -> {//关闭
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "状态",
+                                    value = "未接入",
+                                    isBottomItem = true
                                 )
-                                groupList.add(
-                                    DeviceStatusInfoBasicItem(
-                                        name = "雨量值（毫米）",
-                                        value = ioBean.vaule,
-                                        isBottomItem = true
-                                    )
-                                )
-                            }
+                            )
+                        }
 
-                            IOTRainStation.ALARM_OPEN -> {//断线报警器
-                                groupList.add(
-                                    DeviceStatusInfoBasicItem(
-                                        name = "状态",
-                                        value = "已接入",
-                                        ColorUtils.getColor(R.color.online_colorPrimary)
-                                    )
+                        IOTRainStation.RAIN_OPEN -> {//雨量计
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "状态",
+                                    value = "已接入",
+                                    ColorUtils.getColor(R.color.online_colorPrimary)
                                 )
-                                groupList.add(
-                                    DeviceStatusInfoBasicItem(
-                                        name = "断线报警器",
-                                        value = if (ioBean.vaule == "1") "已断线" else "未断线",
-                                        textColorRes = if (ioBean.vaule == "1") ColorUtils.getColor(
-                                            R.color.online_colorPrimary
-                                        ) else 0,
-                                        isBottomItem = true
-                                    )
+                            )
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "雨量值（毫米）",
+                                    value = ioBean.vaule,
+                                    isBottomItem = true
                                 )
-                            }
+                            )
+                        }
+
+                        IOTRainStation.ALARM_OPEN -> {//断线报警器
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "状态",
+                                    value = "已接入",
+                                    ColorUtils.getColor(R.color.online_colorPrimary)
+                                )
+                            )
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "断线报警器",
+                                    value = if (ioBean.vaule == "1") "已断线" else "未断线",
+                                    textColorRes = if (ioBean.vaule == "1") ColorUtils.getColor(
+                                        R.color.online_colorPrimary
+                                    ) else 0,
+                                    isBottomItem = true
+                                )
+                            )
                         }
                     }
                 }
 
                 //数字水位计
                 subSensorStatusInfo.vwp?.let { vwpBean ->
-                    if (vwpBean.errno.isNotEmpty()) {
-                        groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                        groupList.add(DeviceStatusInfoGroupItem("数字水位计"))
-                        groupList.add(
-                            DeviceStatusInfoBasicItem(
-                                name = "状态",
-                                value = if (vwpBean.errno == "0") "正常" else SensorErrorType.getErrorMessageByCode(
-                                    vwpBean.errno
-                                ),
-                                textColorRes = if (vwpBean.errno == "0") 0 else ColorUtils.getColor(
-                                    R.color.error_FF4400
-                                )
+                    if (vwpBean.errno.isEmpty())
+                        return@let
+
+                    groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                    groupList.add(DeviceStatusInfoGroupItem("数字水位计"))
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "状态",
+                            value = if (vwpBean.errno == "0") "正常" else SensorErrorType.getErrorMessageByCode(
+                                vwpBean.errno
+                            ),
+                            textColorRes = if (vwpBean.errno == "0") 0 else ColorUtils.getColor(
+                                R.color.error_FF4400
                             )
                         )
+                    )
 
-                        val dataList =
-                            vwpBean.vaule.split(",".toRegex()).dropLastWhile { it.isEmpty() }
-                        if (dataList.isNotEmpty()) {
-                            groupList.add(
-                                DeviceStatusInfoBasicItem(
-                                    name = "水深（米）",
-                                    value = dataList[0],
-                                    isBottomItem = dataList.size == 1
-                                )
+                    val dataList =
+                        vwpBean.vaule.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                    if (dataList.isNotEmpty()) {
+                        groupList.add(
+                            DeviceStatusInfoBasicItem(
+                                name = "水深（米）",
+                                value = dataList[0],
+                                isBottomItem = dataList.size == 1
                             )
-                        }
-                        if (dataList.size >= 2) {
-                            groupList.add(
-                                DeviceStatusInfoBasicItem(
-                                    name = "空管距离（米）",
-                                    value = dataList[1],
-                                    isBottomItem = dataList.size == 2
-                                )
+                        )
+                    }
+                    if (dataList.size >= 2) {
+                        groupList.add(
+                            DeviceStatusInfoBasicItem(
+                                name = "空管距离（米）",
+                                value = dataList[1],
+                                isBottomItem = dataList.size == 2
                             )
-                        }
-                        if (dataList.size >= 3) {
-                            groupList.add(
-                                DeviceStatusInfoBasicItem(
-                                    name = "水温（摄氏度）",
-                                    value = dataList[2],
-                                    isBottomItem = dataList.size == 3
-                                )
+                        )
+                    }
+                    if (dataList.size >= 3) {
+                        groupList.add(
+                            DeviceStatusInfoBasicItem(
+                                name = "水温（摄氏度）",
+                                value = dataList[2],
+                                isBottomItem = dataList.size == 3
                             )
-                        }
+                        )
                     }
                 }
 
                 //倾角计
                 subSensorStatusInfo.mems?.let { memsBean ->
-                    if (memsBean.errno.isNotEmpty()) {
-                        groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                        groupList.add(DeviceStatusInfoGroupItem("倾角计"))
-                        groupList.add(
-                            DeviceStatusInfoBasicItem(
-                                name = "状态",
-                                value = if (memsBean.errno == "0") "正常" else SensorErrorType.getErrorMessageByCode(
-                                    memsBean.errno
-                                ),
-                                textColorRes = if (memsBean.errno == "0") 0 else ColorUtils.getColor(
-                                    R.color.error_FF4400
-                                )
+                    if (memsBean.errno.isEmpty())
+                        return@let
+
+                    groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                    groupList.add(DeviceStatusInfoGroupItem("倾角计"))
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "状态",
+                            value = if (memsBean.errno == "0") "正常" else SensorErrorType.getErrorMessageByCode(
+                                memsBean.errno
+                            ),
+                            textColorRes = if (memsBean.errno == "0") 0 else ColorUtils.getColor(
+                                R.color.error_FF4400
                             )
                         )
-                        val dataList =
-                            memsBean.vaule.split(",".toRegex()).dropLastWhile { it.isEmpty() }
-                        if (dataList.isNotEmpty()) {
-                            groupList.add(
-                                DeviceStatusInfoBasicItem(
-                                    name = "X轴角度（度）",
-                                    value = dataList[0],
-                                    isBottomItem = dataList.size == 1
-                                )
+                    )
+
+                    val dataList =
+                        memsBean.vaule.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                    if (dataList.isNotEmpty()) {
+                        groupList.add(
+                            DeviceStatusInfoBasicItem(
+                                name = "X轴角度（度）",
+                                value = dataList[0],
+                                isBottomItem = dataList.size == 1
                             )
-                        }
-                        if (dataList.size >= 2) {
-                            groupList.add(
-                                DeviceStatusInfoBasicItem(
-                                    name = "Y轴角度（度）",
-                                    value = dataList[1],
-                                    isBottomItem = dataList.size == 2
-                                )
+                        )
+                    }
+                    if (dataList.size >= 2) {
+                        groupList.add(
+                            DeviceStatusInfoBasicItem(
+                                name = "Y轴角度（度）",
+                                value = dataList[1],
+                                isBottomItem = dataList.size == 2
                             )
-                        }
-                        if (dataList.size >= 3) {
-                            groupList.add(
-                                DeviceStatusInfoBasicItem(
-                                    name = "Z轴角度（度）",
-                                    value = dataList[2],
-                                    isBottomItem = dataList.size == 3
-                                )
+                        )
+                    }
+                    if (dataList.size >= 3) {
+                        groupList.add(
+                            DeviceStatusInfoBasicItem(
+                                name = "Z轴角度（度）",
+                                value = dataList[2],
+                                isBottomItem = dataList.size == 3
                             )
-                        }
-                        if (dataList.size >= 4) {
-                            groupList.add(
-                                DeviceStatusInfoBasicItem(
-                                    name = "X轴加速度(mg)",
-                                    value = dataList[3],
-                                    isBottomItem = dataList.size == 4
-                                )
+                        )
+                    }
+                    if (dataList.size >= 4) {
+                        groupList.add(
+                            DeviceStatusInfoBasicItem(
+                                name = "X轴加速度(mg)",
+                                value = dataList[3],
+                                isBottomItem = dataList.size == 4
                             )
-                        }
-                        if (dataList.size >= 5) {
-                            groupList.add(
-                                DeviceStatusInfoBasicItem(
-                                    name = "Y轴加速度(mg)",
-                                    value = dataList[4],
-                                    isBottomItem = dataList.size == 5
-                                )
+                        )
+                    }
+                    if (dataList.size >= 5) {
+                        groupList.add(
+                            DeviceStatusInfoBasicItem(
+                                name = "Y轴加速度(mg)",
+                                value = dataList[4],
+                                isBottomItem = dataList.size == 5
                             )
-                        }
-                        if (dataList.size >= 6) {
-                            groupList.add(
-                                DeviceStatusInfoBasicItem(
-                                    name = "Z轴加速度(mg)",
-                                    value = dataList[5],
-                                    isBottomItem = dataList.size == 6
-                                )
+                        )
+                    }
+                    if (dataList.size >= 6) {
+                        groupList.add(
+                            DeviceStatusInfoBasicItem(
+                                name = "Z轴加速度(mg)",
+                                value = dataList[5],
+                                isBottomItem = dataList.size == 6
                             )
-                        }
+                        )
                     }
                 }
 
@@ -402,6 +409,9 @@ class DasSensorInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         }
     }
 
+    /**
+     * 处理扩展传感器状态信息
+     */
     private fun init4GExternalSensorData(content: String) {
         launchWithViewLifecycle {
             try {
@@ -409,25 +419,33 @@ class DasSensorInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     MoshiUtil.fromJson<List<DasSensorStatusInfo>>(content)
                 }
                 if (dataList.isNullOrEmpty()) {
-                    if (binding.recyclerview.models?.isEmpty() == true)
+                    if (binding.recyclerview.models.isNullOrEmpty())
                         binding.refreshLayout.showEmpty()
 
                     return@launchWithViewLifecycle
                 }
 
                 val groupList = mutableListOf<Any>()
-                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                groupList.add(DeviceStatusInfoGroupItem("扩展传感器"))
                 dataList.forEach { sensorInfo ->
                     sensorInfo.valueList =
                         sensorInfo._val.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                     groupList.add(sensorInfo)
-//                    groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                 }
 
-                binding.recyclerview.bindingAdapter.apply {
-                    mutable.addAll(groupList)
-                    notifyItemRangeInserted(itemCount, groupList.size)
+                if (groupList.isNotEmpty()) {
+                    groupList.add(0, GapItem(height = ConvertUtils.dp2px(12f)))
+                    groupList.add(1, DeviceStatusInfoGroupItem("扩展传感器"))
+                }
+
+                if (binding.recyclerview.models.isNullOrEmpty()) {
+                    groupList.removeAt(0)
+                    binding.recyclerview.models = groupList
+
+                } else {
+                    binding.recyclerview.bindingAdapter.apply {
+                        mutable.addAll(groupList)
+                        notifyItemRangeInserted(itemCount, groupList.size)
+                    }
                 }
             } catch (e: Exception) {
                 Timber.e(e)
@@ -612,9 +630,15 @@ class DasSensorInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 isBottomItem = true
             )
 
-            binding.recyclerview.bindingAdapter.apply {
-                mutable.addAll(groupList)
-                notifyItemRangeInserted(itemCount, groupList.size)
+            if (binding.recyclerview.models.isNullOrEmpty()) {
+                groupList.removeAt(0)
+                binding.recyclerview.models = groupList
+
+            } else {
+                binding.recyclerview.bindingAdapter.apply {
+                    mutable.addAll(groupList)
+                    notifyItemRangeInserted(itemCount, groupList.size)
+                }
             }
         } catch (e: Exception) {
             Timber.e(e)
@@ -624,8 +648,8 @@ class DasSensorInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
     private fun initBleExternalSensorData(info: DeviceStatusInfoThree) {
         try {
-            if (info.collectorAddress == "0" || info.sensorStatus.isNullOrEmpty()) {
-                if (binding.recyclerview.models?.isEmpty() == true)
+            if (info.collectorAddress == "0" || info.sensorStatus.isEmpty()) {
+                if (binding.recyclerview.models.isNullOrEmpty())
                     binding.refreshLayout.showEmpty()
                 return
             }
@@ -633,6 +657,7 @@ class DasSensorInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
             val groupList = mutableListOf<Any>()
             groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
             groupList.add(DeviceStatusInfoGroupItem("扩展传感器"))
+
             for (i in 0 until info.sensorStatus.size) {
                 val tempStr = info.sensorStatus[i]
                 //①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，2 不展示 ③：传感器数据
@@ -648,12 +673,17 @@ class DasSensorInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                         valueList = tempList.subList(2, tempList.size)
                     )
                 )
-//                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
             }
 
-            binding.recyclerview.bindingAdapter.apply {
-                mutable.addAll(groupList)
-                notifyItemRangeInserted(itemCount, groupList.size)
+            if (binding.recyclerview.models.isNullOrEmpty()) {
+                groupList.removeAt(0)
+                binding.recyclerview.models = groupList
+
+            } else {
+                binding.recyclerview.bindingAdapter.apply {
+                    mutable.addAll(groupList)
+                    notifyItemRangeInserted(itemCount, groupList.size)
+                }
             }
         } catch (e: Exception) {
             Timber.e(e)

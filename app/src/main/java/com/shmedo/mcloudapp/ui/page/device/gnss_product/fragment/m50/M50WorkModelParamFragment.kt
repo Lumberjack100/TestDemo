@@ -526,8 +526,8 @@ class M50WorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
                 .show()
         }
 
-        /** 选择工作模式 */
-        fun onWorkModelChooseClick() {
+        /** 选择站点类型 */
+        fun onSiteTypeChooseClick() {
             val selectedIndex = siteTypeList.indexOf(mStates.siteType.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)

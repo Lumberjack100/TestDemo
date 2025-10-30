@@ -38,6 +38,11 @@ import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentAdvancedSettingBinding
 import com.shmedo.mcloudapp.databinding.ItemAdvancedSettingBinding
+import com.shmedo.mcloudapp.extensions.isGateway
+import com.shmedo.mcloudapp.extensions.isM20Series
+import com.shmedo.mcloudapp.extensions.isM50Series
+import com.shmedo.mcloudapp.extensions.isSupportFirmwareUpgrade
+import com.shmedo.mcloudapp.extensions.isUIProduct
 import com.shmedo.mcloudapp.extensions.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -176,7 +181,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
             )
         }
 
-        if (productType != ProductType.COLLECTOR_G_0) {
+        if (!productType.isGateway()) {
             moduleList.add(
                 AdvancedSettingItem(
                     "恢复出厂设置",
@@ -195,7 +200,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
         }
 
         if (communicateWay is BleConnect) {
-            if (productType == ProductType.U_I_1) {
+            if (productType.isUIProduct()) {
                 moduleList.add(
                     AdvancedSettingItem(
                         "一键仓储",
@@ -214,7 +219,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                 )
             }
 
-            if (productType != ProductType.COLLECTOR_G_0) {
+            if (!productType.isGateway()) {
                 moduleList.add(
                     AdvancedSettingItem(
                         "远程调试",
@@ -253,27 +258,21 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
      * 是否需要初始化偏移量
      */
     private fun isNeedOffsetInitialization(): Boolean {
-        return productType == ProductType.M20
-                || productType == ProductType.GNSS_M_1
-                || productType == ProductType.GNSS_M_2
+        return productType.isM20Series()
     }
 
     /**
      * 是否支持固件升级
      */
     private fun isSupportFirmwareUpgrade(): Boolean {
-        return productType != ProductType.U_L_1
-                && productType != ProductType.COLLECTOR_G_0
+        return productType.isSupportFirmwareUpgrade()
     }
 
     /**
      * 是否支持休眠
      */
     private fun isSupportHibernation(): Boolean {
-        return productType == ProductType.GNSS_M_5
-                || productType == ProductType.GNSS_M_6
-                || productType == ProductType.GNSS_M_7
-                || productType == ProductType.GNSS_M_8
+        return productType.isM50Series()
     }
 
 
@@ -281,12 +280,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
      * 是否支持格式化数据存储
      */
     private fun isSupportFormatDataStorage(): Boolean {
-        return productType == ProductType.GNSS_M_1
-                || productType == ProductType.GNSS_M_2
-                || productType == ProductType.GNSS_M_5
-                || productType == ProductType.GNSS_M_6
-                || productType == ProductType.GNSS_M_7
-                || productType == ProductType.GNSS_M_8
+        return productType.isM20Series() || productType.isM50Series()
     }
 
     /**

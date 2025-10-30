@@ -30,7 +30,6 @@ import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
-import com.shmedo.mcloudapp.model.ConfigBannerItem
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
@@ -177,6 +176,12 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
                 ).toUnified(),
 
                 CommonModule(
+                    name = "GNSS配置",
+                    resID = R.drawable.ic_module_cors,
+                    navId = R.id.action_global_to_m50GNSSConfigFragment,
+                ).toUnified(),
+
+                CommonModule(
                     name = "网络配置",
                     resID = R.drawable.ic_module_network_setting,
                     navId = R.id.action_global_to_m50NetworkConfigFragment
@@ -194,11 +199,6 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
                     navId = R.id.action_global_to_m50RadioSettingFragment
                 ).toUnified(),
 
-                CommonModule(
-                    name = "GNSS配置",
-                    resID = R.drawable.ic_module_cors,
-                    navId = R.id.action_global_to_m50GNSSConfigFragment,
-                ).toUnified(),
 
                 CommonModule(
                     name = "倾斜触发",
@@ -216,7 +216,8 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
                 CommonModule(
                     name = "报警配置",
                     resID = R.drawable.ic_module_alarm_new,
-                    navId = R.id.action_global_to_m50AlarmParamSettingFragment
+                    navId = R.id.action_global_to_m50AlarmParamSettingFragment,
+                    isSupport = false
                 ).toUnified(),
 
                 CommonModule(
@@ -500,20 +501,22 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
                     MoshiUtil.fromJson<M50CurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
-                // 检查电台模块是否可用
+                // 检查电台模块功能是否可用
                 updateRadioModuleStatus(stateInfo.lora.uppercase() == "OK")
 
+                //提取出故障信息
                 val deviceAbnormalList = if (content.isEmpty()) arrayListOf<String>()
                 else DeviceStatusHelper.checkM50Abnormal(content)
-                //移除特定的故障信息
+                //暂时移除特定的故障信息
                 deviceAbnormalList.remove("电台模块故障")
 
+                //提取出告警信息
                 val deviceWarnList =
                     if (content.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkM50Warn(
                         content
                     )
 
-                // 添加角度告警检查
+                // 角度告警检查
                 val angleWarnings = calculateAngleWarnings()
 
                 // 合并告警列表，但如果倾角加速度模块故障，则不显示角度告警
@@ -526,7 +529,7 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
                 }
 
                 // 合并故障和告警信息，并进行过滤
-                val mergedList = DeviceStatusHelper.mergeM20StatusInfo(
+                val mergedList = DeviceStatusHelper.mergeM50StatusInfo(
                     deviceAbnormalList,
                     warnListWithAngles as ArrayList<String>
                 )

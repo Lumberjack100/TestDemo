@@ -15,6 +15,8 @@ import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmMonitorPointE
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmReportIntervalEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.mcloudapp.extensions.isM50Series
+import com.shmedo.mcloudapp.extensions.isUDSeries
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmMonitorPointInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmReportIntervalInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmSwitchInfo
@@ -350,7 +352,7 @@ class UDAlarmParamSettingFragment : OptimizedBaseIOTDeviceFragment() {
 
         val commands = mutableListOf<String>()
         //UD 设备报警启用开关打开或者关闭，都需要发送开关指令
-        if (productType == ProductType.U_D_1 || productType == ProductType.U_D_2 || productType == ProductType.U_D_3) {
+        if (productType.isUDSeries()) {
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_SET_ALRAM_BROADCAST_SWITCH,
                 "sw=${if (mStates.isOpened.get()) "1" else "0"}"
@@ -359,7 +361,7 @@ class UDAlarmParamSettingFragment : OptimizedBaseIOTDeviceFragment() {
         }
 
         //GNSS 设备报警启用开关关闭时处理
-        if (!mStates.isOpened.get() && (productType == ProductType.GNSS_M_5 || productType == ProductType.GNSS_M_6 || productType == ProductType.GNSS_M_7 || productType == ProductType.GNSS_M_8)) {
+        if (!mStates.isOpened.get() && productType.isM50Series()) {
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
                 "sw=0"
@@ -370,7 +372,7 @@ class UDAlarmParamSettingFragment : OptimizedBaseIOTDeviceFragment() {
         //报警启用开关打开时，才发送报警信息设置指令
         if (mStates.isOpened.get()) {
             val monitorPointEntity = AlarmMonitorPointEntity(
-                sw = if (productType == ProductType.GNSS_M_5 || productType == ProductType.GNSS_M_6 || productType == ProductType.GNSS_M_7 || productType == ProductType.GNSS_M_8)
+                sw = if (productType.isM50Series())
                     "1"
                 else IOTConstants.NULL_KEY,
                 monitorpoint = mStates.monitorPoint.get(),
@@ -415,7 +417,7 @@ class UDAlarmParamSettingFragment : OptimizedBaseIOTDeviceFragment() {
     private fun queryData() {
         val commands = mutableListOf<String>()
 
-        if (productType == ProductType.U_D_1 || productType == ProductType.U_D_2 || productType == ProductType.U_D_3) {
+        if (productType.isUDSeries()) {
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_GET_ALRAM_BROADCAST_SWITCH
             )

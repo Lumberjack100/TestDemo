@@ -86,11 +86,11 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:onClick="@{()->click.onWorkModelChooseClick()}">
+                        android:onClick="@{()->click.onSiteTypeChooseClick()}">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="工作模式" />
+                            android:text="站点类型" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"

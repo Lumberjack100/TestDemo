@@ -233,7 +233,6 @@ class MR702NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 isBottomItem = true
             )
 
-
             binding.recyclerview.bindingAdapter.apply {
                 mutable.addAll(groupList)
                 notifyItemRangeInserted(itemCount, groupList.size)

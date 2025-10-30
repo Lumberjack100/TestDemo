@@ -8,8 +8,8 @@ import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
-import com.shmedo.lib.cmd.base.iot_cmd.enums.DataCenterPlatform
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.NewDataCenterPlatform
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
@@ -67,7 +67,7 @@ class UDNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     MoshiUtil.fromJson<UDCurrentStateInfo>(content as String)
                 }
                 if (stateInfo == null) {
-                    binding.refreshLayout.showEmpty()
+                    binding.refreshLayout.showError()
                     return@launchWithViewLifecycle
                 }
                 binding.refreshLayout.showContent()
@@ -165,8 +165,8 @@ class UDNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     enableStatusList.forEachIndexed { index, enableStatus ->
                         val platformIndex = platformTypeList.getOrNull(index)?.toIntOrNull() ?: 0
                         val platformType =
-                            DataCenterPlatform.valueByCmdValue(platformIndex.toString())
-                                .getPlatName()
+                            NewDataCenterPlatform.valueByPlatType(platformIndex.toString())
+                                .getPlatFormName()
                         val onlineStatus = onlineStatusList.getOrNull(index)
                             ?.compareAndReturn("1", "已连接", "未连接") ?: "未连接"
 
@@ -175,7 +175,7 @@ class UDNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                             name = "数据链路${index + 1}",
                             value = enableStatus.compareAndReturn(
                                 "1",
-                                "$onlineStatus($platformType)",
+                                onlineStatus,
                                 "未启用"
                             ),
                             textColorRes = if (enableStatus == "0" || onlineStatus == "未连接") 0 else ColorUtils.getColor(

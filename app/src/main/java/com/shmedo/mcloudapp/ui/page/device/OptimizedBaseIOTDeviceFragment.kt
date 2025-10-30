@@ -13,6 +13,8 @@ import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.mcloudapp.extensions.isDASBHYSeries
+import com.shmedo.mcloudapp.extensions.isMR701
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.communication.manager.DeviceCommunicationManager
@@ -360,9 +362,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
      */
     protected fun isBleDas(): Boolean {
         return communicateWay == BleConnect && (
-                productType == ProductType.DAS ||
-                        productType == ProductType.BHY ||
-                        productType == ProductType.COLLECTOR_R_1
+                productType.isDASBHYSeries() || productType.isMR701()
                 )
     }
 
