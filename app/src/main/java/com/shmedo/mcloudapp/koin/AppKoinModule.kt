@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.koin
 import com.shmedo.core.data.koin.coreDataKoinModule
 import com.shmedo.lib.ble.koin.bleKoinModule
 import com.shmedo.lib.cmd.base.koin.libCmdKoinModule
+import com.shmedo.lib.rtsp.koin.rtspKoinModule
 import com.shmedo.lib.tcp.koin.libTcpKoinModule
 import org.koin.dsl.module
 
@@ -18,6 +19,7 @@ val appKoinModule = module {
         libCmdKoinModule,
         bleKoinModule,
         libTcpKoinModule,
+        rtspKoinModule,
         viewModelModule
 
     )

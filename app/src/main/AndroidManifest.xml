@@ -171,6 +171,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
 
+        <!-- RTSP 视频播放页面 -->
+        <activity
+            android:name=".ui.page.rtsp.RtspVideoActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
         <activity
             android:name=".ui.page.base.activity.ErrorActivity"
             android:label="错误界面"
