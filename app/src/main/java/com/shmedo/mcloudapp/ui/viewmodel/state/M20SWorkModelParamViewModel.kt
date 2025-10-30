@@ -5,8 +5,6 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseStateViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class M20SWorkModelParamViewModel : BaseStateViewModel() {
-    val isRadioEnable = NonNullObservableField(true)//电台是否启用
-
     // M20S版本移除上报模式和网络模式
     val workModel = NonNullObservableField("")//工作模式
     

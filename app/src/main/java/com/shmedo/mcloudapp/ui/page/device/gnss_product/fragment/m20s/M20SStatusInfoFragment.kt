@@ -179,11 +179,7 @@ class M20SStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                             value = if (stateInfo.self_check.uppercase()
                                     .indexOf("RADIO:0") == -1
                             ) "有" else "无",
-                            textColorRes = if (stateInfo.self_check.uppercase()
-                                    .indexOf("RADIO:0") == -1
-                            ) 0 else ColorUtils.getColor(
-                                R.color.error_FF4400
-                            )
+                            textColorRes = 0
                         )
                     }
 
