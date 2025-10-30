@@ -40,7 +40,7 @@ class ULStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     MoshiUtil.fromJson<CommonCurrentStateInfo>(content as String)
                 }
                 if (stateInfo == null) {
-                    binding.refreshLayout.showEmpty()
+                    binding.refreshLayout.showError()
                     return@launchWithViewLifecycle
                 }
                 binding.refreshLayout.showContent()

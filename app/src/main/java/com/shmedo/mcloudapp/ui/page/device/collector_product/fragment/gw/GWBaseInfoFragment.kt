@@ -167,14 +167,15 @@ class GWBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
     }
 
     private fun initTerminalIds(content: String) {
-        if (content.isEmpty())
+        if (content.isEmpty()) {
+            if (binding.recyclerview.models.isNullOrEmpty())
+                binding.refreshLayout.showEmpty()
             return
+        }
 
         launchWithViewLifecycle {
             try {
                 val groupList = mutableListOf<Any>()
-                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                groupList.add(DeviceStatusInfoGroupItem("测站节点信息"))
 
                 //用逗号分割
                 content.split(",".toRegex()).dropLastWhile { it.isEmpty() }
@@ -184,9 +185,20 @@ class GWBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                         }
                     }
 
-                binding.recyclerview.bindingAdapter.apply {
-                    mutable.addAll(groupList)
-                    notifyItemRangeInserted(itemCount, groupList.size)
+                if (groupList.isNotEmpty()) {
+                    groupList.add(0, GapItem(height = ConvertUtils.dp2px(12f)))
+                    groupList.add(1, DeviceStatusInfoGroupItem("测站节点信息"))
+                }
+
+                if (binding.recyclerview.models.isNullOrEmpty()) {
+                    groupList.removeAt(0)
+                    binding.recyclerview.models = groupList
+
+                } else {
+                    binding.recyclerview.bindingAdapter.apply {
+                        mutable.addAll(groupList)
+                        notifyItemRangeInserted(itemCount, groupList.size)
+                    }
                 }
             } catch (e: Exception) {
                 Timber.Forest.e(e)

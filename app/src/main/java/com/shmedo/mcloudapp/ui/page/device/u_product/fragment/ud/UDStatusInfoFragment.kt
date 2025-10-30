@@ -58,7 +58,7 @@ class UDStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     MoshiUtil.fromJson<UDCurrentStateInfo>(content as String)
                 }
                 if (stateInfo == null) {
-                    binding.refreshLayout.showEmpty()
+                    binding.refreshLayout.showError()
                     return@launchWithViewLifecycle
                 }
                 binding.refreshLayout.showContent()
@@ -250,9 +250,7 @@ class UDStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                         "-4" -> "无"
                         else -> "有"
                     },
-                    textColorRes = if (stateInfo.radioStatus == "-2" || stateInfo.radioStatus == "-3") ColorUtils.getColor(
-                        R.color.error_FF4400
-                    ) else 0
+                    textColorRes = 0
                 )
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(

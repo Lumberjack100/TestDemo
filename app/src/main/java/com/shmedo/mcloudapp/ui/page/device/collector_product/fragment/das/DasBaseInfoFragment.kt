@@ -177,6 +177,127 @@ class DasBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         }
     }
 
+    private fun init4GBaseInfo(baseInfo: DasBaseInfo) {
+        try {
+            val groupList = mutableListOf<Any>()
+
+            groupList.add(DeviceStatusInfoGroupItem("设备信息"))
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "设备SN",
+                value = baseInfo.sn,
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "设备启动代码",
+                value = baseInfo.code,
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "固件版本",
+                value = baseInfo.ver,
+                isBottomItem = true
+            )
+
+            groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+            groupList.add(DeviceStatusInfoGroupItem("供电信息"))
+
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "外部电压",
+                value = baseInfo.outvolt.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                unit = "V"
+            )
+            val batteryCapacity =
+                baseInfo.involt.replace("%", "").toDoubleOrNull() ?: Double.MAX_VALUE
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "内部电量",
+                value = baseInfo.involt.replace("%", "").ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                unit = "%",
+                textColorRes = if (batteryCapacity > 25) 0 else ColorUtils.getColor(
+                    R.color.warn_FF9D00
+                ),
+                isBottomItem = true
+            )
+
+            binding.recyclerview.models = groupList
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    /**
+     * 温湿度状态
+     */
+    private fun init4GTemperatureAndHumidityStatus(content: String) {
+        launchWithViewLifecycle {
+            try {
+                if (content.isEmpty() || content == "{}") {
+                    return@launchWithViewLifecycle
+                }
+                val info = MoshiUtil.fromJson<DasTemperatureAndHumidityStatusinfo>(content)
+                    ?: return@launchWithViewLifecycle
+
+                val groupList = mutableListOf<Any>()
+
+                if (info.inth.errno.isNotEmpty() && info.inth.errno != "0") {
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                        groupList,
+                        name = "内部温度",
+                        value = info.inth.temp,
+                        defaultValue = AppContants.PLACE_HOLDER_VALUE,
+                        digit = 2,
+                        unit = "℃",
+                    )
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                        groupList,
+                        name = "内部湿度",
+                        value = info.inth.humi,
+                        defaultValue = AppContants.PLACE_HOLDER_VALUE,
+                        digit = 2,
+                        unit = "%",
+                        isBottomItem = info.outth.errno.isEmpty()
+                    )
+                }
+
+                if (info.outth.errno.isNotEmpty() && info.outth.errno != "0") {
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                        groupList,
+                        name = "外部温度",
+                        value = info.outth.temp,
+                        defaultValue = AppContants.PLACE_HOLDER_VALUE,
+                        digit = 2,
+                        unit = "℃",
+                    )
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                        groupList,
+                        name = "外部湿度",
+                        value = info.outth.humi,
+                        defaultValue = AppContants.PLACE_HOLDER_VALUE,
+                        digit = 2,
+                        unit = "%",
+                        isBottomItem = true
+                    )
+                }
+
+                if (groupList.isNotEmpty()) {
+                    groupList.add(0, GapItem(height = ConvertUtils.dp2px(12f)))
+                    groupList.add(1, DeviceStatusInfoGroupItem("环境信息"))
+                }
+
+                binding.recyclerview.bindingAdapter.apply {
+                    mutable.addAll(groupList)
+                    notifyItemRangeInserted(itemCount, groupList.size)
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
     /**
      * 处理蓝牙通讯指令结果
      */
@@ -256,124 +377,6 @@ class DasBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         }
 
     }
-
-    private fun init4GBaseInfo(baseInfo: DasBaseInfo) {
-        try {
-            val groupList = mutableListOf<Any>()
-
-            groupList.add(DeviceStatusInfoGroupItem("设备信息"))
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                groupList,
-                name = "设备SN",
-                value = baseInfo.sn,
-            )
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                groupList,
-                name = "设备启动代码",
-                value = baseInfo.code,
-            )
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                groupList,
-                name = "固件版本",
-                value = baseInfo.ver,
-                isBottomItem = true
-            )
-
-            groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-            groupList.add(DeviceStatusInfoGroupItem("供电信息"))
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                groupList,
-                name = "外部电压",
-                value = baseInfo.outvolt.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
-                unit = "V"
-            )
-            val batteryCapacity =
-                baseInfo.involt.replace("%", "").toDoubleOrNull() ?: Double.MAX_VALUE
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                groupList,
-                name = "内部电量",
-                value = baseInfo.involt.replace("%", "").ifEmpty { AppContants.PLACE_HOLDER_VALUE },
-                unit = "%",
-                textColorRes = if (batteryCapacity > 25) 0 else ColorUtils.getColor(
-                    R.color.warn_FF9D00
-                ),
-                isBottomItem = true
-            )
-
-            binding.recyclerview.models = groupList
-        } catch (e: Exception) {
-            Timber.e(e)
-            addDeviceLogItem(Log.ERROR, e.errorMsg)
-        }
-    }
-
-    /**
-     * 温湿度状态
-     */
-    private fun init4GTemperatureAndHumidityStatus(content: String) {
-        launchWithViewLifecycle {
-            try {
-                if (content.isEmpty() || content == "{}") {
-                    return@launchWithViewLifecycle
-                }
-                val info = MoshiUtil.fromJson<DasTemperatureAndHumidityStatusinfo>(content)
-                    ?: return@launchWithViewLifecycle
-
-                val groupList = mutableListOf<Any>()
-                if (info.inth.errno.isNotEmpty() && info.inth.errno != "0") {
-                    groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                    groupList.add(DeviceStatusInfoGroupItem("环境信息"))
-
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
-                        groupList,
-                        name = "内部温度",
-                        value = info.inth.temp,
-                        defaultValue = AppContants.PLACE_HOLDER_VALUE,
-                        digit = 2,
-                        unit = "℃",
-                    )
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
-                        groupList,
-                        name = "内部湿度",
-                        value = info.inth.humi,
-                        defaultValue = AppContants.PLACE_HOLDER_VALUE,
-                        digit = 2,
-                        unit = "%",
-                        isBottomItem = info.outth.errno.isEmpty()
-                    )
-                }
-
-                if (info.outth.errno.isNotEmpty() && info.inth.errno != "0") {
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
-                        groupList,
-                        name = "外部温度",
-                        value = info.outth.temp,
-                        defaultValue = AppContants.PLACE_HOLDER_VALUE,
-                        digit = 2,
-                        unit = "℃",
-                    )
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
-                        groupList,
-                        name = "外部湿度",
-                        value = info.outth.humi,
-                        defaultValue = AppContants.PLACE_HOLDER_VALUE,
-                        digit = 2,
-                        unit = "%",
-                        isBottomItem = true
-                    )
-                }
-
-                binding.recyclerview.bindingAdapter.apply {
-                    mutable.addAll(groupList)
-                    notifyItemRangeInserted(itemCount, groupList.size)
-                }
-            } catch (e: Exception) {
-                Timber.e(e)
-                addDeviceLogItem(Log.ERROR, e.errorMsg)
-            }
-        }
-    }
-
 
     private fun initBleDeviceStatus1(info: DeviceStatusInfoOne) {
         try {
@@ -456,9 +459,6 @@ class DasBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         try {
             val groupList = mutableListOf<Any>()
             if (info.internalTempHumidityStatus != "2") {
-                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                groupList.add(DeviceStatusInfoGroupItem("环境信息"))
-
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
                     groupList,
                     name = "内部温度",
@@ -474,9 +474,10 @@ class DasBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     defaultValue = AppContants.PLACE_HOLDER_VALUE,
                     digit = 2,
                     unit = "%",
-                    isBottomItem = info.externalTempHumidityStatus != "2"
+                    isBottomItem = info.externalTempHumidityStatus == "2"
                 )
             }
+
             if (info.externalTempHumidityStatus != "2") {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
                     groupList,
@@ -495,6 +496,11 @@ class DasBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     unit = "%",
                     isBottomItem = true
                 )
+            }
+
+            if (groupList.isNotEmpty()) {
+                groupList.add(0, GapItem(height = ConvertUtils.dp2px(12f)))
+                groupList.add(1, DeviceStatusInfoGroupItem("环境信息"))
             }
 
             binding.recyclerview.bindingAdapter.apply {

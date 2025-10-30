@@ -123,7 +123,7 @@ class M50RunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         try {
             val stateInfo = MoshiUtil.fromJson<M50CurrentStateInfo>(content)
             if (stateInfo == null) {
-                binding.refreshLayout.showEmpty()
+                binding.refreshLayout.showError()
                 return
             }
             binding.refreshLayout.showContent()

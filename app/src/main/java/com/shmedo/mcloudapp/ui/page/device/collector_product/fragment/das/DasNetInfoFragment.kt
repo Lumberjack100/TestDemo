@@ -198,55 +198,6 @@ class DasNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         }
     }
 
-    /**
-     * 处理蓝牙通讯指令结果
-     */
-    private fun handleBleCommandResult(cmdStr: String) {
-        when (MDCommandUtil.extractCommandType(cmdStr)) {
-            MDCommandType.QUERY_DAS_STATUS_1 -> {//##041\r\n：查询设备状态1
-                val result = mdParseManager.parse<DeviceStatusInfoOne>(
-                    cmdStr,
-                    MDCommandType.QUERY_DAS_STATUS_1
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "查询基本信息出错"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                    }
-
-                    is MDCommandResult.Success -> {
-                        initBleDeviceStatusOne(result.data)
-                    }
-                }
-            }
-
-            MDCommandType.QUERY_NETWORK_STATUS -> {
-                val result = mdParseManager.parse<DeviceNetStatus>(
-                    cmdStr,
-                    MDCommandType.QUERY_NETWORK_STATUS
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "查询数据链路状态错"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                    }
-
-                    is MDCommandResult.Success -> {
-                        bleNetStatusList.add(result.data)
-                        if (bleNetStatusList.size == 3) {
-                            initBleCommunicationInfo()
-                            bleNetStatusList.clear()
-                        }
-                    }
-                }
-            }
-
-            else -> {
-                // 其他指令类型忽略
-            }
-        }
-    }
-
     private fun init4GBaseInfo(baseInfo: DasBaseInfo) {
         try {
             val groupList = mutableListOf<Any>()
@@ -340,6 +291,55 @@ class DasNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         }
     }
 
+    /**
+     * 处理蓝牙通讯指令结果
+     */
+    private fun handleBleCommandResult(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.QUERY_DAS_STATUS_1 -> {//##041\r\n：查询设备状态1
+                val result = mdParseManager.parse<DeviceStatusInfoOne>(
+                    cmdStr,
+                    MDCommandType.QUERY_DAS_STATUS_1
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询基本信息出错"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    is MDCommandResult.Success -> {
+                        initBleDeviceStatusOne(result.data)
+                    }
+                }
+            }
+
+            MDCommandType.QUERY_NETWORK_STATUS -> {
+                val result = mdParseManager.parse<DeviceNetStatus>(
+                    cmdStr,
+                    MDCommandType.QUERY_NETWORK_STATUS
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询数据链路状态错"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    is MDCommandResult.Success -> {
+                        bleNetStatusList.add(result.data)
+                        if (bleNetStatusList.size == 3) {
+                            initBleCommunicationInfo()
+                            bleNetStatusList.clear()
+                        }
+                    }
+                }
+            }
+
+            else -> {
+                // 其他指令类型忽略
+            }
+        }
+    }
+
     private fun initBleDeviceStatusOne(info: DeviceStatusInfoOne) {
         try {
             val groupList = mutableListOf<Any>()
@@ -362,6 +362,7 @@ class DasNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     )
                 )
             }
+
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = "IMEI",

@@ -36,7 +36,7 @@ class M50BaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     MoshiUtil.fromJson<M50CurrentStateInfo>(content as String)
                 }
                 if (stateInfo == null) {
-                    binding.refreshLayout.showEmpty()
+                    binding.refreshLayout.showError()
                     return@launchWithViewLifecycle
                 }
                 binding.refreshLayout.showContent()

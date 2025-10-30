@@ -50,7 +50,7 @@ class LB20SNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 }
                 
                 if (stateInfo == null) {
-                    binding.refreshLayout.showEmpty()
+                    binding.refreshLayout.showError()
                     return@launchWithViewLifecycle
                 }
                 

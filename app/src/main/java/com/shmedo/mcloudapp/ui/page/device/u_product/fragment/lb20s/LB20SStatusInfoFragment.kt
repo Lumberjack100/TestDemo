@@ -42,7 +42,7 @@ class LB20SStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 }
                 
                 if (stateInfo == null) {
-                    binding.refreshLayout.showEmpty()
+                    binding.refreshLayout.showError()
                     return@launchWithViewLifecycle
                 }
                 
