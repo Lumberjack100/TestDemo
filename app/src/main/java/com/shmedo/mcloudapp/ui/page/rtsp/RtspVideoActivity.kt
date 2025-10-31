@@ -41,11 +41,19 @@ class RtspVideoActivity : BaseActivity() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as ActivityRtspVideoBinding
+        
+        // 设置工具栏
         setToolBar(binding.llToolbar.toolbar)
-        binding.llToolbar.toolbar.title = "发生错误"
+        
+        // 设置默认标题
+        binding.llToolbar.toolbar.title = getString(R.string.rtsp_video_player)
+        
+        // 设置返回按钮
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             finish()
         }
+        
+        // 初始化播放器
         initPlayer()
     }
 
@@ -70,7 +78,7 @@ class RtspVideoActivity : BaseActivity() {
         
         // 从 Intent 获取摄像头名称（如果有）
         intent.getStringExtra(EXTRA_CAMERA_NAME)?.let { name ->
-            supportActionBar?.title = name
+            binding.llToolbar.toolbar.title = name
             Timber.d("[RtspVideoActivity] 摄像头名称: $name")
         }
     }
@@ -185,21 +193,24 @@ class RtspVideoActivity : BaseActivity() {
     
     /**
      * Activity 暂停时暂停播放
+     * 注意：仅在真正暂停时暂停播放，屏幕旋转等配置变化不暂停
      */
     override fun onPause() {
         super.onPause()
-        mStates.pause()
-        Timber.d("[RtspVideoActivity] Activity 暂停，暂停播放")
+        if (isFinishing) {
+            // 只有在 Activity 真正要结束时才暂停
+            mStates.pause()
+            Timber.d("[RtspVideoActivity] Activity 即将结束，暂停播放")
+        }
     }
-
 
     /**
      * Activity 销毁时停止播放
+     * ViewModel 的 onCleared 会自动释放资源，这里不需要手动调用 stop()
      */
     override fun onDestroy() {
         super.onDestroy()
-        mStates.stop()
-        Timber.d("[RtspVideoActivity] Activity 销毁，停止播放")
+        Timber.d("[RtspVideoActivity] Activity 销毁，ViewModel 将自动清理资源")
     }
     
     companion object {

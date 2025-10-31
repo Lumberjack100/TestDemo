@@ -6,6 +6,8 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
+import androidx.media3.exoplayer.DefaultLoadControl
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.CoroutineScope
@@ -44,11 +46,36 @@ class RtspPlayer(private val context: Context) {
      */
     fun initialize() {
         if (exoPlayer == null) {
-            exoPlayer = ExoPlayer.Builder(context).build().apply {
-                // 设置播放器事件监听
-                addListener(playerListener)
+            // 配置渲染器工厂，强制使用软解码并放宽解码器选择限制
+            val renderersFactory = DefaultRenderersFactory(context).apply {
+                // 强制使用软件解码器（而不是硬件解码器）
+                forceEnableMediaCodecAsynchronousQueueing()
+                // 设置扩展渲染器模式为 ON，强制优先使用软解
+                setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
+                // 允许使用不完全支持的解码器
+                setAllowedVideoJoiningTimeMs(5000)
             }
-            Timber.d("[RtspPlayer] 播放器初始化完成")
+            
+            // 配置加载控制器，降低缓冲延迟（适合实时流）
+            val loadControl = DefaultLoadControl.Builder()
+                .setBufferDurationsMs(
+                    1000,   // 最小缓冲时间 1秒
+                    3000,   // 最大缓冲时间 3秒
+                    500,    // 播放开始缓冲时间
+                    1000    // 重新缓冲时间
+                )
+                .build()
+            
+            exoPlayer = ExoPlayer.Builder(context)
+                .setRenderersFactory(renderersFactory)
+                .setLoadControl(loadControl)
+                .build()
+                .apply {
+                    // 设置播放器事件监听
+                    addListener(playerListener)
+                }
+            
+            Timber.d("[RtspPlayer] 播放器初始化完成（强制软解码模式）")
         }
     }
     
@@ -181,11 +208,24 @@ class RtspPlayer(private val context: Context) {
      * 应在 Activity/Fragment 的 onDestroy 中调用
      */
     fun release() {
-        stopProgressUpdate()
-        exoPlayer?.removeListener(playerListener)
-        exoPlayer?.release()
-        exoPlayer = null
-        Timber.d("[RtspPlayer] 播放器资源已释放")
+        try {
+            // 停止进度更新
+            stopProgressUpdate()
+            
+            // 移除监听器
+            exoPlayer?.removeListener(playerListener)
+            
+            // 停止播放
+            exoPlayer?.stop()
+            
+            // 释放播放器资源
+            exoPlayer?.release()
+            exoPlayer = null
+            
+            Timber.d("[RtspPlayer] 播放器资源已释放")
+        } catch (e: Exception) {
+            Timber.e(e, "[RtspPlayer] 释放播放器资源时发生异常")
+        }
     }
     
     /**
@@ -282,7 +322,21 @@ class RtspPlayer(private val context: Context) {
                     "视频流格式错误"
                 PlaybackException.ERROR_CODE_PARSING_MANIFEST_MALFORMED -> 
                     "无法解析视频流"
-                else -> error.message ?: "播放器发生未知错误"
+                PlaybackException.ERROR_CODE_DECODER_INIT_FAILED -> 
+                    "解码器初始化失败，设备可能不支持该视频格式或分辨率过高"
+                PlaybackException.ERROR_CODE_DECODING_FORMAT_EXCEEDS_CAPABILITIES -> 
+                    "视频格式超出设备解码能力，请尝试降低分辨率或更换视频编码格式"
+                PlaybackException.ERROR_CODE_DECODING_FORMAT_UNSUPPORTED -> 
+                    "设备不支持该视频编码格式"
+                else -> {
+                    val msg = error.message ?: "播放器发生未知错误"
+                    // 如果错误信息包含 MediaCodec，说明是解码相关问题
+                    if (msg.contains("MediaCodec", ignoreCase = true)) {
+                        "视频解码失败，设备可能不支持该视频格式（${error.errorCode}）"
+                    } else {
+                        msg
+                    }
+                }
             }
             
             listener?.onPlayerStateChanged(
