@@ -201,9 +201,7 @@ class M50StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     groupList,
                     name = "电台模块",
                     value = stateInfo.lora.uppercase().compareAndReturn("OK", "有", "无"),
-                    textColorRes = if (stateInfo.lora.uppercase() == "OK") 0 else ColorUtils.getColor(
-                        R.color.error_FF4400
-                    )
+                    textColorRes = 0
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,

@@ -106,7 +106,7 @@ class UIStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     groupList,
                     name = "内部温度",
                     value = stateInfo.temp.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
-                    textColorRes = if ((internalTemp > -20 && internalTemp < 70) || internalTemp == Double.MAX_VALUE) 0 else ColorUtils.getColor(
+                    textColorRes = if (internalTemp > -20 && internalTemp < 70) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00
                     ),
                     unit = "℃",

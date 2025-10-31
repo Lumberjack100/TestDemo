@@ -14,7 +14,6 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.RtkParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.RadioCommunicateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.RtkParamInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
@@ -131,8 +130,6 @@ class M20SWorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun queryData() {
         val commands = listOf(
-            // 查询电台参数
-            IOTCommandUtil.getCommand(IOTCommandType.MD_GET_RADIO_CTRL),
             // 查询RTK配置
             IOTCommandUtil.getCommand(IOTCommandType.GM_MD_CFG_RTK, "method=0")
         )
@@ -252,7 +249,8 @@ class M20SWorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
             // 前端解算为"关"或坐标初始化为"否"时的基础配置
             val entity = RtkParamEntity(
                 mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
-                frontCalc = frontendCalculationList.indexOf(mStates.frontendCalculation.get()).toString(),
+                frontCalc = frontendCalculationList.indexOf(mStates.frontendCalculation.get())
+                    .toString(),
             )
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.GM_MD_CFG_RTK,
@@ -269,10 +267,6 @@ class M20SWorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
      */
     override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_RADIO_CTRL -> {
-                handleRadioControlQuery(cmdStr)
-            }
-
             IOTCommandType.GM_MD_CFG_RTK -> {
                 handleRtkConfigResponse(cmdStr)
             }
@@ -283,26 +277,6 @@ class M20SWorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
 
             else -> {
                 Timber.d("未处理的指令类型: ${IOTCommandUtil.extractCommandType(cmdStr)}")
-            }
-        }
-    }
-
-    /**
-     * 处理电台控制查询响应
-     */
-    private fun handleRadioControlQuery(cmdStr: String) {
-        val result = iotParseManager.parse<RadioCommunicateInfo>(
-            cmdStr,
-            IOTCommandType.MD_GET_RADIO_CTRL
-        )
-        when (result) {
-            is IOTCommandResult.Failure -> {
-                val errMsg = "查询电台参数出错: ${result.message}"
-                handleFailureResult(errMsg, isMessageDialog = true)
-            }
-
-            is IOTCommandResult.Success -> {
-                initRadioData(result.data)
             }
         }
     }
@@ -354,15 +328,6 @@ class M20SWorkModelParamFragment : OptimizedBaseIOTDeviceFragment() {
                 }
             }
         }
-    }
-
-    /**
-     * 初始化电台数据
-     */
-    private fun initRadioData(data: RadioCommunicateInfo) {
-        mStates.isRadioEnable.set(data.sw == "1")
-        // 保存初始状态
-        mStates.saveInitialState()
     }
 
     /**
