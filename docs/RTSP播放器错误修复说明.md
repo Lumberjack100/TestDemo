@@ -92,95 +92,16 @@ fun release() {
 
 ### 2. 添加软解码支持
 
-修改 `RtspPlayer.initialize()` 方法，显式将 FFmpeg 解码器插入渲染器列表：
+修改 `RtspPlayer.initialize()` 方法，使用系统默认渲染器配置并降低缓冲时长：
 
 ```kotlin
 fun initialize() {
     if (exoPlayer == null) {
-        val ffmpegAvailable = try {
-            FfmpegLibrary.isAvailable()
-        } catch (e: Exception) {
-            Timber.e(e, "[RtspPlayer] FFmpeg 库检查失败")
-            false
-        }
-
-        val renderersFactory = object : DefaultRenderersFactory(context) {
-            override fun buildVideoRenderers(
-                context: Context,
-                extensionRendererMode: Int,
-                mediaCodecSelector: MediaCodecSelector,
-                enableDecoderFallback: Boolean,
-                eventHandler: Handler,
-                eventListener: VideoRendererEventListener,
-                allowedVideoJoiningTimeMs: Long,
-                out: ArrayList<Renderer>
-            ) {
-                if (ffmpegAvailable) {
-                    runCatching {
-                        val clazz = Class.forName(
-                            "androidx.media3.decoder.ffmpeg.ExperimentalFfmpegVideoRenderer"
-                        )
-                        val ctor = clazz.getConstructor(
-                            Long::class.javaPrimitiveType,
-                            Handler::class.java,
-                            VideoRendererEventListener::class.java,
-                            Int::class.javaPrimitiveType
-                        )
-                        out.add(
-                            ctor.newInstance(
-                                allowedVideoJoiningTimeMs,
-                                eventHandler,
-                                eventListener,
-                                50
-                            ) as Renderer
-                        )
-                    }.onFailure {
-                        Timber.e(it, "[RtspPlayer] 无法创建 FFmpeg 视频解码器")
-                    }
-                }
-                super.buildVideoRenderers(
-                    context,
-                    extensionRendererMode,
-                    mediaCodecSelector,
-                    enableDecoderFallback,
-                    eventHandler,
-                    eventListener,
-                    allowedVideoJoiningTimeMs,
-                    out
-                )
-            }
-
-            override fun buildAudioRenderers(
-                context: Context,
-                extensionRendererMode: Int,
-                mediaCodecSelector: MediaCodecSelector,
-                enableDecoderFallback: Boolean,
-                audioSink: AudioSink,
-                eventHandler: Handler,
-                eventListener: AudioRendererEventListener,
-                out: ArrayList<Renderer>
-            ) {
-                if (ffmpegAvailable) {
-                    runCatching {
-                        out.add(FfmpegAudioRenderer(eventHandler, eventListener, audioSink))
-                    }.onFailure {
-                        Timber.e(it, "[RtspPlayer] 无法创建 FFmpeg 音频解码器")
-                    }
-                }
-                super.buildAudioRenderers(
-                    context,
-                    extensionRendererMode,
-                    mediaCodecSelector,
-                    enableDecoderFallback,
-                    audioSink,
-                    eventHandler,
-                    eventListener,
-                    out
-                )
-            }
-        }.apply {
-            setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)
+        val renderersFactory = DefaultRenderersFactory(context).apply {
+            setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF)
+            // 允许略低兼容性的解码器参与
             setAllowedVideoJoiningTimeMs(5000)
+            // 当硬解初始化失败时自动切换到软解
             setEnableDecoderFallback(true)
         }
         
@@ -202,20 +123,16 @@ fun initialize() {
                 addListener(playerListener)
             }
         
-        Timber.d("[RtspPlayer] 播放器初始化完成（集成 FFmpeg 解码器）")
+        Timber.d("[RtspPlayer] 播放器初始化完成")
     }
 }
 ```
 
 **关键配置说明：**
 
-1. **显式插入 FFmpeg 渲染器**
-   - `ExperimentalFfmpegVideoRenderer` 和 `FfmpegAudioRenderer` 通过反射/构造函数加入渲染链，确保软解的优先级最高。
-2. **`setExtensionRendererMode(EXTENSION_RENDERER_MODE_PREFER)`**
-   - 先尝试 FFmpeg 软解，软解不可用时再走系统硬解。
-3. **`setEnableDecoderFallback(true)`**
-   - 硬解初始化失败时自动回退到软解，避免崩溃。
-4. **降低缓冲时间**
+1. **关闭扩展渲染器**
+   - 保持系统默认的 MediaCodec 解码路径，避免额外软解依赖。
+2. **降低缓冲时间**
    - 实时流不需要太长缓冲，减小延迟、提升观感。
 
 ### 3. 增强错误提示
