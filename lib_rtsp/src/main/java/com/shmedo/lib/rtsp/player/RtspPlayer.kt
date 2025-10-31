@@ -1,14 +1,22 @@
 package com.shmedo.lib.rtsp.player
 
 import android.content.Context
+import android.os.Handler
 import android.view.SurfaceView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.decoder.ffmpeg.FfmpegAudioRenderer
+import androidx.media3.decoder.ffmpeg.FfmpegLibrary
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.Renderer
+import androidx.media3.exoplayer.audio.AudioRendererEventListener
+import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
+import androidx.media3.exoplayer.video.VideoRendererEventListener
 import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +34,7 @@ import timber.log.Timber
  * 基于 ExoPlayer (Media3) 实现的 RTSP 视频流播放器
  * 支持实时流播放、播放控制、状态监听等功能
  */
+@UnstableApi
 class RtspPlayer(private val context: Context) {
     
     // ExoPlayer 实例
@@ -46,16 +55,121 @@ class RtspPlayer(private val context: Context) {
      */
     fun initialize() {
         if (exoPlayer == null) {
-            // 配置渲染器工厂，强制使用软解码并放宽解码器选择限制
-            val renderersFactory = DefaultRenderersFactory(context).apply {
-                // 强制使用软件解码器（而不是硬件解码器）
-                forceEnableMediaCodecAsynchronousQueueing()
-                // 设置扩展渲染器模式为 ON，强制优先使用软解
-                setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
-                // 允许使用不完全支持的解码器
-                setAllowedVideoJoiningTimeMs(5000)
+            // 检查 FFmpeg 库是否可用
+            val ffmpegAvailable = try {
+                FfmpegLibrary.isAvailable()
+            } catch (e: Exception) {
+                Timber.e(e, "[RtspPlayer] FFmpeg 库检查失败")
+                false
             }
-            
+
+            Timber.d("[RtspPlayer] FFmpeg 库可用: $ffmpegAvailable")
+            if (ffmpegAvailable) {
+                Timber.d("[RtspPlayer] FFmpeg 版本: ${FfmpegLibrary.getVersion()}")
+                Timber.d(
+                    "[RtspPlayer] FFmpeg 支持 HEVC: ${FfmpegLibrary.supportsFormat("video/hevc")}"
+                )
+            }
+
+            // 配置渲染器工厂，显式把 FFmpeg 解码器插入到最前面
+            val renderersFactory = object : DefaultRenderersFactory(context) {
+                override fun buildVideoRenderers(
+                    context: Context,
+                    extensionRendererMode: Int,
+                    mediaCodecSelector: MediaCodecSelector,
+                    enableDecoderFallback: Boolean,
+                    eventHandler: Handler,
+                    eventListener: VideoRendererEventListener,
+                    allowedVideoJoiningTimeMs: Long,
+                    out: ArrayList<Renderer>
+                ) {
+                    if (ffmpegAvailable) {
+                        runCatching {
+                            val clazz = Class.forName(
+                                "androidx.media3.decoder.ffmpeg.ExperimentalFfmpegVideoRenderer"
+                            )
+                            val constructor = clazz.getConstructor(
+                                Long::class.javaPrimitiveType,
+                                Handler::class.java,
+                                VideoRendererEventListener::class.java,
+                                Int::class.javaPrimitiveType
+                            )
+                            val renderer = constructor.newInstance(
+                                allowedVideoJoiningTimeMs,
+                                eventHandler,
+                                eventListener,
+                                50 // MAX_DROPPED_VIDEO_FRAME_COUNT_TO_NOTIFY
+                            ) as Renderer
+                            out.add(renderer)
+                            Timber.d("[RtspPlayer] 已添加 FFmpeg 视频解码器（优先级最高）")
+                        }.onFailure { error ->
+                            Timber.e(error, "[RtspPlayer] 无法创建 FFmpeg 视频解码器，将回退到系统解码器")
+                        }
+                    }
+
+                    super.buildVideoRenderers(
+                        context,
+                        extensionRendererMode,
+                        mediaCodecSelector,
+                        enableDecoderFallback,
+                        eventHandler,
+                        eventListener,
+                        allowedVideoJoiningTimeMs,
+                        out
+                    )
+
+                    Timber.d("[RtspPlayer] 视频渲染器构建完成，共 ${out.size} 个渲染器")
+                    out.forEachIndexed { index, renderer ->
+                        Timber.d("[RtspPlayer] 渲染器 #$index: ${renderer.javaClass.simpleName}")
+                    }
+                }
+
+                override fun buildAudioRenderers(
+                    context: Context,
+                    extensionRendererMode: Int,
+                    mediaCodecSelector: MediaCodecSelector,
+                    enableDecoderFallback: Boolean,
+                    audioSink: androidx.media3.exoplayer.audio.AudioSink,
+                    eventHandler: Handler,
+                    eventListener: AudioRendererEventListener,
+                    out: ArrayList<Renderer>
+                ) {
+                    if (ffmpegAvailable) {
+                        runCatching {
+                            val renderer = FfmpegAudioRenderer(
+                                eventHandler,
+                                eventListener,
+                                audioSink
+                            )
+                            out.add(renderer)
+                            Timber.d("[RtspPlayer] 已添加 FFmpeg 音频解码器")
+                        }.onFailure { error ->
+                            Timber.e(error, "[RtspPlayer] 无法创建 FFmpeg 音频解码器")
+                        }
+                    }
+
+                    super.buildAudioRenderers(
+                        context,
+                        extensionRendererMode,
+                        mediaCodecSelector,
+                        enableDecoderFallback,
+                        audioSink,
+                        eventHandler,
+                        eventListener,
+                        out
+                    )
+
+                    Timber.d("[RtspPlayer] 音频渲染器构建完成，共 ${out.size} 个渲染器")
+                }
+            }.apply {
+                // 优先尝试 FFmpeg 扩展渲染器，失败再回退硬解
+                setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)
+                // 允许略低兼容性的解码器参与
+                setAllowedVideoJoiningTimeMs(5000)
+                // 当硬解初始化失败时自动切换到软解
+                setEnableDecoderFallback(true)
+            }
+
             // 配置加载控制器，降低缓冲延迟（适合实时流）
             val loadControl = DefaultLoadControl.Builder()
                 .setBufferDurationsMs(
@@ -75,7 +189,7 @@ class RtspPlayer(private val context: Context) {
                     addListener(playerListener)
                 }
             
-            Timber.d("[RtspPlayer] 播放器初始化完成（强制软解码模式）")
+            Timber.d("[RtspPlayer] 播放器初始化完成（集成 FFmpeg 解码器）")
         }
     }
     
@@ -353,4 +467,3 @@ class RtspPlayer(private val context: Context) {
         }
     }
 }
-

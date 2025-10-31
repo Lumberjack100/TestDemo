@@ -23,6 +23,12 @@ android {
             isMinifyEnabled = false
         }
     }
+
+    sourceSets {
+        named("main") {
+            jniLibs.srcDirs("libs")
+        }
+    }
     
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -37,6 +43,9 @@ android {
 }
 
 dependencies {
+    // FFmpeg 解码器 - 本地 JAR 提供渲染器类，SO 库已放置在 jniLibs
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+
     // ExoPlayer (Media3) - RTSP 视频流播放
     implementation(libs.androidx.media3.exoplayer)
     api(libs.androidx.media3.ui)
@@ -60,4 +69,3 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
-

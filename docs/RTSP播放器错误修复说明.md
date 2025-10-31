@@ -92,15 +92,96 @@ fun release() {
 
 ### 2. 添加软解码支持
 
-修改 `RtspPlayer.initialize()` 方法，配置 ExoPlayer 支持软解码：
+修改 `RtspPlayer.initialize()` 方法，显式将 FFmpeg 解码器插入渲染器列表：
 
 ```kotlin
 fun initialize() {
     if (exoPlayer == null) {
-        // 配置渲染器工厂，优先使用软解码
-        val renderersFactory = DefaultRenderersFactory(context).apply {
-            // 设置扩展渲染器模式，优先软解码（避免硬解码失败）
+        val ffmpegAvailable = try {
+            FfmpegLibrary.isAvailable()
+        } catch (e: Exception) {
+            Timber.e(e, "[RtspPlayer] FFmpeg 库检查失败")
+            false
+        }
+
+        val renderersFactory = object : DefaultRenderersFactory(context) {
+            override fun buildVideoRenderers(
+                context: Context,
+                extensionRendererMode: Int,
+                mediaCodecSelector: MediaCodecSelector,
+                enableDecoderFallback: Boolean,
+                eventHandler: Handler,
+                eventListener: VideoRendererEventListener,
+                allowedVideoJoiningTimeMs: Long,
+                out: ArrayList<Renderer>
+            ) {
+                if (ffmpegAvailable) {
+                    runCatching {
+                        val clazz = Class.forName(
+                            "androidx.media3.decoder.ffmpeg.ExperimentalFfmpegVideoRenderer"
+                        )
+                        val ctor = clazz.getConstructor(
+                            Long::class.javaPrimitiveType,
+                            Handler::class.java,
+                            VideoRendererEventListener::class.java,
+                            Int::class.javaPrimitiveType
+                        )
+                        out.add(
+                            ctor.newInstance(
+                                allowedVideoJoiningTimeMs,
+                                eventHandler,
+                                eventListener,
+                                50
+                            ) as Renderer
+                        )
+                    }.onFailure {
+                        Timber.e(it, "[RtspPlayer] 无法创建 FFmpeg 视频解码器")
+                    }
+                }
+                super.buildVideoRenderers(
+                    context,
+                    extensionRendererMode,
+                    mediaCodecSelector,
+                    enableDecoderFallback,
+                    eventHandler,
+                    eventListener,
+                    allowedVideoJoiningTimeMs,
+                    out
+                )
+            }
+
+            override fun buildAudioRenderers(
+                context: Context,
+                extensionRendererMode: Int,
+                mediaCodecSelector: MediaCodecSelector,
+                enableDecoderFallback: Boolean,
+                audioSink: AudioSink,
+                eventHandler: Handler,
+                eventListener: AudioRendererEventListener,
+                out: ArrayList<Renderer>
+            ) {
+                if (ffmpegAvailable) {
+                    runCatching {
+                        out.add(FfmpegAudioRenderer(eventHandler, eventListener, audioSink))
+                    }.onFailure {
+                        Timber.e(it, "[RtspPlayer] 无法创建 FFmpeg 音频解码器")
+                    }
+                }
+                super.buildAudioRenderers(
+                    context,
+                    extensionRendererMode,
+                    mediaCodecSelector,
+                    enableDecoderFallback,
+                    audioSink,
+                    eventHandler,
+                    eventListener,
+                    out
+                )
+            }
+        }.apply {
             setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)
+            setAllowedVideoJoiningTimeMs(5000)
+            setEnableDecoderFallback(true)
         }
         
         // 配置加载控制器，降低缓冲延迟（适合实时流）
@@ -121,21 +202,21 @@ fun initialize() {
                 addListener(playerListener)
             }
         
-        Timber.d("[RtspPlayer] 播放器初始化完成（支持软解码）")
+        Timber.d("[RtspPlayer] 播放器初始化完成（集成 FFmpeg 解码器）")
     }
 }
 ```
 
 **关键配置说明：**
 
-1. **`setExtensionRendererMode(EXTENSION_RENDERER_MODE_PREFER)`**
-   - 优先使用软件解码器（扩展渲染器）
-   - 硬件解码失败时自动降级到软解码
-   - 保证视频播放的兼容性
-
-2. **降低缓冲时间**
-   - 实时流不需要太长的缓冲
-   - 减少延迟，提升实时性
+1. **显式插入 FFmpeg 渲染器**
+   - `ExperimentalFfmpegVideoRenderer` 和 `FfmpegAudioRenderer` 通过反射/构造函数加入渲染链，确保软解的优先级最高。
+2. **`setExtensionRendererMode(EXTENSION_RENDERER_MODE_PREFER)`**
+   - 先尝试 FFmpeg 软解，软解不可用时再走系统硬解。
+3. **`setEnableDecoderFallback(true)`**
+   - 硬解初始化失败时自动回退到软解，避免崩溃。
+4. **降低缓冲时间**
+   - 实时流不需要太长缓冲，减小延迟、提升观感。
 
 ### 3. 增强错误提示
 
@@ -263,4 +344,3 @@ codecList.codecInfos.forEach { codecInfo ->
 **修复完成时间**: 2025-10-30  
 **修复人员**: gonghe  
 **版本**: 1.0
-
