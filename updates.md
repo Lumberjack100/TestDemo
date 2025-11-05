@@ -1,3 +1,6 @@
+## 5.3.20
+- 修复混淆后 MR702ReservoirCapacityFragment 页面崩溃问题
+
 ## 5.3.19
 ### 普适型 GNSS 接收机(M20S)
 - 设备状态信息页面指令替换
