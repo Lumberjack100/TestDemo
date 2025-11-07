@@ -222,8 +222,8 @@ object InsetsManager {
         root: View,
         view: View,
         followIme: Boolean = false,
-        applyTo: ApplyTo = ApplyTo.Translation,
-        extraBottomPaddingDp: Int = 12
+        applyTo: ApplyTo = ApplyTo.Padding,
+        extraBottomPaddingDp: Int = 0
     ) {
         when (applyTo) {
             ApplyTo.Padding -> {
