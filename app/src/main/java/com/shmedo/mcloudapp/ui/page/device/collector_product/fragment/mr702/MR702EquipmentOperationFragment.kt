@@ -706,8 +706,4 @@ class MR702EquipmentOperationFragment : OptimizedBaseIOTDeviceFragment() {
             MR702RainSetZeroModule().toUnified(),
         )
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 }

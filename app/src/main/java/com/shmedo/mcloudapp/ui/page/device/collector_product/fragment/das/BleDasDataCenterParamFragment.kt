@@ -638,10 +638,6 @@ class BleDasDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
         mStates.password.set(data.mqttPassword)
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     private fun processBack(isPressBackBtn: Boolean = false) {
         launchWithViewLifecycle {

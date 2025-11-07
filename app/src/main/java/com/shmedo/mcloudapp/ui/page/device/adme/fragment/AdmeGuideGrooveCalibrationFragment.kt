@@ -587,10 +587,6 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
         cancelNearbyCommunicationTimeoutJob()
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     companion object {
         const val DELAY_2000_MILLIS = 2000L

@@ -50,10 +50,6 @@ class AboutFragment : BaseFragment() {
     }
 
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     inner class ClickProxy : BaseClickProxy() {
         /**

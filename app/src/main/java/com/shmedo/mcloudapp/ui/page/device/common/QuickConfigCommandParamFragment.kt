@@ -623,10 +623,6 @@ class QuickConfigCommandParamFragment : OptimizedBaseIOTDeviceFragment() {
         )
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar, isKeyboardEnable = true)
-    }
 
     /**
      * 显示指令执行进度对话框

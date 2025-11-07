@@ -1088,10 +1088,6 @@ class DasVibratingSensorFragment : BaseFragment() {
         nav().navigateUp()
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     companion object {
         private const val MCU_PREFIX = "MCU_"

@@ -86,9 +86,6 @@ class WebViewFragment : BaseFragment() {
     override fun onResume() {
         mAgentWeb.webLifeCycle.onResume()
         super.onResume()
-
-        // 设置状态栏
-        initImmersionBar(requireView().findViewById(R.id.ll_toolbar))
     }
 
     override fun onPause() {

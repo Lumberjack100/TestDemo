@@ -795,11 +795,6 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
             })
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         locationViewModel.stopLocation()

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.navigation.findNavController
 import com.blankj.utilcode.util.NetworkUtils
 import com.hjq.toast.Toaster
@@ -35,6 +36,7 @@ class MainActivity : BaseActivity() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         binding = getBinding() as ActivityMainBinding
         processBackPressed()
     }

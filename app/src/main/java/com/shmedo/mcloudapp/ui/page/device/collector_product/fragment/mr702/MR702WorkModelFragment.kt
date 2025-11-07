@@ -219,8 +219,4 @@ class MR702WorkModelFragment : OptimizedBaseIOTDeviceFragment() {
         nav().navigateUp()
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 }

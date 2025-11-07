@@ -505,10 +505,6 @@ class MR702RS485Port1SensorParamFragment : OptimizedBaseIOTDeviceFragment(),
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     private fun processBack(isPressBackBtn: Boolean = false) {
         launchWithViewLifecycle {

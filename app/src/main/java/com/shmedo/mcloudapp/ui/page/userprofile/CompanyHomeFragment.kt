@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.ui.page.userprofile
 
 import android.os.Bundle
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -92,8 +91,4 @@ class CompanyHomeFragment : BaseFragment() {
     }
 
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 }

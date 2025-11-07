@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
+import androidx.activity.enableEdgeToEdge
 import com.baidu.location.LocationClient
 import com.baidu.mapapi.CoordType
 import com.baidu.mapapi.SDKInitializer
 import com.baidu.mapapi.common.BaiduMapSDKException
 import com.blankj.utilcode.util.DeviceUtils
 import com.blankj.utilcode.util.NetworkUtils
-import com.gyf.immersionbar.ktx.immersionBar
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
@@ -50,14 +50,9 @@ class SplashActivity : BaseActivity() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        initImmersionBar()
+        enableEdgeToEdge()
     }
 
-    private fun initImmersionBar() {
-        immersionBar {
-            transparentBar()
-        }
-    }
 
     override fun initData() {
         logViewModel.insertSystemLogSession()

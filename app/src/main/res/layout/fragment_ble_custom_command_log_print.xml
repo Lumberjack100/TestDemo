@@ -19,6 +19,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/main_bg_gray">
@@ -60,6 +61,8 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/ll_send"
             app:layout_constraintTop_toBottomOf="@+id/ll_mode"
+            android:paddingBottom="@dimen/dimen_size_20"
+            android:clipToPadding="false"
             app:showBubble="false"
             tools:itemCount="4"
             tools:listitem="@layout/item_debug_cmd_log" />

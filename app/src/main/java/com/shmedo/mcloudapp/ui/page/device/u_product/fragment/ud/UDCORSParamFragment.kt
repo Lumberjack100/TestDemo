@@ -376,10 +376,6 @@ class UDCORSParamFragment : OptimizedBaseIOTDeviceFragment() {
         nav().navigateUp()
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     companion object {
         const val REPEAT_POLL_NUM = 10

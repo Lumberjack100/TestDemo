@@ -651,7 +651,6 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun onResume() {
         super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
         binding.mapView.onResume()
     }
 

@@ -9,7 +9,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
-import androidx.activity.OnBackPressedCallback
 import androidx.core.content.FileProvider
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -218,11 +217,6 @@ class LogDataFragment : BaseFragment() {
         }
 
         startActivity(Intent.createChooser(shareIntent, "分享到"))
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
     }
 
     companion object {

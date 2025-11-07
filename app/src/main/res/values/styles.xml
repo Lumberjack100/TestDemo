@@ -8,11 +8,20 @@
         <item name="android:windowAnimationStyle">@style/ActivityAnimation</item>
     </style>
 
+<!--    <style name="LightStatusBarActivity" parent="Theme.mCloudApp">-->
+<!--        <item name="android:windowLightStatusBar">true</item>-->
+<!--        <item name="android:statusBarColor">@color/white</item>-->
+<!--        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>-->
+<!--        <item name="android:navigationBarColor">@color/white</item>-->
+<!--    </style>-->
+
     <style name="LightStatusBarActivity" parent="Theme.mCloudApp">
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
-        <item name="android:navigationBarColor">@color/white</item>
+
+        <!-- 透明系统栏，真正的留白交给 EdgeToEdge Insets 分发 -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
     <!-- 自定义 MaterialToolbar 样式 -->
