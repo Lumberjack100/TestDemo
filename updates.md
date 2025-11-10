@@ -1,3 +1,17 @@
+## 5.4.0
+### MR702 遥测终端机
+- RS232-1 接口配置需求迭代，增加串口摄像头类型
+### 优化状态栏和沉浸式体验处理
+- 移除 ImmersionBar 依赖：从 BaseFragment 中移除了 initImmersionBar 方法，并在所有子 Fragment 中删除了对其的调用。
+- 采用原生 Edge-to-Edge API：
+  - 在 MainActivity、DeviceHomeActivity 和 SplashActivity 中启用 enableEdgeToEdge()，使应用内容能够绘制到系统栏后面。
+  - 修改主题 LightStatusBarActivity，将状态栏和导航栏颜色设置为透明，以支持 Edge-to-Edge 布局。
+- 引入 InsetsManager 和 statusBarPadding：
+  - 新增 InsetsManagerExt.kt 工具类，用于统一处理窗口 Insets（系统栏、输入法等），提供全局和局部的边距（Padding）适配方案。
+  - 创建了 statusBarPadding DataBinding 适配器，可方便地为 Toolbar 等视图动态添加状态栏高度的顶部内边距，确保内容不被遮挡。
+  - 在 include_device_config_toolbar_white.xml 等布局文件中应用了 statusBarPadding。
+
+
 ## 5.3.21
 ### MR702 遥测终端机
 - RS232-1 接口配置需求迭代，增加串口摄像头类型

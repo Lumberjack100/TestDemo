@@ -185,8 +185,8 @@ dependencies {
     implementation(libs.kunminx.smooth.navigation)
 
     //透明系统栏设置基础依赖包，必须要依赖
-    implementation(libs.immersionbar)
-    implementation(libs.immersionbar.ktx)
+//    implementation(libs.immersionbar)
+//    implementation(libs.immersionbar.ktx)
 
     //权限请求框架：https://github.com/getActivity/XXPermissions
     implementation(libs.getActivity.xxpermission)
