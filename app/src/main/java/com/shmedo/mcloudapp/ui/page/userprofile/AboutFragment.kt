@@ -9,6 +9,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAboutBinding
+import com.shmedo.mcloudapp.extensions.InsetsManager
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
@@ -36,19 +37,23 @@ class AboutFragment : BaseFragment() {
         binding = getBinding() as FragmentAboutBinding
         binding.llToolbar.toolbar.title = "关于"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
             nav().navigateUp()
         }
+
+        InsetsManager.liftSpecificBottomView(
+            binding.root,
+            binding.tvCaseNumber,
+            applyTo = InsetsManager.ApplyTo.Margin,
+        )
     }
 
     override fun initData() {
         mStates.appVersion.set(String.format("米易通 V%s", AppUtils.getAppVersionName()))
         mStates.caseNumber.set("ICP 备案号：沪ICP备12047248号-4A")
     }
-
 
 
     inner class ClickProxy : BaseClickProxy() {
