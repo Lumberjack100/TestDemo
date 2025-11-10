@@ -195,7 +195,8 @@
 
     <string-array name="mr_rs232_port1_camera_model">
         <item>SXH232-H200</item>
-        <item>PTC052</item>
+        <item>PTC052(红外版)</item>
+        <item>PTC052(白光板)</item>
     </string-array>
 
     <string-array name="mr_rs232_port2_camera_resolution">
