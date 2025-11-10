@@ -10,6 +10,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.widget.LinearLayout
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import com.just.agentweb.AgentWeb
 import com.just.agentweb.WebChromeClient
@@ -19,6 +20,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.ActivityWebviewBinding
+import com.shmedo.mcloudapp.extensions.InsetsManager
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -52,6 +54,10 @@ class WebviewActivity : BaseActivity() {
                 finish()
             }
         }
+
+        enableEdgeToEdge()
+        //防止底部导航栏遮挡底部内容
+        InsetsManager.applyGlobalSystemBarsBottom(binding.container)
     }
 
     override fun initData() {

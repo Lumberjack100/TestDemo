@@ -180,10 +180,6 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
     override fun onTabReselected(tab: TabLayout.Tab) {}
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

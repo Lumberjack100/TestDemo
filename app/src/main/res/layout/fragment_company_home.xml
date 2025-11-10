@@ -36,14 +36,15 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                android:paddingTop="@dimen/page_content_container_padding_top_12"
+                android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"

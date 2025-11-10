@@ -2,11 +2,8 @@ package com.shmedo.mcloudapp.ui.page.base.activity
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.blankj.utilcode.util.KeyboardUtils
-import com.gyf.immersionbar.ktx.immersionBar
-import com.shmedo.mcloudapp.R
 
 /**
  * 创建者:   gonghe <br></br>
@@ -37,31 +34,6 @@ abstract class BaseActivity : BaseVmDbActivity() {
 
     open fun hideTitleBar() {
         supportActionBar?.hide()
-    }
-
-    open fun initImmersionBar(
-        statusBar: View,
-        isTitleBar: Boolean = true,
-        isStatusBarDarkFont: Boolean = true,
-        isNavigationBarDarkIcon: Boolean = true,
-        statusBarColor: Int = -1,
-        navigationBarColor: Int = R.color.white,
-        isKeyboardEnable: Boolean = true,
-
-        ) {
-        immersionBar {
-            if (isTitleBar)
-                titleBar(statusBar)
-            else
-                statusBarView(statusBar)
-            statusBarDarkFont(isStatusBarDarkFont)
-            navigationBarDarkIcon(isNavigationBarDarkIcon)
-            if (statusBarColor != -1)
-                statusBarColor(statusBarColor)
-            if (navigationBarColor != -1)
-                navigationBarColor(navigationBarColor)
-            keyboardEnable(isKeyboardEnable)
-        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

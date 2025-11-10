@@ -1165,7 +1165,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         super.onResume()
         // 开启屏幕长亮
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        initImmersionBar(binding.llToolbar.toolbar)
     }
 
     override fun onPause() {

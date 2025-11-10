@@ -187,10 +187,6 @@ abstract class BaseDataCenterHomeFragment : OptimizedBaseIOTDeviceFragment() {
         return groupList
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     // 抽象方法，由子类实现
     /**

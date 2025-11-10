@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.activity.enableEdgeToEdge
 import androidx.navigation.findNavController
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.utils.AppContants
@@ -13,6 +14,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
+import com.shmedo.mcloudapp.extensions.InsetsManager
 import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.model.CommunicateWay
@@ -48,6 +50,10 @@ class QuickFunctionActivity : BaseActivity() {
         registerOnBackPressedDispatcher {
             finish()
         }
+
+        enableEdgeToEdge()
+        // 防止底部导航栏遮挡底部内容，只在 NavHost 容器上做“系统栏”基础填充（不动 IME）
+        InsetsManager.applyGlobalSystemBarsBottom(binding.deviceHomeHostFragment)
     }
 
     override fun initData() {

@@ -221,8 +221,5 @@ class AdmeHacAlarmSettingFragment : BaseIOTDeviceFragment() {
         mStates.thirdLevelYAxisMax.set(info.y3max)
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
+
 }

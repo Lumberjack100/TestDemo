@@ -858,8 +858,4 @@ class MR702RS485Port1TwoSensorParamFragment : OptimizedBaseIOTDeviceFragment() {
     private fun checkModelFieldList() =
         mStates.defaultSensorModel.modelFieldList.isNotEmpty() && mStates.defaultSensorModel.modelFieldList.size > 1
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 }

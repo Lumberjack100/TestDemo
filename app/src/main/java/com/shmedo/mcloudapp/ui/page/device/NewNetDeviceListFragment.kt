@@ -320,7 +320,8 @@ class NewNetDeviceListFragment : BaseFragment() {
         tabList.add(
             FilterDeviceTabItem(
                 name = "在线状态",
-                value = "在线"
+                value = "在线",
+                singleSelectionItemLastSelectedIndex = 1
             )
         )
         tabList.add(
@@ -337,13 +338,13 @@ class NewNetDeviceListFragment : BaseFragment() {
         onlineStatusList.clear()
         onlineStatusList.add(
             SingleSelectionItem(
-                name = "全部状态",
-                checked = true
+                name = "全部",
             )
         )
         onlineStatusList.add(
             SingleSelectionItem(
                 name = "在线",
+                checked = true
             )
         )
         onlineStatusList.add(

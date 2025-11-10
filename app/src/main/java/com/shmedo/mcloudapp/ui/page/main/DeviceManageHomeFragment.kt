@@ -191,7 +191,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     override fun onResume() {
         super.onResume()
         binding.root.post {
-            initImmersionBar(binding.statusBarView, isTitleBar = false, isStatusBarDarkFont = true)
+//            initImmersionBar(binding.statusBarView, isTitleBar = false, isStatusBarDarkFont = true)
         }
     }
 

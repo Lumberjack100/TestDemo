@@ -157,10 +157,6 @@ class FollowDeviceListFragment : BaseFragment() {
         deviceRequestViewModel.cancelUserFollowDevice(deviceSn)
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     companion object {
         private const val PAGE_SIZE = 20

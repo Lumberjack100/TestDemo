@@ -1065,10 +1065,6 @@ abstract class BaseDasDigitalSensorFragment : OptimizedBaseIOTDeviceFragment() {
 
     abstract override fun handleCommandResponse(cmdStr: String)
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     companion object {
 

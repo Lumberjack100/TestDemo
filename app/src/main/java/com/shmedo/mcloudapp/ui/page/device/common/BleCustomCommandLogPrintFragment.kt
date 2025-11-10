@@ -36,6 +36,7 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseCommandLogPrintClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentBleCustomCommandLogPrintBinding
+import com.shmedo.mcloudapp.extensions.InsetsManager
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -84,6 +85,8 @@ class BleCustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
         binding = getBinding() as FragmentBleCustomCommandLogPrintBinding
         setupToolbar()
         setupRecyclerView()
+
+        InsetsManager.applyImeDeltaBottom(binding.root, binding.llSend)
     }
 
     private fun setupToolbar() {
@@ -156,7 +159,10 @@ class BleCustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
         launchWithViewLifecycle {
             try {
                 bleViewModel.commandData.collect { commandData ->
-                    mStates.addLog(commandData.response, ColorUtils.getColor(R.color.receive_data_color))
+                    mStates.addLog(
+                        commandData.response,
+                        ColorUtils.getColor(R.color.receive_data_color)
+                    )
                 }
             } catch (e: Exception) {
                 Timber.e(e, "蓝牙通信观察者异常")
@@ -476,7 +482,7 @@ class BleCustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 // 设置剪贴板数据以授予接收应用对URI的访问权限
-                clipData =  ClipData.newRawUri("", uri)
+                clipData = ClipData.newRawUri("", uri)
             }
 
             // 注意：把授权 flag 同时也加在 chooser 上（某些系统实现更“挑”）
@@ -491,10 +497,6 @@ class BleCustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar, isKeyboardEnable = true)
-    }
 
     private fun handleBackPressed() {
         updateDebugMode(BleCustomCommandLogPrintViewModel.DebugMode.CLOSE)

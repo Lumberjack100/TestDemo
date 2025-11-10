@@ -19,13 +19,15 @@
         android:id="@+id/toolbar"
         style="@style/Widget.MyApp.MaterialToolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/white"
+        android:minHeight="?attr/actionBarSize"
         app:navigationIcon="@drawable/ic_arrow_back_black"
+        app:statusBarPadding="@{true}"
         app:subtitle=""
         app:subtitleTextColor="@color/sub_title_text_color"
-        tools:title="配置"
-        app:titleTextColor="@color/title_text_color">
+        app:titleTextColor="@color/title_text_color"
+        tools:title="配置">
 
         <FrameLayout
             visible="@{vm.toolbarIvActionVisible || vm.toolbarTvActionVisible}"

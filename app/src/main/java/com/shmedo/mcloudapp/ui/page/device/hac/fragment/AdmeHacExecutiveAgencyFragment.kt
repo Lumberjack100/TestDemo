@@ -564,8 +564,4 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 }

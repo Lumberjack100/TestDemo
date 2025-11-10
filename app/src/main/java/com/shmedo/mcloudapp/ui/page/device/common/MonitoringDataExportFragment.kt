@@ -392,11 +392,6 @@ class MonitoringDataExportFragment : BaseFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
-
     companion object {
         /** 创建Fragment实例 */
         fun newInstance(deviceSn: String, apiKey: String): MonitoringDataExportFragment {

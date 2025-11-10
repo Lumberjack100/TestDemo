@@ -199,9 +199,4 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
     override fun setResultData(cmdStr: String) {
 
     }
-
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 }

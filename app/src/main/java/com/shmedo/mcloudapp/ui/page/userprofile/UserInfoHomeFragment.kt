@@ -337,7 +337,6 @@ class UserInfoHomeFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
         updateView()
     }
 }

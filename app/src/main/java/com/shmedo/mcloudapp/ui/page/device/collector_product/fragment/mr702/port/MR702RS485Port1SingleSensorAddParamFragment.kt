@@ -515,10 +515,6 @@ class MR702RS485Port1SingleSensorAddParamFragment : OptimizedBaseIOTDeviceFragme
     private fun checkModelFieldList() =
         mStates.defaultSensorModel.modelFieldList.isNotEmpty() && modelFieldIndex < mStates.defaultSensorModel.modelFieldList.size
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     companion object {
         fun newInstance() = MR702RS485Port1SingleSensorAddParamFragment()

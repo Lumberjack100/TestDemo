@@ -683,10 +683,6 @@ class MR702RS485Port1TwoSensorAddParamFragment : OptimizedBaseIOTDeviceFragment(
     private fun checkModelFieldList() =
         mStates.defaultSensorModel.modelFieldList.isNotEmpty() && mStates.defaultSensorModel.modelFieldList.size > 1
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     companion object {
         private const val SENSOR_MODEL_ITEM = "sensor_model_item"

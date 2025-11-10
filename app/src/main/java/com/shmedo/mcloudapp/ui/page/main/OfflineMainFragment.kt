@@ -72,10 +72,4 @@ class OfflineMainFragment : BaseFragment() {
             })
     }
 
-    override fun onResume() {
-        super.onResume()
-        binding.root.post {
-            initImmersionBar(binding.topAppBar)
-        }
-    }
 }

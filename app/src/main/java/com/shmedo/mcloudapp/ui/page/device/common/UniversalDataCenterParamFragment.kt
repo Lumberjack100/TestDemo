@@ -493,10 +493,6 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     override fun handleBackByCheckDataModified() {
         if (mStates.isDataModified.value == true) {
