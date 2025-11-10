@@ -29,6 +29,9 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.databinding.BindingAdapter
 import com.blankj.utilcode.util.ClickUtils
 import com.bumptech.glide.Glide
@@ -292,4 +295,27 @@ object CommonBindingAdapter {
     fun onClickWithDebouncing(view: View?, clickListener: View.OnClickListener?) {
         ClickUtils.applySingleDebouncing(view, clickListener)
     }
+
+
+    /**
+     * 给 View 顶部追加“状态栏高度”Padding。仅处理 SystemBars.Top，不涉及 IME。
+     * 可用于 Toolbar、标题栏容器。
+     */
+    @JvmStatic
+    @BindingAdapter("statusBarPadding")
+    fun View.bindStatusBarPadding(enabled: Boolean) {
+        if (!enabled) return
+
+        val initialTop = paddingTop
+
+        ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
+            val top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            v.updatePadding(top = initialTop + top)
+            insets // 不消费，继续分发
+        }
+
+        // 触发一次
+        ViewCompat.requestApplyInsets(this)
+    }
+
 }

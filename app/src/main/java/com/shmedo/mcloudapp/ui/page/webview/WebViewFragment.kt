@@ -18,6 +18,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentWebviewBinding
+import com.shmedo.mcloudapp.extensions.InsetsManager
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
@@ -57,6 +58,12 @@ class WebViewFragment : BaseFragment() {
                 nav().navigateUp()
             }
         }
+
+        InsetsManager.liftSpecificBottomView(
+            binding.root,
+            binding.container,
+            applyTo = InsetsManager.ApplyTo.Padding,
+        )
     }
 
     override fun initData() {
@@ -80,15 +87,12 @@ class WebViewFragment : BaseFragment() {
         mAgentWeb.agentWebSettings.webSettings.apply {
             allowFileAccess = true//允许加载本地文件html  file协议
             allowContentAccess = true // 允许 WebView 使用 File协议
-       }
+        }
     }
 
     override fun onResume() {
         mAgentWeb.webLifeCycle.onResume()
         super.onResume()
-
-        // 设置状态栏
-        initImmersionBar(requireView().findViewById(R.id.ll_toolbar))
     }
 
     override fun onPause() {

@@ -509,10 +509,6 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
         )
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     // 在 onDestroy 中取消 job
     override fun onDestroy() {

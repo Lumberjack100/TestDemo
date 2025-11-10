@@ -203,10 +203,7 @@ class CapturedPictureViewFragment : BaseFragment() {
         super.onDestroyView()
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
+
 
     companion object {
         const val CURRENT_POSITION = "current_position"

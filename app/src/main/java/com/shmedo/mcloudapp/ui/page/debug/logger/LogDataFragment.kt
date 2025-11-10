@@ -9,7 +9,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
-import androidx.activity.OnBackPressedCallback
 import androidx.core.content.FileProvider
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -28,6 +27,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentLogDataBinding
+import com.shmedo.mcloudapp.extensions.InsetsManager
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -79,6 +79,13 @@ class LogDataFragment : BaseFragment() {
             nav().navigateUp()
         }
         initAdapter()
+
+        InsetsManager.liftSpecificBottomView(
+            binding.root,
+            binding.recyclerview,
+            applyTo = InsetsManager.ApplyTo.Padding,
+            extraBottomPaddingDp = 25
+        )
     }
 
     private fun initAdapter() {
@@ -218,11 +225,6 @@ class LogDataFragment : BaseFragment() {
         }
 
         startActivity(Intent.createChooser(shareIntent, "分享到"))
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
     }
 
     companion object {

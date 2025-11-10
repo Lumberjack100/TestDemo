@@ -238,8 +238,5 @@ class LR200SensorParamFragment : OptimizedBaseIOTDeviceFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
+
 }

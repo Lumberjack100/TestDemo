@@ -77,7 +77,7 @@ class MineFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        initImmersionBar(binding.statusBarView, isTitleBar = false, isStatusBarDarkFont = true)
+//        initImmersionBar(binding.statusBarView, isTitleBar = false, isStatusBarDarkFont = true)
     }
 
     inner class ClickProxy {

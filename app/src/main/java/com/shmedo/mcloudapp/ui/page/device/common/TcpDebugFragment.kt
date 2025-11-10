@@ -745,7 +745,6 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
         try {
             // 开启屏幕长亮
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            initImmersionBar(binding.toolbar, isKeyboardEnable = true)
         } catch (e: Exception) {
             Timber.e(e, "Resume时设置失败")
         }

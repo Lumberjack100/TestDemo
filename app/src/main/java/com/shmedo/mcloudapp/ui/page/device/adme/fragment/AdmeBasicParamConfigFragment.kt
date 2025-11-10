@@ -771,9 +771,5 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
         mStates.positiveAndNegativeTest.set(info.posnegtest == "1")
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
 }

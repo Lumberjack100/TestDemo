@@ -14,6 +14,7 @@ import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.RegexUtils
@@ -56,8 +57,9 @@ class LoginActivity : BaseActivity() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
+
         binding = getBinding() as ActivityLoginBinding
-        initImmersionBar(binding.statusBarView, isTitleBar = false, isStatusBarDarkFont = false)
     }
 
     private fun initLoginUserProtocol() {

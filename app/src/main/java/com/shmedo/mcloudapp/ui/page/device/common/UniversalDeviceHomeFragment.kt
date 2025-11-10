@@ -544,8 +544,4 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     protected open fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {}
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 }

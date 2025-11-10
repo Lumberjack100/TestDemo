@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.WindowManager
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -17,12 +18,13 @@ import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
-import com.shmedo.mcloudapp.extensions.isM50Series
-import com.shmedo.mcloudapp.extensions.isUDSeries
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
+import com.shmedo.mcloudapp.extensions.InsetsManager
 import com.shmedo.mcloudapp.extensions.getAppViewModel
+import com.shmedo.mcloudapp.extensions.isM50Series
+import com.shmedo.mcloudapp.extensions.isUDSeries
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.CustomActivityResult
 import com.shmedo.mcloudapp.model.NetPlatformConnect
@@ -55,8 +57,13 @@ class DeviceHomeActivity : BaseActivity() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
+
         binding = getBinding() as ActivityDeviceHomeBinding
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        // 只在 NavHost 容器上做“系统栏”基础填充（不动 IME）
+        InsetsManager.applyGlobalSystemBarsBottom(binding.deviceHomeHostFragment)
     }
 
     override fun initData() {

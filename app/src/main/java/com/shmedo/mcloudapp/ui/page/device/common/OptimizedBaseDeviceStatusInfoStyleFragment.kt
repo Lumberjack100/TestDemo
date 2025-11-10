@@ -741,8 +741,4 @@ abstract class OptimizedBaseDeviceStatusInfoStyleFragment : OptimizedBaseIOTDevi
      */
     protected open fun <T> initStatusInfo(content: T) {}
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
-} 
+}

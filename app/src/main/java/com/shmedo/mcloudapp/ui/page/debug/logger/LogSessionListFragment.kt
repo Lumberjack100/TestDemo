@@ -17,6 +17,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentLogSessionListBinding
+import com.shmedo.mcloudapp.extensions.InsetsManager
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -60,6 +61,13 @@ class LogSessionListFragment : BaseFragment() {
         }
         initRefresh()
         initAdapter()
+
+        InsetsManager.liftSpecificBottomView(
+            binding.root,
+            binding.recyclerview,
+            applyTo = InsetsManager.ApplyTo.Padding,
+            extraBottomPaddingDp = 25
+        )
     }
 
     private fun initRefresh() {
@@ -152,8 +160,4 @@ class LogSessionListFragment : BaseFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 }

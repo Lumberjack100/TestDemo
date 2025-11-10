@@ -61,8 +61,5 @@ class AdmeHacMeasuringDataResultsFragment : BaseFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
+
 }

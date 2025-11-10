@@ -14,21 +14,21 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.scwang.smart.refresh.layout.constant.RefreshState
 import com.shmedo.core.commonlib.utils.AppContants
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.core.model.CloudDeviceData
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentQueryDeviceDataBinding
 import com.shmedo.mcloudapp.databinding.ItemDeviceDataBinding
-import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.core.model.CloudDeviceData
-import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.QueryDeviceDataViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
+import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.QueryDeviceDataViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 
@@ -299,11 +299,6 @@ class QueryDeviceDataFragment : BaseFragment() {
             currentPage = binding.refreshLayout.index,
             pageSize = PAGE_SIZE
         )
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
     }
 
     companion object {

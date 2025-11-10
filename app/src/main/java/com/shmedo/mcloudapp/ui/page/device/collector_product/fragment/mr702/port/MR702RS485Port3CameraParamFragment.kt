@@ -458,11 +458,6 @@ class MR702RS485Port3CameraParamFragment : OptimizedBaseIOTDeviceFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
-
     private fun processBack(isPressBackBtn: Boolean = false) {
         launchWithViewLifecycle {
             if (isPressBackBtn) {

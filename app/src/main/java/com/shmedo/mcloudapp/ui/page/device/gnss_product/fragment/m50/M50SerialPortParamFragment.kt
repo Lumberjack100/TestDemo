@@ -356,9 +356,4 @@ class M50SerialPortParamFragment : OptimizedBaseIOTDeviceFragment() {
         }
         nav().navigateUp()
     }
-
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 }

@@ -270,11 +270,6 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         // TabLayout 解绑

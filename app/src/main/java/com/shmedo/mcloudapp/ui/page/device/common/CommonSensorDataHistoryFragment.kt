@@ -393,10 +393,6 @@ class CommonSensorDataHistoryFragment : BaseFragment() {
         )
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     companion object {
         private const val PAGE_SIZE = 50

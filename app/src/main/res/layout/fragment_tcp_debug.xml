@@ -22,12 +22,14 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
+            style="@style/Widget.MyApp.MaterialToolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:background="@color/white"
+            android:minHeight="?attr/actionBarSize"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_navigation_black2"
-            style="@style/Widget.MyApp.MaterialToolbar"
+            app:statusBarPadding="@{true}"
             app:subtitleTextColor="@color/sub_title_text_color"
             app:titleTextColor="@color/title_text_color"
             tools:subtitle="192.168.0.107:1088"
@@ -36,15 +38,15 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/menuLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:gravity="center_vertical">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tvConnect"
+                    onClickWithDebouncing="@{()->click.onConnectOperateClick()}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    onClickWithDebouncing="@{()->click.onConnectOperateClick()}"
                     android:padding="10dp"
                     android:text="@{stateVM.tcpConnected?`断开TCP`:`连接TCP`}"
                     android:textColor="@color/colorPrimary"
@@ -53,10 +55,10 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivMore"
+                    onClickWithDebouncing="@{()->click.onToolbarIvClick()}"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginEnd="4dp"
-                    onClickWithDebouncing="@{()->click.onToolbarIvClick()}"
                     android:padding="9dp"
                     android:src="@drawable/ic_more_18dp"
                     app:tint="@color/colorPrimary" />

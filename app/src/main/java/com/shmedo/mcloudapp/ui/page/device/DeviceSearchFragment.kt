@@ -179,11 +179,6 @@ class DeviceSearchFragment : BaseFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
-
     companion object {
         fun newBundleArguments(
             statusBarColor: Int = R.color.white

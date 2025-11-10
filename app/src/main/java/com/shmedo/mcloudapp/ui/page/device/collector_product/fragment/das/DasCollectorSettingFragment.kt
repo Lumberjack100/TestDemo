@@ -549,10 +549,6 @@ class DasCollectorSettingFragment : OptimizedBaseIOTDeviceFragment() {
         nav().navigateUp()
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 
     companion object {
         private const val COLLECTOR_MODEL = "collector_model"
