@@ -360,6 +360,7 @@ class BleCustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
             }
 
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menu.clear()
                 menuInflater.inflate(R.menu.debug_cmd_log_menu, menu)
             }
 

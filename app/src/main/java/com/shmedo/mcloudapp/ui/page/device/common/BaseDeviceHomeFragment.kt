@@ -153,6 +153,7 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
             }
 
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menu.clear()
                 menuInflater.inflate(R.menu.device_home_menu, menu)
             }
 

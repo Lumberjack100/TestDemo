@@ -93,6 +93,12 @@ class MineFragment : BaseFragment() {
          */
         fun onCompanyClick() {
             nav().safeNavigate(R.id.action_mainFragment_to_companyHomeFragment)
+
+            //测试 rtsp 视频流播放
+//            val intent = Intent(mActivity, RtspVideoActivity::class.java)
+//            intent.putExtra(RtspVideoActivity.EXTRA_RTSP_URL, "rtsp://172.168.5.199/test.mkv")
+//            intent.putExtra(RtspVideoActivity.EXTRA_CAMERA_NAME, "摄像头1")
+//            startActivity(intent)
         }
 
         /**

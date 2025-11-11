@@ -127,4 +127,26 @@
     <string name="ps_save_audio_error">音频保存失败</string>
     <string name="ps_save_success">文件保存成功至</string>
 
+    <!-- RTSP 视频播放 -->
+    <string name="rtsp_video_player">RTSP 视频播放</string>
+    <string name="rtsp_url_hint">RTSP 地址 (rtsp://ip:port/stream)</string>
+    <string name="rtsp_url_default">rtsp://192.168.1.100:8554/camera</string>
+    <string name="rtsp_btn_play">播放</string>
+    <string name="rtsp_btn_pause">暂停</string>
+    <string name="rtsp_btn_resume">继续</string>
+    <string name="rtsp_btn_stop">停止</string>
+    <string name="rtsp_play_pause">播放/暂停</string>
+    <string name="rtsp_fullscreen">全屏</string>
+    <string name="rtsp_status_idle">空闲</string>
+    <string name="rtsp_status_buffering">缓冲中…</string>
+    <string name="rtsp_status_ready">准备就绪</string>
+    <string name="rtsp_status_playing">播放中</string>
+    <string name="rtsp_status_paused">已暂停</string>
+    <string name="rtsp_status_ended">播放结束</string>
+    <string name="rtsp_status_error">错误: %s</string>
+    <string name="rtsp_video_resolution">分辨率: %d×%d</string>
+    <string name="rtsp_error_empty_url">请输入 RTSP 地址</string>
+    <string name="rtsp_error_invalid_url">RTSP 地址格式错误，应以 rtsp:// 开头</string>
+    <string name="rtsp_usage_tips">使用说明:\n1. 输入网关摄像头的 RTSP 地址\n2. 点击"播放"按钮开始播放视频流\n3. 支持暂停、继续和停止操作\n4. RTSP 地址示例: rtsp://192.168.1.100:8554/camera</string>
+
 </resources>
