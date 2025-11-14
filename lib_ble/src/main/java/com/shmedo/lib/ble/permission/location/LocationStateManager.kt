@@ -73,14 +73,6 @@ class LocationStateManager (private val context: Context) {
         context.sendBroadcast(intent)
     }
 
-    fun markLocationPermissionRequested() {
-        LocalDataProvider.locationPermissionRequested = true
-    }
-
-    fun isLocationPermissionDeniedForever(context: Context): Boolean {
-        return BluetoothPermissionUtil.isLocationPermissionDeniedForever(context)
-    }
-
     private fun getLocationState(): BlePermissionState {
         val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return when {

@@ -48,9 +48,10 @@ class WifiScannerRepository internal constructor(
 
                     if (success) {
                         processScanResults()
-                    } else {
+                    }
+                    else {
                         Timber.w("WiFi 扫描失败")
-                        trySend(WifiScanningState.Error("扫描失败，请稍后重试"))
+//                        trySend(WifiScanningState.Error("扫描失败，请稍后重试"))
                     }
                 }
 

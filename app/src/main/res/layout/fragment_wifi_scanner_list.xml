@@ -90,7 +90,7 @@
         <include
             android:id="@+id/location_disabled"
             layout="@layout/info_location_disabled"
-            visible="@{vm.locationDisabled}"
+            visible="@{!vm.wifiDisabled &amp;&amp; vm.locationDisabled}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:click="@{click}"
@@ -101,7 +101,7 @@
         <include
             android:id="@+id/location_permission_denied"
             layout="@layout/info_location_permission_denied"
-            visible="@{vm.permissionDenied}"
+            visible="@{!vm.wifiDisabled &amp;&amp; !vm.locationDisabled &amp;&amp; vm.permissionDenied}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:click="@{click}"

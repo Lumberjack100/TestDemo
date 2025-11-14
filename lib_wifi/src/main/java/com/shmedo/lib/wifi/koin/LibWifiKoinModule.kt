@@ -4,8 +4,9 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.shmedo.lib.wifi.connector.repository.WifiConnectorRepository
 import com.shmedo.lib.wifi.connector.viewmodel.WifiConnectorViewModel
-import com.shmedo.lib.wifi.permission.WifiPermissionManager
+import com.shmedo.lib.wifi.permission.location.LocationStateManager
 import com.shmedo.lib.wifi.permission.viewmodel.WifiPermissionViewModel
+import com.shmedo.lib.wifi.permission.wifi.WifiStateManager
 import com.shmedo.lib.wifi.scanner.repository.WifiDataStore
 import com.shmedo.lib.wifi.scanner.repository.WifiScannerRepository
 import com.shmedo.lib.wifi.scanner.viewmodel.WifiScannerViewModel
@@ -34,8 +35,9 @@ val libWifiModule = module {
     single { WifiConnectorRepository(androidContext()) }
     viewModel { WifiConnectorViewModel(get()) }
     
-    // WiFi 权限相关
-    single { WifiPermissionManager(androidContext()) }
-    viewModel { WifiPermissionViewModel(get()) }
+    // WiFi 权限相关 - 新架构
+    single { WifiStateManager(androidContext()) }
+    single { LocationStateManager(androidContext()) }
+    viewModel { WifiPermissionViewModel(get(), get()) }
 }
 

@@ -19,8 +19,8 @@
         tools:ignore="ContentDescription">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             app:srcCompat="@drawable/ic_location_permission" />
 
@@ -40,7 +40,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="WiFi 扫描需要定位权限\n点击下方按钮授予权限"
+            android:text="扫描 WiFi 网络需要定位权限"
             android:textColor="@color/sub_title_text_color"
             android:textSize="@dimen/dimen_size_15" />
 

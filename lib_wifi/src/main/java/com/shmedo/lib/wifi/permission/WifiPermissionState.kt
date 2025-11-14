@@ -5,25 +5,20 @@ package com.shmedo.lib.wifi.permission
  *
  * 创建者: gonghe
  * 创建时间: 2024/12/15
- * 描述: Android 10+ 需要：
+ * 描述: Android 10+ WiFi 扫描需要：
  *  1. ACCESS_FINE_LOCATION 权限
  *  2. 定位服务开启
  *  3. WiFi 开启
  */
 sealed class WifiPermissionState {
     /**
-     * 检查中
-     */
-    object Checking : WifiPermissionState()
-
-    /**
      * 权限可用
      */
-    object Available : WifiPermissionState()
+    data object Available : WifiPermissionState()
 
     /**
      * 权限不可用
-     * @param reason 原因
+     * @param reason 不可用的原因
      */
     data class NotAvailable(val reason: WifiPermissionNotAvailableReason) : WifiPermissionState()
 }
