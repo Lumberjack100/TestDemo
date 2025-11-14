@@ -46,6 +46,7 @@ import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.device.BleScannerListFragment
 import com.shmedo.mcloudapp.ui.page.device.DeviceHomeActivity
 import com.shmedo.mcloudapp.ui.page.device.NewNetDeviceListFragment
+import com.shmedo.mcloudapp.ui.page.device.WiFiScannerListFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.DeviceManageHomeViewModel
@@ -68,7 +69,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private val normalColor: Int = ColorUtils.getColor(R.color.text_color_666666)
     private val activeSize: Float = 20f
     private val normalSize: Float = 16f
-    private val tabs = arrayOf("4G", "蓝牙")
+    private val tabs = arrayOf("4G", "蓝牙", "WiFi")
     private val moreChooseList =
         arrayListOf("扫码连接", "查询数据")//"扫一扫", "WIFI 设备", "USB 设备", "查询数据"
 
@@ -130,7 +131,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
 
     private fun initViewPager() {
         val mFragments = listOf<Fragment>(
-            NewNetDeviceListFragment.newInstance(), BleScannerListFragment.newInstance()
+            NewNetDeviceListFragment.newInstance(), BleScannerListFragment.newInstance(), WiFiScannerListFragment.newInstance()
         )
         binding.viewpager.adapter = PageAdapter(this, mFragments)
         binding.viewpager.offscreenPageLimit = mFragments.size
@@ -185,13 +186,6 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
 
             companyList.clear()
             companyList.addAll(tempList)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        binding.root.post {
-//            initImmersionBar(binding.statusBarView, isTitleBar = false, isStatusBarDarkFont = true)
         }
     }
 

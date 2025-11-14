@@ -1,0 +1,14 @@
+package com.shmedo.lib.wifi.scanner.model
+
+/**
+ * WiFi 扫描过滤器配置
+ * 
+ * 创建者: gonghe
+ * 创建时间: 2024/12/15
+ * 描述: 用于过滤和筛选 WiFi 扫描结果
+ */
+data class WifiScanFilter(
+    val filterStrongSignalOnly: Boolean = false, // 仅显示强信号 (-70dBm 以上)
+    val filterBySSID: String? = null           // 按 SSID 过滤
+)
+

@@ -162,6 +162,7 @@ dependencies {
     implementation(project(":lib_ble"))
     implementation(project(":lib_tcp"))
     implementation(project(":lib_rtsp"))
+    implementation(project(":lib_wifi"))
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
 

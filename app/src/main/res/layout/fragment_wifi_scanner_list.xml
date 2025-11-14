@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.WifiScannerListViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.ui.page.device.WiFiScannerListFragment.ClickProxy" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <!-- 搜索栏 -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_search_layout"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_marginHorizontal="@dimen/dimen_size_16"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:background="@drawable/bg_search_project_device_gray"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="13dp"
+                android:src="@drawable/ic_search_device" />
+
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                android:id="@+id/et_keywords"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="7dp"
+                android:layout_marginEnd="7dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:hint="搜索 WiFi 网络（如：MD-）"
+                android:imeOptions="actionSearch"
+                android:singleLine="true"
+                android:text="@={vm.keyWords}"
+                android:textColor="@color/title_text_color"
+                android:textColorHint="@color/text_color_B3B3B3"
+                android:textSize="@dimen/text_size_13" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- WiFi 列表 -->
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
+            visible="@{!vm.wifiDisabled &amp;&amp; !vm.locationDisabled &amp;&amp; !vm.permissionDenied}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_search_layout">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_wifi"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingVertical="@dimen/dimen_size_15"
+                android:splitMotionEvents="false"
+                tools:listitem="@layout/item_wifi_network" />
+
+        </com.drake.brv.PageRefreshLayout>
+
+        <!-- WiFi 未开启提示 -->
+        <include
+            android:id="@+id/wifi_disabled"
+            layout="@layout/info_wifi_disabled"
+            visible="@{vm.wifiDisabled}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:click="@{click}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 定位服务未开启提示 -->
+        <include
+            android:id="@+id/location_disabled"
+            layout="@layout/info_location_disabled"
+            visible="@{vm.locationDisabled}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:click="@{click}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 定位权限被拒绝提示 -->
+        <include
+            android:id="@+id/location_permission_denied"
+            layout="@layout/info_location_permission_denied"
+            visible="@{vm.permissionDenied}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:click="@{click}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

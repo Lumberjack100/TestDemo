@@ -30,6 +30,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.MonitoringDataExportViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.RtspViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.BuiltinCommandSelectorViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.WifiDeviceTcpViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -47,4 +48,5 @@ val viewModelModule = module {
     viewModelOf(::MonitoringDataExportViewModel)
     viewModelOf(::BuiltinCommandSelectorViewModel)
     viewModelOf(::RtspViewModel)
+    viewModelOf(::WifiDeviceTcpViewModel)
 }

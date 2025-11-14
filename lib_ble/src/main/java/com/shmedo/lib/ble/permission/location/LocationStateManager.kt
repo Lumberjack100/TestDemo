@@ -48,7 +48,7 @@ import kotlinx.coroutines.flow.callbackFlow
 private const val REFRESH_PERMISSIONS =
     "no.nordicsemi.android.common.permission.REFRESH_LOCATION_PERMISSIONS"
 
-class LocationStateManager constructor(private val context: Context) {
+class LocationStateManager (private val context: Context) {
 
     fun locationState() = callbackFlow {
         trySend(getLocationState())
