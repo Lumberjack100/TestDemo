@@ -7,7 +7,6 @@ import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import com.shmedo.lib.wifi.scanner.model.DiscoveredWifiNetwork
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.callbackFlow
@@ -38,7 +37,7 @@ class WifiScannerRepository internal constructor(
 
     /**
      * 扫描触发器
-     * 
+     *
      * 使用 MutableSharedFlow 实现手动触发扫描的机制
      * replay = 1 确保新的订阅者也能立即收到最近的触发事件
      */
@@ -58,10 +57,9 @@ class WifiScannerRepository internal constructor(
 
                     if (success) {
                         processScanResults()
-                    }
-                    else {
+                    } else {
                         Timber.w("WiFi 扫描失败")
-//                        trySend(WifiScanningState.Error("扫描失败，请稍后重试"))
+                        trySend(WifiScanningState.Error("刷新过于频繁，请稍后再试"))
                     }
                 }
 
@@ -120,10 +118,8 @@ class WifiScannerRepository internal constructor(
             try {
                 val success = wifiManager.startScan()
                 if (!success) {
+                    // Android 10+ 有扫描频率限制，120 秒内最多 4 次
                     Timber.w("启动扫描失败（可能受频率限制）")
-                    // Android 10+ 有扫描频率限制，延迟后重试
-                    delay(2000)
-                    wifiManager.startScan()
                 }
             } catch (e: SecurityException) {
                 Timber.e(e, "启动扫描失败：权限不足")
@@ -142,7 +138,7 @@ class WifiScannerRepository internal constructor(
 
     /**
      * 触发扫描
-     * 
+     *
      * 发送触发信号，启动一次新的 WiFi 扫描
      * 此方法可以多次调用，每次调用都会启动新的扫描
      */

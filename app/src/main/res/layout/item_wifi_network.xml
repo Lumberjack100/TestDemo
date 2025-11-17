@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_size_10"
                     android:singleLine="true"
-                    android:textColor="@color/sub_title_text_color"
+                    android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_13"
                     tools:text="2.4GHz" />
 
@@ -95,20 +95,9 @@
                     android:layout_marginStart="@dimen/dimen_size_20"
                     android:singleLine="true"
                     android:text='@{m.level + " dBm"}'
-                    android:textColor="@color/sub_title_text_color"
+                    android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_13"
                     tools:text="-45 dBm" />
-
-                <!-- 信号质量 -->
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_signal_quality"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:singleLine="true"
-                    android:textColor="@color/sub_title_text_color"
-                    android:textSize="@dimen/text_size_12"
-                    tools:text="优秀" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 

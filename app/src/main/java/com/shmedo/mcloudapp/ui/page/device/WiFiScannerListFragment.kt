@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.drake.brv.BindingAdapter.BindingViewHolder
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -32,6 +32,7 @@ import com.shmedo.mcloudapp.databinding.ItemWifiNetworkBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.WifiScannerListViewModel
 import com.shmedo.mcloudapp.utils.permission.PermissionDescription
@@ -88,7 +89,11 @@ class WiFiScannerListFragment : BaseFragment() {
             onBind {
                 // 数据绑定在 XML 中已通过 DataBinding 处理
                 // 这里只需要处理 DataBinding 无法自动处理的逻辑
-                bindWifiNetworkItem()
+                val itemBinding = getBinding<ItemWifiNetworkBinding>()
+                val network = getModel<DiscoveredWifiNetwork>()
+
+                // 显示频段信息
+                itemBinding.tvFrequency.text = getFrequencyText(network.frequency)
             }
 
             // 点击事件：连接 WiFi
@@ -100,19 +105,6 @@ class WiFiScannerListFragment : BaseFragment() {
     }
 
     /**
-     * 绑定 WiFi 网络项数据
-     */
-    private fun BindingViewHolder.bindWifiNetworkItem() {
-        val itemBinding = getBinding<ItemWifiNetworkBinding>()
-        val network = getModel<DiscoveredWifiNetwork>()
-
-        // 显示频段信息
-        itemBinding.tvFrequency.text = getFrequencyText(network.frequency)
-        // 显示信号质量文本
-        itemBinding.tvSignalQuality.text = getSignalQualityText(network.level)
-    }
-
-    /**
      * 获取频段文本
      */
     private fun getFrequencyText(frequency: Int): String {
@@ -120,18 +112,6 @@ class WiFiScannerListFragment : BaseFragment() {
             in 2400..2500 -> "2.4GHz"
             in 5000..6000 -> "5GHz"
             else -> "${frequency}MHz"
-        }
-    }
-
-    /**
-     * 获取信号质量文本
-     */
-    private fun getSignalQualityText(level: Int): String {
-        return when {
-            level >= -50 -> "优秀"
-            level >= -60 -> "良好"
-            level >= -70 -> "一般"
-            else -> "较弱"
         }
     }
 
@@ -191,6 +171,7 @@ class WiFiScannerListFragment : BaseFragment() {
                         mStates.wifiDisabled.set(true)
                         Timber.w("WiFi 未开启")
                     }
+
                     else -> {
                         // 其他原因不由 WiFi 状态管理器处理
                     }
@@ -208,7 +189,7 @@ class WiFiScannerListFragment : BaseFragment() {
                 mStates.locationDisabled.set(false)
                 mStates.permissionDenied.set(false)
                 Timber.i("定位权限和服务已就绪，自动触发扫描")
-                
+
                 // 【关键优化】当定位权限和服务都就绪时，自动触发扫描
                 // 这样可以确保页面在权限就绪后立即开始扫描
                 scannerViewModel.startScan()
@@ -237,35 +218,6 @@ class WiFiScannerListFragment : BaseFragment() {
     }
 
     /**
-     * 请求定位权限
-     */
-    private fun requestLocationPermission() {
-        XXPermissions.with(this)
-            .permission(PermissionLists.getAccessFineLocationPermission())
-            // 设置权限请求拦截器（局部设置）
-            .interceptor(PermissionInterceptor())
-            .description(PermissionDescription())
-            .request(object : OnPermissionCallback {
-                override fun onResult(
-                    grantedList: List<IPermission>, deniedList: List<IPermission>
-                ) {
-                    val allGranted = deniedList.isEmpty()
-                    if (allGranted) {
-                        Timber.i("定位权限已授予，刷新状态并触发扫描")
-                        // 权限授予后手动刷新定位状态
-                        permissionViewModel.refreshLocationPermission()
-                        
-                        // 【关键修复】权限授予后立即触发扫描
-                        // 解决权限授予后页面一直处于刷新状态的问题
-//                        scannerViewModel.startScan()
-                    } else {
-                        Timber.w("定位权限被拒绝")
-                    }
-                }
-            })
-    }
-
-    /**
      * 处理扫描结果
      */
     private suspend fun processScanResult() {
@@ -289,7 +241,8 @@ class WiFiScannerListFragment : BaseFragment() {
 
                 is WifiScanningState.Error -> {
                     Timber.e("扫描错误: ${state.errorMsg}")
-                    binding.refreshLayout.showError()
+                    binding.refreshLayout.finish(false)
+                    ToastUtils.showLong(state.errorMsg)
                 }
             }
         }
@@ -306,44 +259,54 @@ class WiFiScannerListFragment : BaseFragment() {
     }
 
     /**
+     * 监听连接状态
+     */
+    private fun observeConnection() {
+        launchAndRepeatWithViewLifecycle {
+            connectorViewModel.connectionState.collect { state ->
+                when (state) {
+                    is WifiConnectionState.Idle -> {
+                        // 空闲状态
+                    }
+
+                    is WifiConnectionState.Connecting -> {
+                        Timber.d("正在连接热点...")
+                        showLoadingDialog(StringUtils.getString(R.string.wifi_state_connecting))
+                    }
+
+                    is WifiConnectionState.Connected -> {
+                        dismissLoadingDialog()
+                        Timber.i("已连接: ${state.ssid}, IP: ${state.ipAddress}")
+
+                        // TODO: 跳转到设备控制页面（通过 TCP 通信）
+                        // navigateToDeviceControl(state.ssid, state.ipAddress, customTcpPort)
+                        Timber.i("准备跳转到设备控制页面: SSID=${state.ssid}, IP=${state.ipAddress}, Port=$customTcpPort")
+                    }
+
+                    is WifiConnectionState.Disconnected -> {
+                        Timber.d("连接已断开")
+                    }
+
+                    is WifiConnectionState.Error -> {
+                        Timber.e("连接失败: ${state.message}")
+                        ToastUtils.showShort("连接失败: ${state.message}")
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * WiFi 网络点击事件
      */
     private fun onWifiNetworkClick(network: DiscoveredWifiNetwork) {
         selectedNetwork = network
 
-        // 先显示端口配置对话框
-        showPortConfigDialog(network)
-    }
-
-    /**
-     * 显示端口配置对话框
-     */
-    private fun showPortConfigDialog(network: DiscoveredWifiNetwork) {
-        XPopup.Builder(context)
-            .asInputConfirm(
-                "配置 TCP 端口",
-                "请输入设备 TCP 端口（默认 8888）",
-                customTcpPort.toString(),
-                null,
-                object : OnInputConfirmListener {
-                    override fun onConfirm(text: String) {
-                        val port = text.toIntOrNull()
-                        if (port == null || port !in 1..65535) {
-                            ToastUtils.showShort("端口号无效，请输入 1-65535 之间的数字")
-                            return
-                        }
-                        customTcpPort = port
-
-                        // 继续连接流程
-                        if (network.isSecured) {
-                            showPasswordInputDialog(network)
-                        } else {
-                            connectToWifi(network, null, isOpen = true)
-                        }
-                    }
-                }
-            )
-            .show()
+        if (network.isSecured) {
+            showPasswordInputDialog(network)
+        } else {
+            connectToWifi(network, null, isOpen = true)
+        }
     }
 
     /**
@@ -380,58 +343,18 @@ class WiFiScannerListFragment : BaseFragment() {
         connectorViewModel.connect(network.ssid.orEmpty(), password, isOpen, customTcpPort)
     }
 
-    /**
-     * 监听连接状态
-     */
-    private fun observeConnection() {
-        launchAndRepeatWithViewLifecycle {
-            connectorViewModel.connectionState.collect { state ->
-                when (state) {
-                    is WifiConnectionState.Idle -> {
-                        // 空闲状态
-                    }
-
-                    is WifiConnectionState.Connecting -> {
-                        Timber.d("正在连接...")
-                    }
-
-                    is WifiConnectionState.Connected -> {
-                        dismissLoadingDialog()
-                        Timber.i("已连接: ${state.ssid}, IP: ${state.ipAddress}")
-                        ToastUtils.showShort("已连接到 ${state.ssid}")
-
-                        // TODO: 跳转到设备控制页面（通过 TCP 通信）
-                        // navigateToDeviceControl(state.ssid, state.ipAddress, customTcpPort)
-                        Timber.i("准备跳转到设备控制页面: SSID=${state.ssid}, IP=${state.ipAddress}, Port=$customTcpPort")
-                    }
-
-                    is WifiConnectionState.Disconnected -> {
-                        dismissLoadingDialog()
-                        ToastUtils.showShort("连接已断开")
-                    }
-
-                    is WifiConnectionState.Error -> {
-                        dismissLoadingDialog()
-                        Timber.e("连接失败: ${state.message}")
-                        ToastUtils.showShort("连接失败: ${state.message}")
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * 刷新扫描
-     * 
+     *
      * 触发一次新的 WiFi 扫描
      */
     private fun refreshScan() = launchWithViewLifecycle {
         Timber.i("刷新扫描")
         scannerViewModel.startScan()
-        delay(3000)
+        delay(5000)
         binding.refreshLayout.finish()
     }
-
 
     inner class ClickProxy {
         /**
@@ -454,6 +377,32 @@ class WiFiScannerListFragment : BaseFragment() {
         fun onGrantLocationPermissionClick() {
             requestLocationPermission()
         }
+    }
+
+    /**
+     * 请求定位权限
+     */
+    private fun requestLocationPermission() {
+        XXPermissions.with(this)
+            .permission(PermissionLists.getAccessFineLocationPermission())
+            // 设置权限请求拦截器（局部设置）
+            .interceptor(PermissionInterceptor())
+            .description(PermissionDescription())
+            .request(object : OnPermissionCallback {
+                override fun onResult(
+                    grantedList: List<IPermission>, deniedList: List<IPermission>
+                ) {
+                    val allGranted = deniedList.isEmpty()
+                    if (allGranted) {
+                        Timber.i("定位权限已授予，刷新状态并触发扫描")
+                        // 权限授予后手动刷新定位状态
+                        permissionViewModel.refreshLocationPermission()
+
+                    } else {
+                        Timber.w("定位权限被拒绝")
+                    }
+                }
+            })
     }
 
     companion object {
