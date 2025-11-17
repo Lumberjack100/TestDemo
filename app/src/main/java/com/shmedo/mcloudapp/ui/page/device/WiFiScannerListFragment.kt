@@ -32,7 +32,6 @@ import com.shmedo.mcloudapp.databinding.ItemWifiNetworkBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.WifiScannerListViewModel
 import com.shmedo.mcloudapp.utils.permission.PermissionDescription
@@ -42,18 +41,20 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 /**
- * WiFi 扫描列表页面
  *
  * 创建者: gonghe
- * 创建时间: 2024/12/15
- * 描述: 参考 BleScannerListFragment 实现
+ * 创建时间: 2025/11/17
+ *
+ * 描述: WiFi 扫描列表页面
  *
  * 功能：
- * 1. 扫描 WiFi 热点
- * 2. 过滤 IoT 设备热点（MD- 前缀）
- * 3. 支持搜索关键词过滤
- * 4. 连接到选中的热点
- * 5. 支持自定义 TCP 端口连接
+ * 1. 自动监听 WiFi 开关状态，无需手动轮询
+ * 2. 自动监听定位权限和服务开关状态
+ * 3. 扫描 WiFi 热点
+ * 4. 支持搜索关键词过滤
+ * 5. 连接到选中的热点
+ * 6. 支持自定义 TCP 端口连接
+ *
  */
 class WiFiScannerListFragment : BaseFragment() {
     private lateinit var binding: FragmentWifiScannerListBinding
@@ -137,36 +138,31 @@ class WiFiScannerListFragment : BaseFragment() {
     private fun initRefreshLayout() {
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
+            Timber.i("refreshLayout refreshScan")
             refreshScan()
         }
     }
 
     override fun createObserver() {
-        // 监听权限状态
+        // 监听 WiFi 状态
         launchAndRepeatWithViewLifecycle {
-            permissionViewModel.permissionState.collect { state ->
-                Timber.d("WiFi Permission State: $state")
-                when (state) {
-                    is WifiPermissionState.Checking -> {
-                        Timber.d("正在检查权限...")
-                    }
-
-                    is WifiPermissionState.NotAvailable -> {
-                        handlePermissionNotAvailable(state.reason)
-                    }
-
-                    is WifiPermissionState.Available -> {
-                        mStates.wifiDisabled.set(false)
-                        mStates.locationDisabled.set(false)
-                        mStates.permissionDenied.set(false)
-
-                        // 权限就绪，开始处理扫描结果
-                        launchAndRepeatWithViewLifecycle {
-                            processScanResult()
-                        }
-                    }
-                }
+            permissionViewModel.wifiState.collect { state ->
+                Timber.d("WiFi State: $state")
+                handleWifiState(state)
             }
+        }
+
+        // 监听定位状态
+        launchAndRepeatWithViewLifecycle {
+            permissionViewModel.locationState.collect { state ->
+                Timber.d("Location State: $state")
+                handleLocationState(state)
+            }
+        }
+
+        // 监听扫描结果
+        launchAndRepeatWithViewLifecycle {
+            processScanResult()
         }
 
         // 监听搜索关键词变化
@@ -177,29 +173,65 @@ class WiFiScannerListFragment : BaseFragment() {
 
         // 监听连接状态
         observeConnection()
-
-        // 触发权限检查
-        permissionViewModel.checkPermissions()
     }
 
-    private fun handlePermissionNotAvailable(reason: WifiPermissionNotAvailableReason) {
-        when (reason) {
-            is WifiPermissionNotAvailableReason.WifiDisabled -> {
-                mStates.wifiDisabled.set(true)
-                mStates.locationDisabled.set(false)
-                mStates.permissionDenied.set(false)
+    /**
+     * 处理 WiFi 状态变化
+     */
+    private fun handleWifiState(state: WifiPermissionState) {
+        when (state) {
+            is WifiPermissionState.Available -> {
+                mStates.wifiDisabled.set(false)
+                Timber.i("WiFi 已开启")
             }
 
-            is WifiPermissionNotAvailableReason.PermissionRequired -> {
-                mStates.wifiDisabled.set(false)
+            is WifiPermissionState.NotAvailable -> {
+                when (state.reason) {
+                    is WifiPermissionNotAvailableReason.WifiDisabled -> {
+                        mStates.wifiDisabled.set(true)
+                        Timber.w("WiFi 未开启")
+                    }
+                    else -> {
+                        // 其他原因不由 WiFi 状态管理器处理
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 处理定位状态变化
+     */
+    private fun handleLocationState(state: WifiPermissionState) {
+        when (state) {
+            is WifiPermissionState.Available -> {
                 mStates.locationDisabled.set(false)
-                mStates.permissionDenied.set(true)
+                mStates.permissionDenied.set(false)
+                Timber.i("定位权限和服务已就绪，自动触发扫描")
+                
+                // 【关键优化】当定位权限和服务都就绪时，自动触发扫描
+                // 这样可以确保页面在权限就绪后立即开始扫描
+                scannerViewModel.startScan()
             }
 
-            is WifiPermissionNotAvailableReason.LocationServiceDisabled -> {
-                mStates.wifiDisabled.set(false)
-                mStates.locationDisabled.set(true)
-                mStates.permissionDenied.set(false)
+            is WifiPermissionState.NotAvailable -> {
+                when (state.reason) {
+                    is WifiPermissionNotAvailableReason.LocationServiceDisabled -> {
+                        mStates.locationDisabled.set(true)
+                        mStates.permissionDenied.set(false)
+                        Timber.w("定位服务未开启")
+                    }
+
+                    is WifiPermissionNotAvailableReason.PermissionRequired -> {
+                        mStates.locationDisabled.set(false)
+                        mStates.permissionDenied.set(true)
+                        Timber.w("需要定位权限")
+                    }
+
+                    else -> {
+                        // 其他原因不由定位状态管理器处理
+                    }
+                }
             }
         }
     }
@@ -218,10 +250,17 @@ class WiFiScannerListFragment : BaseFragment() {
                     grantedList: List<IPermission>, deniedList: List<IPermission>
                 ) {
                     val allGranted = deniedList.isEmpty()
-                    if (!allGranted) {
-                        return
+                    if (allGranted) {
+                        Timber.i("定位权限已授予，刷新状态并触发扫描")
+                        // 权限授予后手动刷新定位状态
+                        permissionViewModel.refreshLocationPermission()
+                        
+                        // 【关键修复】权限授予后立即触发扫描
+                        // 解决权限授予后页面一直处于刷新状态的问题
+//                        scannerViewModel.startScan()
+                    } else {
+                        Timber.w("定位权限被拒绝")
                     }
-                    permissionViewModel.checkPermissions()
                 }
             })
     }
@@ -251,7 +290,6 @@ class WiFiScannerListFragment : BaseFragment() {
                 is WifiScanningState.Error -> {
                     Timber.e("扫描错误: ${state.errorMsg}")
                     binding.refreshLayout.showError()
-                    ToastUtils.showShort("扫描失败: ${state.errorMsg}")
                 }
             }
         }
@@ -337,7 +375,7 @@ class WiFiScannerListFragment : BaseFragment() {
      */
     private fun connectToWifi(network: DiscoveredWifiNetwork, password: String?, isOpen: Boolean) {
         Timber.i("连接到 WiFi: ${network.ssid}, TCP 端口: $customTcpPort")
-        showLoadingDialog("正在连接...")
+//        showLoadingDialog("正在连接...")
 
         connectorViewModel.connect(network.ssid.orEmpty(), password, isOpen, customTcpPort)
     }
@@ -384,17 +422,16 @@ class WiFiScannerListFragment : BaseFragment() {
 
     /**
      * 刷新扫描
+     * 
+     * 触发一次新的 WiFi 扫描
      */
     private fun refreshScan() = launchWithViewLifecycle {
-        scannerViewModel.refresh()
-        delay(1000)
+        Timber.i("刷新扫描")
+        scannerViewModel.startScan()
+        delay(3000)
         binding.refreshLayout.finish()
     }
 
-    override fun lazyLoadData() {
-        // 页面加载时自动刷新
-        // binding.refreshLayout.autoRefresh()
-    }
 
     inner class ClickProxy {
         /**

@@ -9,15 +9,17 @@ import com.shmedo.lib.wifi.scanner.model.DiscoveredWifiNetwork
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import timber.log.Timber
 
 /**
- * WiFi 扫描仓库
- *
  * 创建者: gonghe
- * 创建时间: 2024/12/15
- * 描述: 负责 WiFi 扫描逻辑，参考 BLE 的 ScannerRepository
+ * 创建时间: 2025/11/17
+ *
+ * 描述: WiFi 扫描仓库，负责 WiFi 扫描逻辑，参考 BLE 的 ScannerRepository
+ * 使用 SharedFlow 触发器支持手动触发扫描
  *
  * Android 10+ 限制：
  * 1. App 只能在前台时扫描
@@ -25,7 +27,6 @@ import timber.log.Timber
  * 3. 需要定位权限（ACCESS_FINE_LOCATION）
  * 4. 需要定位服务开启
  */
-//@RequiresApi(Build.VERSION_CODES.Q)
 class WifiScannerRepository internal constructor(
     private val context: Context,
     private val wifiDataStore: WifiDataStore
@@ -36,11 +37,20 @@ class WifiScannerRepository internal constructor(
     }
 
     /**
+     * 扫描触发器
+     * 
+     * 使用 MutableSharedFlow 实现手动触发扫描的机制
+     * replay = 1 确保新的订阅者也能立即收到最近的触发事件
+     */
+    private val scanTrigger = MutableSharedFlow<Unit>(replay = 1)
+
+    /**
      * 扫描 WiFi 网络
      *
-     * 返回一个 Flow，持续发送扫描状态
+     * 返回一个 Flow，响应扫描触发器并发送扫描状态
+     * 每次触发器发出信号时，都会启动一次新的扫描
      */
-    fun scanWifiNetworks(): Flow<WifiScanningState> =
+    fun scanWifiNetworks(): Flow<WifiScanningState> = scanTrigger.flatMapLatest {
         callbackFlow {
             val wifiScanReceiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
@@ -117,10 +127,10 @@ class WifiScannerRepository internal constructor(
                 }
             } catch (e: SecurityException) {
                 Timber.e(e, "启动扫描失败：权限不足")
-                trySend(WifiScanningState.Error("缺少定位权限"))
+                trySend(WifiScanningState.Error("缺少必要权限"))
             } catch (e: Exception) {
                 Timber.e(e, "启动扫描失败")
-                trySend(WifiScanningState.Error("扫描失败: ${e.message}"))
+                trySend(WifiScanningState.Error("扫描异常: ${e.message}"))
             }
 
             awaitClose {
@@ -128,6 +138,18 @@ class WifiScannerRepository internal constructor(
                 context.unregisterReceiver(wifiScanReceiver)
             }
         }
+    }
+
+    /**
+     * 触发扫描
+     * 
+     * 发送触发信号，启动一次新的 WiFi 扫描
+     * 此方法可以多次调用，每次调用都会启动新的扫描
+     */
+    fun startScan() {
+        Timber.i("触发 WiFi 扫描")
+        scanTrigger.tryEmit(Unit)
+    }
 
     /**
      * 清空数据存储
