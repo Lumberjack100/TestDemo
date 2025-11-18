@@ -17,6 +17,7 @@ import com.hjq.permissions.permission.base.IPermission
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.interfaces.OnInputConfirmListener
+import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.wifi.connector.model.WifiConnectionState
 import com.shmedo.lib.wifi.connector.viewmodel.WifiConnectorViewModel
 import com.shmedo.lib.wifi.permission.WifiPermissionNotAvailableReason
@@ -33,6 +34,7 @@ import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.model.TcpConnect
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.WifiScannerListViewModel
 import com.shmedo.mcloudapp.utils.permission.PermissionDescription
@@ -278,9 +280,14 @@ class WiFiScannerListFragment : BaseFragment() {
                         dismissLoadingDialog()
                         Timber.i("已连接: ${state.ssid}, IP: ${state.ipAddress}")
 
-                        // TODO: 跳转到设备控制页面（通过 TCP 通信）
-                        // navigateToDeviceControl(state.ssid, state.ipAddress, customTcpPort)
-                        Timber.i("准备跳转到设备控制页面: SSID=${state.ssid}, IP=${state.ipAddress}, Port=$customTcpPort")
+                        DeviceHomeActivity.start(
+                            mActivity,
+                            DeviceInfo(
+                                deviceToken = state.ssid.replaceFirst(Regex("^MD-?"), ""),
+                                deviceName = state.ssid.replaceFirst(Regex("^MD-?"), ""),
+                            ),
+                            communicateWay = TcpConnect
+                        )
                     }
 
                     is WifiConnectionState.Disconnected -> {

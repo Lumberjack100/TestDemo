@@ -34,6 +34,7 @@ import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.NetIOTCommandViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.request.TcpViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,6 +58,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     protected lateinit var mMessenger: PageMessenger
     protected val netIotCommandViewModel: NetIOTCommandViewModel by viewModel()
     protected val bleViewModel: BleViewModel by activityViewModel()
+    protected val tcpViewModel: TcpViewModel by viewModel()
 
     protected var refreshLayout: PageRefreshLayout? = null
 
@@ -99,6 +101,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
             communicateWay = communicateWay,
             netViewModel = netIotCommandViewModel,
             bleViewModel = bleViewModel,
+            tcpViewModel = tcpViewModel
         )
     }
 
