@@ -80,7 +80,7 @@ class TcpCommunicationStrategy(
         return flow {
             // 检查TCP连接状态
             if (!isConnected()) {
-                emit(CommandResult.Error(DeviceError.Tcp("TCP未连接"), command))
+                emit(CommandResult.Error(DeviceError.Disconnected("TCP"), command))
                 return@flow
             }
 
@@ -106,7 +106,7 @@ class TcpCommunicationStrategy(
 
         }.onCompletion { cause ->
             // 清理资源
-            Timber.d("TCP会话结束 [Session: $sessionId], 原因: $cause")
+            Timber.d("流程结束清理TCP会话资源 [Session: $sessionId], 原因: $cause")
             currentResponseChannel = null
             responseChannel.close()
 

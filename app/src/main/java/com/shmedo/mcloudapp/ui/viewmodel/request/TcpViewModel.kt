@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.viewmodel.request
 
 import androidx.lifecycle.viewModelScope
 import com.shmedo.core.data.repository.LoggerRepositoryImp
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
 import com.shmedo.lib.tcp.MedoTcpRepository
 import com.shmedo.lib.tcp.TcpConnectClosed
 import com.shmedo.lib.tcp.TcpConnectError
@@ -103,7 +104,7 @@ class TcpViewModel(
                 host = deviceIp,
                 port = port,
                 isSendHeartBeat = true,
-                packetSeparator = "\n"
+                packetSeparator = MDConstants.COMMAND_FOOTER
             )
 
             // 连接

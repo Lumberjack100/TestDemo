@@ -244,7 +244,7 @@ class WiFiScannerListFragment : BaseFragment() {
                 is WifiScanningState.Error -> {
                     Timber.e("扫描错误: ${state.errorMsg}")
                     binding.refreshLayout.finish(false)
-                    ToastUtils.showLong(state.errorMsg)
+//                    ToastUtils.showLong(state.errorMsg)
                 }
             }
         }
@@ -325,7 +325,7 @@ class WiFiScannerListFragment : BaseFragment() {
             .asInputConfirm(
                 "连接到 ${network.ssid}",
                 "请输入 WiFi 密码",
-                null,
+                "12345678",
                 "至少 8 位",
                 object : OnInputConfirmListener {
                     override fun onConfirm(text: String) {
@@ -345,8 +345,6 @@ class WiFiScannerListFragment : BaseFragment() {
      */
     private fun connectToWifi(network: DiscoveredWifiNetwork, password: String?, isOpen: Boolean) {
         Timber.i("连接到 WiFi: ${network.ssid}, TCP 端口: $customTcpPort")
-//        showLoadingDialog("正在连接...")
-
         connectorViewModel.connect(network.ssid.orEmpty(), password, isOpen, customTcpPort)
     }
 

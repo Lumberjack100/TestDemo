@@ -116,9 +116,9 @@ class TcpManager : NettyClientListener<String> {
         mNettyTcpClient?.sendMsgToServer(msg, object : MessageStateListener {
             override fun isSendSuccess(isSuccess: Boolean) {
                 if (isSuccess) {
-                    Timber.d("Write auth successful")
+                    Timber.d("Write data successful")
                 } else {
-                    Timber.d("Write auth error")
+                    Timber.d("Write data error")
                 }
             }
         })
