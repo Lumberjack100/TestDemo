@@ -239,7 +239,7 @@ class BuiltinCommandSelectorFragment : BaseFragment() {
             putString("command_name", command.name)
         }
         setFragmentResult(
-            BleCustomCommandLogPrintFragment.FRAGMENT_BUILTIN_COMMAND_SELECTED_REQUEST_KEY,
+            CustomCommandLogPrintFragment.FRAGMENT_BUILTIN_COMMAND_SELECTED_REQUEST_KEY,
             resultBundle
         )
         Toaster.show("指令已发送")

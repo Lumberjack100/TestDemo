@@ -34,7 +34,7 @@ import timber.log.Timber
  * - 不需要支持并发请求
  *
  * @author gonghe
- * @date 2025/11/17
+ * @date 2025/11/18
  */
 class TcpCommunicationStrategy(
     private val tcpViewModel: TcpViewModel,
@@ -60,7 +60,7 @@ class TcpCommunicationStrategy(
             when (result) {
                 is TcpSuccessDataResult -> {
                     val response = result.data
-                    Timber.d("TCP收到响应: $response")
+//                    Timber.d("TCP收到响应: $response")
 
                     // 将响应发送给当前等待的Channel
                     currentResponseChannel?.trySend(response)
@@ -84,7 +84,7 @@ class TcpCommunicationStrategy(
                 return@flow
             }
 
-            Timber.i("TCP发送指令 [Session: $sessionId]: $command")
+            Timber.i("TCP发送指令: $command")
 
             // 延迟发送（如果配置了延迟）
             if (config.delayBeforeSend > 0) {
@@ -100,7 +100,7 @@ class TcpCommunicationStrategy(
             // 等待响应（带超时）
             withTimeout(config.timeout) {
                 val response = responseChannel.receive()
-                Timber.i("TCP响应内容 [Session: $sessionId]: $response")
+                Timber.i("TCP响应内容: $response")
                 emit(CommandResult.Success(response, command))
             }
 

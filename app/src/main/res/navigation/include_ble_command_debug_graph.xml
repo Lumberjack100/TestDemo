@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ble_command_debug_graph"
-    app:startDestination="@id/bleCustomCommandLogPrintFragment">
+    app:startDestination="@id/customCommandLogPrintFragment">
 
     <fragment
-        android:id="@+id/bleCustomCommandLogPrintFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment"
-        android:label="BleCustomCommandLogPrintFragment"
-        tools:layout="@layout/fragment_ble_custom_command_log_print" />
+        android:id="@+id/customCommandLogPrintFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.CustomCommandLogPrintFragment"
+        android:label="CustomCommandLogPrintFragment"
+        tools:layout="@layout/fragment_custom_command_log_print" />
 
     <fragment
         android:id="@+id/builtinCommandSelectorFragment"

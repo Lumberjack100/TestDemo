@@ -27,6 +27,7 @@ class TcpManager : NettyClientListener<String> {
 
     private val _data = MutableSharedFlow<TcpManagerResult<String>>(
         replay = 1,
+        extraBufferCapacity = 128,  // ← 提供缓冲区处理快速数据流
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
     val data = _data.asSharedFlow()
