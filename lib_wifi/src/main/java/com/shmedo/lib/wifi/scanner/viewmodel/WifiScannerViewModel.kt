@@ -81,7 +81,7 @@ class WifiScannerViewModel(
                 .sortedByDescending { it.level }
         }
         
-        Timber.d("过滤后网络数量: ${filtered.size} / ${networks.size}")
+        Timber.d("过滤后 WiFi 网络数量: ${filtered.size} / ${networks.size}")
         
         return WifiScanningState.NetworksDiscovered(filtered)
     }

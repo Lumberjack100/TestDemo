@@ -6,12 +6,14 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
+import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
+import com.shmedo.mcloudapp.model.TcpConnect
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
@@ -109,13 +111,13 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
                 navId = R.id.action_global_to_advancedSettingFragment
             ).toUnified()
         )
-//        if (communicateWay is BleConnect) {
-//            configModuleTree.configModules.add(
-//                CommandDebugConfigModule(
-//                    resID = R.drawable.ic_module_cmd_debug_new,
-//                ).toUnified()
-//            )
-//        }
+        if (communicateWay is TcpConnect) {
+            configModuleTree.configModules.add(
+                CommandDebugConfigModule(
+                    resID = R.drawable.ic_module_cmd_debug_new,
+                ).toUnified()
+            )
+        }
 
         groupList.add(configModuleTree)
         binding.rvModule.models = groupList

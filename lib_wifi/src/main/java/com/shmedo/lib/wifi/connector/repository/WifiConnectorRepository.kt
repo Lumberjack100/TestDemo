@@ -97,7 +97,7 @@ class WifiConnectorRepository(private val context: Context) {
                 networkCapabilities: NetworkCapabilities
             ) {
                 super.onCapabilitiesChanged(network, networkCapabilities)
-                Timber.d("WiFi 网络能力变化: $ssid")
+//                Timber.d("WiFi 网络能力变化: $ssid")
             }
         }
         
@@ -122,8 +122,8 @@ class WifiConnectorRepository(private val context: Context) {
      * 断开当前 WiFi 连接
      */
     fun disconnect() {
+        Timber.i("断开 WiFi 连接")
         connectivityManager.bindProcessToNetwork(null)
-        Timber.i("已断开 WiFi 连接")
     }
 }
 

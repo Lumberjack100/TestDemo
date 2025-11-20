@@ -23,13 +23,7 @@ class WifiConnectorViewModel(
     
     private val _connectionState = MutableStateFlow<WifiConnectionState>(WifiConnectionState.Idle)
     val connectionState: StateFlow<WifiConnectionState> = _connectionState
-    
-    // 存储自定义端口配置（用于后续 TCP 连接）
-    private var customTcpPort: Int = DEFAULT_TCP_PORT
-    
-    companion object {
-        const val DEFAULT_TCP_PORT = 8888 // 默认 TCP 端口
-    }
+
     
     /**
      * 连接到 WiFi 网络
@@ -37,16 +31,13 @@ class WifiConnectorViewModel(
      * @param ssid 网络 SSID
      * @param password 密码
      * @param isOpen 是否为开放网络
-     * @param tcpPort 自定义 TCP 端口（可选）
      */
     fun connect(
         ssid: String,
         password: String?,
-        isOpen: Boolean = false,
-        tcpPort: Int = DEFAULT_TCP_PORT
+        isOpen: Boolean = false
     ) {
-        this.customTcpPort = tcpPort
-        Timber.i("准备连接 WiFi: $ssid, TCP 端口: $tcpPort")
+        Timber.i("准备连接 WiFi: $ssid")
         
         connectorRepository.connectToWifi(ssid, password, isOpen)
             .onEach { state ->
@@ -62,10 +53,5 @@ class WifiConnectorViewModel(
         connectorRepository.disconnect()
         _connectionState.value = WifiConnectionState.Disconnected
     }
-    
-    /**
-     * 获取自定义 TCP 端口
-     */
-    fun getTcpPort(): Int = customTcpPort
 }
 

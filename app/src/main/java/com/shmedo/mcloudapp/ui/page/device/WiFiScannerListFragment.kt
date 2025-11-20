@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.StringUtils
@@ -18,6 +19,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.interfaces.OnInputConfirmListener
 import com.shmedo.core.model.DeviceInfo
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.wifi.connector.model.WifiConnectionState
 import com.shmedo.lib.wifi.connector.viewmodel.WifiConnectorViewModel
 import com.shmedo.lib.wifi.permission.WifiPermissionNotAvailableReason
@@ -31,9 +33,12 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentWifiScannerListBinding
 import com.shmedo.mcloudapp.databinding.ItemWifiNetworkBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
+import com.shmedo.mcloudapp.extensions.isESeries
+import com.shmedo.mcloudapp.extensions.isGTSeries
 import com.shmedo.mcloudapp.extensions.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.TcpConnect
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.WifiScannerListViewModel
@@ -69,7 +74,14 @@ class WiFiScannerListFragment : BaseFragment() {
     private val connectorViewModel: WifiConnectorViewModel by viewModel()
 
     private var selectedNetwork: DiscoveredWifiNetwork? = null
-    private var customTcpPort: Int = 8888 // 默认端口
+
+    // 新增：注册 Activity 结果回调
+    private val deviceHomeLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // 当从 DeviceHomeActivity 返回时，执行断开 WiFi 操作
+            Timber.i("从设备页面返回，执行断开 WiFi 操作")
+            connectorViewModel.disconnect()
+        }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_wifi_scanner_list, BR.vm, mStates)
@@ -264,7 +276,7 @@ class WiFiScannerListFragment : BaseFragment() {
      * 监听连接状态
      */
     private fun observeConnection() {
-        launchAndRepeatWithViewLifecycle {
+        launchWithViewLifecycle {
             connectorViewModel.connectionState.collect { state ->
                 when (state) {
                     is WifiConnectionState.Idle -> {
@@ -280,7 +292,7 @@ class WiFiScannerListFragment : BaseFragment() {
                         dismissLoadingDialog()
                         Timber.i("已连接: ${state.ssid}, IP: ${state.ipAddress}")
 
-                        DeviceHomeActivity.start(
+                        val intent = DeviceHomeActivity.getStartIntent(
                             mActivity,
                             DeviceInfo(
                                 deviceToken = state.ssid.replaceFirst(Regex("^MD-?"), ""),
@@ -288,6 +300,7 @@ class WiFiScannerListFragment : BaseFragment() {
                             ),
                             communicateWay = TcpConnect
                         )
+                        deviceHomeLauncher.launch(intent)
                     }
 
                     is WifiConnectionState.Disconnected -> {
@@ -307,13 +320,21 @@ class WiFiScannerListFragment : BaseFragment() {
      * WiFi 网络点击事件
      */
     private fun onWifiNetworkClick(network: DiscoveredWifiNetwork) {
+        val type: ProductType = ProductType.valueByNewSuffix(network.ssid)
+        if (!type.isGTSeries() && !type.isESeries()) {
+            showMessageDialog("不支持的设备类型")
+            return
+        }
+
         selectedNetwork = network
 
-        if (network.isSecured) {
-            showPasswordInputDialog(network)
-        } else {
-            connectToWifi(network, null, isOpen = true)
-        }
+        connectToWifi(network, "12345678", isOpen = !network.isSecured)
+
+//        if (network.isSecured) {
+//            showPasswordInputDialog(network)
+//        } else {
+//            connectToWifi(network, null, isOpen = true)
+//        }
     }
 
     /**
@@ -344,8 +365,8 @@ class WiFiScannerListFragment : BaseFragment() {
      * 连接到 WiFi
      */
     private fun connectToWifi(network: DiscoveredWifiNetwork, password: String?, isOpen: Boolean) {
-        Timber.i("连接到 WiFi: ${network.ssid}, TCP 端口: $customTcpPort")
-        connectorViewModel.connect(network.ssid.orEmpty(), password, isOpen, customTcpPort)
+        Timber.i("连接到 WiFi: ${network.ssid}")
+        connectorViewModel.connect(network.ssid, password, isOpen)
     }
 
 
