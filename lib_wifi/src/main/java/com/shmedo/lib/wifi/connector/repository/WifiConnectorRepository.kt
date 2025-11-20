@@ -64,7 +64,7 @@ class WifiConnectorRepository(private val context: Context) {
         val networkCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
-                Timber.i("WiFi 网络可用: $ssid")
+//                Timber.i("WiFi 网络可用: $ssid")
                 
                 // 绑定进程到该网络（重要：后续的网络请求会使用这个网络）
                 connectivityManager.bindProcessToNetwork(network)

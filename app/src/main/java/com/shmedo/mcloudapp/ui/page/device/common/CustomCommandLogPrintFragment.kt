@@ -587,21 +587,23 @@ class CustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
 
 
     private fun handleBackPressed() {
+        // 关闭指令调试模式
+        CommonMMKVOwner.isCommandDebugMode = false
         updateDebugMode(BleCustomCommandLogPrintViewModel.DebugMode.CLOSE)
         nav().navigateUp()
     }
 
-    override fun onDestroy() {
-        try {
-            // 关闭指令调试模式
-            CommonMMKVOwner.isCommandDebugMode = false
-            updateDebugMode(BleCustomCommandLogPrintViewModel.DebugMode.CLOSE)
-        } catch (e: Exception) {
-            Timber.e(e, "销毁时清理资源失败")
-        } finally {
-            super.onDestroy()
-        }
-    }
+//    override fun onDestroy() {
+//        try {
+//            // 关闭指令调试模式
+//            CommonMMKVOwner.isCommandDebugMode = false
+//            updateDebugMode(BleCustomCommandLogPrintViewModel.DebugMode.CLOSE)
+//        } catch (e: Exception) {
+//            Timber.e(e, "销毁时清理资源失败")
+//        } finally {
+//            super.onDestroy()
+//        }
+//    }
 
     companion object {
         const val FRAGMENT_BUILTIN_COMMAND_SELECTED_REQUEST_KEY =

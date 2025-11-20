@@ -278,19 +278,18 @@ class WiFiScannerListFragment : BaseFragment() {
     private fun observeConnection() {
         launchWithViewLifecycle {
             connectorViewModel.connectionState.collect { state ->
+                Timber.d("WifiConnectionState State: $state")
                 when (state) {
                     is WifiConnectionState.Idle -> {
                         // 空闲状态
                     }
 
                     is WifiConnectionState.Connecting -> {
-                        Timber.d("正在连接热点...")
                         showLoadingDialog(StringUtils.getString(R.string.wifi_state_connecting))
                     }
 
                     is WifiConnectionState.Connected -> {
                         dismissLoadingDialog()
-                        Timber.i("已连接: ${state.ssid}, IP: ${state.ipAddress}")
 
                         val intent = DeviceHomeActivity.getStartIntent(
                             mActivity,
@@ -365,7 +364,6 @@ class WiFiScannerListFragment : BaseFragment() {
      * 连接到 WiFi
      */
     private fun connectToWifi(network: DiscoveredWifiNetwork, password: String?, isOpen: Boolean) {
-        Timber.i("连接到 WiFi: ${network.ssid}")
         connectorViewModel.connect(network.ssid, password, isOpen)
     }
 
