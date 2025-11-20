@@ -304,9 +304,11 @@ class WiFiScannerListFragment : BaseFragment() {
 
                     is WifiConnectionState.Disconnected -> {
                         Timber.d("连接已断开")
+                        dismissLoadingDialog()
                     }
 
                     is WifiConnectionState.Error -> {
+                        dismissLoadingDialog()
                         Timber.e("连接失败: ${state.message}")
                         ToastUtils.showShort("连接失败: ${state.message}")
                     }
