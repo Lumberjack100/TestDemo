@@ -40,7 +40,6 @@ import androidx.core.content.ContextCompat
 import com.shmedo.lib.ble.permission.BlePermissionNotAvailableReason
 import com.shmedo.lib.ble.permission.util.BlePermissionState
 import com.shmedo.lib.ble.permission.util.BluetoothPermissionUtil
-import com.shmedo.lib.ble.permission.util.LocalDataProvider
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 
@@ -71,14 +70,6 @@ class BluetoothStateManager constructor(private val context: Context) {
     fun refreshPermission() {
         val intent = Intent(REFRESH_PERMISSIONS)
         context.sendBroadcast(intent)
-    }
-
-    fun markBluetoothPermissionRequested() {
-        LocalDataProvider.bluetoothPermissionRequested = true
-    }
-
-    fun isBluetoothScanPermissionDeniedForever(context: Context): Boolean {
-        return BluetoothPermissionUtil.isBluetoothScanPermissionDeniedForever(context)
     }
 
     private fun getBluetoothPermissionState() = when {

@@ -5,6 +5,7 @@ import com.shmedo.lib.ble.koin.bleKoinModule
 import com.shmedo.lib.cmd.base.koin.libCmdKoinModule
 import com.shmedo.lib.rtsp.koin.rtspKoinModule
 import com.shmedo.lib.tcp.koin.libTcpKoinModule
+import com.shmedo.lib.wifi.koin.libWifiModule
 import org.koin.dsl.module
 
 /**
@@ -20,6 +21,7 @@ val appKoinModule = module {
         bleKoinModule,
         libTcpKoinModule,
         rtspKoinModule,
+        libWifiModule,
         viewModelModule
 
     )

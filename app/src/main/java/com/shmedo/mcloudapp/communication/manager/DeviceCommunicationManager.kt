@@ -10,13 +10,16 @@ import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.strategy.BleCommunicationStrategy
 import com.shmedo.mcloudapp.communication.strategy.CommunicationStrategy
 import com.shmedo.mcloudapp.communication.strategy.NetCommunicationStrategy
+import com.shmedo.mcloudapp.communication.strategy.TcpCommunicationStrategy
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.model.TcpConnect
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.NetIOTCommandViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.request.TcpViewModel
 import timber.log.Timber
 
 /**
@@ -30,6 +33,7 @@ class DeviceCommunicationManager(
     private val communicateWay: CommunicateWay,
     private val netViewModel: NetIOTCommandViewModel,
     private val bleViewModel: BleViewModel,
+    private val tcpViewModel: TcpViewModel? = null,
 ) {
     // 通信策略
     private val strategy: CommunicationStrategy = createCommunicationStrategy()
@@ -57,6 +61,16 @@ class DeviceCommunicationManager(
             is BleConnect -> {
                 Timber.i("使用蓝牙通信策略")
                 BleCommunicationStrategy(bleViewModel, deviceInfo)
+            }
+
+            is TcpConnect -> {
+                Timber.i("使用TCP通信策略")
+                requireNotNull(tcpViewModel) { "TCP通信方式需要提供TcpViewModel" }
+                TcpCommunicationStrategy(
+                    tcpViewModel = tcpViewModel,
+                    deviceInfo = deviceInfo,
+                    scope = fragment.viewLifecycleOwner.lifecycleScope
+                )
             }
 
             else -> {

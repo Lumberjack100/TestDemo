@@ -55,6 +55,11 @@ sealed class DeviceError(open val message: String, open val cause: Throwable? = 
     data class Bluetooth(val errorMsg: String) : DeviceError("蓝牙错误: $errorMsg")
 
     /**
+     * TCP通信错误
+     */
+    data class Tcp(val errorMsg: String) : DeviceError("TCP错误: $errorMsg")
+
+    /**
      * 指令超时错误
      */
     data class Timeout(val command: String, val timeoutMs: Long) :

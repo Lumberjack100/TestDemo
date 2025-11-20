@@ -60,6 +60,7 @@ import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.model.TcpConnect
 import com.shmedo.mcloudapp.model.UnifiedDeviceModule
 import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
@@ -131,14 +132,34 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
         addMenu()
         binding.llToolbar.toolbar.title = "返回"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
-            if (bleViewModel.isConnected()) {
-                bleViewModel.disconnect()
+            when (communicateWay) {
+                is BleConnect -> {
+                    if (bleViewModel.isConnected()) {
+                        bleViewModel.disconnect()
+                    }
+                }
+                is TcpConnect -> {
+                    if (tcpViewModel.isConnected()) {
+                        tcpViewModel.disconnect()
+                    }
+                }
+                else -> {}
             }
             mActivity.finish()
         }
         registerOnBackPressedDispatcher {
-            if (bleViewModel.isConnected()) {
-                bleViewModel.disconnect()
+            when (communicateWay) {
+                is BleConnect -> {
+                    if (bleViewModel.isConnected()) {
+                        bleViewModel.disconnect()
+                    }
+                }
+                is TcpConnect -> {
+                    if (tcpViewModel.isConnected()) {
+                        tcpViewModel.disconnect()
+                    }
+                }
+                else -> {}
             }
             mActivity.finish()
         }
@@ -189,7 +210,10 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        toolbarViewModel.toolbarIvActionVisible.set(communicateWay is BleConnect)
+        // 支持BLE和TCP显示工具栏操作按钮
+        toolbarViewModel.toolbarIvActionVisible.set(
+            communicateWay is BleConnect || communicateWay is TcpConnect
+        )
 
         mHeadStates.productName.set(productType.productName.ifEmpty { deviceInfo.productName })
         val deviceName =
@@ -211,13 +235,21 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
         mHeadStates.isConnected.set(true)
         mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
 
-        if (communicateWay is BleConnect) {
-            mHeadStates.iotPlatformStateText.set("蓝牙已连接")
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
-            onDeviceReadyForCommunicationData()
-        } else {
-            mHeadStates.iotPlatformStateText.set("米度平台在线")
-            onDeviceReadyForCommunicationData()
+        when (communicateWay) {
+            is BleConnect -> {
+                mHeadStates.iotPlatformStateText.set("蓝牙已连接")
+                toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
+                onDeviceReadyForCommunicationData()
+            }
+            is TcpConnect -> {
+                mHeadStates.iotPlatformStateText.set("TCP已连接")
+                toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
+                onDeviceReadyForCommunicationData()
+            }
+            else -> {
+                mHeadStates.iotPlatformStateText.set("米度平台在线")
+                onDeviceReadyForCommunicationData()
+            }
         }
 
         refreshModuleStatus(true)
@@ -228,11 +260,18 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
         mHeadStates.isConnected.set(false)
         mHeadStates.productLogoResId.set(mHeadStates.productOfflineResId.get())
 
-        if (communicateWay is BleConnect) {
-            mHeadStates.iotPlatformStateText.set("蓝牙已断开")
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-        } else {
-            mHeadStates.iotPlatformStateText.set("米度平台离线")
+        when (communicateWay) {
+            is BleConnect -> {
+                mHeadStates.iotPlatformStateText.set("蓝牙已断开")
+                toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
+            }
+            is TcpConnect -> {
+                mHeadStates.iotPlatformStateText.set("TCP已断开")
+                toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_tcp_connect)
+            }
+            else -> {
+                mHeadStates.iotPlatformStateText.set("米度平台离线")
+            }
         }
 
         mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
@@ -322,10 +361,22 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onToolbarIvClick() {
-            if (bleViewModel.isConnected()) {
-                bleViewModel.disconnect()
-            } else {
-                bleViewModel.launch(bleDevice!!)
+            when (communicateWay) {
+                is BleConnect -> {
+                    if (bleViewModel.isConnected()) {
+                        bleViewModel.disconnect()
+                    } else {
+                        bleViewModel.launch(bleDevice!!)
+                    }
+                }
+                is TcpConnect -> {
+                    if (tcpViewModel.isConnected()) {
+                        tcpViewModel.disconnect()
+                    } else {
+                        connectTcpDevice()
+                    }
+                }
+                else -> {}
             }
         }
     }
@@ -356,10 +407,24 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-        //蓝牙模式下，开始连接设备
-        if (communicateWay is BleConnect) {
-            bleViewModel.launch(bleDevice!!)
+        when (communicateWay) {
+            is BleConnect -> {
+                // 蓝牙模式：开始连接设备
+                bleViewModel.launch(bleDevice!!)
+            }
+            is TcpConnect -> {
+                // TCP模式：自动连接设备
+                connectTcpDevice()
+            }
+            else -> {}
         }
+    }
+
+    /**
+     * 连接TCP设备
+     */
+    private fun connectTcpDevice() {
+        tcpViewModel.connectToDevice(TCP_DEVICE_IP, TCP_DEVICE_PORT)
     }
 
     /**
@@ -730,4 +795,10 @@ abstract class BaseDeviceHomeFragment : OptimizedBaseIOTDeviceFragment() {
         }
     }
     //</editor-fold>
+
+    companion object {
+        // TCP设备连接配置
+        const val TCP_DEVICE_IP = "192.168.1.100"
+        const val TCP_DEVICE_PORT = 10002
+    }
 } 

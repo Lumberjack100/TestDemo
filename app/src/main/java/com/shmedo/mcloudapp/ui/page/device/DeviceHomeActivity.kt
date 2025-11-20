@@ -172,6 +172,13 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
+            ProductType.GNSS_T_1 -> {
+                navController.setGraph(
+                    R.navigation.gt600_graph,
+                    bundle2
+                )
+            }
+
             else -> {
                 navController.setGraph(
                     R.navigation.default_device_graph,
@@ -194,12 +201,15 @@ class DeviceHomeActivity : BaseActivity() {
     }
 
     companion object {
-        fun start(
+        /**
+         * 获取启动 Intent 的方法
+         */
+        fun getStartIntent(
             context: Context,
             deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             communicateWay: CommunicateWay = NetPlatformConnect
-        ) {
+        ): Intent {
             //根据设备 SN 后缀用新的产品规则来判断所属产品类型
             var type: ProductType = ProductType.valueByNewSuffix(deviceInfo.deviceToken)
             if (type == ProductType.UnKnown) {
@@ -209,6 +219,7 @@ class DeviceHomeActivity : BaseActivity() {
                     //根据设备 SN 后缀用旧的产品规则判断所属产品类型
                     type = ProductType.valueByOldSuffix(deviceInfo.deviceToken)
                     if (type == ProductType.UnKnown) {
+                        //会进入默认的设备配置主页面(R.navigation.default_device_graph)
 //                        return
                     }
                 }
@@ -217,13 +228,22 @@ class DeviceHomeActivity : BaseActivity() {
             deviceInfo.productName = deviceInfo.productName.ifEmpty { type.productName }
             deviceInfo.deviceName = deviceInfo.deviceName.ifEmpty { type.productToken }
 
-            val intent = Intent(context, DeviceHomeActivity::class.java).apply {
+            return Intent(context, DeviceHomeActivity::class.java).apply {
                 putExtra(AppContants.Extras.PRODUCT_TYPE, type as Parcelable)
                 putExtra(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
                 putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo)
                 putExtra(AppContants.Extras.BLE_DEVICE, bleDevice)
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             }
+        }
+
+        fun start(
+            context: Context,
+            deviceInfo: DeviceInfo,
+            bleDevice: DiscoveredBluetoothDevice? = null,
+            communicateWay: CommunicateWay = NetPlatformConnect
+        ) {
+            val intent = getStartIntent(context, deviceInfo, bleDevice, communicateWay)
             context.startActivity(intent)
         }
     }

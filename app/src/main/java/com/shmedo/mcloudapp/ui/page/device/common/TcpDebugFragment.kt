@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.common
 import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ColorUtils
@@ -737,26 +736,6 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
         } catch (e: Exception) {
             Timber.e(e, "分享文件失败")
             Toaster.show("分享失败")
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        try {
-            // 开启屏幕长亮
-            activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        } catch (e: Exception) {
-            Timber.e(e, "Resume时设置失败")
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        try {
-            // 禁用屏幕长亮
-            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        } catch (e: Exception) {
-            Timber.e(e, "Stop时清理失败")
         }
     }
 

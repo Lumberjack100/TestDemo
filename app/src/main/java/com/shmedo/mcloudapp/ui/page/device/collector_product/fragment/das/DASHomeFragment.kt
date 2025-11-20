@@ -49,7 +49,7 @@ import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.dialog.TelemetryPopupView
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
+import com.shmedo.mcloudapp.ui.page.device.common.CustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -266,7 +266,7 @@ class DASHomeFragment : BaseDeviceHomeFragment() {
             }
 
             is CommandDebugConfigModule -> {//指令下发
-                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                val bundle = CustomCommandLogPrintFragment.newBundleArguments(
                     false,
                     productType,
                     communicateWay,

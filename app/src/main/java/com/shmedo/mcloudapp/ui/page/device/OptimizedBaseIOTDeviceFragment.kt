@@ -13,8 +13,6 @@ import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
-import com.shmedo.mcloudapp.extensions.isDASBHYSeries
-import com.shmedo.mcloudapp.extensions.isMR701
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.communication.manager.DeviceCommunicationManager
@@ -24,6 +22,8 @@ import com.shmedo.mcloudapp.communication.model.DeviceConnectionState
 import com.shmedo.mcloudapp.communication.model.DeviceError
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.extensions.getAppViewModel
+import com.shmedo.mcloudapp.extensions.isDASBHYSeries
+import com.shmedo.mcloudapp.extensions.isMR701
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showMessage
@@ -34,6 +34,7 @@ import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.NetIOTCommandViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.request.TcpViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,6 +58,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     protected lateinit var mMessenger: PageMessenger
     protected val netIotCommandViewModel: NetIOTCommandViewModel by viewModel()
     protected val bleViewModel: BleViewModel by activityViewModel()
+    protected val tcpViewModel: TcpViewModel by viewModel()
 
     protected var refreshLayout: PageRefreshLayout? = null
 
@@ -99,6 +101,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
             communicateWay = communicateWay,
             netViewModel = netIotCommandViewModel,
             bleViewModel = bleViewModel,
+            tcpViewModel = tcpViewModel
         )
     }
 
@@ -391,7 +394,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
             bleViewModel.cancelSession(fragmentId)
         }
         communicationManager.cleanup()
-        Timber.i("页面 $fragmentId 取消所有指令")
+        Timber.d("页面 $fragmentId 取消所有指令")
     }
 
     override fun onDestroy() {
