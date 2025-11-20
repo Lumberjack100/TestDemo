@@ -58,7 +58,7 @@ abstract class OptimizedBaseIOTDeviceFragment : BaseFragment() {
     protected lateinit var mMessenger: PageMessenger
     protected val netIotCommandViewModel: NetIOTCommandViewModel by viewModel()
     protected val bleViewModel: BleViewModel by activityViewModel()
-    protected val tcpViewModel: TcpViewModel by viewModel()
+    protected val tcpViewModel: TcpViewModel by activityViewModel()
 
     protected var refreshLayout: PageRefreshLayout? = null
 

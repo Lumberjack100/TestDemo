@@ -49,6 +49,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import no.nordicsemi.android.ble.ktx.state.ConnectionState
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
@@ -66,7 +67,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentTcpDebugBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: TcpDebugViewModel by viewModels()
-    private val tcpViewModel: TcpViewModel by viewModel()
+    private val tcpViewModel: TcpViewModel by activityViewModel()
     private val productConfigViewModel: ProductConfigViewModel by viewModel()
 
     private var isIotCmd = true
@@ -185,25 +186,19 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
     private fun initializeTcpClient(serverAddr: String, serverPort: Int) {
         try {
             if (isRawMode) {
-                // 原始模式：不使用分隔符
-                tcpViewModel.initTcpClientRawMode(serverAddr, serverPort)
                 addLog("已启用原始模式（无分隔符）", ColorUtils.getColor(R.color.title_text_color))
             } else {
                 // 传统模式：使用分隔符
-                tcpViewModel.initTcpClient(
-                    serverAddr,
-                    serverPort,
-                    false,
-                    MDConstants.COMMAND_FOOTER
-                )
                 addLog("已启用传统模式（使用分隔符）", ColorUtils.getColor(R.color.title_text_color))
             }
 
-            launchWithViewLifecycle {
-                withContext(Dispatchers.IO) {
-                    tcpViewModel.connect()
-                }
-            }
+            tcpViewModel.connectToDevice(
+                serverAddr,
+                serverPort,
+                false,
+                if (isRawMode) null else MDConstants.COMMAND_FOOTER
+            )
+
         } catch (e: Exception) {
             handleConnectionError("初始化TCP客户端失败", e)
         }

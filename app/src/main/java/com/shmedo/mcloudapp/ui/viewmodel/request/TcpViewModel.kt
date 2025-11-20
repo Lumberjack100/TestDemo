@@ -67,17 +67,6 @@ class TcpViewModel(
         }.launchIn(viewModelScope)
     }
 
-    /**
-     * 初始化原始模式TCP客户端（不使用分隔符）
-     */
-    fun initTcpClientRawMode(host: String, port: Int) {
-        medoTcpRepository.initTcpClientRawMode(host, port)
-    }
-
-    fun initTcpClient(host: String, port: Int, isSendHeartBeat: Boolean, packetSeparator: String?) {
-        medoTcpRepository.initTcpClient(host, port, isSendHeartBeat, packetSeparator)
-    }
-
     fun connect() {
         medoTcpRepository.connect()
     }
@@ -95,7 +84,12 @@ class TcpViewModel(
      * @param deviceIp 设备IP地址
      * @param port TCP端口
      */
-    fun connectToDevice(deviceIp: String, port: Int) {
+    fun connectToDevice(
+        deviceIp: String,
+        port: Int,
+        isSendHeartBeat: Boolean = true,
+        packetSeparator: String? = MDConstants.COMMAND_FOOTER
+    ) {
         try {
             _connectionState.value = DeviceConnectionState.Connecting
 
@@ -103,12 +97,12 @@ class TcpViewModel(
             medoTcpRepository.initTcpClient(
                 host = deviceIp,
                 port = port,
-                isSendHeartBeat = true,
-                packetSeparator = MDConstants.COMMAND_FOOTER
+                isSendHeartBeat = isSendHeartBeat,
+                packetSeparator = packetSeparator
             )
 
             // 连接
-            medoTcpRepository.connect()
+            connect()
 
             Timber.i("正在连接设备: $deviceIp:$port")
 
