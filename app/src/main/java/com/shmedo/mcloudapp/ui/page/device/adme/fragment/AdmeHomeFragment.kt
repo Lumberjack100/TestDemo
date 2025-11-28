@@ -30,7 +30,7 @@ import com.shmedo.mcloudapp.model.RunningStatusModule
 import com.shmedo.mcloudapp.model.UnifiedDeviceModule
 import com.shmedo.mcloudapp.model.toUnified
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
+import com.shmedo.mcloudapp.ui.page.device.common.CustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDeviceHomeFragment
 import kotlinx.coroutines.delay
 
@@ -215,7 +215,7 @@ class AdmeHomeFragment : UniversalDeviceHomeFragment() {
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {
         when (configModule) {
             is CommandDebugConfigModule -> {
-                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                val bundle = CustomCommandLogPrintFragment.newBundleArguments(
                     true,
                     productType,
                     communicateWay,

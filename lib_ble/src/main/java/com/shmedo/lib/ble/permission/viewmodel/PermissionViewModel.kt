@@ -31,14 +31,12 @@
 
 package com.shmedo.lib.ble.permission.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shmedo.lib.ble.permission.BlePermissionNotAvailableReason
 import com.shmedo.lib.ble.permission.bluetooth.BluetoothStateManager
 import com.shmedo.lib.ble.permission.location.LocationStateManager
 import com.shmedo.lib.ble.permission.util.BlePermissionState
-
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
@@ -74,19 +72,4 @@ class PermissionViewModel(
         locationManager.refreshPermission()
     }
 
-    fun markLocationPermissionRequested() {
-        locationManager.markLocationPermissionRequested()
-    }
-
-    fun markBluetoothPermissionRequested() {
-        bluetoothManager.markBluetoothPermissionRequested()
-    }
-
-    fun isBluetoothScanPermissionDeniedForever(context: Context): Boolean {
-        return bluetoothManager.isBluetoothScanPermissionDeniedForever(context)
-    }
-
-    fun isLocationPermissionDeniedForever(context: Context): Boolean {
-        return locationManager.isLocationPermissionDeniedForever(context)
-    }
 }

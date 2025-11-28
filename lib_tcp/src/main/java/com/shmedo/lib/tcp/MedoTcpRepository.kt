@@ -25,12 +25,8 @@ class MedoTcpRepository(
     }
 
     /**
-     * 初始化原始模式TCP客户端（不设置分隔符）
+     * 初始化原始模式TCP客户端
      */
-    fun initTcpClientRawMode(host: String, port: Int) {
-        tcpManager.initTcpClient(host, port, false, null) // packetSeparator 设置为 null
-    }
-
     fun initTcpClient(
         host: String,
         port: Int,

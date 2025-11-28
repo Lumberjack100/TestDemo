@@ -17,6 +17,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.cmd.base.md_cmd.model.common.DeviceNetStatus
 import com.shmedo.lib.cmd.base.md_cmd.model.das.DeviceStatusInfoOne
+import com.shmedo.lib.cmd.base.md_cmd.model.das.SystemRunStateInfo
 import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
@@ -97,6 +98,22 @@ class DasNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
      */
     private fun queryBleInfo() {
         val commands = mutableListOf<String>()
+
+        /**
+         * 获取信号强度 ##014\r\n<br/>
+         * 应答:$$014,(1),(2) ,(3),(4) ,(5),(6) ,(7),(8), (9),(10) \r\n<br/>
+         * (1)：信号值<br/>
+         * (2)：GPS定位搜星数目<br/>
+         * (3)：启动代码<br/>
+         * (4)：重启代码<br/>
+         * (5)：sim卡ccid<br/>
+         * (6)：设备内部温度<br/>
+         * (7)：设备内部电池电压<br/>
+         * (8)：设备外部电压<br/>
+         * (9)：运营商类型<br/>
+         * (10)：网络制式<br/>
+         */
+        commands.add(MDCommandUtil.getCommand(MDCommandType.SYSTEM_RUN_STATE))
 
         /**
          * 查询设备状态1: ##041\r\n <br/>
@@ -210,7 +227,7 @@ class DasNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     "1" -> "中国移动"
                     "2" -> "中国联通"
                     "3" -> "中国电信"
-                    else -> AppContants.Companion.PLACE_HOLDER_VALUE
+                    else -> "未知运营商"
                 }
             )
             baseInfo.csq.notNullKeyEmpty {
@@ -296,6 +313,23 @@ class DasNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
      */
     private fun handleBleCommandResult(cmdStr: String) {
         when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.SYSTEM_RUN_STATE -> {//##014\r\n：获取信号强度、运营商
+                val result = mdParseManager.parse<SystemRunStateInfo>(
+                    cmdStr,
+                    MDCommandType.SYSTEM_RUN_STATE
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询运行状态出错"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    is MDCommandResult.Success -> {
+                        initBleOperatorStatus(result.data)
+                    }
+                }
+            }
+
             MDCommandType.QUERY_DAS_STATUS_1 -> {//##041\r\n：查询设备状态1
                 val result = mdParseManager.parse<DeviceStatusInfoOne>(
                     cmdStr,
@@ -340,11 +374,33 @@ class DasNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         }
     }
 
+    private fun initBleOperatorStatus(info: SystemRunStateInfo) {
+        try {
+            val groupList = mutableListOf<Any>()
+            groupList.add(DeviceStatusInfoGroupItem("数据网络"))
+
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "运营商",
+                value = when (info.operatorType.uppercase()) {
+                    "CMCC" -> "中国移动"
+                    "CU" -> "中国联通"
+                    "CT" -> "中国电信"
+                    else -> "未知运营商"
+                }
+            )
+            binding.recyclerview.models = groupList
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
     private fun initBleDeviceStatusOne(info: DeviceStatusInfoOne) {
         try {
             val groupList = mutableListOf<Any>()
 
-            groupList.add(DeviceStatusInfoGroupItem("数据网络"))
+
             //dBm=2*CSQ值-113，数值99表示无信号
             info.signalStrength.notNullKeyEmpty {
                 val temp = it.toIntOrNull() ?: 0
@@ -382,7 +438,10 @@ class DasNetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
             groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
             groupList.add(DeviceStatusInfoGroupItem("数据链路"))
 
-            binding.recyclerview.models = groupList
+            binding.recyclerview.bindingAdapter.apply {
+                mutable.addAll(groupList)
+                notifyItemRangeInserted(itemCount, groupList.size)
+            }
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)

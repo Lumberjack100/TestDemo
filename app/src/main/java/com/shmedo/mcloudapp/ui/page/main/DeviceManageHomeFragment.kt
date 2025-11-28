@@ -68,7 +68,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private val normalColor: Int = ColorUtils.getColor(R.color.text_color_666666)
     private val activeSize: Float = 20f
     private val normalSize: Float = 16f
-    private val tabs = arrayOf("4G", "蓝牙")
+    private val tabs = arrayOf("4G", "蓝牙")//, "WiFi"
     private val moreChooseList =
         arrayListOf("扫码连接", "查询数据")//"扫一扫", "WIFI 设备", "USB 设备", "查询数据"
 
@@ -131,7 +131,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private fun initViewPager() {
         val mFragments = listOf<Fragment>(
             NewNetDeviceListFragment.newInstance(), BleScannerListFragment.newInstance()
-        )
+        )//, WiFiScannerListFragment.newInstance()
         binding.viewpager.adapter = PageAdapter(this, mFragments)
         binding.viewpager.offscreenPageLimit = mFragments.size
         binding.viewpager.isUserInputEnabled = false
@@ -185,13 +185,6 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
 
             companyList.clear()
             companyList.addAll(tempList)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        binding.root.post {
-//            initImmersionBar(binding.statusBarView, isTitleBar = false, isStatusBarDarkFont = true)
         }
     }
 
@@ -376,6 +369,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
         XPopup.Builder(context).dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
             .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
             .enableDrag(false).isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+//            .hasNavigationBar(false)
             .asCustom(popupView).show()
     }
 

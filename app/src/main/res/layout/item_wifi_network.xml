@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.text.TextUtils" />
+
+        <variable
+            name="m"
+            type="com.shmedo.lib.wifi.scanner.model.DiscoveredWifiNetwork" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_common_click_item_with_divider"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/dimen_size_20"
+        android:paddingVertical="@dimen/dimen_size_10">
+
+        <!-- WiFi 图标 -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_wifi_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_wifi" />
+
+        <!-- 中间内容区域 -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- SSID 和标签行 -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_ssid"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_10"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text='@{TextUtils.isEmpty(m.ssid) ? "未知网络" : m.ssid}'
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_16"
+                    android:textStyle="bold"
+                    tools:text="MD-DEVICE-E60S0231" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <!-- 详细信息行 -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical">
+
+                <!-- 频段信息 -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_frequency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_10"
+                    android:singleLine="true"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_13"
+                    tools:text="2.4GHz" />
+
+                <!-- 加密图标 -->
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_secure"
+                    visible="@{m.isSecured}"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_marginStart="8dp"
+                    app:srcCompat="@drawable/ic_lock"
+                    tools:visibility="visible" />
+
+                <!-- 信号强度 -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_signal_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_20"
+                    android:singleLine="true"
+                    android:text='@{m.level + " dBm"}'
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_13"
+                    tools:text="-45 dBm" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- 右侧箭头 -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_size_15"
+            android:src="@drawable/ic_arrow_right" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

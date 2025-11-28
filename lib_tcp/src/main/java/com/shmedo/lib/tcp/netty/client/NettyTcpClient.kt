@@ -130,7 +130,7 @@ class NettyTcpClient private constructor(val host: String, val tcpPort: Int, val
                 try {
                     val channelFuture = bootstrap.connect(host, tcpPort).addListener { future ->
                         if (future.isSuccess) {
-                            Timber.e("连接成功")
+                            Timber.i("连接成功")
                             reconnectNum = MAX_CONNECT_TIMES
                             isConnect = true
                             channel = (future as ChannelFuture).channel()
@@ -163,13 +163,13 @@ class NettyTcpClient private constructor(val host: String, val tcpPort: Int, val
     }
 
     fun disconnect() {
-        Timber.e("call disconnect()")
+        Timber.d("call disconnect()")
         isNeedReconnect = false
         group?.shutdownGracefully()
     }
 
     fun reconnect() {
-        Timber.e("call reconnect()")
+        Timber.d("call reconnect()")
         if (isNeedReconnect && reconnectNum > 0 && !isConnect) {
             reconnectNum--
             SystemClock.sleep(reconnectIntervalTime)

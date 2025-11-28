@@ -32,8 +32,6 @@
 package com.shmedo.lib.ble.permission.util
 
 import android.os.Build
-import androidx.core.app.ActivityCompat
-import com.blankj.utilcode.util.SPUtils
 
 private const val SHARED_PREFS_NAME = "SHARED_PREFS_NAME"
 
@@ -42,29 +40,6 @@ private const val PREFS_BLUETOOTH_PERMISSION_REQUESTED = "bluetooth_permission_r
 
 
 object LocalDataProvider {
-    /**
-     * The first time an app requests a permission there is no 'Don't ask again' checkbox and
-     * [ActivityCompat.shouldShowRequestPermissionRationale] returns false.
-     * This situation is similar to a permission being denied forever, so to distinguish both cases
-     * a flag needs to be saved.
-     */
-    var locationPermissionRequested: Boolean
-        get() = SPUtils.getInstance(SHARED_PREFS_NAME).getBoolean(PREFS_PERMISSION_REQUESTED, false)
-        set(value) {
-            SPUtils.getInstance(SHARED_PREFS_NAME).put(PREFS_PERMISSION_REQUESTED, value)
-        }
-
-    /**
-     * The first time an app requests a permission there is no 'Don't ask again' checkbox and
-     * [ActivityCompat.shouldShowRequestPermissionRationale] returns false.
-     * This situation is similar to a permission being denied forever, so to distinguish both cases
-     * a flag needs to be saved.
-     */
-    var bluetoothPermissionRequested: Boolean
-        get() = SPUtils.getInstance(SHARED_PREFS_NAME).getBoolean(PREFS_BLUETOOTH_PERMISSION_REQUESTED, false)
-        set(value) {
-            SPUtils.getInstance(SHARED_PREFS_NAME).put(PREFS_BLUETOOTH_PERMISSION_REQUESTED, value)
-        }
 
     val isLocationPermissionRequired: Boolean
         /**

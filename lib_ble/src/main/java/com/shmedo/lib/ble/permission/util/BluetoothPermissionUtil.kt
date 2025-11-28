@@ -88,29 +88,6 @@ object BluetoothPermissionUtil {
     val areNecessaryBluetoothPermissionsGranted: Boolean
         get() = isBluetoothScanPermissionGranted && isBluetoothConnectPermissionGranted
 
-    fun markBluetoothPermissionRequested() {
-        LocalDataProvider.bluetoothPermissionRequested = true
-    }
-
-    fun markLocationPermissionRequested() {
-        LocalDataProvider.locationPermissionRequested = true
-    }
-
-    fun isBluetoothScanPermissionDeniedForever(context: Context): Boolean {
-        return LocalDataProvider.isSOrAbove &&
-                !isBluetoothScanPermissionGranted && // Bluetooth Scan permission must be denied
-                LocalDataProvider.bluetoothPermissionRequested && // Permission must have been requested before
-                !context.findActivity()
-                    .shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_SCAN)
-    }
-
-    fun isLocationPermissionDeniedForever(context: Context): Boolean {
-        return LocalDataProvider.isMarshmallowOrAbove &&
-                !isLocationPermissionGranted // Location permission must be denied
-                && LocalDataProvider.locationPermissionRequested // Permission must have been requested before
-                && !context.findActivity()
-            .shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-    }
 
     /**
      * Finds the activity from the given context.

@@ -27,6 +27,7 @@ class TcpManager : NettyClientListener<String> {
 
     private val _data = MutableSharedFlow<TcpManagerResult<String>>(
         replay = 1,
+        extraBufferCapacity = 128,  // ← 提供缓冲区处理快速数据流
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
     val data = _data.asSharedFlow()
@@ -116,9 +117,9 @@ class TcpManager : NettyClientListener<String> {
         mNettyTcpClient?.sendMsgToServer(msg, object : MessageStateListener {
             override fun isSendSuccess(isSuccess: Boolean) {
                 if (isSuccess) {
-                    Timber.d("Write auth successful")
+                    Timber.d("Write data successful")
                 } else {
-                    Timber.d("Write auth error")
+                    Timber.d("Write data error")
                 }
             }
         })

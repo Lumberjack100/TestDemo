@@ -29,13 +29,18 @@ import com.shmedo.core.model.DebugCmdLogInfo
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.tcp.TcpConnectClosed
+import com.shmedo.lib.tcp.TcpConnectError
+import com.shmedo.lib.tcp.TcpConnectedResult
+import com.shmedo.lib.tcp.TcpSuccessDataResult
+import com.shmedo.lib.tcp.TcpSuccessRawDataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseCommandLogPrintClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
-import com.shmedo.mcloudapp.databinding.FragmentBleCustomCommandLogPrintBinding
+import com.shmedo.mcloudapp.databinding.FragmentCustomCommandLogPrintBinding
 import com.shmedo.mcloudapp.extensions.InsetsManager
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -44,6 +49,7 @@ import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.model.TcpConnect
 import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleCustomCommandLogPrintViewModel
@@ -59,11 +65,12 @@ import java.util.Locale
 /**
  * @author：gonghe
  * @time: 2025/6/26
- * @desc: 蓝牙通讯下自定义指令调试打印输出
+ * @desc: 自定义指令调试打印输出
+ * 支持蓝牙(BLE)和TCP两种通信方式的实时指令调试
  *
  */
-class BleCustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentBleCustomCommandLogPrintBinding
+class CustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentCustomCommandLogPrintBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: BleCustomCommandLogPrintViewModel by viewModels()
     private var isIotCmd = true
@@ -73,7 +80,7 @@ class BleCustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_ble_custom_command_log_print,
+            R.layout.fragment_custom_command_log_print,
             BR.stateVM,
             mStates
         )
@@ -82,7 +89,7 @@ class BleCustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentBleCustomCommandLogPrintBinding
+        binding = getBinding() as FragmentCustomCommandLogPrintBinding
         setupToolbar()
         setupRecyclerView()
 
@@ -134,10 +141,18 @@ class BleCustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
         mStates.setDebugMode(BleCustomCommandLogPrintViewModel.DEBUG_MODES[0])
         cmdTypeList.clear()
 
-        if (communicateWay is BleConnect) {
-            cmdTypeList.addAll(listOf("物联网指令", "物联网透传指令", "##指令", "自定义指令"))
-        } else {
-            cmdTypeList.addAll(listOf("物联网指令", "物联网透传指令"))
+        when (communicateWay) {
+            is BleConnect -> {
+                cmdTypeList.addAll(listOf("物联网指令", "物联网透传指令", "##指令", "自定义指令"))
+            }
+
+            is TcpConnect -> {
+                cmdTypeList.addAll(listOf("物联网指令", "物联网透传指令", "##指令", "自定义指令"))
+            }
+
+            else -> {
+                cmdTypeList.addAll(listOf("物联网指令", "物联网透传指令"))
+            }
         }
     }
 
@@ -148,13 +163,30 @@ class BleCustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
 
     override fun createObserver() {
         super.createObserver()
-        setupBleCommunicationObserver()
+        setupCommunicationObserver()
         observeLogItems()
         setFragmentResultListener(FRAGMENT_BUILTIN_COMMAND_SELECTED_REQUEST_KEY) { _, bundle ->
             handleFragmentResult(bundle)
         }
     }
 
+    /**
+     * 设置通信观察者 - 根据通信方式选择相应的观察者
+     */
+    private fun setupCommunicationObserver() {
+        when (communicateWay) {
+            is BleConnect -> setupBleCommunicationObserver()
+            is TcpConnect -> setupTcpCommunicationObserver()
+            else -> {
+                // NetPlatformConnect 不需要监听实时响应
+                Timber.d("当前通信方式不需要监听实时响应")
+            }
+        }
+    }
+
+    /**
+     * 设置蓝牙通信观察者
+     */
     private fun setupBleCommunicationObserver() {
         launchWithViewLifecycle {
             try {
@@ -166,6 +198,61 @@ class BleCustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
                 }
             } catch (e: Exception) {
                 Timber.e(e, "蓝牙通信观察者异常")
+            }
+        }
+    }
+
+    /**
+     * 设置 TCP 通信观察者
+     */
+    private fun setupTcpCommunicationObserver() {
+        launchWithViewLifecycle {
+            try {
+                tcpViewModel.data.collect { result ->
+                    when (result) {
+                        is TcpSuccessDataResult -> {
+                            val responseData = result.data
+                            if (responseData.isNotEmpty()) {
+                                mStates.addLog(
+                                    responseData,
+                                    ColorUtils.getColor(R.color.receive_data_color)
+                                )
+                            }
+                        }
+                        is TcpSuccessRawDataResult -> {
+                            val responseData = String(result.data, Charsets.UTF_8)
+                            if (responseData.isNotEmpty()) {
+                                mStates.addLog(
+                                    responseData,
+                                    ColorUtils.getColor(R.color.receive_data_color)
+                                )
+                            }
+                        }
+                        is TcpConnectedResult -> {
+                            mStates.addLog(
+                                "TCP 连接成功",
+                                ColorUtils.getColor(R.color.online_colorPrimary)
+                            )
+                        }
+                        is TcpConnectClosed -> {
+                            mStates.addLog(
+                                "TCP 连接断开",
+                                ColorUtils.getColor(R.color.error_FF4400)
+                            )
+                        }
+                        is TcpConnectError -> {
+                            mStates.addLog(
+                                "TCP 连接异常",
+                                ColorUtils.getColor(R.color.error_FF4400)
+                            )
+                        }
+                        else -> {
+                            // TcpIdleResult 和其他状态不处理
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "TCP 通信观察者异常")
             }
         }
     }
@@ -360,6 +447,7 @@ class BleCustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
             }
 
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menu.clear()
                 menuInflater.inflate(R.menu.debug_cmd_log_menu, menu)
             }
 
@@ -499,21 +587,23 @@ class BleCustomCommandLogPrintFragment : OptimizedBaseIOTDeviceFragment() {
 
 
     private fun handleBackPressed() {
+        // 关闭指令调试模式
+        CommonMMKVOwner.isCommandDebugMode = false
         updateDebugMode(BleCustomCommandLogPrintViewModel.DebugMode.CLOSE)
         nav().navigateUp()
     }
 
-    override fun onDestroy() {
-        try {
-            // 关闭指令调试模式
-            CommonMMKVOwner.isCommandDebugMode = false
-            updateDebugMode(BleCustomCommandLogPrintViewModel.DebugMode.CLOSE)
-        } catch (e: Exception) {
-            Timber.e(e, "销毁时清理资源失败")
-        } finally {
-            super.onDestroy()
-        }
-    }
+//    override fun onDestroy() {
+//        try {
+//            // 关闭指令调试模式
+//            CommonMMKVOwner.isCommandDebugMode = false
+//            updateDebugMode(BleCustomCommandLogPrintViewModel.DebugMode.CLOSE)
+//        } catch (e: Exception) {
+//            Timber.e(e, "销毁时清理资源失败")
+//        } finally {
+//            super.onDestroy()
+//        }
+//    }
 
     companion object {
         const val FRAGMENT_BUILTIN_COMMAND_SELECTED_REQUEST_KEY =

@@ -17,18 +17,19 @@
 package com.shmedo.mcloudapp.koin
 
 
-import com.shmedo.mcloudapp.ui.viewmodel.request.ProductConfigViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.MonitoringDataExportViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.AppUpdateViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.LocationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.NetIOTCommandViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.request.ProductConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.RequestSearchViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.TcpViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.MonitoringDataExportViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.BuiltinCommandSelectorViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.RtspViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -45,4 +46,5 @@ val viewModelModule = module {
     viewModelOf(::NetIOTCommandViewModel)
     viewModelOf(::MonitoringDataExportViewModel)
     viewModelOf(::BuiltinCommandSelectorViewModel)
+    viewModelOf(::RtspViewModel)
 }
