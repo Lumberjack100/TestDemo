@@ -6,6 +6,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.extensions.isM50Series
 import com.shmedo.mcloudapp.extensions.isMR702
+import com.shmedo.mcloudapp.extensions.isMultiModeGatewaySeries
 import com.shmedo.mcloudapp.extensions.isUDSeries
 import com.shmedo.mcloudapp.ui.viewmodel.state.DataCenterParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702DataCenterParamViewModel
@@ -23,6 +24,14 @@ object DefaultPlatformConfigManager {
     fun getSupportedPlatformNames(productType: ProductType): List<String> {
         return when {
             productType.isMR702() -> arrayListOf(
+                NewDataCenterPlatform.MEDO_IOT_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.GUANGDONG_WATER_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.GUANGXI_WATER_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.HUBEI_WATER_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.HUBEI_ECO_PLATFORM.getPlatFormName()
+            )
+
+            productType.isMultiModeGatewaySeries() -> arrayListOf(
                 NewDataCenterPlatform.MEDO_IOT_PLATFORM.getPlatFormName(),
                 NewDataCenterPlatform.GUANGDONG_WATER_PLATFORM.getPlatFormName(),
                 NewDataCenterPlatform.GUANGXI_WATER_PLATFORM.getPlatFormName(),
