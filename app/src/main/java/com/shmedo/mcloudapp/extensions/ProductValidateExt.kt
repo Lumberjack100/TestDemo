@@ -85,6 +85,13 @@ fun ProductType.isGateway(): Boolean {
     return this == ProductType.COLLECTOR_G_0
 }
 
+/**
+ * 判断是否为 多模融合网关 系列产品
+ */
+fun ProductType.isMultiModeGatewaySeries(): Boolean {
+    return this == ProductType.COLLECTOR_G_3 || this == ProductType.COLLECTOR_G_4
+}
+
 
 /**
  * 判断是否为 MR701 产品
@@ -207,6 +214,12 @@ fun ProductType.getDeviceLogoResIds(): List<Int> {
             R.drawable.device_logo_gateway_error
         )
 
+        isMultiModeGatewaySeries() -> listOf(
+            R.drawable.device_logo_multimode_gateway,
+            R.drawable.device_logo_multimode_gateway_alarm,
+            R.drawable.device_logo_multimode_gateway_error
+        )
+
         isDASBHYSeries() -> listOf(
             R.drawable.device_logo_das,
             R.drawable.device_logo_das_alarm,
@@ -272,9 +285,25 @@ fun ProductType.getSensorDataConfig(): SensorDataConfig? {
         )
 
         isLL030() -> SensorDataConfig(
-            modelNames = listOf("液位海拔", "空高距离","瞬时流速","瞬时流量","累计流量", "安装角度", "抓拍图片"),
+            modelNames = listOf(
+                "液位海拔",
+                "空高距离",
+                "瞬时流速",
+                "瞬时流量",
+                "累计流量",
+                "安装角度",
+                "抓拍图片"
+            ),
             modelTokens = listOf("904", "904", "217", "220", "233", "206", "10001"),
-            valueDescs = listOf("高度（米）", "高度（米）", "瞬时流速（米/秒）", "瞬时流量（立方米/秒）", "累计流量（立方米）", "角度（度）", "操作"),
+            valueDescs = listOf(
+                "高度（米）",
+                "高度（米）",
+                "瞬时流速（米/秒）",
+                "瞬时流量（立方米/秒）",
+                "累计流量（立方米）",
+                "角度（度）",
+                "操作"
+            ),
             fieldPaths = listOf("liquid_surface_alt", "ullage", "value", "value", "totalQ", "z")
         )
 

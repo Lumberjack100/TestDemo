@@ -3,12 +3,12 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702
 import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.isMultiModeGatewaySeries
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
-import com.shmedo.mcloudapp.model.ConfigBannerItem
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
@@ -27,10 +27,21 @@ class MR702HomeFragment : BaseDeviceHomeFragment() {
 
     override fun initData() {
         super.initData()
-        mHeadStates.productErrorResId.set(R.drawable.device_logo_mr702_error)
-        mHeadStates.productAlarmResId.set(R.drawable.device_logo_mr702_alarm)
-        mHeadStates.productOfflineResId.set(R.drawable.device_logo_mr702_offline)
-        mHeadStates.productNormalResId.set(R.drawable.device_logo_mr702)
+        when {
+            productType.isMultiModeGatewaySeries() -> {
+                mHeadStates.productErrorResId.set(R.drawable.device_logo_multimode_gateway_error)
+                mHeadStates.productAlarmResId.set(R.drawable.device_logo_multimode_gateway_alarm)
+                mHeadStates.productOfflineResId.set(R.drawable.device_logo_multimode_gateway_offline)
+                mHeadStates.productNormalResId.set(R.drawable.device_logo_multimode_gateway)
+            }
+
+            else -> {//MR702
+                mHeadStates.productErrorResId.set(R.drawable.device_logo_mr702_error)
+                mHeadStates.productAlarmResId.set(R.drawable.device_logo_mr702_alarm)
+                mHeadStates.productOfflineResId.set(R.drawable.device_logo_mr702_offline)
+                mHeadStates.productNormalResId.set(R.drawable.device_logo_mr702)
+            }
+        }
         mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
     }
 
