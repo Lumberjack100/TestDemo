@@ -28,6 +28,22 @@ enum class ProductType(
         productToken = "MD-GW100",
         description = ""
     ),
+    COLLECTOR_G_3(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "CG3",
+        productName = "多模融合通讯数据网关",
+        productToken = "KT620",
+        description = ""
+    ),
+    COLLECTOR_G_4(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "CG4",
+        productName = "多模融合通讯数据网关",
+        productToken = "MG301",
+        description = ""
+    ),
 
     //COLLECTOR(采集器产品线)产品线  R(RTU)
     COLLECTOR_R_1(
