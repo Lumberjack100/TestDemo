@@ -504,22 +504,29 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
                 // 检查电台模块功能是否可用
                 updateRadioModuleStatus(stateInfo.lora.uppercase() == "OK")
 
+                /** 故障信息处理 */
                 //提取出故障信息
                 val deviceAbnormalList = if (content.isEmpty()) arrayListOf<String>()
                 else DeviceStatusHelper.checkM50Abnormal(content)
-                //暂时移除特定的故障信息
+                //移除特定的故障信息
+                deviceAbnormalList.remove("LORA模块故障")
                 deviceAbnormalList.remove("电台模块故障")
 
+                /** 告警信息处理 */
                 //提取出告警信息
                 val deviceWarnList =
                     if (content.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkM50Warn(
                         content
                     )
 
-                // 角度告警检查
+                if (stateInfo.lora.uppercase() != "OK") {
+                    deviceWarnList.add("电台模块无")
+                }
+
+                // 处理角度告警信息
                 val angleWarnings = calculateAngleWarnings()
 
-                // 合并告警列表，但如果倾角加速度模块故障，则不显示角度告警
+                // 合并告警列表，但如果倾角加速度模块故障，则不显示角度告警信息
                 val hasTiltSensorFault =
                     deviceAbnormalList.any { it.contains("倾角加速度模块故障") }
                 val warnListWithAngles = if (hasTiltSensorFault) {
@@ -528,7 +535,7 @@ class M50HomeFragment : BaseDeviceHomeFragment() {
                     deviceWarnList + angleWarnings
                 }
 
-                // 合并故障和告警信息，并进行过滤
+                /** 合并故障和告警信息，并进行过滤 */
                 val mergedList = DeviceStatusHelper.mergeM50StatusInfo(
                     deviceAbnormalList,
                     warnListWithAngles as ArrayList<String>
