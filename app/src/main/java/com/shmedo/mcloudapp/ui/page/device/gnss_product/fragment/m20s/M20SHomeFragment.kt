@@ -148,9 +148,22 @@ class M20SHomeFragment : BaseDeviceHomeFragment() {
         )
 
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+        groupList.add(DeviceStatusInfoGroupItem("快捷配置"))
+        groupList.add(
+            ConfigModuleTree(
+                configModules = arrayListOf(
+                    CommonModule(
+                        name = "一键配置",
+                        resID = R.drawable.ic_module_cmd_debug_new,
+                        navId = R.id.action_global_to_quickConfigCommandParam
+                    ).toUnified(),
+                )
+            )
+        )
 
+        groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
         // 设备配置模块
-        groupList.add(DeviceStatusInfoGroupItem("设备配置"))
+        groupList.add(DeviceStatusInfoGroupItem("高级配置"))
         val configModuleTree = ConfigModuleTree()
 
         // 根据产品类型添加不同的配置模块
