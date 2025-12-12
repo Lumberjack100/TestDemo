@@ -1,0 +1,17 @@
+# In: <project>/.gemini/commands/git/commit.toml
+# Invoked via: /git:commit
+# The prompt uses !{...} to execute the command and inject its output.
+
+description = "Generates a Chinese Git commit message based on staged changes."
+
+prompt = """
+Please generate a Conventional Chinese Commit message based on the following git diff:
+
+```diff
+!{git diff --staged}
+```
+
+## Behavior
+1. 请认真阅读并参考：`docs/templates/COMMIT_MESSAGE_TEMPLATE.md` 中的提交消息模板和示例。
+
+"""

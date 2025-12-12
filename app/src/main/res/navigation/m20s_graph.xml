@@ -6,6 +6,7 @@
     app:startDestination="@id/m20SHomeFragment">
 
     <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_quick_config_cmd_graph" />
     <include app:graph="@navigation/include_alarm_setting_graph" />
     <include app:graph="@navigation/include_advanced_setting_graph" />
     <include app:graph="@navigation/include_time_calibration_graph" />
@@ -210,6 +211,14 @@
     <action
         android:id="@+id/action_global_to_advancedSettingFragment"
         app:destination="@id/advanced_setting_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_quickConfigCommandParam"
+        app:destination="@id/quick_config_cmd_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
