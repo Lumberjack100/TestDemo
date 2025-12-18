@@ -9,6 +9,10 @@
             name="m"
             type="com.shmedo.mcloudapp.model.URMeasureDataItem" />
 
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
+
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -45,5 +49,23 @@
             android:textColor="@color/title_text_color_black_90"
             android:textSize="@dimen/measure_data_item_text_size_12"
             tools:text="24小时雨量：3.22mm" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10">
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/MeasureData_Button_Style"
+                android:onClick="@{()->click.onSampleDataClick()}"
+                android:text='遥测'
+                app:icon="@drawable/ic_device_measure_data" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="2" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout> 

@@ -21,7 +21,10 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.databinding.ItemLr200MeasureDataBinding
+import com.shmedo.mcloudapp.databinding.ItemUiMeasureDataBinding
 import com.shmedo.mcloudapp.databinding.ItemUlMeasureDataBinding
+import com.shmedo.mcloudapp.databinding.ItemUrMeasureDataBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNullKey
@@ -29,7 +32,6 @@ import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
-import com.shmedo.mcloudapp.model.ConfigBannerItem
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
@@ -101,13 +103,36 @@ class UProductHomeFragment : BaseDeviceHomeFragment() {
     }
 
     override fun BindingViewHolder.processOtherItemViewBind(itemViewType: Int) {
-        if (itemViewType == R.layout.item_ul_measure_data) {
-            val binding = getBinding<ItemUlMeasureDataBinding>()
+        when (itemViewType) {
+            R.layout.item_ul_measure_data -> {
+                val binding = getBinding<ItemUlMeasureDataBinding>()
 
-            // 设置数据绑定参数
-            binding.setVariable(BR.m, ulMeasureDataItem)
-            binding.setVariable(BR.click, ClickProxy())
-            binding.executePendingBindings()
+                // 设置数据绑定参数
+                binding.setVariable(BR.m, ulMeasureDataItem)
+                binding.setVariable(BR.click, ClickProxy())
+                binding.executePendingBindings()
+            }
+
+            R.layout.item_lr200_measure_data -> {
+                val binding = getBinding<ItemLr200MeasureDataBinding>()
+                binding.setVariable(BR.m, lr200MeasureDataItem)
+                binding.setVariable(BR.click, ClickProxy())
+                binding.executePendingBindings()
+            }
+
+            R.layout.item_ui_measure_data -> {
+                val binding = getBinding<ItemUiMeasureDataBinding>()
+                binding.setVariable(BR.m, uiMeasureDataItem)
+                binding.setVariable(BR.click, ClickProxy())
+                binding.executePendingBindings()
+            }
+
+            R.layout.item_ur_measure_data -> {
+                val binding = getBinding<ItemUrMeasureDataBinding>()
+                binding.setVariable(BR.m, urMeasureDataItem)
+                binding.setVariable(BR.click, ClickProxy())
+                binding.executePendingBindings()
+            }
         }
     }
 
@@ -643,9 +668,9 @@ class UProductHomeFragment : BaseDeviceHomeFragment() {
             val resultMap = MoshiUtil.fromJson<Map<String, Any>>(content) ?: return
 
             // 初始化数据
-            var newLFInitial = AppContants.PLACE_HOLDER_VALUE
+            val newLFInitial = AppContants.PLACE_HOLDER_VALUE
             var newLFCurrent = AppContants.PLACE_HOLDER_VALUE
-            var newLFCumulative = AppContants.PLACE_HOLDER_VALUE
+            val newLFCumulative = AppContants.PLACE_HOLDER_VALUE
             var xAngle = AppContants.PLACE_HOLDER_VALUE
             var yAngle = AppContants.PLACE_HOLDER_VALUE
             var zAngle = AppContants.PLACE_HOLDER_VALUE
@@ -707,13 +732,25 @@ class UProductHomeFragment : BaseDeviceHomeFragment() {
     }
 
     inner class ClickProxy : BaseClickProxy() {
+        /**
+         * 遥测按钮点击事件
+         * 根据产品类型下发不同的指令：
+         * 1. U_L_1 (北斗林木生长监测终端) -> 下发 SAMPLE (召测) 指令
+         * 2. LR200 (一体式裂缝计)、U_I_1 (一体式倾斜仪)、U_R_1 (一体式雨量计) -> 下发 QUERY_DEVICE_STATUS (查询设备状态) 指令
+         */
         override fun onSampleDataClick() {
             if (!isDeviceConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
 
-            val command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE)
+            val commandType = if (productType == ProductType.U_L_1) {
+                IOTCommandType.SAMPLE
+            } else {
+                IOTCommandType.QUERY_DEVICE_STATUS
+            }
+
+            val command = IOTCommandUtil.getCommand(commandType)
             sendCommandSequence(
                 commands = listOf(command),
                 config = CommandSequenceConfig(
