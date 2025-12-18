@@ -187,8 +187,8 @@ class M20SStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
                         name = "Flash模块",
-                        value = stateInfo.rtc.uppercase().compareAndReturn("OK", "正常", "故障"),
-                        textColorRes = if (stateInfo.rtc.uppercase() == "OK") 0 else ColorUtils.getColor(
+                        value = stateInfo.flash.uppercase().compareAndReturn("OK", "正常", "故障"),
+                        textColorRes = if (stateInfo.flash.uppercase() == "OK") 0 else ColorUtils.getColor(
                             R.color.error_FF4400
                         ),
                         isBottomItem = true
