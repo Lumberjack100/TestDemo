@@ -185,16 +185,12 @@ class M20SRunningInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
             val kmValue = DeviceStatusInfoProcessor.formatDoubleValue(
                 baseLine.toString(),
                 AppContants.PLACE_HOLDER_VALUE,
-                2
+                6
             )
             DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                 groupList,
                 name = "基线长",
-                value = DeviceStatusInfoProcessor.formatDoubleValue(
-                    baseLine.toString(),
-                    AppContants.PLACE_HOLDER_VALUE,
-                    2
-                ),
+                value = kmValue,
                 unit = if (kmValue == AppContants.PLACE_HOLDER_VALUE) "" else "km"
             )
 
