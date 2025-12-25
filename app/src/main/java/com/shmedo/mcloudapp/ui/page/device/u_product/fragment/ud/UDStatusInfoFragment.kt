@@ -14,6 +14,7 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
+import com.shmedo.mcloudapp.extensions.isLL030
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
@@ -172,6 +173,21 @@ class UDStatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                         R.color.error_FF4400
                     ) else 0
                 )
+                if (productType.isLL030()) {
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                        groupList,
+                        name = "流量模块",
+                        value = when (stateInfo.lldStatus) {
+                            "0" -> "正常"
+                            "-2" -> "数据异常"
+                            "-3" -> "模块故障"
+                            else -> AppContants.Companion.PLACE_HOLDER_VALUE
+                        },
+                        textColorRes = if (stateInfo.ldStatus == "-2" || stateInfo.ldStatus == "-3") ColorUtils.getColor(
+                            R.color.error_FF4400
+                        ) else 0
+                    )
+                }
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
