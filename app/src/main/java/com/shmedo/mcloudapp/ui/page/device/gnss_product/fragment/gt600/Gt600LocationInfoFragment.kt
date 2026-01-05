@@ -1,7 +1,13 @@
 package com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600
 
+import android.content.ContentValues
 import android.content.pm.ActivityInfo
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import androidx.fragment.app.viewModels
 import com.baidu.mapapi.map.BaiduMap
 import com.baidu.mapapi.map.BitmapDescriptorFactory
@@ -10,6 +16,10 @@ import com.baidu.mapapi.map.MapStatusUpdateFactory
 import com.baidu.mapapi.map.Marker
 import com.baidu.mapapi.map.MarkerOptions
 import com.baidu.mapapi.model.LatLng
+import com.hjq.permissions.OnPermissionCallback
+import com.hjq.permissions.XXPermissions
+import com.hjq.permissions.permission.PermissionLists
+import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.data.repository.DeviceManageRepositoryImp
 import com.shmedo.mcloudapp.BR
@@ -23,6 +33,8 @@ import com.shmedo.mcloudapp.extensions.toGcj02LatLng
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.Gt600LocationInfoViewModel
 import com.shmedo.mcloudapp.utils.map.CustomLatLng
+import com.shmedo.mcloudapp.utils.permission.PermissionDescription
+import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -30,7 +42,10 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 import kotlin.math.abs
 
@@ -242,7 +257,7 @@ class Gt600LocationInfoFragment : BaseFragment() {
 
         // 3. 倾角计状态：x_ang + y_ang + z_ang 绝对值之和 == 0 为正常
         val angSum = abs(xAng) + abs(yAng) + abs(zAng)
-        val isInclinometerNormal = angSum == 0.0
+        val isInclinometerNormal = angSum > 0.0
         mStates.isInclinometerNormal.set(isInclinometerNormal)
         mStates.inclinometerStatusText.set(if (isInclinometerNormal) "正常" else "异常")
 
@@ -273,7 +288,6 @@ class Gt600LocationInfoFragment : BaseFragment() {
      */
     private fun formatTime(timeStr: String): String {
         if (timeStr.isEmpty()) return "--"
-
         return try {
             val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             val outputFormat = SimpleDateFormat("yyyy年M月d日 HH:mm:ss", Locale.getDefault())
@@ -298,7 +312,7 @@ class Gt600LocationInfoFragment : BaseFragment() {
      */
     private fun formatLocation(lat: Double, lon: Double): String {
         if (lat == 0.0 && lon == 0.0) return "--"
-        return "${lat}°,${lon}°"
+        return "${lat}°N,${lon}°E"
     }
 
     /**
@@ -379,6 +393,116 @@ class Gt600LocationInfoFragment : BaseFragment() {
         fun backToLocation() {
             lastLatLng?.let {
                 moveCameraToLocation(it)
+            }
+        }
+
+        /**
+         * 保存截图到相册
+         */
+        fun onSaveScreenshot() {
+            // 申请存储权限
+            XXPermissions.with(this@Gt600LocationInfoFragment)
+                .permission(PermissionLists.getWriteExternalStoragePermission())
+                .interceptor(PermissionInterceptor())
+                .description(PermissionDescription())
+                .request(OnPermissionCallback { _, deniedList ->
+                    if (deniedList.isEmpty()) {
+                        captureAndSaveScreenshot()
+                    }
+                })
+        }
+    }
+
+    /**
+     * 截取页面并保存到相册
+     */
+    private fun captureAndSaveScreenshot() {
+        try {
+            // 获取根视图
+            val rootView = binding.root
+            
+            // 创建 Bitmap
+            val bitmap = Bitmap.createBitmap(
+                rootView.width,
+                rootView.height,
+                Bitmap.Config.ARGB_8888
+            )
+            val canvas = Canvas(bitmap)
+            rootView.draw(canvas)
+
+            // 保存到相册
+            saveBitmapToGallery(bitmap)
+        } catch (e: Exception) {
+            Timber.e(e, "截屏失败")
+            Toaster.show("截屏失败")
+        }
+    }
+
+    /**
+     * 保存 Bitmap 到相册
+     */
+    private fun saveBitmapToGallery(bitmap: Bitmap) {
+        launchWithViewLifecycle {
+            try {
+                val savedPath = withContext(Dispatchers.IO) {
+                    val fileName = "GT600_姿态监测_${SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())}.png"
+                    
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        // Android 10 及以上使用 MediaStore
+                        val contentValues = ContentValues().apply {
+                            put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                            put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+                            put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/mCloudApp")
+                        }
+                        
+                        val uri = requireContext().contentResolver.insert(
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            contentValues
+                        )
+                        
+                        uri?.let {
+                            requireContext().contentResolver.openOutputStream(it)?.use { outputStream ->
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                            }
+                            "相册/mCloudApp/$fileName"
+                        }
+                    } else {
+                        // Android 9 及以下
+                        val picturesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                        val appDir = File(picturesDir, "mCloudApp")
+                        if (!appDir.exists()) {
+                            appDir.mkdirs()
+                        }
+                        
+                        val file = File(appDir, fileName)
+                        FileOutputStream(file).use { outputStream ->
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                        }
+                        
+                        // 通知媒体库更新
+                        val values = ContentValues().apply {
+                            put(MediaStore.Images.Media.DATA, file.absolutePath)
+                            put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+                        }
+                        requireContext().contentResolver.insert(
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            values
+                        )
+                        
+                        file.absolutePath
+                    }
+                }
+                
+                bitmap.recycle()
+                
+                if (savedPath != null) {
+                    Toaster.show("截图已保存到相册")// $savedPath
+                } else {
+                    Toaster.show("保存失败")
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "保存截图失败")
+                Toaster.show("保存失败: ${e.message}")
             }
         }
     }
