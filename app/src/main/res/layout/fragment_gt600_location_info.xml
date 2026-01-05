@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.Gt600LocationInfoViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.Gt600LocationInfoFragment.ClickProxy" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray"
+        android:orientation="horizontal">
+
+        <!-- 左侧：卫星地图 -->
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <com.baidu.mapapi.map.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <!-- 返回按钮 -->
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|start"
+                android:layout_marginStart="@dimen/dimen_size_16"
+                android:layout_marginTop="@dimen/dimen_size_16"
+                android:onClick="@{()->click.onBackPressed()}"
+                app:backgroundTint="@color/white"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_arrow_back_black"
+                app:tint="@color/black" />
+
+            <!-- 回到当前位置按钮 -->
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start"
+                android:layout_marginStart="@dimen/dimen_size_16"
+                android:layout_marginBottom="@dimen/dimen_size_16"
+                android:onClick="@{()->click.backToLocation()}"
+                app:backgroundTint="@color/white"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_map_locate"
+                app:tint="@color/black" />
+
+        </FrameLayout>
+
+        <!-- 右侧：状态信息面板 -->
+        <ScrollView
+            android:layout_width="280dp"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:fillViewport="true">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/dimen_size_16">
+
+                <!-- 标题 -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_size_16"
+                    android:text="姿态监测"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <!-- 基准站状态 -->
+                <include
+                    android:id="@+id/baseStationRow"
+                    layout="@layout/item_gt600_status_row"
+                    app:isNormal="@{stateVM.isBaseStationNormal}"
+                    app:label="@{`基准站状态`}"
+                    app:value="@{stateVM.baseStationStatusText}" />
+
+                <!-- 移动站状态 -->
+                <include
+                    android:id="@+id/roverStationRow"
+                    layout="@layout/item_gt600_status_row"
+                    app:isNormal="@{stateVM.isRoverStationNormal}"
+                    app:label="@{`移动站状态`}"
+                    app:value="@{stateVM.roverStationStatusText}" />
+
+                <!-- 倾角计状态 -->
+                <include
+                    android:id="@+id/inclinometerRow"
+                    layout="@layout/item_gt600_status_row"
+                    app:isNormal="@{stateVM.isInclinometerNormal}"
+                    app:label="@{`倾角计状态`}"
+                    app:value="@{stateVM.inclinometerStatusText}" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/dimen_size_12"
+                    android:background="@color/divider_color" />
+
+                <!-- 时间 -->
+                <include
+                    android:id="@+id/timeRow"
+                    layout="@layout/item_gt600_info_row"
+                    app:label="@{`时间`}"
+                    app:value="@{stateVM.displayTime}" />
+
+                <!-- 位置 -->
+                <include
+                    android:id="@+id/locationRow"
+                    layout="@layout/item_gt600_info_row"
+                    app:label="@{`位置`}"
+                    app:value="@{stateVM.displayLocation}" />
+
+                <!-- 方位角 -->
+                <include
+                    android:id="@+id/headingRow"
+                    layout="@layout/item_gt600_info_row"
+                    app:label="@{`方位角`}"
+                    app:value="@{stateVM.heading}" />
+
+                <!-- 仰角 -->
+                <include
+                    android:id="@+id/elevationRow"
+                    layout="@layout/item_gt600_info_row"
+                    app:label="@{`仰角`}"
+                    app:value="@{stateVM.elevation}" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </ScrollView>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>
