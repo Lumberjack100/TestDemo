@@ -280,7 +280,7 @@ fun ProductType.getSensorDataConfig(): SensorDataConfig? {
         isDR030Series() -> SensorDataConfig(
             modelNames = listOf("液位海拔", "空高距离", "安装角度", "抓拍图片"),
             modelTokens = listOf("904", "904", "206", "10001"),
-            valueDescs = listOf("高度（米）", "高度（米）", "角度（度）", "操作"),
+            valueDescs = listOf("高度(m)", "高度(m)", "角度(°)", "操作"),
             fieldPaths = listOf("liquid_surface_alt", "ullage", "z")
         )
 
@@ -296,12 +296,12 @@ fun ProductType.getSensorDataConfig(): SensorDataConfig? {
             ),
             modelTokens = listOf("904", "904", "217", "220", "233", "206", "10001"),
             valueDescs = listOf(
-                "高度（米）",
-                "高度（米）",
-                "瞬时流速（米/秒）",
-                "瞬时流量（立方米/秒）",
-                "累计流量（立方米）",
-                "角度（度）",
+                "高度(m)",
+                "高度(m)",
+                "瞬时流速(m/s)",
+                "瞬时流量(m³/s)",
+                "累计流量(m³)",
+                "角度(°)",
                 "操作"
             ),
             fieldPaths = listOf("liquid_surface_alt", "ullage", "value", "value", "totalQ", "z")
@@ -310,15 +310,15 @@ fun ProductType.getSensorDataConfig(): SensorDataConfig? {
         isM20Series() -> SensorDataConfig(
             modelNames = listOf("合位移量", "安装角度"),
             modelTokens = listOf("904", "103"),
-            valueDescs = listOf("高度（毫米）", "角度（度）"),
+            valueDescs = listOf("高度(mm)", "角度(°)"),
             fieldPaths = listOf("liquid_surface_alt", "z")
         )
 
         isM50Series() -> SensorDataConfig(
-            modelNames = listOf("合位移量", "安装角度", "抓拍图片"),
-            modelTokens = listOf("904", "103", "10001"),
-            valueDescs = listOf("高度（毫米）", "角度（度）", "操作"),
-            fieldPaths = listOf("liquid_surface_alt", "z")
+            modelNames = listOf("X位移量", "Y位移量", "Z位移量", "X轴角度", "Y轴角度", "Z轴角度"),
+            modelTokens = listOf("224", "224", "224", "103", "103", "103"),
+            valueDescs = listOf("位移(mm)", "位移(mm)", "位移(mm)", "角度(°)", "角度(°)", "角度(°)"),
+            fieldPaths = listOf("x", "y", "z", "x", "y", "z")
         )
 
         else -> null
