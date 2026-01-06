@@ -347,16 +347,14 @@ class CommonSensorDataHistoryFragment : BaseFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.modelName.set(text)
-                        if (mStates.modelName.get() == "抓拍图片") {
-                            sensorIDList.clear()
-                        } else {
-                            if (position in modelTokenList.indices) {
-                                mStates.modelTokenMap[modelTokenList[position]]?.let { sensorBasicInfo ->
-                                    sensorIDList.clear()
-                                    sensorIDList.add(sensorBasicInfo.id)
-                                }
+                        sensorIDList.clear()
+                        if (position in modelTokenList.indices) {
+                            mStates.modelTokenMap[modelTokenList[position]]?.let { sensorBasicInfo ->
+                                sensorIDList.clear()
+                                sensorIDList.add(sensorBasicInfo.id)
                             }
                         }
+
                         binding.refreshLayout.showLoading()
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
@@ -378,12 +376,19 @@ class CommonSensorDataHistoryFragment : BaseFragment() {
             mStates.modelTokenMap[modelTokenList[position]]?.let { sensorBasicInfo ->
                 sensorIDList.add(sensorBasicInfo.id)
             }
+
             binding.refreshLayout.showLoading()
         }
     }
 
     private fun refreshData() {
+        if (mStates.modelName.get() != "抓拍图片" && sensorIDList.isEmpty()) {
+            binding.refreshLayout.showEmpty()
+            return
+        }
+
         deviceRequestViewModel.queryMonitorDataListWithPage(
+            isQueryFile = mStates.modelName.get() == "抓拍图片",
             deviceToken = deviceInfo.deviceToken,
             sensorIDList = sensorIDList,
             begin = mStates.startTime.get(),

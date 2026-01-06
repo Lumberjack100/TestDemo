@@ -308,10 +308,10 @@ fun ProductType.getSensorDataConfig(): SensorDataConfig? {
         )
 
         isM20Series() -> SensorDataConfig(
-            modelNames = listOf("合位移量", "安装角度"),
-            modelTokens = listOf("904", "103"),
-            valueDescs = listOf("高度(mm)", "角度(°)"),
-            fieldPaths = listOf("liquid_surface_alt", "z")
+            modelNames = listOf("X位移量", "Y位移量", "Z位移量", "X轴角度", "Y轴角度", "Z轴角度"),
+            modelTokens = listOf("224", "224", "224", "103", "103", "103"),
+            valueDescs = listOf("位移(mm)", "位移(mm)", "位移(mm)", "角度(°)", "角度(°)", "角度(°)"),
+            fieldPaths = listOf("x", "y", "z", "x", "y", "z")
         )
 
         isM50Series() -> SensorDataConfig(
