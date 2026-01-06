@@ -118,6 +118,12 @@ class Gt600LocationInfoFragment : BaseFragment() {
     private var lastLatLng: LatLng? = null
 
     /**
+     * 上一次的方位角
+     * 用于判断方位角变化是否超过阈值，避免频繁更新图标旋转
+     */
+    private var lastHeading: Float? = null
+
+    /**
      * 地图缩放级别
      * 18 级适合查看设备具体位置和周边环境
      */
@@ -158,6 +164,13 @@ class Gt600LocationInfoFragment : BaseFragment() {
          * 注：当前此功能已注释，每次都会更新标记
          */
         private const val DISTANCE_THRESHOLD_METERS = 10.0
+
+        /**
+         * 方位角差值阈值（度）
+         * 当方位角变化超过此阈值时才更新图标旋转角度
+         * 避免频繁旋转导致图标抖动
+         */
+        private const val HEADING_THRESHOLD_DEGREES = 5.0f
 
         /**
          * 传感器类型：GT600 姿态监测传感器
@@ -723,13 +736,20 @@ class Gt600LocationInfoFragment : BaseFragment() {
      * 功能：
      * 1. 检查经纬度是否有效
      * 2. 将 WGS84 坐标转换为 GCJ02 坐标（百度地图使用的坐标系）
-     * 3. 添加地图标记，并设置图标旋转角度
-     * 4. 保存当前经纬度，用于距离计算
+     * 3. 判断方位角变化是否超过阈值（5度）
+     * 4. 如果方位角变化超过阈值或首次打点，更新图标旋转角度
+     * 5. 否则只更新图标位置，不更新旋转角度
+     * 6. 保存当前经纬度和方位角，用于下次比较
      *
      * 坐标转换说明：
      * - WGS84：GPS 原始坐标系，国际标准
      * - GCJ02：中国火星坐标系，百度地图使用的坐标系
      * - 两者存在偏移，需要转换才能正确显示位置
+     *
+     * 旋转角度优化：
+     * - 只有当方位角变化超过5度时才更新图标旋转
+     * - 避免频繁旋转导致图标抖动
+     * - 位置每次都会更新，确保图标位置准确
      *
      * 距离优化（已注释）：
      * - 计算与上一次打点的距离
@@ -745,6 +765,13 @@ class Gt600LocationInfoFragment : BaseFragment() {
         // 百度地图使用 GCJ02 坐标系，需要转换才能正确显示
         val gcjLatLng = CustomLatLng(lat, lon).toGcj02LatLng()
 
+        // 判断是否需要更新旋转角度
+        // 1. 首次打点（lastHeading 为 null）
+        // 2. 方位角变化超过阈值（绝对值差值 > 5度）
+        val headingFloat = heading.toFloat()
+        val needUpdateRotation = lastHeading == null || 
+                                  abs(headingFloat - lastHeading!!) > HEADING_THRESHOLD_DEGREES
+
         // 计算与上一次打点的距离（已注释）
         // 如果距离小于阈值，不更新打点，避免地图抖动
 //        val lastPoint = lastLatLng
@@ -756,8 +783,18 @@ class Gt600LocationInfoFragment : BaseFragment() {
 //            }
 //        }
 
-        // 添加地图标记，传入方位角用于图标旋转
-        addMarker(gcjLatLng, heading.toFloat())
+        if (needUpdateRotation) {
+            // 方位角变化超过阈值，更新图标旋转角度
+            // 删除旧标记并创建新标记，设置新的旋转角度
+            addMarker(gcjLatLng, headingFloat)
+            // 保存当前方位角，用于下次比较
+            lastHeading = headingFloat
+            Timber.d("更新图标旋转角度: $headingFloat°")
+        } else {
+            // 方位角变化未超过阈值，只更新标记位置
+            curMarker?.position = gcjLatLng
+            Timber.d("只更新标记位置，保持旋转角度: $lastHeading°")
+        }
         
         // 保存当前经纬度，用于下次距离计算
         lastLatLng = gcjLatLng

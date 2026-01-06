@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|start"
                 android:layout_marginStart="@dimen/dimen_size_16"
-                android:layout_marginTop="@dimen/dimen_size_16"
+                android:layout_marginTop="@dimen/dimen_size_40"
                 android:onClick="@{()->click.onBackPressed()}"
                 app:backgroundTint="@color/white"
                 app:fabSize="mini"
