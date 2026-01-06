@@ -8,6 +8,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import com.baidu.mapapi.map.BaiduMap
 import com.baidu.mapapi.map.BitmapDescriptorFactory
@@ -160,7 +162,7 @@ class Gt600LocationInfoFragment : BaseFragment() {
          * 距离阈值（米）
          * 当设备移动距离超过此阈值时才更新地图标记
          * 避免频繁更新导致地图抖动
-         * 
+         *
          * 注：当前此功能已注释，每次都会更新标记
          */
         private const val DISTANCE_THRESHOLD_METERS = 10.0
@@ -250,8 +252,50 @@ class Gt600LocationInfoFragment : BaseFragment() {
             restoreOrientationAndNavigateUp()
         }
 
+        // 处理系统栏 insets，避免内容被导航栏遮挡
+        setupWindowInsets()
+
         // 初始化地图
         setupMap()
+    }
+
+    /**
+     * 设置窗口 Insets，避免内容被系统栏遮挡
+     *
+     * 参考 InsetsManager 的实现思路，但针对横屏场景处理所有方向的 insets：
+     * - top: 状态栏（横屏时通常很小或没有）
+     * - right: 导航栏（横屏时最重要，通常在右侧）
+     * - bottom: 底部系统栏（横屏时通常没有）
+     * - left: 左侧系统栏（某些设备可能有）
+     */
+    private fun setupWindowInsets() {
+        // 保存初始 padding
+        val initialPadding = with(binding.root) {
+            intArrayOf(paddingLeft, paddingTop, paddingRight, paddingBottom)
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
+            // 获取系统栏的 insets
+            val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            // 为根布局设置 padding，避免内容被系统栏遮挡
+            // 横屏模式下，right insets 最重要（导航栏通常在右侧）
+            view.setPadding(
+                initialPadding[0] ,    // 左侧
+                initialPadding[1],     // 顶部（状态栏）
+                initialPadding[2] + systemBars.right,   // 右侧（导航栏）★ 重点
+                initialPadding[3]   // 底部
+            )
+
+            // 记录日志，便于调试
+            Timber.d("系统栏 Insets - left:${systemBars.left}, top:${systemBars.top}, right:${systemBars.right}, bottom:${systemBars.bottom}")
+
+            // 不消费 insets，让子视图也能接收
+            windowInsets
+        }
+
+        // 请求应用 insets
+        ViewCompat.requestApplyInsets(binding.root)
     }
 
     /**
@@ -366,42 +410,42 @@ class Gt600LocationInfoFragment : BaseFragment() {
      */
     private fun setupMap() {
         baiduMap = binding.mapView.map
-        
+
         // 设置卫星地图图层
         // 卫星地图比普通地图更直观，适合展示实际地形
         baiduMap.mapType = BaiduMap.MAP_TYPE_SATELLITE
-        
+
         // 设置缩放级别范围
         // 最大 20 级（最详细），最小 3 级（全国视图）
         baiduMap.setMaxAndMinZoomLevel(20f, 3f)
-        
+
         // 关闭指南针
         // 因为地图固定正北朝上，不需要指南针
         baiduMap.setCompassEnable(false)
-        
+
         // 获取地图UI设置
         val uiSettings = baiduMap.uiSettings
-        
+
         // 禁用旋转手势
         // 保持地图正北朝上，避免用户旋转地图导致方向混乱
         // 高射炮车图标的旋转角度以正北为基准，地图旋转会影响视觉效果
         uiSettings.isRotateGesturesEnabled = false
-        
+
         // 禁用俯视手势
         // 保持地图平面视角，更清晰地展示设备位置
         uiSettings.isOverlookingGesturesEnabled = false
-        
+
         // 隐藏缩放控件
         // 用户可以通过双指手势缩放地图
         binding.mapView.showZoomControls(false)
-        
+
         // 隐藏比例尺
         // 减少UI干扰，保持界面简洁
         binding.mapView.showScaleControl(false)
-        
+
         // 设置Logo位置为左下角
         binding.mapView.logoPosition = LogoPosition.logoPostionleftBottom
-        
+
         // 设置地图内边距为0
         baiduMap.setViewPadding(0, 0, 0, 0)
 
@@ -465,7 +509,7 @@ class Gt600LocationInfoFragment : BaseFragment() {
 
             // 将标记添加到地图上
             curMarker = baiduMap.addOverlay(markerOption) as Marker
-            
+
             // 移动相机到标记位置
             // 确保设备位置始终在视野中心
             moveCameraToLocation(latLng)
@@ -528,7 +572,7 @@ class Gt600LocationInfoFragment : BaseFragment() {
     private fun startDataRefreshTimer() {
         // 取消旧的定时任务（如果存在）
         dataRefreshJob?.cancel()
-        
+
         // 创建新的定时任务
         dataRefreshJob = launchWithViewLifecycle {
             // 循环执行，直到协程被取消
@@ -601,29 +645,29 @@ class Gt600LocationInfoFragment : BaseFragment() {
      */
     private fun updateUI(data: Map<String, String>) {
         // ==================== 1. 解析数据 ====================
-        
+
         // 定位模式：65(A)=自主模式, 68(D)=差分模式
         val mode = data["mode"]?.toIntOrNull() ?: 0
-        
+
         // X轴倾角（仰角），表示高射炮的仰角
         val xAng = data["x_ang"]?.toDoubleOrNull() ?: 0.0
-        
+
         // Y轴倾角
         val yAng = data["y_ang"]?.toDoubleOrNull() ?: 0.0
-        
+
         // Z轴倾角
         val zAng = data["z_ang"]?.toDoubleOrNull() ?: 0.0
-        
+
         // 方位角，从正北顺时针旋转的角度
         // 例如：0°=正北, 90°=正东, 180°=正南, 270°=正西
         val heading = data["heading"]?.toDoubleOrNull() ?: 0.0
-        
+
         // 纬度（WGS84 坐标系）
         val lat = data["lat"]?.toDoubleOrNull() ?: 0.0
-        
+
         // 经度（WGS84 坐标系）
         val lon = data["lon"]?.toDoubleOrNull() ?: 0.0
-        
+
         // 时间戳
         val time = data["time"] ?: ""
 
@@ -666,13 +710,13 @@ class Gt600LocationInfoFragment : BaseFragment() {
         mStates.elevation.set("${xAng}°")
 
         // ==================== 4. 更新原始经纬度 ====================
-        
+
         // 保存原始经纬度，用于后续处理（如距离计算）
         mStates.latitude.set(lat)
         mStates.longitude.set(lon)
 
         // ==================== 5. 更新地图打点 ====================
-        
+
         // 传入经纬度和方位角，更新地图上的高射炮车图标
         updateMapMarker(lat, lon, heading)
     }
@@ -690,7 +734,7 @@ class Gt600LocationInfoFragment : BaseFragment() {
      */
     private fun formatTime(timeStr: String): String {
         if (timeStr.isEmpty()) return "--"
-        
+
         return try {
             // 尝试解析时间（不带毫秒）
             val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
@@ -769,8 +813,8 @@ class Gt600LocationInfoFragment : BaseFragment() {
         // 1. 首次打点（lastHeading 为 null）
         // 2. 方位角变化超过阈值（绝对值差值 > 5度）
         val headingFloat = heading.toFloat()
-        val needUpdateRotation = lastHeading == null || 
-                                  abs(headingFloat - lastHeading!!) > HEADING_THRESHOLD_DEGREES
+        val needUpdateRotation = lastHeading == null ||
+                abs(headingFloat - lastHeading!!) > HEADING_THRESHOLD_DEGREES
 
         // 计算与上一次打点的距离（已注释）
         // 如果距离小于阈值，不更新打点，避免地图抖动
@@ -795,7 +839,7 @@ class Gt600LocationInfoFragment : BaseFragment() {
             curMarker?.position = gcjLatLng
             Timber.d("只更新标记位置，保持旋转角度: $lastHeading°")
         }
-        
+
         // 保存当前经纬度，用于下次距离计算
         lastLatLng = gcjLatLng
     }
@@ -838,7 +882,7 @@ class Gt600LocationInfoFragment : BaseFragment() {
         try {
             // 获取根视图（整个页面）
             val rootView = binding.root
-            
+
             // 创建 Bitmap，大小与根视图相同
             // ARGB_8888：每个像素4字节，支持透明度
             val bitmap = Bitmap.createBitmap(
@@ -846,10 +890,10 @@ class Gt600LocationInfoFragment : BaseFragment() {
                 rootView.height,   // 高度
                 Bitmap.Config.ARGB_8888  // 颜色格式
             )
-            
+
             // 创建画布，关联到 Bitmap
             val canvas = Canvas(bitmap)
-            
+
             // 将根视图绘制到画布上
             // 相当于对整个页面进行截图
             rootView.draw(canvas)
@@ -888,56 +932,66 @@ class Gt600LocationInfoFragment : BaseFragment() {
                 // 在 IO 线程中执行文件操作
                 val savedPath = withContext(Dispatchers.IO) {
                     // 生成文件名，包含时间戳
-                    val fileName = "GT600_姿态监测_${SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())}.png"
-                    
+                    val fileName = "GT600_姿态监测_${
+                        SimpleDateFormat(
+                            "yyyyMMdd_HHmmss",
+                            Locale.getDefault()
+                        ).format(Date())
+                    }.png"
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         // ==================== Android 10 及以上 ====================
                         // 使用 MediaStore API 保存图片
-                        
+
                         // 创建内容值对象，设置图片信息
                         val contentValues = ContentValues().apply {
                             put(MediaStore.Images.Media.DISPLAY_NAME, fileName)  // 文件名
                             put(MediaStore.Images.Media.MIME_TYPE, "image/png")  // MIME 类型
-                            put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/mCloudApp")  // 相对路径
+                            put(
+                                MediaStore.Images.Media.RELATIVE_PATH,
+                                Environment.DIRECTORY_PICTURES + "/mCloudApp"
+                            )  // 相对路径
                         }
-                        
+
                         // 将内容值插入 MediaStore，获取 URI
                         val uri = requireContext().contentResolver.insert(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                             contentValues
                         )
-                        
+
                         // 使用 URI 打开输出流，写入图片数据
                         uri?.let {
-                            requireContext().contentResolver.openOutputStream(it)?.use { outputStream ->
-                                // 将 Bitmap 压缩为 PNG 格式，写入输出流
-                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                            }
+                            requireContext().contentResolver.openOutputStream(it)
+                                ?.use { outputStream ->
+                                    // 将 Bitmap 压缩为 PNG 格式，写入输出流
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                                }
                             // 返回保存路径（用于显示提示）
                             "相册/mCloudApp/$fileName"
                         }
                     } else {
                         // ==================== Android 9 及以下 ====================
                         // 直接写入文件系统
-                        
+
                         // 获取相册目录
-                        val picturesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                        
+                        val picturesDir =
+                            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+
                         // 创建应用专属目录
                         val appDir = File(picturesDir, "mCloudApp")
                         if (!appDir.exists()) {
                             appDir.mkdirs()  // 创建目录
                         }
-                        
+
                         // 创建文件
                         val file = File(appDir, fileName)
-                        
+
                         // 打开文件输出流，写入图片数据
                         FileOutputStream(file).use { outputStream ->
                             // 将 Bitmap 压缩为 PNG 格式，写入输出流
                             bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
                         }
-                        
+
                         // 通知媒体库更新
                         // 让系统相册能够显示新保存的图片
                         val values = ContentValues().apply {
@@ -948,15 +1002,15 @@ class Gt600LocationInfoFragment : BaseFragment() {
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                             values
                         )
-                        
+
                         // 返回文件绝对路径
                         file.absolutePath
                     }
                 }
-                
+
                 // 回收 Bitmap，释放内存
                 bitmap.recycle()
-                
+
                 // 显示保存结果
                 if (savedPath != null) {
                     Toaster.show("截图已保存到相册")
