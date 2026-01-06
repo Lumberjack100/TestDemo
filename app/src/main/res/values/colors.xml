@@ -108,5 +108,9 @@
     <color name="error_FF4400">#FF4400</color>
     <color name="error_FF4400_4">#0AFF4400</color>
 
+    <!-- GT600 姿态监测状态颜色 -->
+    <color name="status_normal_green">#4CAF50</color>
+    <color name="status_error_red">#F44336</color>
+    <color name="divider_color">#E0E0E0</color>
 
 </resources>

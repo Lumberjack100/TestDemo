@@ -46,28 +46,32 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
                         name = "基本信息",
                         resID = R.drawable.ic_module_basic_info,
                         iconSize = ConvertUtils.dp2px(34f),
-                        navId = R.id.action_global_to_defaultBaseInfoFragment
+                        navId = R.id.action_global_to_defaultBaseInfoFragment,
+                        isSupport = false
                     ).toUnified(),
 
                     CommonModule(
                         name = "网络信息",
                         resID = R.drawable.ic_module_net_info,
                         iconSize = ConvertUtils.dp2px(34f),
-                        navId = R.id.action_global_to_defaultNetInfoFragment
+                        navId = R.id.action_global_to_defaultNetInfoFragment,
+                        isSupport = false
                     ).toUnified(),
 
                     CommonModule(
                         name = "状态信息",
                         resID = R.drawable.ic_module_state_info,
                         iconSize = ConvertUtils.dp2px(34f),
-                        navId = R.id.action_global_to_defaultStatusInfoFragment
+                        navId = R.id.action_global_to_defaultStatusInfoFragment,
+                        isSupport = false
                     ).toUnified(),
 
                     CommonModule(
-                        name = "位置信息",
+                        name = "姿态监测",
                         resID = R.drawable.ic_module_location_info,
                         iconSize = ConvertUtils.dp2px(34f),
-                        navId = R.id.action_global_to_commonLocationInfoFragment
+                        navId = R.id.action_global_to_gt600LocationInfoFragment,
+                        isSupport = true
                     ).toUnified()
                 )
             )
@@ -81,7 +85,8 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
                     CommonModule(
                         name = "一键配置",
                         resID = R.drawable.ic_module_cmd_debug_new,
-                        navId = R.id.action_global_to_quickConfigCommandParam
+                        navId = R.id.action_global_to_quickConfigCommandParam,
+                        isSupport = false
                     ).toUnified(),
                 )
             )
@@ -94,27 +99,31 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
             DataCenterModule(
                 name = "链路配置",
                 resID = R.drawable.ic_module_datacenter_new,
-                navId = R.id.action_global_to_dataCenterHomeFragment
+                navId = R.id.action_global_to_dataCenterHomeFragment,
+                isSupport = false
             ).toUnified()
         )
         configModuleTree.configModules.add(
             TimeCalibrationModule(
                 name = "时间校准",
                 resID = R.drawable.ic_module_time_calibration_new,
-                navId = R.id.action_global_to_time_calibration
+                navId = R.id.action_global_to_time_calibration,
+                isSupport = false
             ).toUnified()
         )
         configModuleTree.configModules.add(
             AdvancedSettingsModule(
                 name = "系统配置",
                 resID = R.drawable.ic_module_system_setting,
-                navId = R.id.action_global_to_advancedSettingFragment
+                navId = R.id.action_global_to_advancedSettingFragment,
+                isSupport = false
             ).toUnified()
         )
         if (communicateWay is TcpConnect) {
             configModuleTree.configModules.add(
                 CommandDebugConfigModule(
                     resID = R.drawable.ic_module_cmd_debug_new,
+                    isSupport = false
                 ).toUnified()
             )
         }
@@ -136,6 +145,18 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
                         bleDevice
                     )
                 )
+            }
+
+            is CommonModule -> {
+                if (configModule.navId == R.id.action_global_to_gt600LocationInfoFragment) {
+                    // 姿态监测页面需要传递 deviceToken
+                    nav().safeNavigate(
+                        configModule.navId,
+                        Gt600LocationInfoFragment.newBundleArguments(deviceInfo.deviceToken)
+                    )
+                } else {
+                    super.processOtherItemClick(configModule)
+                }
             }
 
             else -> {
