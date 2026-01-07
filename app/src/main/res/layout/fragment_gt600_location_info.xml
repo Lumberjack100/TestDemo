@@ -44,6 +44,16 @@
                 app:srcCompat="@drawable/ic_arrow_back_black"
                 app:tint="@color/black" />
 
+            <!-- 指北针 -->
+            <ImageView
+                android:id="@+id/ivCompass"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="@dimen/dimen_size_16"
+                android:layout_marginEnd="@dimen/dimen_size_16"
+                android:src="@drawable/ic_compass" />
+
             <!-- 回到当前位置按钮 -->
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
