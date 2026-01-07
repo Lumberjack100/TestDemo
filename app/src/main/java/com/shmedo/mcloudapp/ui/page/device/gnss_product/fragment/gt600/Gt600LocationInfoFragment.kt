@@ -281,7 +281,7 @@ class Gt600LocationInfoFragment : BaseFragment() {
             // 为根布局设置 padding，避免内容被系统栏遮挡
             // 横屏模式下，right insets 最重要（导航栏通常在右侧）
             view.setPadding(
-                initialPadding[0] ,    // 左侧
+                initialPadding[0],    // 左侧
                 initialPadding[1],     // 顶部（状态栏）
                 initialPadding[2] + systemBars.right,   // 右侧（导航栏）★ 重点
                 initialPadding[3]   // 底部
@@ -870,39 +870,142 @@ class Gt600LocationInfoFragment : BaseFragment() {
      * 截取页面并保存到相册
      *
      * 功能：
-     * 1. 获取根视图（整个页面）
-     * 2. 将视图绘制到 Bitmap 上
-     * 3. 调用 saveBitmapToGallery 保存到相册
+     * 1. 使用百度地图的 snapshot() API 获取地图截图
+     * 2. 获取根视图截图（地图区域为空白）
+     * 3. 将地图截图合并到正确位置
+     * 4. 调用 saveBitmapToGallery 保存到相册
      *
      * 说明：
-     * - 使用 Canvas 将视图绘制为图片
-     * - 如果截屏失败，显示错误提示
+     * - 百度地图使用 OpenGL/SurfaceView 渲染，普通的 View.draw() 无法捕获
+     * - 需要使用百度地图专用的 snapshot() 方法获取地图内容
+     * - 然后将地图截图和其他视图截图合并
      */
     private fun captureAndSaveScreenshot() {
         try {
-            // 获取根视图（整个页面）
-            val rootView = binding.root
+            // 使用百度地图的 snapshot API 获取地图截图
+            baiduMap.snapshot { mapBitmap ->
+                if (mapBitmap == null) {
+                    Timber.e("获取地图截图失败：mapBitmap 为 null")
+                    Toaster.show("截屏失败：无法获取地图内容")
+                    return@snapshot
+                }
 
-            // 创建 Bitmap，大小与根视图相同
-            // ARGB_8888：每个像素4字节，支持透明度
-            val bitmap = Bitmap.createBitmap(
-                rootView.width,    // 宽度
-                rootView.height,   // 高度
-                Bitmap.Config.ARGB_8888  // 颜色格式
-            )
+                try {
+                    // 获取根视图和地图视图
+                    val rootView = binding.root
+                    val mapView = binding.mapView
 
-            // 创建画布，关联到 Bitmap
-            val canvas = Canvas(bitmap)
+                    // 计算地图视图相对于根视图的位置
+                    val mapLocation = IntArray(2)
+                    val rootLocation = IntArray(2)
+                    mapView.getLocationOnScreen(mapLocation)
+                    rootView.getLocationOnScreen(rootLocation)
+                    val mapLeft = (mapLocation[0] - rootLocation[0]).toFloat()
+                    val mapTop = (mapLocation[1] - rootLocation[1]).toFloat()
 
-            // 将根视图绘制到画布上
-            // 相当于对整个页面进行截图
-            rootView.draw(canvas)
+                    // 创建 Bitmap，大小与根视图相同
+                    // ARGB_8888：每个像素4字节，支持透明度
+                    val finalBitmap = Bitmap.createBitmap(
+                        rootView.width,
+                        rootView.height,
+                        Bitmap.Config.ARGB_8888
+                    )
+                    // 创建画布，关联到 Bitmap
+                    val canvas = Canvas(finalBitmap)
 
-            // 保存到相册
-            saveBitmapToGallery(bitmap)
+                    // 1. 先绘制整个根视图（地图区域会是空白的）
+                    rootView.draw(canvas)
+
+                    // 2. 将地图截图绘制到地图区域
+                    // 如果地图截图尺寸与 MapView 不一致，需要缩放
+                    val scaledMapBitmap =
+                        if (mapBitmap.width != mapView.width || mapBitmap.height != mapView.height) {
+                            Bitmap.createScaledBitmap(
+                                mapBitmap,
+                                mapView.width,
+                                mapView.height,
+                                true
+                            )
+                        } else {
+                            mapBitmap
+                        }
+
+                    // 绘制地图截图到对应位置
+                    canvas.drawBitmap(scaledMapBitmap, mapLeft, mapTop, null)
+
+                    // 3. 重新绘制地图区域上方的 FAB 按钮
+                    // 由于 FAB 在地图上方，需要在地图截图之后重新绘制
+                    redrawMapOverlays(canvas, rootView, rootLocation)
+
+                    // 保存到相册
+                    saveBitmapToGallery(finalBitmap)
+
+                    // 回收临时 Bitmap
+                    if (scaledMapBitmap != mapBitmap) {
+                        scaledMapBitmap.recycle()
+                    }
+                    mapBitmap.recycle()
+                } catch (e: Exception) {
+                    Timber.e(e, "合成截图失败")
+                    Toaster.show("截屏失败")
+                    mapBitmap.recycle()
+                }
+            }
         } catch (e: Exception) {
             Timber.e(e, "截屏失败")
             Toaster.show("截屏失败")
+        }
+    }
+
+    /**
+     * 重新绘制地图区域上方的覆盖物（FAB按钮等）
+     *
+     * @param canvas 目标画布
+     * @param rootView 根视图
+     * @param rootLocation 根视图在屏幕上的位置
+     *
+     * 说明：
+     * - 由于地图截图会覆盖整个地图区域，需要在地图截图之后
+     * - 重新绘制地图区域上方的 FAB 按钮
+     * - 通过获取每个 FAB 的屏幕位置，计算相对于根视图的偏移量
+     * - 然后在正确的位置绘制 FAB
+     */
+    private fun redrawMapOverlays(
+        canvas: Canvas,
+        rootView: android.view.View,
+        rootLocation: IntArray
+    ) {
+        // 获取地图区域的 FrameLayout（包含 MapView 和 FAB）
+        val mapContainer =
+            (rootView as? android.view.ViewGroup)?.getChildAt(0) as? android.view.ViewGroup
+                ?: return
+
+        // 遍历地图容器中的子视图，跳过 MapView，绘制其他视图（FAB等）
+        for (i in 0 until mapContainer.childCount) {
+            val child = mapContainer.getChildAt(i)
+
+            // 跳过 MapView
+            if (child is com.baidu.mapapi.map.MapView) continue
+
+            // 获取子视图在屏幕上的位置
+            val childLocation = IntArray(2)
+            child.getLocationOnScreen(childLocation)
+
+            // 计算相对于根视图的位置
+            val childLeft = (childLocation[0] - rootLocation[0]).toFloat()
+            val childTop = (childLocation[1] - rootLocation[1]).toFloat()
+
+            // 保存画布状态
+            canvas.save()
+
+            // 平移画布到子视图的位置
+            canvas.translate(childLeft, childTop)
+
+            // 绘制子视图
+            child.draw(canvas)
+
+            // 恢复画布状态
+            canvas.restore()
         }
     }
 
