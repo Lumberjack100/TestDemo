@@ -97,7 +97,7 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
                         name = "状态信息",
                         resID = R.drawable.ic_module_state_info,
                         iconSize = ConvertUtils.dp2px(34f),
-                        navId = R.id.action_global_to_defaultStatusInfoFragment,
+                        navId = R.id.action_global_to_gt600StatusInfoFragment,
                     ).toUnified(),
 
                     CommonModule(
