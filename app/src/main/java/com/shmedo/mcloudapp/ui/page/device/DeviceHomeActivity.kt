@@ -172,7 +172,7 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
-            ProductType.GNSS_T_1 -> {
+            ProductType.GNSS_T_1, ProductType.GNSS_T_2 -> {
                 navController.setGraph(
                     R.navigation.gt600_graph,
                     bundle2

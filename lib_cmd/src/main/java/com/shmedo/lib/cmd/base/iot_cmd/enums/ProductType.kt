@@ -153,7 +153,15 @@ enum class ProductType(
         oldSuffix = "",
         newSuffix = "GT1",
         productName = "测地型GNSS接收机",
-        productToken = "GT600",
+        productToken = "GT600(单北斗)",
+        description = "对应当前GT600"
+    ),
+    GNSS_T_2(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "GT2",
+        productName = "测地型GNSS接收机",
+        productToken = "GT600(全星频)",
         description = "对应当前GT600"
     ),
 

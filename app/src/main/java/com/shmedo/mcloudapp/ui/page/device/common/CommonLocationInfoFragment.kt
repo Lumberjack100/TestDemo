@@ -432,6 +432,7 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
 
     /**
      * 处理通用设备状态信息
+     * 优化逻辑：智能识别经纬度，兼容 "经度,纬度" 和 "纬度,经度" 两种格式，以及包含字符的情况
      */
     private fun initCommonStatusInfo(content: String) {
         launchWithViewLifecycle {
@@ -440,25 +441,61 @@ class CommonLocationInfoFragment : OptimizedBaseIOTDeviceFragment() {
                     MoshiUtil.fromJson<Map<String, Any>>(content) ?: return@launchWithViewLifecycle
 
                 if (resultMap.containsKey("location")) {
-                    resultMap["location"].toString().split(",".toRegex())
-                        .dropLastWhile { it.isEmpty() }.let {
-                            if (it.size >= 2) {
-                                mStates.longitude.set("E ${it[0].replace("E", "")}°")
-                                mStates.latitude.set("N ${it[1].replace("N", "")}°")
+                    val locationStr = resultMap["location"].toString()
+                    // 分割字符串，去除空值
+                    val parts = locationStr.split(",".toRegex()).dropLastWhile { it.isEmpty() }
 
-                                var longitude =
-                                    it[0].replace("E", "").toDoubleOrNull() ?: 121.59840681
-                                var latitude =
-                                    it[1].replace("N", "").toDoubleOrNull() ?: 31.21032874
-                                if (longitude < 1) longitude = 121.59840681
-                                if (latitude < 1) latitude = 31.21032874
+                    if (parts.size >= 2) {
+                        // 1. 预处理：去除可能存在的 E/N/W/S 等非数字字符（保留小数点和负号），并尝试解析为 Double
+                        val val1 = parts[0].replace(Regex("[^\\d.-]"), "").toDoubleOrNull() ?: 0.0
+                        val val2 = parts[1].replace(Regex("[^\\d.-]"), "").toDoubleOrNull() ?: 0.0
 
-                                gcjLatLng =
-                                    CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
-                                        addMarker(this)
-                                    }
+                        var longitude: Double
+                        var latitude: Double
+
+                        // 2. 智能识别经纬度
+                        // 纬度范围 [-90, 90]，经度范围 [-180, 180]
+                        // 策略：
+                        // a. 如果某个值绝对值 > 90，则它必定是经度
+                        // b. 如果两个值都在 90 以内，根据通常习惯（国内经度 > 纬度）或默认顺序(经度,纬度)判断
+                        if (kotlin.math.abs(val1) > 90) {
+                            // val1 > 90 -> val1 是经度
+                            longitude = val1
+                            latitude = val2
+                        } else if (kotlin.math.abs(val2) > 90) {
+                            // val2 > 90 -> val2 是经度
+                            longitude = val2
+                            latitude = val1
+                        } else {
+                            // 都在 90 以内时的模糊判断
+                            // 假设较大的是经度（适用于中国大部分地区，经度 ~73-135，纬度 ~3-53）
+                            if (kotlin.math.abs(val1) > kotlin.math.abs(val2)) {
+                                longitude = val1
+                                latitude = val2
+                            } else {
+                                // 默认 fallback：视第一个为经度 (Lon, Lat)
+                                longitude = val1
+                                latitude = val2
                             }
                         }
+
+                        // 3. UI显示格式化
+                        val lonPrefix = if (longitude >= 0) "E" else "W"
+                        val latPrefix = if (latitude >= 0) "N" else "S"
+
+                        mStates.longitude.set("$lonPrefix ${kotlin.math.abs(longitude)}°")
+                        mStates.latitude.set("$latPrefix ${kotlin.math.abs(latitude)}°")
+
+                        // 4. 有效性检查与默认值回退
+                        // 只有当坐标有效（> 1.0）时才使用，否则使用默认坐标（上海）
+                        if (kotlin.math.abs(longitude) < 1.0) longitude = 121.59840681
+                        if (kotlin.math.abs(latitude) < 1.0) latitude = 31.21032874
+
+                        // 5. 坐标转换并显示
+                        gcjLatLng = CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
+                            addMarker(this)
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 Timber.e(e)

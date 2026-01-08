@@ -44,7 +44,7 @@ fun ProductType.isE50Pro(): Boolean {
  * 判断是否为 GT 系列产品（抗干扰）
  */
 fun ProductType.isGTSeries(): Boolean {
-    return this == ProductType.GNSS_T_1
+    return this == ProductType.GNSS_T_1 || this == ProductType.GNSS_T_2
 }
 
 /**
@@ -319,6 +319,13 @@ fun ProductType.getSensorDataConfig(): SensorDataConfig? {
             modelTokens = listOf("224", "224", "224", "103", "103", "103"),
             valueDescs = listOf("位移(mm)", "位移(mm)", "位移(mm)", "角度(°)", "角度(°)", "角度(°)"),
             fieldPaths = listOf("x", "y", "z", "x", "y", "z")
+        )
+
+        isGTSeries() -> SensorDataConfig(
+            modelNames = listOf("X轴角度", "Y轴角度", "Z轴角度"),
+            modelTokens = listOf("206", "206", "206"),
+            valueDescs = listOf("角度(°)", "角度(°)", "角度(°)"),
+            fieldPaths = listOf( "x", "y", "z")
         )
 
         else -> null
