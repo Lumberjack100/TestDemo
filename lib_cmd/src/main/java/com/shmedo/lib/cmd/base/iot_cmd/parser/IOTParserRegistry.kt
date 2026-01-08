@@ -58,6 +58,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.das.DasSolarStatusInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.DasTemperatureAndHumidityStatusInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.McuAddressInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.gnss_m.GNSSRawDataParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.gnss_m.GT600ExStatusParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.gnss_m.ModuleParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.hac.AdmeHacExecutiveAgencyInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.hac.HacMeasuringDataInfoParser
@@ -213,5 +214,6 @@ object IOTParserRegistry {
         ULInitialParamParser(),
         GNSSRawDataParser(),
         ModuleParamParser(),
+        GT600ExStatusParser(),
     )
 }

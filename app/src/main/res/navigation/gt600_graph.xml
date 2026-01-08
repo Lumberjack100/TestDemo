@@ -32,6 +32,11 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.GT600BaseInfoFragment"
         android:label="GT600BaseInfoFragment" />
 
+    <!-- GT600 网络信息页面 -->
+    <fragment
+        android:id="@+id/gt600NetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.GT600NetInfoFragment"
+        android:label="GT600NetInfoFragment" />
 
     <!-- GT600 姿态监测页面 -->
     <fragment
@@ -96,13 +101,15 @@
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
+    <!-- GT600 网络信息页面导航 -->
     <action
-        android:id="@+id/action_global_to_defaultNetInfoFragment"
-        app:destination="@id/defaultNetInfoFragment"
+        android:id="@+id/action_global_to_gt600NetInfoFragment"
+        app:destination="@id/gt600NetInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
+
 
     <action
         android:id="@+id/action_global_to_defaultStatusInfoFragment"

@@ -359,6 +359,11 @@ enum class IOTCommandType(val value: String) {
     MD_SET_ELEVATION_ANGLE("md_setmoduleparam"),
     // </editor-fold>
 
+    // <editor-fold desc="GT600 指令">
+    /** 获取设备状态 */
+    GT600_GET_EXSTATUS("md_getExstatus"),
+    // </editor-fold>
+
     // <editor-fold desc="E40 指令">
     /** 获取E40 的 CORS 服务参数 */
     E40_MD_GET_CORS("md_getntrip"),
@@ -586,6 +591,7 @@ enum class IOTCommandType(val value: String) {
 
     /** 获取裂缝初始值 */
     LF_MD_GET_INITIAL_VALUE("md_getlfinitial"),
+
     /** 手动设置裂缝初始值 */
     LF_MD_MANUAL_SET_INITIAL_VALUE("md_setlfinitial"),
 

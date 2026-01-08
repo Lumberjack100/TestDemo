@@ -91,7 +91,7 @@ class GT600BaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 // 2. 存储信息组
                 groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                 groupList.add(DeviceStatusInfoGroupItem("存储信息"))
-                
+
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "可用空间",

@@ -90,7 +90,7 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
                         name = "网络信息",
                         resID = R.drawable.ic_module_net_info,
                         iconSize = ConvertUtils.dp2px(34f),
-                        navId = R.id.action_global_to_defaultNetInfoFragment,
+                        navId = R.id.action_global_to_gt600NetInfoFragment,
                     ).toUnified(),
 
                     CommonModule(
