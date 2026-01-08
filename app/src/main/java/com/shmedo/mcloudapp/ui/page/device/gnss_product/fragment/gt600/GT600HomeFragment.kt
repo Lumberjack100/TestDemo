@@ -153,7 +153,7 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
             CommonModule(
                 name = "GNSS配置",
                 resID = R.drawable.ic_module_cors,
-                navId = R.id.action_global_to_m50GNSSConfigFragment,
+                navId = R.id.action_global_to_gt600GNSSConfigFragment,
             ).toUnified()
         )
         configModuleTree.configModules.add(

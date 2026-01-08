@@ -362,6 +362,17 @@ enum class IOTCommandType(val value: String) {
     // <editor-fold desc="GT600 指令">
     /** 获取设备状态 */
     GT600_GET_EXSTATUS("md_getExstatus"),
+
+    /** 获取/设置ENMEA输出内容及输出频率 */
+    MD_GET_NMEA_TIME("md_getnmeatime"),
+    MD_SET_NMEA_TIME("md_setnmeatime"),
+
+    /** 获取/设置 GNSS 控制参数（RTCM参数） */
+    MD_GET_GNSS_CTL("md_getgnssctl"),
+    MD_SET_GNSS_CTL("md_setgnssctl"),
+
+    /** 配置双天线参数（VTG输出） */
+    MD_CFG_NMEA_VTG_OUT("md_cfgnmeavtgout"),
     // </editor-fold>
 
     // <editor-fold desc="E40 指令">
@@ -401,11 +412,7 @@ enum class IOTCommandType(val value: String) {
     /** 设置E40 的基站位置信息 */
     E40_MD_SET_BASE_POSITION("md_setbaseposition"),
 
-    /** 获取E40 NMEA输出内容及输出频率 */
-    E40_MD_GET_NMEA_TIME("md_getnmeatime"),
 
-    /** 设置E40 NMEA输出内容及输出频率 */
-    E40_MD_SET_NMEA_TIME("md_setnmeatime"),
     // </editor-fold>
 
     // <editor-fold desc="MR702 水利终端机通用指令">
