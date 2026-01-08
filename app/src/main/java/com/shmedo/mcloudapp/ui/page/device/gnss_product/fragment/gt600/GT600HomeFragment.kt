@@ -83,8 +83,7 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
                         name = "基本信息",
                         resID = R.drawable.ic_module_basic_info,
                         iconSize = ConvertUtils.dp2px(34f),
-                        navId = R.id.action_global_to_defaultBaseInfoFragment,
-                        isSupport = false
+                        navId = R.id.action_global_to_gt600BaseInfoFragment,
                     ).toUnified(),
 
                     CommonModule(
@@ -92,7 +91,6 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
                         resID = R.drawable.ic_module_net_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_defaultNetInfoFragment,
-                        isSupport = false
                     ).toUnified(),
 
                     CommonModule(
@@ -100,7 +98,6 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
                         resID = R.drawable.ic_module_state_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_defaultStatusInfoFragment,
-                        isSupport = false
                     ).toUnified(),
 
                     CommonModule(
@@ -108,7 +105,6 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
                         resID = R.drawable.ic_module_satellite_info,
                         iconSize = ConvertUtils.dp2px(34f),
                         navId = R.id.action_global_to_gt600LocationInfoFragment,
-                        isSupport = true
                     ).toUnified()
                 )
             )
@@ -123,7 +119,6 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
                         name = "一键配置",
                         resID = R.drawable.ic_module_cmd_debug_new,
                         navId = R.id.action_global_to_quickConfigCommandParam,
-                        isSupport = false
                     ).toUnified(),
                 )
             )

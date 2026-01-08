@@ -1,5 +1,6 @@
 package com.shmedo.lib.cmd.base.iot_cmd.model.common
 
+import com.shmedo.lib.cmd.base.iot_cmd.model.AttachDataItemBean
 import com.shmedo.lib.cmd.base.iot_cmd.model.SensorErrnoBean
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.squareup.moshi.Json
@@ -54,7 +55,8 @@ data class CommonCurrentStateInfo(
     var hw_version: String = IOTConstants.NULL_KEY, //硬件版本
     var sw_version: String = IOTConstants.NULL_KEY, //固件版本
     var location: String = IOTConstants.NULL_KEY, //设备位置-经纬度，经度在前,纬度在后。E表示东经，W表示西经，N表示北纬，S表示南纬。
-    var sensor_errno: List<SensorErrnoBean>? = arrayListOf(), //传感器异常信息,
+    var sensor_errno: List<SensorErrnoBean>? = arrayListOf(), //传感器异常信息
+    var attach_data: List<AttachDataItemBean>? = arrayListOf(),//附加信息
     var solar_volt: String = IOTConstants.NULL_KEY, //太阳能板电压,单位V
     var battery_volt: String = IOTConstants.NULL_KEY, //蓄电池电压，单位V
     var supply_power: String = IOTConstants.NULL_KEY, //近12小时补充功率，单位千瓦时

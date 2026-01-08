@@ -28,22 +28,10 @@
         tools:layout="@layout/fragment_common_sensor_data_history" />
 
     <fragment
-        android:id="@+id/defaultBaseInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.default_product.fragment.DefaultBaseInfoFragment"
-        android:label="DefaultBaseInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style" />
+        android:id="@+id/gt600BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.GT600BaseInfoFragment"
+        android:label="GT600BaseInfoFragment" />
 
-    <fragment
-        android:id="@+id/defaultNetInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.default_product.fragment.DefaultNetInfoFragment"
-        android:label="DefaultNetInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style" />
-
-    <fragment
-        android:id="@+id/defaultStatusInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.default_product.fragment.DefaultStatusInfoFragment"
-        android:label="DefaultStatusInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <!-- GT600 姿态监测页面 -->
     <fragment
@@ -51,6 +39,8 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.Gt600LocationInfoFragment"
         android:label="Gt600LocationInfoFragment"
         tools:layout="@layout/fragment_gt600_location_info" />
+
+
 
     <fragment
         android:id="@+id/m20SWorkModelParamFragment"
@@ -99,8 +89,8 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_defaultBaseInfoFragment"
-        app:destination="@id/defaultBaseInfoFragment"
+        android:id="@+id/action_global_to_gt600BaseInfoFragment"
+        app:destination="@id/gt600BaseInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -129,6 +119,8 @@
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
+
+
 
     <action
         android:id="@+id/action_global_to_m20SWorkModelParamFragment"
