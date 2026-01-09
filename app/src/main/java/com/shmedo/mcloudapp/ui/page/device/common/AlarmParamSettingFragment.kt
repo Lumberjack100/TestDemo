@@ -32,6 +32,7 @@ import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentAlarmParamSettingBinding
 import com.shmedo.mcloudapp.extensions.formatDoubleValue
+import com.shmedo.mcloudapp.extensions.isM20Series
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showMessageDialog
@@ -107,8 +108,7 @@ class AlarmParamSettingFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun initTitles() {
         when (productType) {
-            ProductType.GNSS_M_1, // M20S
-            ProductType.GNSS_M_2,
+            in ProductType.entries.filter { it.isM20Series() },// M20S
             ProductType.U_R_1 // 一体式雨量计
                 -> {
                 mStates.firstAlarmThresholdTitle.set("一级报警阈值（毫米）")
@@ -253,7 +253,7 @@ class AlarmParamSettingFragment : OptimizedBaseIOTDeviceFragment() {
         commands.add(command)
 
         // 设置报警阈值（根据产品类型使用不同字段）
-        val triggerValueEntity = if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) {
+        val triggerValueEntity = if (productType in ProductType.entries.filter { it.isM20Series() }) {
             AlarmTriggerValueEntity(
                 devlevel1 = mStates.firstAlarmThreshold.get(),
                 devlevel2 = mStates.secondAlarmThreshold.get(),
@@ -519,7 +519,7 @@ class AlarmParamSettingFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun initAlarmTriggerValueData(info: AlarmTriggerValueInfo) {
         try {
-            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) {
+            if (productType in ProductType.entries.filter { it.isM20Series() }) {
                 mStates.firstAlarmThreshold.set(info.devlevel1.formatDoubleValue("", 3))
                 mStates.secondAlarmThreshold.set(info.devlevel2.formatDoubleValue("", 3))
                 mStates.thirdAlarmThreshold.set(info.devlevel3.formatDoubleValue("", 3))

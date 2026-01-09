@@ -114,6 +114,38 @@ enum class ProductType(
         productToken = "M20(全星频)",
         description = "全星频，对应UM960D版本"
     ),
+    GNSS_HM_1(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "HM1",
+        productName = "普适型GNSS接收机",
+        productToken = "HM220(单北斗)",
+        description = "单北斗"
+    ),
+    GNSS_HM_2(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "HM2",
+        productName = "普适型GNSS接收机",
+        productToken = "HM220(全星频)",
+        description = "全星频"
+    ),
+    GNSS_HM_5(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "HM5",
+        productName = "一体式GNSS监测站",
+        productToken = "HM550(单北斗)",
+        description = "单北斗"
+    ),
+    GNSS_HM_6(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "HM6",
+        productName = "一体式GNSS监测站",
+        productToken = "HM550(全星频)",
+        description = "全星频"
+    ),
     GNSS_M_5(
         prefix = "",
         oldSuffix = "",

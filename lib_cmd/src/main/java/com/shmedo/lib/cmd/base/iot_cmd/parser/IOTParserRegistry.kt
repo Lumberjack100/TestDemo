@@ -71,6 +71,8 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.gt600.DualAntennaDataParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.gt600.GNSSCtlDataParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.gt600.NMEATimeDataParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.gt600.SerialPortDataParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.gt600.Net4GUseDataParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.gt600.EthernetConfigDataParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.gnss_m.M20BaseInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.gnss_m.M50CorsParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.gnss_m.M50RadioParamParser
@@ -225,5 +227,8 @@ object IOTParserRegistry {
         NMEATimeDataParser(),
         // GT600 串口配置解析器
         SerialPortDataParser(),
+        // GT600 网络配置解析器
+        Net4GUseDataParser(),
+        EthernetConfigDataParser(),
     )
 }

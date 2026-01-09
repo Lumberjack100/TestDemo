@@ -139,7 +139,7 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
             CommonModule(
                 name = "网络配置",
                 resID = R.drawable.ic_module_network_setting,
-                navId = R.id.action_global_to_m50NetworkConfigFragment
+                navId = R.id.action_global_to_gt600NetworkConfigFragment
             ).toUnified()
         )
         configModuleTree.configModules.add(

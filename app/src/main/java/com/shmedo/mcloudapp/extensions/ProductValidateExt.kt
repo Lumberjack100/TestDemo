@@ -15,7 +15,9 @@ import com.shmedo.mcloudapp.R
  * 判断是否为 M20 系列产品（包含 M20、GNSS_M_1、GNSS_M_2）
  */
 fun ProductType.isM20Series(): Boolean {
-    return this == ProductType.M20 || this == ProductType.GNSS_M_1 || this == ProductType.GNSS_M_2
+    return this == ProductType.M20 || this == ProductType.GNSS_M_1 ||
+            this == ProductType.GNSS_M_2 || this == ProductType.GNSS_HM_1 ||
+            this == ProductType.GNSS_HM_2
 }
 
 /**
@@ -23,7 +25,8 @@ fun ProductType.isM20Series(): Boolean {
  */
 fun ProductType.isM50Series(): Boolean {
     return this == ProductType.GNSS_M_5 || this == ProductType.GNSS_M_6 ||
-            this == ProductType.GNSS_M_7 || this == ProductType.GNSS_M_8
+            this == ProductType.GNSS_M_7 || this == ProductType.GNSS_M_8 ||
+            this == ProductType.GNSS_HM_5 || this == ProductType.GNSS_HM_6
 }
 
 /**
@@ -310,14 +313,28 @@ fun ProductType.getSensorDataConfig(): SensorDataConfig? {
         isM20Series() -> SensorDataConfig(
             modelNames = listOf("X位移量", "Y位移量", "Z位移量", "X轴角度", "Y轴角度", "Z轴角度"),
             modelTokens = listOf("224", "224", "224", "103", "103", "103"),
-            valueDescs = listOf("位移(mm)", "位移(mm)", "位移(mm)", "角度(°)", "角度(°)", "角度(°)"),
+            valueDescs = listOf(
+                "位移(mm)",
+                "位移(mm)",
+                "位移(mm)",
+                "角度(°)",
+                "角度(°)",
+                "角度(°)"
+            ),
             fieldPaths = listOf("x", "y", "z", "x", "y", "z")
         )
 
         isM50Series() -> SensorDataConfig(
             modelNames = listOf("X位移量", "Y位移量", "Z位移量", "X轴角度", "Y轴角度", "Z轴角度"),
             modelTokens = listOf("224", "224", "224", "103", "103", "103"),
-            valueDescs = listOf("位移(mm)", "位移(mm)", "位移(mm)", "角度(°)", "角度(°)", "角度(°)"),
+            valueDescs = listOf(
+                "位移(mm)",
+                "位移(mm)",
+                "位移(mm)",
+                "角度(°)",
+                "角度(°)",
+                "角度(°)"
+            ),
             fieldPaths = listOf("x", "y", "z", "x", "y", "z")
         )
 
@@ -325,7 +342,7 @@ fun ProductType.getSensorDataConfig(): SensorDataConfig? {
             modelNames = listOf("X轴角度", "Y轴角度", "Z轴角度"),
             modelTokens = listOf("206", "206", "206"),
             valueDescs = listOf("角度(°)", "角度(°)", "角度(°)"),
-            fieldPaths = listOf( "x", "y", "z")
+            fieldPaths = listOf("x", "y", "z")
         )
 
         else -> null

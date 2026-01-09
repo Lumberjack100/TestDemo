@@ -27,6 +27,7 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentM20sRadioSettingBinding
+import com.shmedo.mcloudapp.extensions.isM20Series
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
@@ -85,12 +86,12 @@ class M20SRadioSettingFragment : OptimizedBaseIOTDeviceFragment() {
         super.initData()
         radioChannelList = (45115..47015 step 100).map { (it.toFloat() / 100).toString() + "MHz" }
 
-        transmitPowerList = if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_1)
+        transmitPowerList = if (productType in ProductType.entries.filter { it.isM20Series() })
                 (0..22).map { it.toString() }
             else
                 (10..22).map { it.toString() }
 
-        airSpeedList = if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_1)
+        airSpeedList = if (productType in ProductType.entries.filter { it.isM20Series() })
                 (0..2).map { it.toString() }
             else
                 (1..3).map { it.toString() }
@@ -103,7 +104,7 @@ class M20SRadioSettingFragment : OptimizedBaseIOTDeviceFragment() {
 
     private fun resetDefaultParams() {
         when (productType) {
-            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {//M20S 载波频率以 451.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
+            in ProductType.entries.filter { it.isM20Series() } -> {//M20S 载波频率以 451.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
                 mStates.rtcmChannel.set(radioChannelList[0])//RTCM数据频点以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 默认0
                 mStates.receiveChannel.set(radioChannelList[13])//接收默认 13 即 463.15MHz
                 mStates.sendChannel.set(radioChannelList[6])//发送默认 6 即 456.15MHz

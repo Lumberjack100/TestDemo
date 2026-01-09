@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentAlarmSettingBinding
+import com.shmedo.mcloudapp.extensions.isM20Series
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNullKey
@@ -102,7 +103,7 @@ class AlarmSettingFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun queryData() {
         val commands =
-            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) {
+            if (productType in ProductType.entries.filter { it.isM20Series() }) {
                 listOf(
                     // 获取设备状态，用于检查电台模块状态
                     IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS),
@@ -128,7 +129,7 @@ class AlarmSettingFragment : OptimizedBaseIOTDeviceFragment() {
     private fun toggleAlarm(isEnabled: Boolean) {
         val sw = if (isEnabled) "1" else "0"
         val command =
-            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) {
+            if (productType in ProductType.entries.filter { it.isM20Series() }) {
                 IOTCommandUtil.getCommand(IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL, "sw=$sw")
             } else {
                 IOTCommandUtil.getCommand(IOTCommandType.MD_SET_ALRAM_BROADCAST_SWITCH, "sw=$sw")
