@@ -203,7 +203,7 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             entity.projid = mStates.productId.get()
             entity.deviceid = mStates.deviceId.get()
             entity.devicekey = mStates.deviceKey.get()
-            entity.regcode = if (mStates.isRegisterVisible.get()) mStates.registerCode.get() else ""
+            entity.regcode = if (mStates.isRegisterCodeVisible.get()) mStates.registerCode.get() else ""
             entity.httpaddr =
                 if (mStates.isRegisterVisible.get()) mStates.registerAddress.get() else ""
             entity.httpport =
@@ -342,8 +342,8 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
             mStates.registerAddress.set(data.httpaddr)//注册地址
             mStates.registerPort.set(data.httpport)//注册端口
 
-            //MQTT 协议时，如果不是米度物联平台(手动注册)，不必不显示注册码、注册地址、注册端口号
-            mStates.isRegisterVisible.set(mStates.dataProtocol.get() == PlatformDataProtocol.MQTT.getCmdValue() && mStates.platformType.get() == NewDataCenterPlatform.MEDO_IOT_PLATFORM.getPlatFormName())
+            // 根据平台类型更新 UI 显示状态
+            updatePlatformUIState(platform.getPlatFormName())
 
             //SL651 水文协议参数
             mStates.stationType.set(
@@ -380,6 +380,43 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
         defaultConfig?.let {
             DefaultPlatformConfigManager.applyDefaultConfig(it, mStates)
         }
+        // 更新平台相关的 UI 状态
+        updatePlatformUIState(platformName)
+    }
+
+    /**
+     * 根据选中的平台类型更新 UI 显示状态
+     * 处理云南地灾加密平台的特殊显示逻辑：
+     * - 隐藏设备注册码
+     * - "设备注册地址" 改为 "加密服务地址"
+     * - "设备注册端口" 改为 "加密服务端口"
+     */
+    private fun updatePlatformUIState(platformName: String) {
+        val isMqttProtocol =
+            mStates.dataProtocol.get() == PlatformDataProtocol.MQTT.getCmdValue()
+        val isMedoIotPlatform = platformName == NewDataCenterPlatform.MEDO_IOT_PLATFORM.getPlatFormName()
+        val isYunnanEncryptPlatform =
+            platformName == NewDataCenterPlatform.YUNNAN_DISASTER_ENCRYPT_PLATFORM.getPlatFormName()
+
+        // 更新云南地灾加密平台标识
+        mStates.isYunnanEncryptPlatform.set(isYunnanEncryptPlatform)
+
+        // 更新注册相关字段可见性
+        // 米度物联平台: 显示注册码、注册地址、注册端口
+        // 云南地灾加密平台: 不显示注册码，但显示加密服务地址和端口
+        mStates.isRegisterVisible.set(isMqttProtocol && (isMedoIotPlatform || isYunnanEncryptPlatform))
+
+        // 设备注册码只对米度物联平台可见
+        mStates.isRegisterCodeVisible.set(isMqttProtocol && isMedoIotPlatform)
+
+        // 根据平台类型设置标签文本
+        if (isYunnanEncryptPlatform) {
+            mStates.registerAddressLabel.set("加密服务地址")
+            mStates.registerPortLabel.set("加密服务端口")
+        } else {
+            mStates.registerAddressLabel.set("设备注册地址")
+            mStates.registerPortLabel.set("设备注册端口")
+        }
     }
 
     /**
@@ -404,12 +441,8 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.platformType.set(text)
-                        //MQTT 协议时，如果不是米度物联平台(手动注册)，不必不显示注册码、注册地址、注册端口号
-                        mStates.isRegisterVisible.set(mStates.dataProtocol.get() == PlatformDataProtocol.MQTT.getCmdValue() && text == NewDataCenterPlatform.MEDO_IOT_PLATFORM.getPlatFormName())
-
-                        // 加载选中平台的默认参数
+                        // 加载选中平台的默认参数，并更新 UI 状态
                         loadPlatformDefaultParameters(text)
-
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -436,9 +469,8 @@ class UniversalDataCenterParamFragment : OptimizedBaseIOTDeviceFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.dataProtocol.set(text)
-                        //MQTT 协议时，如果不是米度物联平台(手动注册)，不必不显示注册码、注册地址、注册端口号
-                        mStates.isRegisterVisible.set(mStates.dataProtocol.get() == PlatformDataProtocol.MQTT.getCmdValue() && text == NewDataCenterPlatform.MEDO_IOT_PLATFORM.getPlatFormName())
-
+                        // 更新 UI 状态以反映协议变化
+                        updatePlatformUIState(mStates.platformType.get())
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
