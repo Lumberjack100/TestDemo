@@ -4,6 +4,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.GuangdongWaterPlatformStationType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.NewDataCenterPlatform
 import com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.mcloudapp.extensions.isGTSeries
 import com.shmedo.mcloudapp.extensions.isM50Series
 import com.shmedo.mcloudapp.extensions.isMR702
 import com.shmedo.mcloudapp.extensions.isMultiModeGatewaySeries
@@ -56,6 +57,13 @@ object DefaultPlatformConfigManager {
                 NewDataCenterPlatform.YUNNAN_DISASTER_PLATFORM.getPlatFormName(),
                 NewDataCenterPlatform.GANSU_DISASTER_PLATFORM.getPlatFormName(),
                 NewDataCenterPlatform.CHONGQING_DISASTER_PLATFORM.getPlatFormName(),
+            )
+
+            productType.isGTSeries() -> arrayListOf(
+                NewDataCenterPlatform.MEDO_IOT_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.GUIZHOU_DISASTER_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.MEDO_SOLVER_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.CORS_PLATFORM.getPlatFormName()
             )
 
             else -> arrayListOf(
