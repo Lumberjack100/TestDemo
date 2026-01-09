@@ -445,7 +445,7 @@ class GT600GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
 
             // 上报频率
             val reportFreqIndex = dualAntennaReportFreqValueList.indexOf(data.report_freq)
-            if (reportFreqIndex >= 0) {
+            if (reportFreqIndex in dualAntennaReportFreqList.indices) {
                 mStates.dualAntennaReportFreq.set(dualAntennaReportFreqList[reportFreqIndex])
             }
 
@@ -467,13 +467,13 @@ class GT600GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
         try {
             // 观测值频率
             val obsTimeIndex = rtcmObsTimeValueList.indexOf(data.rtcmobstime)
-            if (obsTimeIndex >= 0) {
+            if (obsTimeIndex in rtcmObsTimeList.indices) {
                 mStates.rtcmObsTime.set(rtcmObsTimeList[obsTimeIndex])
             }
 
             // 星历值频率
             val ephTimeIndex = rtcmEphTimeValueList.indexOf(data.rtcmephtime)
-            if (ephTimeIndex >= 0) {
+            if (ephTimeIndex in rtcmEphTimeList.indices){
                 mStates.rtcmEphTime.set(rtcmEphTimeList[ephTimeIndex])
             }
 
@@ -510,7 +510,7 @@ class GT600GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun setNMEAFreqFromValue(value: String, setter: (String) -> Unit) {
         val index = nmeaFreqValueList.indexOf(value)
-        if (index >= 0) {
+        if (index in nmeaFreqList.indices) {
             setter(nmeaFreqList[index])
         }
     }

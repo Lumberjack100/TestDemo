@@ -88,6 +88,13 @@
         android:label="GT600GNSSConfigFragment"
         tools:layout="@layout/fragment_gt600_gnss_config" />
 
+    <!-- GT600 串口配置页面 -->
+    <fragment
+        android:id="@+id/gt600SerialConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.GT600SerialConfigFragment"
+        android:label="GT600SerialConfigFragment"
+        tools:layout="@layout/fragment_gt600_serial_config" />
+
     <action
         android:id="@+id/action_global_to_commonLocationInfoFragment"
         app:destination="@id/commonLocationInfoFragment"
@@ -183,6 +190,15 @@
     <action
         android:id="@+id/action_global_to_gt600GNSSConfigFragment"
         app:destination="@id/gt600GNSSConfigFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- GT600 串口配置页面导航 -->
+    <action
+        android:id="@+id/action_global_to_gt600SerialConfigFragment"
+        app:destination="@id/gt600SerialConfigFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

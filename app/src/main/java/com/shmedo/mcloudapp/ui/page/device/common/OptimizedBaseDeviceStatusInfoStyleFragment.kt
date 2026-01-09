@@ -730,10 +730,10 @@ abstract class OptimizedBaseDeviceStatusInfoStyleFragment : OptimizedBaseIOTDevi
                 }
             }
 
-            IOTCommandType.GT600_GET_EXSTATUS -> {
+            IOTCommandType.MD_GET_EXSTATUS -> {
                 val result = iotParseManager.parse<String>(
                     cmdStr,
-                    IOTCommandType.GT600_GET_EXSTATUS
+                    IOTCommandType.MD_GET_EXSTATUS
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {

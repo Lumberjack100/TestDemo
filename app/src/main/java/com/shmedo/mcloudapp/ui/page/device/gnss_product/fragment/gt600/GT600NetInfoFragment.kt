@@ -60,7 +60,7 @@ class GT600NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
     override fun queryStatusInfo() {
         val commands = mutableListOf<String>()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.GT600_GET_EXSTATUS)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_EXSTATUS)
         commands.add(command)
 
         sendCommandSequence(

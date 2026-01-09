@@ -38,6 +38,7 @@ import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentAdvancedSettingBinding
 import com.shmedo.mcloudapp.databinding.ItemAdvancedSettingBinding
+import com.shmedo.mcloudapp.extensions.isGTSeries
 import com.shmedo.mcloudapp.extensions.isGateway
 import com.shmedo.mcloudapp.extensions.isM20Series
 import com.shmedo.mcloudapp.extensions.isM50Series
@@ -299,6 +300,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
     private fun isSupportReplace(): Boolean {
         return productType != ProductType.U_L_1
                 && productType != ProductType.COLLECTOR_G_0
+                && !productType.isGTSeries()
     }
 
     override fun createObserver() {

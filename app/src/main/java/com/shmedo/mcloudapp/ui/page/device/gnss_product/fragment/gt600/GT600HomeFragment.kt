@@ -160,8 +160,7 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
             CommonModule(
                 name = "串口配置",
                 resID = R.drawable.ic_module_serial_port,
-                navId = 0,
-                isSupport = false
+                navId = R.id.action_global_to_gt600SerialConfigFragment,
             ).toUnified()
         )
         configModuleTree.configModules.add(
