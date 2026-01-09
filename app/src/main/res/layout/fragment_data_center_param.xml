@@ -209,7 +209,7 @@
 
                         <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_EditItem_Layout_Style"
-                            visible="@{stateVM.isRegisterVisible}"
+                            visible="@{stateVM.isRegisterCodeVisible}"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
@@ -233,7 +233,8 @@
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                android:text="设备注册地址" />
+                                android:text="@{stateVM.registerAddressLabel}"
+                                tools:text="设备注册地址" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
@@ -251,7 +252,8 @@
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                android:text="设备注册端口" />
+                                android:text="@{stateVM.registerPortLabel}"
+                                tools:text="设备注册端口" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"

@@ -194,7 +194,16 @@ data class DefaultPlatformConfig(
                     address = "8.134.151.187",
                     port = "8069",
                     dataProtocol = PlatformDataProtocol.HTTP
-                )
+                ),
+
+                NewDataCenterPlatform.YUNNAN_DISASTER_ENCRYPT_PLATFORM to DefaultPlatformConfig(
+                    platform = NewDataCenterPlatform.YUNNAN_DISASTER_ENCRYPT_PLATFORM,
+                    address = "222.221.241.110",
+                    port = "11884",
+                    dataProtocol = PlatformDataProtocol.MQTT,
+                    registerAddress = "222.221.241.110",
+                    registerPort = "1188"
+                ),
             )
         }
 

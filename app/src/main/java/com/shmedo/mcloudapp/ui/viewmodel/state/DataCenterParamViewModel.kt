@@ -14,6 +14,29 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
     val isRegisterVisible = NonNullObservableField(false)
 
     /**
+     * 云南地灾加密平台特有配置
+     * - 不显示设备注册码
+     * - "设备注册地址" 改为 "加密服务地址"
+     * - "设备注册端口" 改为 "加密服务端口"
+     */
+    val isYunnanEncryptPlatform = NonNullObservableField(false)
+
+    /**
+     * 设备注册码的可见性 (米度物联平台显示，云南地灾加密平台不显示)
+     */
+    val isRegisterCodeVisible = NonNullObservableField(false)
+
+    /**
+     * 设备注册地址/加密服务地址的标签文本
+     */
+    val registerAddressLabel = NonNullObservableField("设备注册地址")
+
+    /**
+     * 设备注册端口/加密服务端口的标签文本
+     */
+    val registerPortLabel = NonNullObservableField("设备注册端口")
+
+    /**
      * SL651 水文协议特有配置参数
      */
     val stationType = NonNullObservableField("")//测站分类

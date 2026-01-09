@@ -82,7 +82,8 @@ object DefaultPlatformConfigManager {
                 NewDataCenterPlatform.GUIZHOU_ENCRYPT_PLATFORM.getPlatFormName(),
                 NewDataCenterPlatform.CORS_PLATFORM.getPlatFormName(),
                 NewDataCenterPlatform.BEIJING_LUAN_PLATFORM.getPlatFormName(),
-                NewDataCenterPlatform.GUANGDONG_FLOOD_PLATFORM.getPlatFormName()
+                NewDataCenterPlatform.GUANGDONG_FLOOD_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.YUNNAN_DISASTER_ENCRYPT_PLATFORM.getPlatFormName()
             )
         }
     }
@@ -168,6 +169,9 @@ object DefaultPlatformConfigManager {
             NewDataCenterPlatform.GUANGDONG_FLOOD_PLATFORM.getPlatFormName() -> listOf(
                 PlatformDataProtocol.HTTP.getCmdValue()
             )
+
+            NewDataCenterPlatform.YUNNAN_DISASTER_ENCRYPT_PLATFORM.getPlatFormName() -> listOf(PlatformDataProtocol.MQTT.getCmdValue())
+
 
             else -> arrayListOf()
         }
