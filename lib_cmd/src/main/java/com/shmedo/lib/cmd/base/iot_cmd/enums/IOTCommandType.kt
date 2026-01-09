@@ -385,6 +385,11 @@ enum class IOTCommandType(val value: String) {
     /** 获取/设置 4G网络使用开关 */
     MD_GET_NET_4G_USE("md_getnet4guse"),
     MD_SET_NET_4G_USE("md_setnet4guse"),
+
+    /** 获取/设置 基站位置信息 */
+    MD_GET_BASE_POSITION("md_getbaseposition"),
+    MD_SET_BASE_POSITION("md_setbaseposition"),
+
     // </editor-fold>
 
     // <editor-fold desc="E40 指令">
@@ -407,11 +412,6 @@ enum class IOTCommandType(val value: String) {
     /** 设置E40 的GPS工作参数 */
     E40_MD_SET_GPS_PARAM("md_setgpsparam"),
 
-    /** 获取E40 的基站位置信息 */
-    E40_MD_GET_BASE_POSITION("md_getbaseposition"),
-
-    /** 设置E40 的基站位置信息 */
-    E40_MD_SET_BASE_POSITION("md_setbaseposition"),
 
 
     // </editor-fold>

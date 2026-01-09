@@ -102,6 +102,13 @@
         android:label="GT600NetworkConfigFragment"
         tools:layout="@layout/fragment_gt600_network_config" />
 
+    <!-- GT600 工作模式配置页面 -->
+    <fragment
+        android:id="@+id/gt600WorkModeConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.GT600WorkModeConfigFragment"
+        android:label="GT600WorkModeConfigFragment"
+        tools:layout="@layout/fragment_gt600_work_mode_config" />
+
     <action
         android:id="@+id/action_global_to_commonLocationInfoFragment"
         app:destination="@id/commonLocationInfoFragment"
@@ -215,6 +222,15 @@
     <action
         android:id="@+id/action_global_to_gt600NetworkConfigFragment"
         app:destination="@id/gt600NetworkConfigFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- GT600 工作模式配置页面导航 -->
+    <action
+        android:id="@+id/action_global_to_gt600WorkModeConfigFragment"
+        app:destination="@id/gt600WorkModeConfigFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

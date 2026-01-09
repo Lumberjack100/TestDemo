@@ -103,9 +103,7 @@ class GT600NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     groupList,
                     name = "移动网络",
                     value = mobileNetStatus,
-                    textColorRes = if (netInfo._4g == "on") ColorUtils.getColor(
-                        R.color.online_colorPrimary
-                    ) else 0
+                    textColorRes = 0
                 )
 
                 // 网络类型

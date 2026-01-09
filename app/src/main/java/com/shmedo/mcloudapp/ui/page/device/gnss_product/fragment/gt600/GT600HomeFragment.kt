@@ -132,7 +132,7 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
             CommonModule(
                 name = "工作模式",
                 resID = R.drawable.ic_module_work_mode_new,
-                navId = R.id.action_global_to_m20SWorkModelParamFragment
+                navId = R.id.action_global_to_gt600WorkModeConfigFragment
             ).toUnified()
         )
         configModuleTree.configModules.add(
