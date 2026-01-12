@@ -12,21 +12,23 @@ import com.shmedo.mcloudapp.R
 // ==================== GNSS 产品线 ====================
 
 /**
- * 判断是否为 M20 系列产品（包含 M20、GNSS_M_1、GNSS_M_2）
+ * 判断是否为 M20 系列产品（包含 M20、GNSS_M_1、GNSS_M_2、GNSS_HM_1、GNSS_HM_2、GNSS_GJ_1、GNSS_GJ_2）
  */
 fun ProductType.isM20Series(): Boolean {
-    return this == ProductType.M20 || this == ProductType.GNSS_M_1 ||
-            this == ProductType.GNSS_M_2 || this == ProductType.GNSS_HM_1 ||
-            this == ProductType.GNSS_HM_2
+    return this == ProductType.M20 ||
+            this == ProductType.GNSS_M_1 || this == ProductType.GNSS_M_2 ||
+            this == ProductType.GNSS_HM_1 || this == ProductType.GNSS_HM_2 ||
+            this == ProductType.GNSS_GJ_1 || this == ProductType.GNSS_GJ_2
 }
 
 /**
- * 判断是否为 M50 系列产品（GNSS_M_5、GNSS_M_6、GNSS_M_7、GNSS_M_8）
+ * 判断是否为 M50 系列产品（GNSS_M_5、GNSS_M_6、GNSS_M_7、GNSS_M_8、GNSS_HM_5、GNSS_HM_6、GNSS_GJ_5、GNSS_GJ_6）
  */
 fun ProductType.isM50Series(): Boolean {
     return this == ProductType.GNSS_M_5 || this == ProductType.GNSS_M_6 ||
             this == ProductType.GNSS_M_7 || this == ProductType.GNSS_M_8 ||
-            this == ProductType.GNSS_HM_5 || this == ProductType.GNSS_HM_6
+            this == ProductType.GNSS_HM_5 || this == ProductType.GNSS_HM_6 ||
+            this == ProductType.GNSS_GJ_5 || this == ProductType.GNSS_GJ_6
 }
 
 /**
