@@ -56,11 +56,18 @@ class GT600BaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 // 1. 设备信息组
                 groupList.add(DeviceStatusInfoGroupItem("设备信息"))
 
+                // 设备型号
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "设备型号",
+                    value = productType.productToken,
+                )
+
                 // 设备SN
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "设备SN",
-                    value = stateInfo.sn,
+                    value = deviceInfo.deviceToken,
                 )
 
                 // 固件版本

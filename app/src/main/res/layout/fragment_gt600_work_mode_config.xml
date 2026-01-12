@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <!-- 工具栏 ViewModel -->
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <!-- 状态 ViewModel -->
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.GT600WorkModeConfigViewModel" />
+
+        <!-- 点击事件代理 -->
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.GT600WorkModeConfigFragment.ClickProxy" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <!-- 工具栏 -->
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
+
+        <!-- 下拉刷新布局 -->
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_container_padding_top_12"
+                    android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
+
+                    <!-- ==================== 工作模式选择项 ==================== -->
+                    <!-- 根据工作模式决定是否显示下方配置项 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@{stateVM.workMode.equals(`测站`)?@drawable/shape_common_click_item_bottom_corner_4:@drawable/layer_common_click_item_top_corner_4_with_divider}"
+                        android:onClick="@{()->click.onWorkModeChooseClick()}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="工作模式" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.workMode}"
+                            tools:text="基站" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- ==================== 基站模式下的配置项 ==================== -->
+                    <!-- 仅当工作模式为"基站"时显示 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        visible="@{stateVM.workMode.equals(`基站`)}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <!-- ==================== 坐标初始化选择项 ==================== -->
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_ClickableItem_Layout_Style"
+                            android:background="@{stateVM.coordinateInitialization.equals(`是`)?@drawable/layer_common_click_item_with_divider:@drawable/shape_common_click_item_bottom_corner_4}"
+                            android:onClick="@{()->click.onCoordinateInitializationChooseClick()}">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                android:text="坐标初始化" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Value_Style"
+                                android:text="@{stateVM.coordinateInitialization}"
+                                tools:text="是" />
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <!-- ==================== 坐标初始化为"是"时的配置项容器 ==================== -->
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            visible="@{stateVM.coordinateInitialization.equals(`是`)}"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <!-- ==================== 初始化模式选择项 ==================== -->
+                            <androidx.appcompat.widget.LinearLayoutCompat
+                                style="@style/Common_ClickableItem_Layout_Style"
+                                android:background="@{stateVM.initializationMode.equals(`手动`)?@drawable/layer_common_click_item_with_divider:@drawable/shape_common_click_item_bottom_corner_4}"
+                                android:onClick="@{()->click.onInitializationModeChooseClick()}">
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/Common_ClickableItem_Title_Style"
+                                    android:text="初始化模式" />
+
+                                <com.google.android.material.textview.MaterialTextView
+                                    style="@style/Common_ClickableItem_Value_Style"
+                                    android:text="@{stateVM.initializationMode}"
+                                    tools:text="手动" />
+                            </androidx.appcompat.widget.LinearLayoutCompat>
+
+                            <!-- ==================== 手动模式下的坐标输入框 ==================== -->
+                            <androidx.appcompat.widget.LinearLayoutCompat
+                                visible="@{stateVM.initializationMode.equals(`手动`)}"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <!-- 经度输入框 -->
+                                <androidx.appcompat.widget.LinearLayoutCompat
+                                    style="@style/Common_EditItem_Layout_Style"
+                                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                                    <com.google.android.material.textview.MaterialTextView
+                                        style="@style/Common_ClickableItem_Title_Style"
+                                        android:text="经度（度）" />
+
+                                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                        style="@style/Common_EditItem_EditText_Style"
+                                        android:hint="请输入"
+                                        android:inputType="numberDecimal|numberSigned"
+                                        android:maxLength="20"
+                                        android:text="@={stateVM.longitude}" />
+                                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                                <!-- 纬度输入框 -->
+                                <androidx.appcompat.widget.LinearLayoutCompat
+                                    style="@style/Common_EditItem_Layout_Style"
+                                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                                    <com.google.android.material.textview.MaterialTextView
+                                        style="@style/Common_ClickableItem_Title_Style"
+                                        android:text="纬度（度）" />
+
+                                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                        style="@style/Common_EditItem_EditText_Style"
+                                        android:hint="请输入"
+                                        android:inputType="numberDecimal|numberSigned"
+                                        android:maxLength="20"
+                                        android:text="@={stateVM.latitude}" />
+                                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                                <!-- 高度输入框 -->
+                                <androidx.appcompat.widget.LinearLayoutCompat
+                                    style="@style/Common_EditItem_Layout_Style"
+                                    android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                                    <com.google.android.material.textview.MaterialTextView
+                                        style="@style/Common_ClickableItem_Title_Style"
+                                        android:text="高度（米）" />
+
+                                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                        style="@style/Common_EditItem_EditText_Style"
+                                        android:hint="请输入"
+                                        android:inputType="numberDecimal|numberSigned"
+                                        android:maxLength="20"
+                                        android:text="@={stateVM.altitude}" />
+                                </androidx.appcompat.widget.LinearLayoutCompat>
+                            </androidx.appcompat.widget.LinearLayoutCompat>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- ==================== 恢复默认配置按钮 ==================== -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reset"
+                        style="@style/ResetButton_Style"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:onClick="@{()->click.onResetClick()}"
+                        android:text="@string/button_reset_text" />
+
+                    <!-- ==================== 保存按钮 ==================== -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_confirm"
+                        style="@style/SubmitButton_Style"
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:enabled="@{stateVM.isDataModified}"
+                        android:text="@string/button_save_text" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.core.widget.NestedScrollView>
+        </com.drake.brv.PageRefreshLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -15,5 +15,5 @@ class GT600ExStatusParser: IOTCommandParser<String> {
         return keyValueMap["status"]!!
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.GT600_GET_EXSTATUS
+    override val commandType: IOTCommandType = IOTCommandType.MD_GET_EXSTATUS
 }

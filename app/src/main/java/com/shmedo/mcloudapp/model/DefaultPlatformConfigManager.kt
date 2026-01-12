@@ -4,6 +4,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.GuangdongWaterPlatformStationType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.NewDataCenterPlatform
 import com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.mcloudapp.extensions.isGTSeries
 import com.shmedo.mcloudapp.extensions.isM50Series
 import com.shmedo.mcloudapp.extensions.isMR702
 import com.shmedo.mcloudapp.extensions.isMultiModeGatewaySeries
@@ -58,6 +59,13 @@ object DefaultPlatformConfigManager {
                 NewDataCenterPlatform.CHONGQING_DISASTER_PLATFORM.getPlatFormName(),
             )
 
+            productType.isGTSeries() -> arrayListOf(
+                NewDataCenterPlatform.MEDO_IOT_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.GUIZHOU_DISASTER_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.MEDO_SOLVER_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.CORS_PLATFORM.getPlatFormName()
+            )
+
             else -> arrayListOf(
                 NewDataCenterPlatform.MEDO_IOT_PLATFORM.getPlatFormName(),
                 NewDataCenterPlatform.GUIZHOU_DISASTER_PLATFORM.getPlatFormName(),
@@ -74,7 +82,8 @@ object DefaultPlatformConfigManager {
                 NewDataCenterPlatform.GUIZHOU_ENCRYPT_PLATFORM.getPlatFormName(),
                 NewDataCenterPlatform.CORS_PLATFORM.getPlatFormName(),
                 NewDataCenterPlatform.BEIJING_LUAN_PLATFORM.getPlatFormName(),
-                NewDataCenterPlatform.GUANGDONG_FLOOD_PLATFORM.getPlatFormName()
+                NewDataCenterPlatform.GUANGDONG_FLOOD_PLATFORM.getPlatFormName(),
+                NewDataCenterPlatform.YUNNAN_DISASTER_ENCRYPT_PLATFORM.getPlatFormName()
             )
         }
     }
@@ -160,6 +169,9 @@ object DefaultPlatformConfigManager {
             NewDataCenterPlatform.GUANGDONG_FLOOD_PLATFORM.getPlatFormName() -> listOf(
                 PlatformDataProtocol.HTTP.getCmdValue()
             )
+
+            NewDataCenterPlatform.YUNNAN_DISASTER_ENCRYPT_PLATFORM.getPlatFormName() -> listOf(PlatformDataProtocol.MQTT.getCmdValue())
+
 
             else -> arrayListOf()
         }

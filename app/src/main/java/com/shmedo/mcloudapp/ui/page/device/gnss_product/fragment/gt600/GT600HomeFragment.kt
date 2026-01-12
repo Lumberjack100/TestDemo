@@ -132,14 +132,14 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
             CommonModule(
                 name = "工作模式",
                 resID = R.drawable.ic_module_work_mode_new,
-                navId = R.id.action_global_to_m20SWorkModelParamFragment
+                navId = R.id.action_global_to_gt600WorkModeConfigFragment
             ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "网络配置",
                 resID = R.drawable.ic_module_network_setting,
-                navId = R.id.action_global_to_m50NetworkConfigFragment
+                navId = R.id.action_global_to_gt600NetworkConfigFragment
             ).toUnified()
         )
         configModuleTree.configModules.add(
@@ -153,15 +153,14 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
             CommonModule(
                 name = "GNSS配置",
                 resID = R.drawable.ic_module_cors,
-                navId = R.id.action_global_to_m50GNSSConfigFragment,
+                navId = R.id.action_global_to_gt600GNSSConfigFragment,
             ).toUnified()
         )
         configModuleTree.configModules.add(
             CommonModule(
                 name = "串口配置",
                 resID = R.drawable.ic_module_serial_port,
-                navId = 0,
-                isSupport = false
+                navId = R.id.action_global_to_gt600SerialConfigFragment,
             ).toUnified()
         )
         configModuleTree.configModules.add(
