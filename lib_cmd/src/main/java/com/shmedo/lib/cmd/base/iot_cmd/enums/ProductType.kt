@@ -74,7 +74,7 @@ enum class ProductType(
     //GNSS产品线 E(分体机)
     GNSS_E_1(
         prefix = "",
-        oldSuffix = "",
+        oldSuffix = "B",
         newSuffix = "GE1",
         productName = "测地型GNSS接收机",
         productToken = "E40",
@@ -82,7 +82,7 @@ enum class ProductType(
     ),
     GNSS_E_2(
         prefix = "",
-        oldSuffix = "",
+        oldSuffix = "B",
         newSuffix = "GE2",
         productName = "测地型GNSS接收机",
         productToken = "E40S",

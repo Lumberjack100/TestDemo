@@ -10,7 +10,6 @@ import com.shmedo.mcloudapp.R
  */
 
 // ==================== GNSS 产品线 ====================
-
 /**
  * 判断是否为 M20 系列产品（包含 M20、GNSS_M_1、GNSS_M_2、GNSS_HM_1、GNSS_HM_2、GNSS_GJ_1、GNSS_GJ_2）
  */
@@ -59,6 +58,42 @@ fun ProductType.isGNSSProduct(): Boolean {
     return isM20Series() || isM50Series() || isESeries() || isE50Pro() || isGTSeries()
 }
 
+// ==================== 采集器产品线 ====================
+/**
+ * 判断是否为自组网报警网关
+ */
+fun ProductType.isGateway(): Boolean {
+    return this == ProductType.COLLECTOR_G_0
+}
+
+/**
+ * 判断是否为 多模融合网关 系列产品
+ */
+fun ProductType.isMultiModeGatewaySeries(): Boolean {
+    return this == ProductType.COLLECTOR_G_3 || this == ProductType.COLLECTOR_G_4
+}
+
+/**
+ * 判断是否为 DAS 系列产品
+ */
+fun ProductType.isDASBHYSeries(): Boolean {
+    return this == ProductType.DAS || this == ProductType.BHY
+}
+
+/**
+ * 判断是否为 MR701 产品
+ */
+fun ProductType.isMR701(): Boolean {
+    return this == ProductType.COLLECTOR_R_1
+}
+
+/**
+ * 判断是否为 MR702 产品
+ */
+fun ProductType.isMR702(): Boolean {
+    return this == ProductType.COLLECTOR_R_2
+}
+
 // ==================== UD 产品线 ====================
 /**
  * 判断是否为 DR030 系列产品（雷达水位计：U_D_1、U_D_2）
@@ -79,46 +114,6 @@ fun ProductType.isLL030(): Boolean {
  */
 fun ProductType.isUDSeries(): Boolean {
     return this == ProductType.U_D_1 || this == ProductType.U_D_2 || this == ProductType.U_D_3
-}
-
-// ==================== 采集器产品线 ====================
-
-/**
- * 判断是否为自组网报警网关
- */
-fun ProductType.isGateway(): Boolean {
-    return this == ProductType.COLLECTOR_G_0
-}
-
-/**
- * 判断是否为 多模融合网关 系列产品
- */
-fun ProductType.isMultiModeGatewaySeries(): Boolean {
-    return this == ProductType.COLLECTOR_G_3 || this == ProductType.COLLECTOR_G_4
-}
-
-
-/**
- * 判断是否为 MR701 产品
- */
-fun ProductType.isMR701(): Boolean {
-    return this == ProductType.COLLECTOR_R_1
-}
-
-
-/**
- * 判断是否为 DAS 系列产品
- */
-fun ProductType.isDASBHYSeries(): Boolean {
-    return this == ProductType.DAS || this == ProductType.BHY
-}
-
-
-/**
- * 判断是否为 MR702 产品
- */
-fun ProductType.isMR702(): Boolean {
-    return this == ProductType.COLLECTOR_R_2
 }
 
 // ==================== 其他产品线 ====================
@@ -159,14 +154,12 @@ fun ProductType.isLB20S(): Boolean {
 }
 
 // ==================== 功能特性判断 ====================
-
 /**
  * 判断是否支持抓拍图片功能
  */
 fun ProductType.supportsCaptureImage(): Boolean {
     return isUDSeries() || isM50Series()
 }
-
 
 /**
  * 判断是否支持固件升级
@@ -177,7 +170,6 @@ fun ProductType.isSupportFirmwareUpgrade(): Boolean {
 
 
 // ==================== 设备图标相关 ====================
-
 /**
  * 获取设备 Logo 资源 ID 列表（正常、报警、错误状态）
  */
@@ -276,7 +268,6 @@ fun ProductType.getDeviceLogoResIds(): List<Int> {
 }
 
 // ==================== 历史数据相关 ====================
-
 /**
  * 获取支持的监测数据类型配置
  */

@@ -23,6 +23,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
 import com.shmedo.mcloudapp.extensions.InsetsManager
 import com.shmedo.mcloudapp.extensions.getAppViewModel
+import com.shmedo.mcloudapp.extensions.isESeries
 import com.shmedo.mcloudapp.extensions.isGTSeries
 import com.shmedo.mcloudapp.extensions.isM20Series
 import com.shmedo.mcloudapp.extensions.isM50Series
@@ -136,6 +137,13 @@ class DeviceHomeActivity : BaseActivity() {
             }
 
             in ProductType.entries.filter { it.isGTSeries() } -> {
+                navController.setGraph(
+                    R.navigation.gt600_graph,
+                    bundle2
+                )
+            }
+
+            in ProductType.entries.filter { it.isESeries() } -> {
                 navController.setGraph(
                     R.navigation.gt600_graph,
                     bundle2
