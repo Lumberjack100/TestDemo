@@ -101,3 +101,41 @@ $cmd=md_setnmeatime&gga=1&rmc=1&vtg=1&gsv=1&gsa=1
 | gsa | 参与定位卫星以及 DOP 值等信息 | int | 1 | 同上 |
 
 
+---
+
+## 需求变更
+
+请你完善 `GT600GNSSConfigFragment.kt` "截至高度角"项的配置功能。
+
+ 1.  IOTCommandType.kt 中：
+    - 添加 md_elevation_mask 指令。
+
+ 2. 在 `com.shmedo.lib.cmd.base.iot_cmd.model.gt600` 、 `com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gt600` 包中新建相应的实体类，在 `com.shmedo.lib.cmd.base.iot_cmd.parser` 包下创建` 包中新建对应的解析器类，以及在 IOTParserRegistry.kt 中注册。
+
+##  相关指令说明
+
+### **功能开关参数涉及的指令**
+
+```  
+（1）获取参数
+发送：
+$cmd=md_elevation_mask&method=0
+
+应答：
+$cmd=md_elevation_mask&method=0&angle=15
+
+（2）设置参数	
+发送：
+$cmd=md_elevation_mask&method=1&angle=15
+
+应答：
+设置成功：$cmd=md_elevation_mask&result=succ
+设置失败：$cmd=md_elevation_mask&result=fail&reason=
+```
+
+####  指令参数字段说明
+
+| 关键字 | 说明 | 数据类型 | 示例 | 备注 |
+| :--- | :--- | :--- | :--- | :--- |
+| method | 功能选择 | int | 1 | 查询参数：0 <br> 设置参数：1 |
+| angle | 高度| int | 15 | 单位：°，取值5-90° <br> 间隔5°，默认15° |

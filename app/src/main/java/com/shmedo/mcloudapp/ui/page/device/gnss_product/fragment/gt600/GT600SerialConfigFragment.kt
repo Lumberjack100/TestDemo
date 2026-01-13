@@ -10,9 +10,12 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gt600.MdSensorConfigEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gt600.SerialPortConfigEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.model.gt600.DualAntennaData
+import com.shmedo.lib.cmd.base.iot_cmd.model.gt600.MdSensorData
 import com.shmedo.lib.cmd.base.iot_cmd.model.gt600.SerialPortData
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
@@ -155,7 +158,9 @@ class GT600SerialConfigFragment : OptimizedBaseIOTDeviceFragment() {
     private fun queryData() {
         val commands = listOf(
             // 查询串口参数
-            IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DB_GUART)
+            IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DB_GUART),
+            // 查询功能开关参数
+            IOTCommandUtil.getCommand(IOTCommandType.MD_SENSOR, "method=0")
         )
 
         sendCommandSequence(
@@ -194,13 +199,14 @@ class GT600SerialConfigFragment : OptimizedBaseIOTDeviceFragment() {
         val commands = mutableListOf<String>()
 
         // 串口参数设置指令
+        val typeValue = getValueFromDisplayList(
+            mStates.functionType.get(),
+            functionTypeDisplayList,
+            functionTypeValueList,
+            "1"
+        )
         val serialPortEntity = SerialPortConfigEntity(
-            type = getValueFromDisplayList(
-                mStates.functionType.get(),
-                functionTypeDisplayList,
-                functionTypeValueList,
-                "1"
-            ),
+            type = typeValue,
             baud = getValueFromDisplayList(
                 mStates.baudRate.get(),
                 baudRateDisplayList,
@@ -214,6 +220,21 @@ class GT600SerialConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 serialPortEntity.toCommandString()
             )
         )
+
+        // 功能开关设置指令（仅当功能选择为"传感器采集"时）
+        if (typeValue == "1") {
+            val switchValue = if (mStates.functionSwitch.get() == "开") "1" else "0"
+            val sensorSwitchEntity = MdSensorConfigEntity(
+                method = "1",
+                switch = switchValue
+            )
+            commands.add(
+                IOTCommandUtil.getCommand(
+                    IOTCommandType.MD_SENSOR,
+                    sensorSwitchEntity.toCommandString()
+                )
+            )
+        }
 
         return commands
     }
@@ -244,6 +265,10 @@ class GT600SerialConfigFragment : OptimizedBaseIOTDeviceFragment() {
 
             IOTCommandType.MD_SET_DB_GUART -> {
                 handleSerialPortSaveResponse(cmdStr)
+            }
+
+            IOTCommandType.MD_SENSOR -> {
+                handleSensorSwitchResponse(cmdStr)
             }
 
             else -> {
@@ -286,6 +311,52 @@ class GT600SerialConfigFragment : OptimizedBaseIOTDeviceFragment() {
         }
     }
 
+    /**
+     * 处理功能开关响应（查询 or 设置）
+     */
+    private fun handleSensorSwitchResponse(cmdStr: String) {
+        val result = if (cmdStr.contains("method=0"))
+            iotParseManager.parse<MdSensorData>(cmdStr, IOTCommandType.MD_SENSOR)
+        else
+            iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+
+        when (result) {
+            is IOTCommandResult.Failure -> {
+                val errMsg = if (cmdStr.contains("method=0"))
+                    "查询功能开关参数出错: ${result.message}"
+                else
+                    "功能开关参数保存出错: ${result.message}"
+                handleFailureResult(errMsg, isMessageDialog = true)
+            }
+
+            is IOTCommandResult.Success -> {
+                if (cmdStr.contains("method=0")) {
+                    initSensorSwitchData(result.data as MdSensorData)
+                } else {
+                    // 保存成功，检查是否还有指令需要执行
+                    if (!isCommunicationExecuting()) {
+                        processNavigateUp()
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 处理功能开关设置响应
+     */
+    private fun handleSensorSwitchSaveResponse(cmdStr: String) {
+        when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+            is IOTCommandResult.Failure -> {
+                val errMsg = "功能开关参数保存出错: ${result.message}"
+                handleFailureResult(errMsg, isMessageDialog = true)
+            }
+            else -> {
+                if (!isCommunicationExecuting()) processNavigateUp()
+            }
+        }
+    }
+
     // ========== 数据初始化 ==========
 
     /**
@@ -311,6 +382,20 @@ class GT600SerialConfigFragment : OptimizedBaseIOTDeviceFragment() {
             mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e, "初始化串口参数数据出错")
+        }
+    }
+
+    /**
+     * 初始化功能开关数据
+     */
+    private fun initSensorSwitchData(data: MdSensorData) {
+        try {
+            val switchText = if (data.switch == "1") "开" else "关"
+            mStates.functionSwitch.set(switchText)
+
+            mStates.saveInitialState()
+        } catch (e: Exception) {
+            Timber.e(e, "初始化功能开关数据出错")
         }
     }
 

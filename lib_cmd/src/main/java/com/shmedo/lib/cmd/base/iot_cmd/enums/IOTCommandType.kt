@@ -378,6 +378,9 @@ enum class IOTCommandType(val value: String) {
     MD_GET_DB_GUART("md_getdbguart"),
     MD_SET_DB_GUART("md_setdbguart"),
 
+    /** 获取/设置 功能开关参数 (传感器采集开关) */
+    MD_SENSOR("md_sensor"),
+
     /** 获取/设置 有线网络配置置参数 */
     MD_GET_ETHERNET("md_geteth0"),
     MD_SET_ETHERNET("md_seteth0"),
