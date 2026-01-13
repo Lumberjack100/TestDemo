@@ -14,11 +14,14 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gt600.EthernetConfigEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gt600.Net4GUseConfigEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRWirelessNetEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.gt600.EthernetConfigData
 import com.shmedo.lib.cmd.base.iot_cmd.model.gt600.Net4GUseData
+import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRWirelessNet
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
@@ -47,9 +50,9 @@ import timber.log.Timber
  * 页面包含两个配置分组：
  * 1. 移动网络分组：
  *    - 4G通信开关（4G通信状态下禁止配置）
- *    - APN（暂无对应指令，仅展示）
- *    - 用户名（暂无对应指令，仅展示）
- *    - 密码（暂无对应指令，仅展示）
+ *    - APN
+ *    - 用户名
+ *    - 密码
  *
  * 2. 以太网络分组：
  *    - IP分配（仅支持手动模式）
@@ -60,6 +63,8 @@ import timber.log.Timber
  * 涉及指令：
  * - 查询4G开关: md_getnet4guse
  * - 设置4G开关: md_setnet4guse
+ * - 查询移动网络参数: md_mrgetdatanetwork
+ * - 设置移动网络参数: md_mrsetdatanetwork
  * - 查询以太网配置: md_geteth0
  * - 设置以太网配置: md_seteth0
  */
@@ -143,12 +148,14 @@ class GT600NetworkConfigFragment : OptimizedBaseIOTDeviceFragment() {
 
     /**
      * 查询网络配置参数
-     * 发送查询指令：4G开关 + 以太网配置
+     * 发送查询指令：4G开关 + 移动网络参数 + 以太网配置
      */
     private fun queryData() {
         val commands = listOf(
             // 查询4G开关状态
             IOTCommandUtil.getCommand(IOTCommandType.MD_GET_NET_4G_USE),
+            // 查询移动网络参数（APN、用户名、密码）
+            IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DATA_NETWORK),
             // 查询以太网配置
             IOTCommandUtil.getCommand(IOTCommandType.MD_GET_ETHERNET)
         )
@@ -228,6 +235,19 @@ class GT600NetworkConfigFragment : OptimizedBaseIOTDeviceFragment() {
             )
         }
 
+        // 移动网络参数设置指令（APN、用户名、密码）
+        val wirelessNetEntity = MRWirelessNetEntity(
+            apn = mStates.apnName.get().ifEmpty { IOTConstants.NULL_KEY },
+            username = mStates.userName.get().ifEmpty { IOTConstants.NULL_KEY },
+            password = mStates.password.get().ifEmpty { IOTConstants.NULL_KEY }
+        )
+        commands.add(
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MR_MD_SET_DATA_NETWORK,
+                wirelessNetEntity.toCommandString()
+            )
+        )
+
         // 以太网配置设置指令
         val ethernetEntity = EthernetConfigEntity(
             dhcp = getValueFromDisplayList(
@@ -274,12 +294,20 @@ class GT600NetworkConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 handleNet4GUseQueryResponse(cmdStr)
             }
 
+            IOTCommandType.MR_MD_GET_DATA_NETWORK -> {
+                handleWirelessNetQueryResponse(cmdStr)
+            }
+
             IOTCommandType.MD_GET_ETHERNET -> {
                 handleEthernetConfigQueryResponse(cmdStr)
             }
 
             IOTCommandType.MD_SET_NET_4G_USE -> {
                 handleNet4GUseSaveResponse(cmdStr)
+            }
+
+            IOTCommandType.MR_MD_SET_DATA_NETWORK -> {
+                handleWirelessNetSaveResponse(cmdStr)
             }
 
             IOTCommandType.MD_SET_ETHERNET -> {
@@ -305,6 +333,27 @@ class GT600NetworkConfigFragment : OptimizedBaseIOTDeviceFragment() {
 
             is IOTCommandResult.Success -> {
                 initNet4GUseData(result.data)
+            }
+        }
+    }
+
+    /**
+     * 处理移动网络参数查询响应
+     * 解析 APN、用户名、密码等参数
+     */
+    private fun handleWirelessNetQueryResponse(cmdStr: String) {
+        val result = iotParseManager.parse<MRWirelessNet>(
+            cmdStr,
+            IOTCommandType.MR_MD_GET_DATA_NETWORK
+        )
+        when (result) {
+            is IOTCommandResult.Failure -> {
+                val errMsg = "查询移动网络参数出错: ${result.message}"
+                handleFailureResult(errMsg, isMessageDialog = true)
+            }
+
+            is IOTCommandResult.Success -> {
+                initWirelessNetData(result.data)
             }
         }
     }
@@ -337,6 +386,26 @@ class GT600NetworkConfigFragment : OptimizedBaseIOTDeviceFragment() {
             }
 
             else -> {
+                // 4G开关设置成功，继续等待其他指令完成
+                Timber.d("4G开关设置成功")
+                if (!isCommunicationExecuting()) processNavigateUp()
+            }
+        }
+    }
+
+    /**
+     * 处理移动网络参数设置响应
+     */
+    private fun handleWirelessNetSaveResponse(cmdStr: String) {
+        when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+            is IOTCommandResult.Failure -> {
+                val errMsg = "设置移动网络参数出错: ${result.message}"
+                handleFailureResult(errMsg, isMessageDialog = true)
+            }
+
+            else -> {
+                // 移动网络参数设置成功，继续等待其他指令完成
+                Timber.d("移动网络参数设置成功")
                 if (!isCommunicationExecuting()) processNavigateUp()
             }
         }
@@ -369,6 +438,22 @@ class GT600NetworkConfigFragment : OptimizedBaseIOTDeviceFragment() {
             mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e, "初始化4G开关数据出错")
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    /**
+     * 初始化移动网络参数数据
+     * 设置 APN、用户名、密码到 UI
+     */
+    private fun initWirelessNetData(data: MRWirelessNet) {
+        try {
+            mStates.apnName.set(data.apn)
+            mStates.userName.set(data.username)
+            mStates.password.set(data.password)
+            mStates.saveInitialState()
+        } catch (e: Exception) {
+            Timber.e(e, "初始化移动网络参数数据出错")
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }

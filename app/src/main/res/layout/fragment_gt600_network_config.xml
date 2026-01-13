@@ -93,7 +93,7 @@
 
                     </RelativeLayout>
 
-                    <!-- APN（暂无对应指令，仅展示） -->
+                    <!-- APN -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
@@ -111,7 +111,7 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <!-- 用户名（暂无对应指令，仅展示） -->
+                    <!-- 用户名 -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
@@ -128,7 +128,7 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <!-- 密码（暂无对应指令，仅展示） -->
+                    <!-- 密码 -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/shape_common_click_item_bottom_corner_4">

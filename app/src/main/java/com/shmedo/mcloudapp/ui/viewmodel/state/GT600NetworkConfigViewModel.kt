@@ -12,9 +12,9 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
  * 包含两个配置分组的数据字段:
  * 1. 移动网络分组:
  *    - 4G通信开关
- *    - APN（暂无对应指令，仅展示）
- *    - 用户名（暂无对应指令，仅展示）
- *    - 密码（暂无对应指令，仅展示）
+ *    - APN
+ *    - 用户名
+ *    - 密码
  * 2. 以太网络分组:
  *    - IP分配方式
  *    - IP地址
@@ -30,13 +30,13 @@ class GT600NetworkConfigViewModel : BaseStateViewModel() {
     /** 4G通信开关状态 */
     val is4GEnabled = NonNullObservableField(true)
 
-    /** APN（暂无对应指令，仅展示） */
+    /** APN */
     val apnName = NonNullObservableField("")
 
-    /** 用户名（暂无对应指令，仅展示） */
+    /** 用户名 */
     val userName = NonNullObservableField("")
 
-    /** 密码（暂无对应指令，仅展示） */
+    /** 密码 */
     val password = NonNullObservableField("")
 
     // ========== 以太网络分组参数 ==========
