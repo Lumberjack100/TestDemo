@@ -11,11 +11,13 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gt600.DualAntennaConfigEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gt600.ElevationMaskConfigEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gt600.GNSSCtlConfigEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gt600.NMEATimeConfigEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.gt600.DualAntennaData
+import com.shmedo.lib.cmd.base.iot_cmd.model.gt600.ElevationMaskData
 import com.shmedo.lib.cmd.base.iot_cmd.model.gt600.GNSSCtlData
 import com.shmedo.lib.cmd.base.iot_cmd.model.gt600.NMEATimeData
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -86,6 +88,18 @@ class GT600GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
     /** NMEA 频率选项（实际值） */
     private val nmeaFreqValueList =
         arrayListOf("0.05", "0.1", "0.2", "1", "5", "10", "15", "30", "60", "0")
+
+    /** 截至高度角选项（显示文本） */
+    private val elevationAngleList = arrayListOf(
+        "5°", "10°", "15°", "20°", "25°", "30°", "35°", "40°", "45°",
+        "50°", "55°", "60°", "65°", "70°", "75°", "80°", "85°", "90°"
+    )
+
+    /** 截至高度角选项（实际值） */
+    private val elevationAngleValueList = arrayListOf(
+        "5", "10", "15", "20", "25", "30", "35", "40", "45",
+        "50", "55", "60", "65", "70", "75", "80", "85", "90"
+    )
 
     // ========== 生命周期方法 ==========
 
@@ -161,11 +175,15 @@ class GT600GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun queryData() {
         val commands = listOf(
-            // 1. 查询双天线参数
+            // 1. 查询截至高度角参数
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_ELEVATION_MASK, "method=0"
+            ),
+            // 2. 查询双天线参数
             IOTCommandUtil.getCommand(IOTCommandType.MD_CFG_NMEA_VTG_OUT, "method=0"),
-            // 2. 查询 RTCM 参数
+            // 3. 查询 RTCM 参数
             IOTCommandUtil.getCommand(IOTCommandType.MD_GET_GNSS_CTL),
-            // 3. 查询 NMEA 参数
+            // 4. 查询 NMEA 参数
             IOTCommandUtil.getCommand(IOTCommandType.MD_GET_NMEA_TIME)
         )
 
@@ -203,6 +221,20 @@ class GT600GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun buildSaveCommands(): List<String> {
         val commands = mutableListOf<String>()
+
+        // 1. 截至高度角设置指令
+        val angleValue = getValueFromDisplayList(
+            mStates.elevationAngle.get(),
+            elevationAngleList,
+            elevationAngleValueList,
+            "15"
+        )
+        commands.add(
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_ELEVATION_MASK,
+                ElevationMaskConfigEntity.createSetEntity(angleValue).toCommandString()
+            )
+        )
 
         // 1. 双天线参数设置指令
         val dualAntennaEntity = DualAntennaConfigEntity(
@@ -310,6 +342,10 @@ class GT600GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
      */
     override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_ELEVATION_MASK -> {
+                handleElevationMaskResponse(cmdStr)
+            }
+
             IOTCommandType.MD_CFG_NMEA_VTG_OUT -> {
                 handleDualAntennaResponse(cmdStr)
             }
@@ -433,6 +469,52 @@ class GT600GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
         }
     }
 
+    /**
+     * 处理截至高度角参数响应（查询和设置共用同一个指令）
+     */
+    private fun handleElevationMaskResponse(cmdStr: String) {
+        val result = if (cmdStr.contains("method=0"))
+            iotParseManager.parse<ElevationMaskData>(cmdStr, IOTCommandType.MD_ELEVATION_MASK)
+        else
+            iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
+
+        when (result) {
+            is IOTCommandResult.Failure -> {
+                val errMsg = if (cmdStr.contains("method=0"))
+                    "查询截至高度角参数出错: ${result.message}"
+                else
+                    "截至高度角参数保存出错: ${result.message}"
+                handleFailureResult(errMsg, isMessageDialog = true)
+            }
+
+            is IOTCommandResult.Success -> {
+                if (cmdStr.contains("method=0")) {
+                    initElevationMaskData(result.data as ElevationMaskData)
+                } else {
+                    // 保存成功，检查是否还有指令需要执行
+                    if (!isCommunicationExecuting()) {
+                        processNavigateUp()
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 初始化截至高度角数据
+     */
+    private fun initElevationMaskData(data: ElevationMaskData) {
+        try {
+            val angleIndex = elevationAngleValueList.indexOf(data.angle)
+            if (angleIndex in elevationAngleList.indices) {
+                mStates.elevationAngle.set(elevationAngleList[angleIndex])
+            }
+            mStates.saveInitialState()
+        } catch (e: Exception) {
+            Timber.e(e, "初始化截至高度角数据出错")
+        }
+    }
+
     // ========== 数据初始化 ==========
 
     /**
@@ -473,7 +555,7 @@ class GT600GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
 
             // 星历值频率
             val ephTimeIndex = rtcmEphTimeValueList.indexOf(data.rtcmephtime)
-            if (ephTimeIndex in rtcmEphTimeList.indices){
+            if (ephTimeIndex in rtcmEphTimeList.indices) {
                 mStates.rtcmEphTime.set(rtcmEphTimeList[ephTimeIndex])
             }
 
@@ -518,6 +600,16 @@ class GT600GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
     // ========== 点击事件处理 ==========
 
     inner class ClickProxy : BaseClickProxy() {
+
+        /** 选择截至高度角 */
+        fun onElevationAngleSelected() {
+            showBottomListPopup(
+                elevationAngleList,
+                mStates.elevationAngle.get()
+            ) { text ->
+                mStates.elevationAngle.set(text)
+            }
+        }
 
         /** 选择双天线上报频率 */
         fun onDualAntennaReportFreqSelected() {

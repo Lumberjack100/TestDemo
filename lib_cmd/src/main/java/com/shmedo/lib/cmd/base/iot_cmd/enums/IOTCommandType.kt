@@ -363,16 +363,19 @@ enum class IOTCommandType(val value: String) {
     /** 获取设备状态 */
     MD_GET_EXSTATUS("md_getExstatus"),
 
-    /** 获取/设置ENMEA输出内容及输出频率 */
-    MD_GET_NMEA_TIME("md_getnmeatime"),
-    MD_SET_NMEA_TIME("md_setnmeatime"),
+    /** 获取/设置 截至高度角参数 */
+    MD_ELEVATION_MASK("md_elevation_mask"),
+
+    /** 配置双天线参数（VTG输出） */
+    MD_CFG_NMEA_VTG_OUT("md_cfgnmeavtgout"),
 
     /** 获取/设置 GNSS 控制参数（RTCM参数） */
     MD_GET_GNSS_CTL("md_getgnssctl"),
     MD_SET_GNSS_CTL("md_setgnssctl"),
 
-    /** 配置双天线参数（VTG输出） */
-    MD_CFG_NMEA_VTG_OUT("md_cfgnmeavtgout"),
+    /** 获取/设置 NMEA输出内容及输出频率 */
+    MD_GET_NMEA_TIME("md_getnmeatime"),
+    MD_SET_NMEA_TIME("md_setnmeatime"),
 
     /** 获取/设置 串口配置置参数 */
     MD_GET_DB_GUART("md_getdbguart"),

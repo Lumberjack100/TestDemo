@@ -18,7 +18,7 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 class GT600GNSSConfigViewModel : BaseStateViewModel() {
 
     // ========== 1. 卫星信息 ==========
-    /** 截至高度角（暂不支持配置，页面保留但禁用） */
+    /** 截至高度角（单位：度） */
     val elevationAngle = NonNullObservableField("15°")
 
     // ========== 2. 双天线参数 ==========
@@ -65,6 +65,8 @@ class GT600GNSSConfigViewModel : BaseStateViewModel() {
     override fun saveInitialState() {
         isInitializing = true
         initialState = mapOf(
+            // 卫星信息-截至高度角
+            "elevationAngle" to elevationAngle.get(),
             // 双天线参数
             "dualAntennaSwitch" to dualAntennaSwitch.get().toString(),
             "dualAntennaReportFreq" to dualAntennaReportFreq.get(),
@@ -88,6 +90,7 @@ class GT600GNSSConfigViewModel : BaseStateViewModel() {
      */
     override fun registerField() {
         val allFields = listOf(
+            elevationAngle,
             dualAntennaSwitch,
             dualAntennaReportFreq,
             antennaDistance,
@@ -116,6 +119,7 @@ class GT600GNSSConfigViewModel : BaseStateViewModel() {
         if (isInitializing) return
         isDataModified.value = initialState.any { (key, value) ->
             when (key) {
+                "elevationAngle" -> elevationAngle.get() != value
                 "dualAntennaSwitch" -> dualAntennaSwitch.get().toString() != value
                 "dualAntennaReportFreq" -> dualAntennaReportFreq.get() != value
                 "antennaDistance" -> antennaDistance.get() != value
