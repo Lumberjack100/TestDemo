@@ -196,7 +196,9 @@ class GT600StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
             name = "内部温度",
             value = statusInfo.temp.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
             // 温度超出正常范围 (-20℃ ~ 70℃) 时显示警告色
-            textColorRes = if ((internalTemp > -20 && internalTemp < 70) || internalTemp == Double.MAX_VALUE) 0 else ColorUtils.getColor(R.color.warn_FF9D00),
+            textColorRes = if ((internalTemp > -20 && internalTemp < 70) || internalTemp == Double.MAX_VALUE) 0 else ColorUtils.getColor(
+                R.color.warn_FF9D00
+            ),
             unit = "℃"
         )
 
@@ -213,6 +215,21 @@ class GT600StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
     /**
      * 添加姿态信息分组
+     *
+     * 包含字段:
+     * - X轴角度: 设备在 X 轴方向的倾斜角度,单位 °
+     * - Y轴角度: 设备在 Y 轴方向的倾斜角度,单位 °
+     * - Z轴角度: 设备在 Z 轴方向的倾斜角度,单位 °
+     *
+     * 数据来源:
+     * - attach_data.MEMs: 倾角加速度模块状态 (OK/FAIL)
+     * - attach_data.memsRawData: 原始角度数据,格式为 "x,y,z"
+     *
+     * 数据处理逻辑:
+     * 1. 检查 MEMs 模块状态,如果包含 "FAIL" 则所有角度显示为占位符
+     * 2. 解析 memsRawData 字符串,按逗号分割获取三轴角度
+     * 3. 验证数据格式,确保有三个角度值
+     * 4. 空值或异常数据使用占位符显示
      */
     private fun addAttitudeInfoGroup(
         groupList: MutableList<Any>,
@@ -222,8 +239,8 @@ class GT600StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
         groupList.add(DeviceStatusInfoGroupItem("姿态信息"))
 
-        // 解析角度数据
-        val (xAngle, yAngle, zAngle) = Triple("", "", "")
+        // 解析三轴角度数据
+        val (xAngle, yAngle, zAngle) = parseAttitudeAngles(statusInfo)
 
         // X轴角度
         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -252,6 +269,42 @@ class GT600StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
     }
 
     /**
+     * 解析姿态角度数据
+     *
+     * 从设备状态信息中提取三轴角度值
+     *
+     * @param statusInfo 设备状态信息对象
+     * @return Triple<String, String, String> 依次为 X、Y、Z 轴角度值
+     *
+     * 解析规则:
+     * 1. 如果 MEMs 模块状态包含 "FAIL",返回空字符串
+     * 2. 解析 memsRawData 字符串 (格式: "x,y,z")
+     * 3. 验证分割后的数组长度为 3
+     * 4. 任何异常情况返回空字符串,由调用方使用占位符显示
+     */
+    private fun parseAttitudeAngles(statusInfo: GT600DeviceStatusInfo): Triple<String, String, String> {
+        // 检查 MEMs 模块状态
+        if (statusInfo.memsStatus.contains("FAIL", ignoreCase = true)) {
+            return Triple("", "", "")
+        }
+
+        // 解析原始角度数据
+        val angleValues = statusInfo.memsRawData.split(",")
+        
+        // 验证数据格式: 必须包含三个角度值
+        return if (angleValues.size == 3) {
+            Triple(
+                angleValues[0].trim(),
+                angleValues[1].trim(),
+                angleValues[2].trim()
+            )
+        } else {
+            // 数据格式异常,返回空值
+            Triple("", "", "")
+        }
+    }
+
+    /**
      * 添加模块信息分组
      *
      * 包含字段：
@@ -275,7 +328,9 @@ class GT600StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
             groupList,
             name = "GNSS模块",
             value = statusInfo.gnssStatus.uppercase().compareAndReturn("OK", "正常", "故障"),
-            textColorRes = if (statusInfo.gnssStatus.uppercase() == "OK") 0 else ColorUtils.getColor(R.color.error_FF4400)
+            textColorRes = if (statusInfo.gnssStatus.uppercase() == "OK") 0 else ColorUtils.getColor(
+                R.color.error_FF4400
+            )
         )
 
         // 倾角加速度模块
@@ -284,7 +339,9 @@ class GT600StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
             groupList,
             name = "倾角加速度模块",
             value = statusInfo.memsStatus.uppercase().compareAndReturn("OK", "正常", "故障"),
-            textColorRes = if (statusInfo.memsStatus.uppercase() == "OK") 0 else ColorUtils.getColor(R.color.error_FF4400)
+            textColorRes = if (statusInfo.memsStatus.uppercase() == "OK") 0 else ColorUtils.getColor(
+                R.color.error_FF4400
+            )
         )
 
         // 4G 模块
@@ -293,7 +350,9 @@ class GT600StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
             groupList,
             name = "4G模块",
             value = statusInfo.lteModuleStatus.uppercase().compareAndReturn("OK", "正常", "故障"),
-            textColorRes = if (statusInfo.lteModuleStatus.uppercase() == "OK") 0 else ColorUtils.getColor(R.color.error_FF4400)
+            textColorRes = if (statusInfo.lteModuleStatus.uppercase() == "OK") 0 else ColorUtils.getColor(
+                R.color.error_FF4400
+            )
         )
 
         // 存储卡
@@ -302,7 +361,9 @@ class GT600StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
             groupList,
             name = "存储卡",
             value = statusInfo.storageCardStatus.uppercase().compareAndReturn("OK", "有", "无"),
-            textColorRes = if (statusInfo.storageCardStatus.uppercase() == "OK") 0 else ColorUtils.getColor(R.color.error_FF4400)
+            textColorRes = if (statusInfo.storageCardStatus.uppercase() == "OK") 0 else ColorUtils.getColor(
+                R.color.error_FF4400
+            )
         )
 
         // SIM 卡
@@ -311,7 +372,9 @@ class GT600StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
             groupList,
             name = "SIM卡",
             value = statusInfo.simStatus.uppercase().compareAndReturn("OK", "有", "无"),
-            textColorRes = if (statusInfo.simStatus.uppercase() == "OK") 0 else ColorUtils.getColor(R.color.error_FF4400),
+            textColorRes = if (statusInfo.simStatus.uppercase() == "OK") 0 else ColorUtils.getColor(
+                R.color.error_FF4400
+            ),
             isBottomItem = true // 该分组的最后一项
         )
     }

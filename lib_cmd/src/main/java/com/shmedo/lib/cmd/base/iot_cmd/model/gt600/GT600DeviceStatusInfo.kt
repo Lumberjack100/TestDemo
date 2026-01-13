@@ -24,8 +24,7 @@ import com.squareup.moshi.JsonClass
  *     {"key": "LTEMod", "value": "OK"},
  *     {"key": "SIM", "value": "OK"},
  *     {"key": "Sata", "value": "42"},
- *     {"key": "MEMs", "value": "5[0]----16.40--0.36--73.64----276.88--6.23--941.05---OK"},
- *     {"key": "sysinfo", {"tfcard_status": "OK", ...}}
+ *     {"key": "storage", "value": "28863.50,29600.00"}
  *   ]
  * }
  * ```
@@ -35,8 +34,8 @@ import com.squareup.moshi.JsonClass
  * - Sata: 卫星数量
  * - LTEMod: 4G 模块状态，OK 表示正常，Fail 表示故障
  * - SIM: SIM 卡状态，OK 表示有，Fail 表示无
- * - MEMs: 倾角加速度模块数据，格式: ID[errno]----X_angle--Y_angle--Z_angle----...---status
- * - sysinfo: 系统信息对象，包含 tfcard_status 等
+ * - MEMs: 倾角加速度模块数据，格式: Fail 或者 "28863.50,29600.00"
+ * 
  */
 @JsonClass(generateAdapter = true)
 data class GT600DeviceStatusInfo(
@@ -54,6 +53,8 @@ data class GT600DeviceStatusInfo(
     /** 4G 信号强度，单位 dBm */
     @Json(name = "4g_signal")
     val _4g_signal: String = IOTConstants.NULL_KEY,
+
+    var sw_version: String = IOTConstants.NULL_KEY, //固件版本
 
     /** 扩展状态数据列表 */
     val attach_data: List<AttachDataItemBean>? = arrayListOf()
@@ -81,21 +82,30 @@ data class GT600DeviceStatusInfo(
     /**
      * 获取卫星数量
      * 字段: attach_data.Sata
+     * 注意：将浮点数值转换为整数字符串（例如：51.0 -> 51）
      */
     val satelliteCount: String
-        get() = getAttachValue("Sata")
+        get() {
+            val rawValue = getAttachValue("Sata")
+            // 如果是占位符或空值，直接返回
+            if (rawValue == AppContants.PLACE_HOLDER_VALUE || rawValue.isBlank()) {
+                return rawValue
+            }
+            // 尝试转换为整数：先转 Double 再转 Int，避免 "51.0" 的情况
+            return rawValue.toDoubleOrNull()?.toInt()?.toString() ?: rawValue
+        }
 
     /**
      * 获取 GNSS 模块状态
      * 根据卫星数量判断：> 0 表示正常，= 0 表示异常
      */
     val gnssStatus: String
-        get() = if (getAttachValue("gnss").contains("OK", ignoreCase = true)) "OK" else "Fail"
+        get() = if ((satelliteCount.toIntOrNull() ?: 0) > 0) "OK" else "FAIL"
 
     /**
      * 获取倾角加速度模块原始数据
      * 字段: attach_data.MEMs
-     * 格式: ID[errno]----X_angle--Y_angle--Z_angle----accX--accY--accZ---status
+     * 格式:
      */
     val memsRawData: String
         get() = getAttachValue("MEMs")
@@ -105,7 +115,7 @@ data class GT600DeviceStatusInfo(
      * 包含 "OK" 表示正常，否则为故障
      */
     val memsStatus: String
-        get() = if (memsRawData.contains("OK", ignoreCase = true)) "OK" else "Fail"
+        get() = if (memsRawData.contains("FAIL", ignoreCase = true)) "FAIL" else "OK"
 
     /**
      * 获取 4G 模块状态
@@ -113,7 +123,7 @@ data class GT600DeviceStatusInfo(
      * OK: 正常, Fail: 故障
      */
     val lteModuleStatus: String
-        get() = if (getAttachValue("LTEMod").contains("OK", ignoreCase = true)) "OK" else "Fail"
+        get() = if (getAttachValue("LTEMod").contains("OK", ignoreCase = true)) "OK" else "FAIL"
 
     /**
      * 获取 SIM 卡状态
@@ -121,28 +131,20 @@ data class GT600DeviceStatusInfo(
      * OK: 有, Fail: 无
      */
     val simStatus: String
-        get() = if (getAttachValue("SIM").contains("OK", ignoreCase = true)) "OK" else "Fail"
+        get() = if (getAttachValue("SIM").contains("OK", ignoreCase = true)) "OK" else "FAIL"
+
+
+    /**
+     * 获取存储卡模块原始数据
+     * 字段: attach_data.storage
+     * 格式: Fail: 故障；或者有数值 "28863.50,29600.00"
+     */
+    val storageCardRawData: String
+        get() = getAttachValue("storage")
 
     /**
      * 获取存储卡状态
-     * 字段: attach_data.sysinfo.tfcard_status 或 从 sysinfo 对象中解析
      */
     val storageCardStatus: String
-        get() {
-            // 尝试从 attach_data 中查找 sysinfo
-            val sysInfoItem = attach_data?.find { it.key == "sysinfo" }
-            return when (val value = sysInfoItem?.value) {
-                is Map<*, *> -> {
-                    // 如果是 Map 对象，尝试获取 tfcard_status
-                    value["tfcard_status"]?.toString() ?: "Fail"
-                }
-
-                is String -> {
-                    // 如果是字符串，尝试解析
-                    if (value.contains("OK", ignoreCase = true)) "OK" else "Fail"
-                }
-
-                else -> "Fail"
-            }
-        }
+        get() = if (storageCardRawData.contains("FAIL", ignoreCase = true)) "FAIL" else "OK"
 }
