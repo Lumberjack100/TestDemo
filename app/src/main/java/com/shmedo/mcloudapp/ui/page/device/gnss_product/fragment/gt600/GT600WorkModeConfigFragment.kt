@@ -11,12 +11,15 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gt600.BasePositionConfigEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gt600.GnssModeConfigEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.gt600.BasePositionData
+import com.shmedo.lib.cmd.base.iot_cmd.model.gt600.GnssModeData
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
@@ -49,26 +52,27 @@ import timber.log.Timber
  * 4. 坐标输入（经度、纬度、高度）
  *
  * 使用指令：
+ * - MD_GNSSMODE: 查询/设置工作模式（站点类型：基站/测站）
  * - MD_GET_BASE_POSITION: 查询基站位置信息
  * - MD_SET_BASE_POSITION: 设置基站位置信息
  */
 class GT600WorkModeConfigFragment : OptimizedBaseIOTDeviceFragment() {
-    
+
     // ==================== 视图绑定和ViewModel ====================
-    
+
     private lateinit var binding: FragmentGt600WorkModeConfigBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: GT600WorkModeConfigViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     // ==================== 配置选项列表 ====================
-    
+
     /** 工作模式选项：基站、测站 */
     private val workModeList = arrayListOf("基站", "测站")
-    
+
     /** 坐标初始化选项：是、否 */
     private val coordinateInitializationList = arrayListOf("是", "否")
-    
+
     /** 初始化模式选项：自动、手动 */
     private val initializationModeList = arrayListOf("自动", "手动")
 
@@ -132,10 +136,18 @@ class GT600WorkModeConfigFragment : OptimizedBaseIOTDeviceFragment() {
     // ==================== 数据查询和保存 ====================
 
     /**
-     * 查询基站位置信息
+     * 查询工作模式和基站位置信息
+     * 1. 首先查询 GNSS 工作模式（站点类型）
+     * 2. 然后查询基站位置信息
      */
     private fun queryData() {
         val commands = listOf(
+            // 查询工作模式（站点类型：基站/测站）
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_GNSSMODE,
+                GnssModeConfigEntity.createQueryEntity().toCommandString()
+            ),
+            // 查询基站位置信息
             IOTCommandUtil.getCommand(IOTCommandType.MD_GET_BASE_POSITION)
         )
 
@@ -177,10 +189,11 @@ class GT600WorkModeConfigFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun validateInputData(): Boolean {
         // 仅当基站模式 + 坐标初始化为"是" + 手动模式时需要验证坐标输入
-        if (mStates.workMode.get() == "基站" 
+        if (mStates.workMode.get() == "基站"
             && mStates.coordinateInitialization.get() == "是"
-            && mStates.initializationMode.get() == "手动") {
-            
+            && mStates.initializationMode.get() == "手动"
+        ) {
+
             if (mStates.longitude.get().isEmpty()) {
                 showMessageDialog("请输入经度!")
                 return false
@@ -211,37 +224,37 @@ class GT600WorkModeConfigFragment : OptimizedBaseIOTDeviceFragment() {
     /**
      * 构建保存指令列表
      * @return 指令字符串列表
+     *
+     * 保存流程：
+     * 1. 设置工作模式（站点类型：基站/测站）- 使用 MD_GNSSMODE
+     * 2. 如果是基站模式，设置基站位置信息 - 使用 MD_SET_BASE_POSITION
      */
     private fun buildSaveCommands(): List<String> {
         val commands = mutableListOf<String>()
 
-        // 根据当前配置构建实体
-        // mode: 0=自动模式, 1=手动模式
-        // 注意：这里的 mode 对应初始化模式，不是工作模式（基站/测站）
-        val modeValue = if (mStates.initializationMode.get() == "手动") "1" else "0"
-        
-        val entity = if (mStates.workMode.get() == "基站" 
-            && mStates.coordinateInitialization.get() == "是"
-            && mStates.initializationMode.get() == "手动") {
-            // 手动模式：需要传递坐标
-            BasePositionConfigEntity(
-                mode = modeValue,
-                lat = mStates.latitude.get(),
-                lon = mStates.longitude.get(),
-                alt = mStates.altitude.get()
-            )
-        } else {
-            // 自动模式：只传递 mode
-            BasePositionConfigEntity(
-                mode = modeValue
-            )
-        }
-
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_BASE_POSITION,
-            entity.toCommandString()
+        // 1. 设置工作模式（站点类型）
+        // station: 0=基站, 1=测站
+        val stationValue = if (mStates.workMode.get() == "基站") "0" else "1"
+        val gnssModeCommand = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_GNSSMODE,
+            GnssModeConfigEntity.createSetEntity(stationValue).toCommandString()
         )
-        commands.add(command)
+        commands.add(gnssModeCommand)
+
+        // 2. 如果是基站模式且坐标初始化为"是"时
+        if (mStates.workMode.get() == "基站" && mStates.coordinateInitialization.get() == "是") {
+            val basePositionEntity = BasePositionConfigEntity(
+                mode = if (mStates.initializationMode.get() == "手动") "1" else "0",
+                lat = if (mStates.initializationMode.get() == "手动") mStates.latitude.get() else IOTConstants.NULL_KEY,
+                lon = if (mStates.initializationMode.get() == "手动") mStates.longitude.get() else IOTConstants.NULL_KEY,
+                alt = if (mStates.initializationMode.get() == "手动") mStates.altitude.get() else IOTConstants.NULL_KEY,
+            )
+            val basePositionCommand = IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_BASE_POSITION,
+                basePositionEntity.toCommandString()
+            )
+            commands.add(basePositionCommand)
+        }
 
         return commands
     }
@@ -253,6 +266,10 @@ class GT600WorkModeConfigFragment : OptimizedBaseIOTDeviceFragment() {
      */
     override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GNSSMODE -> {
+                handleGnssModeResponse(cmdStr)
+            }
+
             IOTCommandType.MD_GET_BASE_POSITION -> {
                 handleBasePositionQuery(cmdStr)
             }
@@ -264,6 +281,65 @@ class GT600WorkModeConfigFragment : OptimizedBaseIOTDeviceFragment() {
             else -> {
                 Timber.d("未处理的指令类型: ${IOTCommandUtil.extractCommandType(cmdStr)}")
             }
+        }
+    }
+
+    /**
+     * 处理 GNSS 工作模式指令响应
+     * 根据 method 参数判断是查询响应还是设置响应
+     */
+    private fun handleGnssModeResponse(cmdStr: String) {
+        // 判断是查询响应还是设置响应
+        if (cmdStr.contains("method=0")) {
+            // 查询响应
+            val result = iotParseManager.parse<GnssModeData>(
+                cmdStr,
+                IOTCommandType.MD_GNSSMODE
+            )
+            when (result) {
+                is IOTCommandResult.Failure -> {
+                    val errMsg = "查询工作模式出错: ${result.message}"
+                    handleFailureResult(errMsg, isMessageDialog = true)
+                }
+
+                is IOTCommandResult.Success -> {
+                    initGnssModeData(result.data)
+                }
+            }
+        } else {
+            // 设置响应
+            when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                is IOTCommandResult.Failure -> {
+                    val errMsg = "设置工作模式出错: ${result.message}"
+                    handleFailureResult(errMsg, isMessageDialog = true)
+                }
+
+                is IOTCommandResult.Success -> {
+                    // 设置成功，继续等待后续指令完成
+                    if (!isCommunicationExecuting()) {
+                        processNavigateUp()
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 初始化 GNSS 工作模式数据
+     * @param data 从设备查询到的工作模式数据
+     */
+    private fun initGnssModeData(data: GnssModeData) {
+        try {
+            // 解析 station 字段：0=基站，1=测站
+            data.station.toIntOrNull()?.let {
+                when (it) {
+                    0 -> mStates.workMode.set(workModeList[0]) // 基站
+                    1 -> mStates.workMode.set(workModeList[1]) // 测站
+                }
+            }
+            Timber.d("GNSS工作模式已加载: station=${data.station}, workMode=${mStates.workMode.get()}")
+        } catch (e: Exception) {
+            Timber.e(e, "解析GNSS工作模式数据失败")
         }
     }
 
@@ -328,7 +404,7 @@ class GT600WorkModeConfigFragment : OptimizedBaseIOTDeviceFragment() {
             // 如果有坐标值且不为0，则认为坐标已初始化
             val hasCoordinates = data.lat.toDoubleOrNull()?.let { it != 0.0 } == true
                     || data.lon.toDoubleOrNull()?.let { it != 0.0 } == true
-            
+
             if (mStates.initializationMode.get() == "手动" && hasCoordinates) {
                 mStates.coordinateInitialization.set(coordinateInitializationList[0]) // 是
             }

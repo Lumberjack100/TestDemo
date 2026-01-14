@@ -392,6 +392,9 @@ enum class IOTCommandType(val value: String) {
     MD_GET_NET_4G_USE("md_getnet4guse"),
     MD_SET_NET_4G_USE("md_setnet4guse"),
 
+    /** 获取/设置 GNSS工作模式（站点类型：基站/测站） */
+    MD_GNSSMODE("md_gnssmode"),
+
     /** 获取/设置 基站位置信息 */
     MD_GET_BASE_POSITION("md_getbaseposition"),
     MD_SET_BASE_POSITION("md_setbaseposition"),
