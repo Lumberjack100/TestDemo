@@ -73,16 +73,15 @@
                     <!-- 截至高度角（暂不支持，禁用状态） -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
+                        android:onClick="@{()->click.onElevationAngleSelected()}"
                         android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{false}"
                             android:text="截至高度角" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            textViewEnabled="@{false}"
                             android:text="@{stateVM.elevationAngle}"
                             tools:text="15°" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

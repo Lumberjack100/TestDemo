@@ -35,7 +35,7 @@ import com.squareup.moshi.JsonClass
  * - LTEMod: 4G 模块状态，OK 表示正常，Fail 表示故障
  * - SIM: SIM 卡状态，OK 表示有，Fail 表示无
  * - MEMs: 倾角加速度模块数据，格式: Fail 或者 "28863.50,29600.00"
- * 
+ *
  */
 @JsonClass(generateAdapter = true)
 data class GT600DeviceStatusInfo(
@@ -115,7 +115,7 @@ data class GT600DeviceStatusInfo(
      * 包含 "OK" 表示正常，否则为故障
      */
     val memsStatus: String
-        get() = if (memsRawData.contains("FAIL", ignoreCase = true)) "FAIL" else "OK"
+        get() = if (memsRawData.contains("OK", ignoreCase = true)) "OK" else "FAIL"
 
     /**
      * 获取 4G 模块状态
@@ -140,11 +140,28 @@ data class GT600DeviceStatusInfo(
      * 格式: Fail: 故障；或者有数值 "28863.50,29600.00"
      */
     val storageCardRawData: String
-        get() = getAttachValue("storage")
+        get() = getAttachValue("tfcard_storage")
 
     /**
      * 获取存储卡状态
+     * 字段: attach_data.sysinfo.tfcard_status 或 从 sysinfo 对象中解析
      */
     val storageCardStatus: String
-        get() = if (storageCardRawData.contains("FAIL", ignoreCase = true)) "FAIL" else "OK"
+        get() {
+            // 尝试从 attach_data 中查找 sysinfo
+            val sysInfoItem = attach_data?.find { it.key == "sysinfo" }
+            return when (val value = sysInfoItem?.value) {
+                is Map<*, *> -> {
+                    // 如果是 Map 对象，尝试获取 tfcard_status
+                    value["tfcard_status"]?.toString() ?: "Fail"
+                }
+
+                is String -> {
+                    // 如果是字符串，尝试解析
+                    if (value.contains("OK", ignoreCase = true)) "OK" else "Fail"
+                }
+
+                else -> "Fail"
+            }
+        }
 }

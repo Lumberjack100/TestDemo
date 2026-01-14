@@ -219,9 +219,9 @@ class GT600BaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         val storageValues = rawData.split(",")
 
         // 验证数据格式：必须包含两个数值（可用空间和总空间）
-        return if (storageValues.size == 2) {
-            val freeSpaceMB = storageValues[0].trim().toDoubleOrNull()
-            val totalSpaceMB = storageValues[1].trim().toDoubleOrNull()
+        return if (storageValues.size == 3) {
+            val totalSpaceMB = storageValues[0].trim().toDoubleOrNull()
+            val freeSpaceMB = storageValues[2].trim().toDoubleOrNull()
 
             if (freeSpaceMB != null && totalSpaceMB != null) {
 //                val freeSpaceGB = String.format("%.2f", freeSpaceMB / 1024)

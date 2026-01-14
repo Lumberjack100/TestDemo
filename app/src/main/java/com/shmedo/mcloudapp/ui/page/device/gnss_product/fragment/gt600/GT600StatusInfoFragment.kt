@@ -4,13 +4,21 @@ import android.os.Bundle
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gt600.GnssModeConfigEntity
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.gt600.GT600DeviceStatusInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.gt600.GnssModeData
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
@@ -52,7 +60,100 @@ class GT600StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         binding.llToolbar.toolbar.title = "状态信息"
     }
 
+    override fun queryStatusInfo() {
+        val commands = listOf(
+            // 查询工作模式（站点类型：基站/测站）
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_GNSSMODE,
+                GnssModeConfigEntity.createQueryEntity().toCommandString()
+            ),
+            // 查询设备状态
+            IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+        )
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.dialogConfig()
+            )
+        )
+    }
+
     // ==================== 数据处理 ====================
+
+    override fun handleCommandResponse(cmdStr: String) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GNSSMODE -> {
+                val result = iotParseManager.parse<GnssModeData>(
+                    cmdStr,
+                    IOTCommandType.MD_GNSSMODE
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询工作模式出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        initGnssModeData(result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
+                val result = iotParseManager.parse<String>(
+                    cmdStr,
+                    IOTCommandType.QUERY_DEVICE_STATUS
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询状态出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        initStatusInfo(result.data)
+                    }
+                }
+            }
+
+            else -> {
+                // 其他指令类型忽略
+            }
+        }
+    }
+
+    /**
+     * 初始化 GNSS 工作模式数据
+     * @param data 从设备查询到的工作模式数据
+     */
+    private fun initGnssModeData(data: GnssModeData) {
+        try {
+            val groupList = mutableListOf<Any>()
+
+            groupList.add(DeviceStatusInfoGroupItem("工作信息"))
+
+            // 解析 station 字段：0=基站，1=测站
+            val mode = when (data.station.toIntOrNull()) {
+                0 -> "基站"
+                1 -> "测站"
+                else -> AppContants.PLACE_HOLDER_VALUE
+            }
+
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "工作模式",
+                value = mode
+            )
+
+            binding.recyclerview.models = groupList
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
 
     /**
      * 初始化状态信息 - 处理 GT600 设备状态数据
@@ -74,12 +175,8 @@ class GT600StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
                 // 数据校验：确保状态信息不为空
                 if (statusInfo == null) {
-                    binding.refreshLayout.showError()
                     return@launchWithViewLifecycle
                 }
-
-                // 显示内容区域
-                binding.refreshLayout.showContent()
 
                 // 构建 UI 列表
                 val groupList = mutableListOf<Any>()
@@ -92,7 +189,10 @@ class GT600StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                 addModuleInfoGroup(groupList, statusInfo)
 
                 // 更新 RecyclerView 数据
-                binding.recyclerview.models = groupList
+                binding.recyclerview.bindingAdapter.apply {
+                    mutable.addAll(groupList)
+                    notifyItemRangeInserted(itemCount, groupList.size)
+                }
 
             } catch (e: Exception) {
                 Timber.e(e)
@@ -115,15 +215,6 @@ class GT600StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         groupList: MutableList<Any>,
         statusInfo: GT600DeviceStatusInfo
     ) {
-        groupList.add(DeviceStatusInfoGroupItem("工作信息"))
-
-        // 工作模式 - 暂用占位符表示
-        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-            groupList,
-            name = "工作模式",
-            value = AppContants.PLACE_HOLDER_VALUE
-        )
-
         // 卫星数量
         // 数据来源：attach_data.Sata
         val satelliteCount = statusInfo.satelliteCount.ifEmpty { "0" }
@@ -290,13 +381,13 @@ class GT600StatusInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
 
         // 解析原始角度数据
         val angleValues = statusInfo.memsRawData.split(",")
-        
+
         // 验证数据格式: 必须包含三个角度值
-        return if (angleValues.size == 3) {
+        return if (angleValues.size == 4) {
             Triple(
-                angleValues[0].trim(),
                 angleValues[1].trim(),
-                angleValues[2].trim()
+                angleValues[2].trim(),
+                angleValues[3].trim()
             )
         } else {
             // 数据格式异常,返回空值
