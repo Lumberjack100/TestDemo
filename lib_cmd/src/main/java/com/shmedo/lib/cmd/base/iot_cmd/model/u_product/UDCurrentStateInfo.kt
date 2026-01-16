@@ -90,6 +90,8 @@ data class UDCurrentStateInfo(
     val internalHumidity: String = IOTConstants.NULL_KEY, //内部湿度  "70.4"
     @Json(name = "ld_sta")
     val ldStatus: String = IOTConstants.NULL_KEY, //雷达模块状态   0：正常 -2：数据异常  -3：模块异常
+    @Json(name = "lld_sta")
+    val lldStatus: String = IOTConstants.NULL_KEY, //流量模块状态   0：正常 -2：数据异常  -3：模块异常
     @Json(name = "cam_sta")
     val cameraStatus: String = IOTConstants.NULL_KEY, //摄像头模块状态  0：正常 -2：数据异常  -3：模块异常
     @Json(name = "adxl_sta")

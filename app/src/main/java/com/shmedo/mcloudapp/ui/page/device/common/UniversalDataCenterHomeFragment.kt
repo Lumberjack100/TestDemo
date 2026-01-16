@@ -37,6 +37,8 @@ import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.databinding.ItemBeidouDataTransmissionBinding
 import com.shmedo.mcloudapp.databinding.ItemDataReportingPeriodBinding
+import com.shmedo.mcloudapp.databinding.ItemDataReportingPeriodGt600Binding
+import com.shmedo.mcloudapp.extensions.isGTSeries
 import com.shmedo.mcloudapp.extensions.isM20Series
 import com.shmedo.mcloudapp.extensions.isM50Series
 import com.shmedo.mcloudapp.extensions.isUIURSeries
@@ -86,6 +88,12 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
         return productType.isM20Series() || productType.isM50Series()
     }
 
+    /**
+     * 是否需要加载 GT 系列产品的上报周期配置布局
+     */
+    private fun isSupportGTSeriesReportingPeriodMode(): Boolean {
+        return productType.isGTSeries()
+    }
 
     override fun initRecyclerViewAdapterData() {
         // 根据产品类型添加相应的适配器类型支持
@@ -95,6 +103,9 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
         } else if (isSupportComplexReportingPeriodMode()) {
             // 复杂模式：支持复杂的上报周期配置
             binding.recyclerView.bindingAdapter.addType<DataReportingPeriodItem>(R.layout.item_data_reporting_period)
+        } else if (isSupportGTSeriesReportingPeriodMode()) {
+            // GT 系列：支持上报周期配置
+            binding.recyclerView.bindingAdapter.addType<DataReportingPeriodItem>(R.layout.item_data_reporting_period_gt600)
         }
 
         val groupList = mutableListOf<Any>()
@@ -105,7 +116,7 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
             groupList.add(DeviceStatusInfoGroupItem("上报周期"))
             groupList.add(beidouDataTransmissionItem)
             groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-        } else if (isSupportComplexReportingPeriodMode()) {
+        } else if (isSupportComplexReportingPeriodMode() || isSupportGTSeriesReportingPeriodMode()) {
             // 复杂模式：添加复杂的上报周期配置
             groupList.add(DeviceStatusInfoGroupItem("上报周期"))
             groupList.add(dataReportingPeriodItem)
@@ -116,7 +127,7 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
         groupList.addAll(getAdapterData())
 
         // 如果需要配置上报参数，添加提交按钮
-        if (isSupportComplexReportingPeriodMode() || isSupportSimpleReportingPeriodMode()) {
+        if (isSupportComplexReportingPeriodMode() || isSupportSimpleReportingPeriodMode() || isSupportGTSeriesReportingPeriodMode()) {
             groupList.add(GapItem(height = ConvertUtils.dp2px(60f)))
             groupList.add(ParamSubmitButtonItem(btnText = "确定"))
         }
@@ -128,6 +139,14 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
         when (itemViewType) {
             R.layout.item_data_reporting_period -> {
                 val binding = getBinding<ItemDataReportingPeriodBinding>()
+                // 设置数据绑定参数
+                binding.setVariable(BR.m, dataReportingPeriodItem)
+                binding.setVariable(BR.click, ClickProxy())
+                binding.executePendingBindings()
+            }
+
+            R.layout.item_data_reporting_period_gt600 -> {
+                val binding = getBinding<ItemDataReportingPeriodGt600Binding>()
                 // 设置数据绑定参数
                 binding.setVariable(BR.m, dataReportingPeriodItem)
                 binding.setVariable(BR.click, ClickProxy())
@@ -154,7 +173,7 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
         if (isSupportSimpleReportingPeriodMode()) {
             // 简单模式：获取基础的上报时间信息
             commands.add(IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TIME))
-        } else if (isSupportComplexReportingPeriodMode()) {
+        } else if (isSupportComplexReportingPeriodMode() || isSupportGTSeriesReportingPeriodMode()) {
             // 复杂模式：获取复杂的上报周期信息
             commands.add(IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TYPE))
         }
@@ -238,6 +257,30 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
                 timehour = timeHourValue,
                 timemin = if (dataReportingPeriodItem.getReportMethodStr().contains("定时定点"))
                     dataReportingPeriodItem.getReportStartTimeMinuteStr() else IOTConstants.NULL_KEY,
+                timegap = dataReportingPeriodItem.getReportIntervalStr()
+            )
+
+            commands.add(
+                IOTCommandUtil.getCommand(
+                    IOTCommandType.MD_SET_DATA_REPORT_TYPE,
+                    entity.toCommandString()
+                )
+            )
+        } else if (isSupportGTSeriesReportingPeriodMode()) {
+            val timeHourValue = try {
+                val timeStr = dataReportingPeriodItem.getReportStartTimeHourStr()
+                val hourStr = timeStr.split(":")[0]
+                hourStr.toInt().toString()
+            } catch (ex: Exception) {
+                Timber.e(ex, "解析起始时间小时失败")
+                IOTConstants.NULL_KEY
+            }
+
+            // GT 系列：保存上报周期配置
+            val entity = DataReportTypeEntity(
+                type = IOTConstants.NULL_KEY,
+                timehour = timeHourValue,
+                timemin = IOTConstants.NULL_KEY,
                 timegap = dataReportingPeriodItem.getReportIntervalStr()
             )
 
@@ -447,7 +490,7 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
                 }
                 try {
                     val value = dataReportingPeriodItem.getReportStartTimeMinuteStr().toDouble()
-                    if (value < 0 || value > 60) {
+                    if (value !in 0.0..60.0) {
                         showMessageDialog("起始时间（分钟）数值范围[0,60]!")
                         return false
                     }
@@ -463,7 +506,7 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
             }
             try {
                 val value = dataReportingPeriodItem.getReportIntervalStr().toDouble()
-                if (value < 0 || value > 1440) {
+                if (value !in 0.0..1440.0) {
                     showMessageDialog("时间间隔（分钟）数值范围[0,1440]!")
                     return false
                 }
@@ -473,6 +516,23 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
             }
 
             return true
+        }
+
+        if (isSupportGTSeriesReportingPeriodMode()) {
+            if (dataReportingPeriodItem.getReportIntervalStr().isEmpty()) {
+                showMessageDialog("请输入时间间隔（分钟）!")
+                return false
+            }
+            try {
+                val value = dataReportingPeriodItem.getReportIntervalStr().toDouble()
+                if (value !in 0.0..1440.0) {
+                    showMessageDialog("时间间隔（分钟）数值范围[0,1440]!")
+                    return false
+                }
+            } catch (ex: Exception) {
+                showMessageDialog("请输入正确的时间间隔（分钟）!")
+                return false
+            }
         }
 
         return true

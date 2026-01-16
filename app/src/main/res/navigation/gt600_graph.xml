@@ -7,9 +7,8 @@
 
     <include app:graph="@navigation/include_query_data_graph" />
     <include app:graph="@navigation/include_quick_config_cmd_graph" />
-    <include app:graph="@navigation/include_time_calibration_graph" />
     <include app:graph="@navigation/include_advanced_setting_graph" />
-    <include app:graph="@navigation/include_ble_command_debug_graph" />
+    <include app:graph="@navigation/include_time_calibration_graph" />
 
     <fragment
         android:id="@+id/gt600HomeFragment"
@@ -17,28 +16,52 @@
         android:label="GT600HomeFragment" />
 
     <fragment
-        android:id="@+id/defaultBaseInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.default_product.fragment.DefaultBaseInfoFragment"
-        android:label="DefaultBaseInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style" />
-
-    <fragment
-        android:id="@+id/defaultNetInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.default_product.fragment.DefaultNetInfoFragment"
-        android:label="DefaultNetInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style" />
-
-    <fragment
-        android:id="@+id/defaultStatusInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.default_product.fragment.DefaultStatusInfoFragment"
-        android:label="DefaultStatusInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style" />
-
-    <fragment
         android:id="@+id/commonLocationInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonLocationInfoFragment"
         android:label="CommonLocationInfoFragment"
         tools:layout="@layout/fragment_common_location_info" />
+
+    <fragment
+        android:id="@+id/commonSensorDataHistoryFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment"
+        android:label="CommonSensorDataHistoryFragment"
+        tools:layout="@layout/fragment_common_sensor_data_history" />
+
+    <fragment
+        android:id="@+id/gt600BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.GT600BaseInfoFragment"
+        android:label="GT600BaseInfoFragment" />
+
+    <!-- GT600 网络信息页面 -->
+    <fragment
+        android:id="@+id/gt600NetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.GT600NetInfoFragment"
+        android:label="GT600NetInfoFragment" />
+
+    <!-- GT600 状态信息页面 -->
+    <fragment
+        android:id="@+id/gt600StatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.GT600StatusInfoFragment"
+        android:label="GT600StatusInfoFragment" />
+
+    <!-- GT600 姿态监测页面 -->
+    <fragment
+        android:id="@+id/gt600LocationInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.Gt600LocationInfoFragment"
+        android:label="Gt600LocationInfoFragment"
+        tools:layout="@layout/fragment_gt600_location_info" />
+
+    <fragment
+        android:id="@+id/m20SWorkModelParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SWorkModelParamFragment"
+        android:label="M20SWorkModelParamFragment"
+        tools:layout="@layout/fragment_m20s_work_model_param" />
+
+    <fragment
+        android:id="@+id/m50NetworkConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50NetworkConfigFragment"
+        android:label="M50NetworkConfigFragment"
+        tools:layout="@layout/fragment_m50_network_config" />
 
     <fragment
         android:id="@+id/dataCenterHomeFragment"
@@ -52,33 +75,102 @@
         android:label="DataCenterParamFragment"
         tools:layout="@layout/fragment_data_center_param" />
 
-    <action
-        android:id="@+id/action_global_to_defaultBaseInfoFragment"
-        app:destination="@id/defaultBaseInfoFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
+    <fragment
+        android:id="@+id/m50GNSSConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50GNSSConfigFragment"
+        android:label="M50GNSSConfigFragment"
+        tools:layout="@layout/fragment_m50_gnss_config" />
 
-    <action
-        android:id="@+id/action_global_to_defaultNetInfoFragment"
-        app:destination="@id/defaultNetInfoFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
+    <!-- GT600 GNSS 配置页面 -->
+    <fragment
+        android:id="@+id/gt600GNSSConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.GT600GNSSConfigFragment"
+        android:label="GT600GNSSConfigFragment"
+        tools:layout="@layout/fragment_gt600_gnss_config" />
 
-    <action
-        android:id="@+id/action_global_to_defaultStatusInfoFragment"
-        app:destination="@id/defaultStatusInfoFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
+    <!-- GT600 串口配置页面 -->
+    <fragment
+        android:id="@+id/gt600SerialConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.GT600SerialConfigFragment"
+        android:label="GT600SerialConfigFragment"
+        tools:layout="@layout/fragment_gt600_serial_config" />
+
+    <!-- GT600 网络配置页面 -->
+    <fragment
+        android:id="@+id/gt600NetworkConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.GT600NetworkConfigFragment"
+        android:label="GT600NetworkConfigFragment"
+        tools:layout="@layout/fragment_gt600_network_config" />
+
+    <!-- GT600 工作模式配置页面 -->
+    <fragment
+        android:id="@+id/gt600WorkModeConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.gt600.GT600WorkModeConfigFragment"
+        android:label="GT600WorkModeConfigFragment"
+        tools:layout="@layout/fragment_gt600_work_mode_config" />
 
     <action
         android:id="@+id/action_global_to_commonLocationInfoFragment"
         app:destination="@id/commonLocationInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_commonSensorDataHistoryFragment"
+        app:destination="@id/commonSensorDataHistoryFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_gt600BaseInfoFragment"
+        app:destination="@id/gt600BaseInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- GT600 网络信息页面导航 -->
+    <action
+        android:id="@+id/action_global_to_gt600NetInfoFragment"
+        app:destination="@id/gt600NetInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+
+    <!-- GT600 状态信息页面导航 -->
+    <action
+        android:id="@+id/action_global_to_gt600StatusInfoFragment"
+        app:destination="@id/gt600StatusInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_gt600LocationInfoFragment"
+        app:destination="@id/gt600LocationInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_m20SWorkModelParamFragment"
+        app:destination="@id/m20SWorkModelParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_m50NetworkConfigFragment"
+        app:destination="@id/m50NetworkConfigFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -101,16 +193,44 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_quickConfigCommandParam"
-        app:destination="@id/quick_config_cmd_graph"
+        android:id="@+id/action_global_to_m50GNSSConfigFragment"
+        app:destination="@id/m50GNSSConfigFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
+    <!-- GT600 GNSS 配置页面导航 -->
     <action
-        android:id="@+id/action_global_to_time_calibration"
-        app:destination="@id/time_calibration_graph"
+        android:id="@+id/action_global_to_gt600GNSSConfigFragment"
+        app:destination="@id/gt600GNSSConfigFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- GT600 串口配置页面导航 -->
+    <action
+        android:id="@+id/action_global_to_gt600SerialConfigFragment"
+        app:destination="@id/gt600SerialConfigFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- GT600 网络配置页面导航 -->
+    <action
+        android:id="@+id/action_global_to_gt600NetworkConfigFragment"
+        app:destination="@id/gt600NetworkConfigFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- GT600 工作模式配置页面导航 -->
+    <action
+        android:id="@+id/action_global_to_gt600WorkModeConfigFragment"
+        app:destination="@id/gt600WorkModeConfigFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -125,8 +245,16 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_commandDebug"
-        app:destination="@id/ble_command_debug_graph"
+        android:id="@+id/action_global_to_quickConfigCommandParam"
+        app:destination="@id/quick_config_cmd_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_time_calibration"
+        app:destination="@id/time_calibration_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

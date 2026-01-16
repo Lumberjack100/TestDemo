@@ -16,6 +16,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentFollowDeviceListBinding
+import com.shmedo.mcloudapp.extensions.InsetsManager
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
@@ -61,6 +62,13 @@ class FollowDeviceListFragment : BaseFragment() {
         }
         initDeviceInfoAdapter()
         initRefresh()
+
+        InsetsManager.liftSpecificBottomView(
+            binding.root,
+            binding.recyclerviewDevice,
+            applyTo = InsetsManager.ApplyTo.Padding,
+            extraBottomPaddingDp = 25
+        )
     }
 
     private fun initDeviceInfoAdapter() {

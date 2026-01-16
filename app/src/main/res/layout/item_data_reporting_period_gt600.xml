@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.model.DataReportingPeriodItem" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseDataCenterHomeClickProxy" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/Common_ClickableItem_Layout_Style"
+            android:background="@drawable/layer_common_click_item_with_divider"
+            android:onClick="@{()->click.onReportingStartTimeClick()}">
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/Common_ClickableItem_Title_Style"
+                android:text="起始时间（小时）" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/Common_ClickableItem_Value_Style"
+                android:text="@{m.reportStartTimeHour}"
+                tools:text="08:00" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/Common_EditItem_Layout_Style"
+            android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/Common_ClickableItem_Title_Style"
+                android:text="时间间隔（分钟）"
+                tools:textColor="@color/title_text_color" />
+
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                style="@style/Common_EditItem_EditText_Style"
+                android:hint="数值范围[0-1440]"
+                android:inputType="number"
+                android:text="@={m.reportInterval}"
+                app:lengthFilter="@{4}" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</layout>

@@ -24,7 +24,16 @@ enum class NewDataCenterPlatform(
     GUIZHOU_ENCRYPT_PLATFORM("贵州加密平台", "12", null, null, null),
     CORS_PLATFORM("CORS平台", "13", null, null, null),
     BEIJING_LUAN_PLATFORM("北京路安平台", "14", "120.46.221.231", "120.46.221.231", "2443"),
-    GUANGDONG_FLOOD_PLATFORM("广东山洪预警平台", "15", "8.134.151.187", "8.134.151.187", "8069");
+    GUANGDONG_FLOOD_PLATFORM("广东山洪预警平台", "15", "8.134.151.187", "8.134.151.187", "8069"),
+    YUNNAN_DISASTER_ENCRYPT_PLATFORM(
+        "云南地灾加密平台",
+        "19",
+        "222.221.241.110",
+        "222.221.241.110",
+        "11884"
+    )
+
+    ;
 
     fun getPlatFormName(): String {
         return platFormName

@@ -31,6 +31,7 @@ import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.databinding.FragmentM50GnssConfigBinding
+import com.shmedo.mcloudapp.extensions.isM20Series
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
@@ -103,7 +104,7 @@ class M50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
 
     private fun loadStructurePicture() {
         val resId =
-            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) R.drawable.m20_structure else R.drawable.m50_structure
+            if (productType in ProductType.entries.filter { it.isM20Series() }) R.drawable.m20_structure else R.drawable.m50_structure
 
         // 动态加载大图片
         Glide.with(this)

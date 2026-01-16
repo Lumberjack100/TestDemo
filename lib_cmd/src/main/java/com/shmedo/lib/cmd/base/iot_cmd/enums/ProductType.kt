@@ -73,16 +73,16 @@ enum class ProductType(
 
     //GNSS产品线 E(分体机)
     GNSS_E_1(
-        prefix = "",
-        oldSuffix = "",
+        prefix = "E40",
+        oldSuffix = "B",
         newSuffix = "GE1",
         productName = "测地型GNSS接收机",
         productToken = "E40",
         description = "分体机"
     ),
     GNSS_E_2(
-        prefix = "",
-        oldSuffix = "",
+        prefix = "E40",
+        oldSuffix = "B",
         newSuffix = "GE2",
         productName = "测地型GNSS接收机",
         productToken = "E40S",
@@ -113,6 +113,70 @@ enum class ProductType(
         productName = "普适型GNSS接收机",
         productToken = "M20(全星频)",
         description = "全星频，对应UM960D版本"
+    ),
+    GNSS_HM_1(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "HM1",
+        productName = "普适型GNSS接收机",
+        productToken = "HM220(单北斗)",
+        description = "单北斗"
+    ),
+    GNSS_HM_2(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "HM2",
+        productName = "普适型GNSS接收机",
+        productToken = "HM220(全星频)",
+        description = "全星频"
+    ),
+    GNSS_GJ_1(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "GJ1",
+        productName = "普适型GNSS接收机",
+        productToken = "JTM220(单北斗)",
+        description = "单北斗"
+    ),
+    GNSS_GJ_2(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "GJ2",
+        productName = "普适型GNSS接收机",
+        productToken = "JTM220(全星频)",
+        description = "全星频"
+    ),
+    GNSS_HM_5(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "HM5",
+        productName = "一体式GNSS监测站",
+        productToken = "HM550(单北斗)",
+        description = "单北斗"
+    ),
+    GNSS_HM_6(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "HM6",
+        productName = "一体式GNSS监测站",
+        productToken = "HM550(全星频)",
+        description = "全星频"
+    ),
+    GNSS_GJ_5(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "GJ5",
+        productName = "一体式GNSS监测站",
+        productToken = "JTM550(单北斗)",
+        description = "单北斗"
+    ),
+    GNSS_GJ_6(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "GJ6",
+        productName = "一体式GNSS监测站",
+        productToken = "JTM550(全星频)",
+        description = "全星频"
     ),
     GNSS_M_5(
         prefix = "",
@@ -153,7 +217,15 @@ enum class ProductType(
         oldSuffix = "",
         newSuffix = "GT1",
         productName = "测地型GNSS接收机",
-        productToken = "GT600",
+        productToken = "GT600(单北斗)",
+        description = "对应当前GT600"
+    ),
+    GNSS_T_2(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "GT2",
+        productName = "测地型GNSS接收机",
+        productToken = "GT600(全星频)",
         description = "对应当前GT600"
     ),
 

@@ -497,8 +497,9 @@ class DeviceRequestViewModel(
      * 分页查询设备监测数据
      */
     fun queryMonitorDataListWithPage(
+        isQueryFile: Boolean = false,
         deviceToken: String = "",
-        sensorIDList: List<String>? = emptyList(),
+        sensorIDList: List<String> = emptyList(),
         begin: String = "",
         end: String = "",
         currentPage: Int = 1,
@@ -508,7 +509,7 @@ class DeviceRequestViewModel(
         var totalPage: Int = 0
         val dataList: MutableList<Any> = arrayListOf()
 
-        if (sensorIDList.isNullOrEmpty()) {
+        if (isQueryFile) {
             val remoteResult = deviceManageRepositoryImp.queryDeviceFileListWithPage(
                 deviceToken = deviceToken,
                 begin = begin,

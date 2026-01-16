@@ -730,6 +730,24 @@ abstract class OptimizedBaseDeviceStatusInfoStyleFragment : OptimizedBaseIOTDevi
                 }
             }
 
+            IOTCommandType.MD_GET_EXSTATUS -> {
+                val result = iotParseManager.parse<String>(
+                    cmdStr,
+                    IOTCommandType.MD_GET_EXSTATUS
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询状态出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        initStatusInfo(result.data)
+                    }
+                }
+            }
+
             else -> {
                 // 其他指令类型忽略
             }

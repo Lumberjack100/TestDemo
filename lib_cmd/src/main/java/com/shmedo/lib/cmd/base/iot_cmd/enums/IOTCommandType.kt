@@ -359,6 +359,48 @@ enum class IOTCommandType(val value: String) {
     MD_SET_ELEVATION_ANGLE("md_setmoduleparam"),
     // </editor-fold>
 
+    // <editor-fold desc="GT600 指令">
+    /** 获取设备状态 */
+    MD_GET_EXSTATUS("md_getExstatus"),
+
+    /** 获取/设置 截至高度角参数 */
+    MD_ELEVATION_MASK("md_elevation_mask"),
+
+    /** 配置双天线参数（VTG输出） */
+    MD_CFG_NMEA_VTG_OUT("md_cfgnmeavtgout"),
+
+    /** 获取/设置 GNSS 控制参数（RTCM参数） */
+    MD_GET_GNSS_CTL("md_getgnssctl"),
+    MD_SET_GNSS_CTL("md_setgnssctl"),
+
+    /** 获取/设置 NMEA输出内容及输出频率 */
+    MD_GET_NMEA_TIME("md_getnmeatime"),
+    MD_SET_NMEA_TIME("md_setnmeatime"),
+
+    /** 获取/设置 串口配置置参数 */
+    MD_GET_DB_GUART("md_getdbguart"),
+    MD_SET_DB_GUART("md_setdbguart"),
+
+    /** 获取/设置 功能开关参数 (传感器采集开关) */
+    MD_SENSOR("md_sensor"),
+
+    /** 获取/设置 有线网络配置置参数 */
+    MD_GET_ETHERNET("md_geteth0"),
+    MD_SET_ETHERNET("md_seteth0"),
+
+    /** 获取/设置 4G网络使用开关 */
+    MD_GET_NET_4G_USE("md_getnet4guse"),
+    MD_SET_NET_4G_USE("md_setnet4guse"),
+
+    /** 获取/设置 GNSS工作模式（站点类型：基站/测站） */
+    MD_GNSSMODE("md_gnssmode"),
+
+    /** 获取/设置 基站位置信息 */
+    MD_GET_BASE_POSITION("md_getbaseposition"),
+    MD_SET_BASE_POSITION("md_setbaseposition"),
+
+    // </editor-fold>
+
     // <editor-fold desc="E40 指令">
     /** 获取E40 的 CORS 服务参数 */
     E40_MD_GET_CORS("md_getntrip"),
@@ -372,17 +414,6 @@ enum class IOTCommandType(val value: String) {
     /** 设置E40 的板卡解算参数 */
     E40_MD_SET_BOARDSOLUTION("md_setembedams"),
 
-    /** 获取E40 的有线网络配置置参数 */
-    E40_MD_GET_ETHERNET("md_geteth0"),
-
-    /** 设置E40 的有线网络配置置参数 */
-    E40_MD_SET_ETHERNET("md_seteth0"),
-
-    /** 获取E40 的串口配置置参数 */
-    E40_MD_GET_DB_GUART("md_getdbguart"),
-
-    /** 设置E40 的串口配置置参数 */
-    E40_MD_SET_DB_GUART("md_setdbguart"),
 
     /** 获取E40 的GPS工作参数 */
     E40_MD_GET_GPS_PARAM("md_getgpsparam"),
@@ -390,17 +421,8 @@ enum class IOTCommandType(val value: String) {
     /** 设置E40 的GPS工作参数 */
     E40_MD_SET_GPS_PARAM("md_setgpsparam"),
 
-    /** 获取E40 的基站位置信息 */
-    E40_MD_GET_BASE_POSITION("md_getbaseposition"),
 
-    /** 设置E40 的基站位置信息 */
-    E40_MD_SET_BASE_POSITION("md_setbaseposition"),
 
-    /** 获取E40 NMEA输出内容及输出频率 */
-    E40_MD_GET_NMEA_TIME("md_getnmeatime"),
-
-    /** 设置E40 NMEA输出内容及输出频率 */
-    E40_MD_SET_NMEA_TIME("md_setnmeatime"),
     // </editor-fold>
 
     // <editor-fold desc="MR702 水利终端机通用指令">
@@ -586,6 +608,7 @@ enum class IOTCommandType(val value: String) {
 
     /** 获取裂缝初始值 */
     LF_MD_GET_INITIAL_VALUE("md_getlfinitial"),
+
     /** 手动设置裂缝初始值 */
     LF_MD_MANUAL_SET_INITIAL_VALUE("md_setlfinitial"),
 

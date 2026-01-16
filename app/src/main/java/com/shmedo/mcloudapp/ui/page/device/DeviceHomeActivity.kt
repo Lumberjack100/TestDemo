@@ -23,6 +23,9 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
 import com.shmedo.mcloudapp.extensions.InsetsManager
 import com.shmedo.mcloudapp.extensions.getAppViewModel
+import com.shmedo.mcloudapp.extensions.isESeries
+import com.shmedo.mcloudapp.extensions.isGTSeries
+import com.shmedo.mcloudapp.extensions.isM20Series
 import com.shmedo.mcloudapp.extensions.isM50Series
 import com.shmedo.mcloudapp.extensions.isUDSeries
 import com.shmedo.mcloudapp.model.CommunicateWay
@@ -119,7 +122,7 @@ class DeviceHomeActivity : BaseActivity() {
                 bundle2
             )
 
-            ProductType.M20, ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {
+            in ProductType.entries.filter { it.isM20Series() } -> {
                 navController.setGraph(
                     R.navigation.m20s_graph,
                     bundle2
@@ -129,6 +132,20 @@ class DeviceHomeActivity : BaseActivity() {
             in ProductType.entries.filter { it.isM50Series() } -> {
                 navController.setGraph(
                     R.navigation.m50_graph,
+                    bundle2
+                )
+            }
+
+            in ProductType.entries.filter { it.isGTSeries() } -> {
+                navController.setGraph(
+                    R.navigation.gt600_graph,
+                    bundle2
+                )
+            }
+
+            in ProductType.entries.filter { it.isESeries() } -> {
+                navController.setGraph(
+                    R.navigation.gt600_graph,
                     bundle2
                 )
             }
@@ -151,6 +168,13 @@ class DeviceHomeActivity : BaseActivity() {
                 bundle2
             )
 
+            ProductType.LB20S -> {
+                navController.setGraph(
+                    R.navigation.lb20s_graph,
+                    bundle2
+                )
+            }
+
             ProductType.LR200, ProductType.U_I_1, ProductType.U_L_1, ProductType.U_R_1 -> {
                 navController.setGraph(
                     R.navigation.u_product_graph,
@@ -161,20 +185,6 @@ class DeviceHomeActivity : BaseActivity() {
             in ProductType.entries.filter { it.isUDSeries() } -> {
                 navController.setGraph(
                     R.navigation.ud_graph,
-                    bundle2
-                )
-            }
-
-            ProductType.LB20S -> {
-                navController.setGraph(
-                    R.navigation.lb20s_graph,
-                    bundle2
-                )
-            }
-
-            ProductType.GNSS_T_1 -> {
-                navController.setGraph(
-                    R.navigation.gt600_graph,
                     bundle2
                 )
             }

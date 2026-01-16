@@ -105,11 +105,13 @@ class TimeCalibrationModule(
     desc: String = "获取当前设备时间",
     resID: Int = R.drawable.ic_module_time_calibration,
     navId: Int = 0,
+    isSupport: Boolean = true
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
     resID = resID,
     navId = navId,
+    isSupport = isSupport
 )
 
 class TelemetryDataModule(
@@ -141,11 +143,13 @@ class DataCenterModule(
     desc: String = "连接平台参数配置",
     resID: Int = R.drawable.ic_module_datacenter,
     navId: Int = 0,
+    isSupport: Boolean = true
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
     resID = resID,
     navId = navId,
+    isSupport = isSupport
 )
 
 class AdvancedSettingsModule(
@@ -153,11 +157,13 @@ class AdvancedSettingsModule(
     desc: String = "高级设置",
     resID: Int = R.drawable.ic_module_setting,
     navId: Int = 0,
+    isSupport: Boolean = true
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
     resID = resID,
     navId = navId,
+    isSupport = isSupport
 )
 
 class CommandDebugConfigModule(
@@ -165,11 +171,13 @@ class CommandDebugConfigModule(
     desc: String = "调试指令日志输出",
     resID: Int = R.drawable.ic_module_cmd_debug,
     navId: Int = R.id.action_global_to_commandDebug,
+    isSupport: Boolean = true
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
     resID = resID,
     navId = navId,
+    isSupport = isSupport
 )
 
 //<editor-fold desc="ADME 功能模块">

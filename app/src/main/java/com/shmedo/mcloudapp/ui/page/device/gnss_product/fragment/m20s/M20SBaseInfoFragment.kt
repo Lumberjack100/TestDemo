@@ -61,21 +61,21 @@ class M20SBaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
                     value = stateInfo.sn,
                 )
 
-                // 硬件版本
-                stateInfo.hw_version.notNullKey {
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                        groupList,
-                        name = "硬件版本",
-                        value = stateInfo.hw_version,
-                    )
-                }
-
                 // 固件版本
                 stateInfo.sw_version.notNullKey {
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
                         name = "固件版本",
                         value = stateInfo.sw_version,
+                    )
+                }
+
+                // 硬件版本
+                stateInfo.hw_version.notNullKey {
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                        groupList,
+                        name = "硬件版本",
+                        value = stateInfo.hw_version,
                     )
                 }
 

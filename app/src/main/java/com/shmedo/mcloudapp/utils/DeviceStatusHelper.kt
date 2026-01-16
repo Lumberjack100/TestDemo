@@ -569,6 +569,7 @@ object DeviceStatusHelper {
         deviceError?.let { resultMap ->
             resultMap["bat"]?.let { errorInfoList.add("电池故障") }
             resultMap["ld"]?.let { errorInfoList.add("雷达模块故障") }
+            resultMap["lld"]?.let { errorInfoList.add("流量模块故障") }
             resultMap["cam"]?.let { errorInfoList.add("摄像头模块故障") }
             resultMap["gnss"]?.let { errorInfoList.add("GNSS模块故障") }
             resultMap["qj"]?.let { errorInfoList.add("倾角加速度模块故障") }

@@ -13,5 +13,7 @@ Please generate a Conventional Chinese Commit message based on the following git
 
 ## Behavior
 1. 请认真阅读并参考：`docs/templates/COMMIT_MESSAGE_TEMPLATE.md` 中的提交消息模板和示例。
+2. 生成的提交信息中不要加上行号。
+3. 请使用简体中文提交信息。
 
 """

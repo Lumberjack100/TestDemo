@@ -10,20 +10,24 @@ import com.shmedo.mcloudapp.R
  */
 
 // ==================== GNSS 产品线 ====================
-
 /**
- * 判断是否为 M20 系列产品（包含 M20、GNSS_M_1、GNSS_M_2）
+ * 判断是否为 M20 系列产品（包含 M20、GNSS_M_1、GNSS_M_2、GNSS_HM_1、GNSS_HM_2、GNSS_GJ_1、GNSS_GJ_2）
  */
 fun ProductType.isM20Series(): Boolean {
-    return this == ProductType.M20 || this == ProductType.GNSS_M_1 || this == ProductType.GNSS_M_2
+    return this == ProductType.M20 ||
+            this == ProductType.GNSS_M_1 || this == ProductType.GNSS_M_2 ||
+            this == ProductType.GNSS_HM_1 || this == ProductType.GNSS_HM_2 ||
+            this == ProductType.GNSS_GJ_1 || this == ProductType.GNSS_GJ_2
 }
 
 /**
- * 判断是否为 M50 系列产品（GNSS_M_5、GNSS_M_6、GNSS_M_7、GNSS_M_8）
+ * 判断是否为 M50 系列产品（GNSS_M_5、GNSS_M_6、GNSS_M_7、GNSS_M_8、GNSS_HM_5、GNSS_HM_6、GNSS_GJ_5、GNSS_GJ_6）
  */
 fun ProductType.isM50Series(): Boolean {
     return this == ProductType.GNSS_M_5 || this == ProductType.GNSS_M_6 ||
-            this == ProductType.GNSS_M_7 || this == ProductType.GNSS_M_8
+            this == ProductType.GNSS_M_7 || this == ProductType.GNSS_M_8 ||
+            this == ProductType.GNSS_HM_5 || this == ProductType.GNSS_HM_6 ||
+            this == ProductType.GNSS_GJ_5 || this == ProductType.GNSS_GJ_6
 }
 
 /**
@@ -44,7 +48,7 @@ fun ProductType.isE50Pro(): Boolean {
  * 判断是否为 GT 系列产品（抗干扰）
  */
 fun ProductType.isGTSeries(): Boolean {
-    return this == ProductType.GNSS_T_1
+    return this == ProductType.GNSS_T_1 || this == ProductType.GNSS_T_2
 }
 
 /**
@@ -52,6 +56,42 @@ fun ProductType.isGTSeries(): Boolean {
  */
 fun ProductType.isGNSSProduct(): Boolean {
     return isM20Series() || isM50Series() || isESeries() || isE50Pro() || isGTSeries()
+}
+
+// ==================== 采集器产品线 ====================
+/**
+ * 判断是否为自组网报警网关
+ */
+fun ProductType.isGateway(): Boolean {
+    return this == ProductType.COLLECTOR_G_0
+}
+
+/**
+ * 判断是否为 多模融合网关 系列产品
+ */
+fun ProductType.isMultiModeGatewaySeries(): Boolean {
+    return this == ProductType.COLLECTOR_G_3 || this == ProductType.COLLECTOR_G_4
+}
+
+/**
+ * 判断是否为 DAS 系列产品
+ */
+fun ProductType.isDASBHYSeries(): Boolean {
+    return this == ProductType.DAS || this == ProductType.BHY
+}
+
+/**
+ * 判断是否为 MR701 产品
+ */
+fun ProductType.isMR701(): Boolean {
+    return this == ProductType.COLLECTOR_R_1
+}
+
+/**
+ * 判断是否为 MR702 产品
+ */
+fun ProductType.isMR702(): Boolean {
+    return this == ProductType.COLLECTOR_R_2
 }
 
 // ==================== UD 产品线 ====================
@@ -74,46 +114,6 @@ fun ProductType.isLL030(): Boolean {
  */
 fun ProductType.isUDSeries(): Boolean {
     return this == ProductType.U_D_1 || this == ProductType.U_D_2 || this == ProductType.U_D_3
-}
-
-// ==================== 采集器产品线 ====================
-
-/**
- * 判断是否为自组网报警网关
- */
-fun ProductType.isGateway(): Boolean {
-    return this == ProductType.COLLECTOR_G_0
-}
-
-/**
- * 判断是否为 多模融合网关 系列产品
- */
-fun ProductType.isMultiModeGatewaySeries(): Boolean {
-    return this == ProductType.COLLECTOR_G_3 || this == ProductType.COLLECTOR_G_4
-}
-
-
-/**
- * 判断是否为 MR701 产品
- */
-fun ProductType.isMR701(): Boolean {
-    return this == ProductType.COLLECTOR_R_1
-}
-
-
-/**
- * 判断是否为 DAS 系列产品
- */
-fun ProductType.isDASBHYSeries(): Boolean {
-    return this == ProductType.DAS || this == ProductType.BHY
-}
-
-
-/**
- * 判断是否为 MR702 产品
- */
-fun ProductType.isMR702(): Boolean {
-    return this == ProductType.COLLECTOR_R_2
 }
 
 // ==================== 其他产品线 ====================
@@ -154,14 +154,12 @@ fun ProductType.isLB20S(): Boolean {
 }
 
 // ==================== 功能特性判断 ====================
-
 /**
  * 判断是否支持抓拍图片功能
  */
 fun ProductType.supportsCaptureImage(): Boolean {
     return isUDSeries() || isM50Series()
 }
-
 
 /**
  * 判断是否支持固件升级
@@ -172,7 +170,6 @@ fun ProductType.isSupportFirmwareUpgrade(): Boolean {
 
 
 // ==================== 设备图标相关 ====================
-
 /**
  * 获取设备 Logo 资源 ID 列表（正常、报警、错误状态）
  */
@@ -271,7 +268,6 @@ fun ProductType.getDeviceLogoResIds(): List<Int> {
 }
 
 // ==================== 历史数据相关 ====================
-
 /**
  * 获取支持的监测数据类型配置
  */
@@ -280,7 +276,7 @@ fun ProductType.getSensorDataConfig(): SensorDataConfig? {
         isDR030Series() -> SensorDataConfig(
             modelNames = listOf("液位海拔", "空高距离", "安装角度", "抓拍图片"),
             modelTokens = listOf("904", "904", "206", "10001"),
-            valueDescs = listOf("高度（米）", "高度（米）", "角度（度）", "操作"),
+            valueDescs = listOf("高度(m)", "高度(m)", "角度(°)", "操作"),
             fieldPaths = listOf("liquid_surface_alt", "ullage", "z")
         )
 
@@ -296,29 +292,50 @@ fun ProductType.getSensorDataConfig(): SensorDataConfig? {
             ),
             modelTokens = listOf("904", "904", "217", "220", "233", "206", "10001"),
             valueDescs = listOf(
-                "高度（米）",
-                "高度（米）",
-                "瞬时流速（米/秒）",
-                "瞬时流量（立方米/秒）",
-                "累计流量（立方米）",
-                "角度（度）",
+                "高度(m)",
+                "高度(m)",
+                "瞬时流速(m/s)",
+                "瞬时流量(m³/s)",
+                "累计流量(m³)",
+                "角度(°)",
                 "操作"
             ),
             fieldPaths = listOf("liquid_surface_alt", "ullage", "value", "value", "totalQ", "z")
         )
 
         isM20Series() -> SensorDataConfig(
-            modelNames = listOf("合位移量", "安装角度"),
-            modelTokens = listOf("904", "103"),
-            valueDescs = listOf("高度（毫米）", "角度（度）"),
-            fieldPaths = listOf("liquid_surface_alt", "z")
+            modelNames = listOf("X位移量", "Y位移量", "Z位移量", "X轴角度", "Y轴角度", "Z轴角度"),
+            modelTokens = listOf("224", "224", "224", "103", "103", "103"),
+            valueDescs = listOf(
+                "位移(mm)",
+                "位移(mm)",
+                "位移(mm)",
+                "角度(°)",
+                "角度(°)",
+                "角度(°)"
+            ),
+            fieldPaths = listOf("x", "y", "z", "x", "y", "z")
         )
 
         isM50Series() -> SensorDataConfig(
-            modelNames = listOf("合位移量", "安装角度", "抓拍图片"),
-            modelTokens = listOf("904", "103", "10001"),
-            valueDescs = listOf("高度（毫米）", "角度（度）", "操作"),
-            fieldPaths = listOf("liquid_surface_alt", "z")
+            modelNames = listOf("X位移量", "Y位移量", "Z位移量", "X轴角度", "Y轴角度", "Z轴角度"),
+            modelTokens = listOf("224", "224", "224", "103", "103", "103"),
+            valueDescs = listOf(
+                "位移(mm)",
+                "位移(mm)",
+                "位移(mm)",
+                "角度(°)",
+                "角度(°)",
+                "角度(°)"
+            ),
+            fieldPaths = listOf("x", "y", "z", "x", "y", "z")
+        )
+
+        isGTSeries() -> SensorDataConfig(
+            modelNames = listOf("X轴角度", "Y轴角度", "Z轴角度"),
+            modelTokens = listOf("206", "206", "206"),
+            valueDescs = listOf("角度(°)", "角度(°)", "角度(°)"),
+            fieldPaths = listOf("x", "y", "z")
         )
 
         else -> null
