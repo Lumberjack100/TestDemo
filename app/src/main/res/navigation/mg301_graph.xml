@@ -40,11 +40,10 @@
         android:label="MG301NetInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
-    <!-- 状态信息页面 - 显示设备运行状态、信号强度等 -->
-    <!-- TODO: 创建 MG301StatusInfoFragment 类 -->
+    <!-- 状态信息页面 - 显示设备运行状态、模块状态等 -->
     <fragment
         android:id="@+id/mg301StatusInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702StatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mg301.MG301StatusInfoFragment"
         android:label="MG301StatusInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 

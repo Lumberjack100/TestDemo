@@ -2,6 +2,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.model.mg301
 
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
@@ -83,7 +84,8 @@ data class MG301DeviceStatusInfo(
     // ==================== 模块状态字段 ====================
 
     /** 4G 模块状态：OK 表示正常 */
-    val `4g`: String = IOTConstants.NULL_KEY,
+    @Json(name = "4g")
+    val _4g: String = IOTConstants.NULL_KEY,
 
     /** LoRa 模块状态：OK 表示正常 */
     val lora: String = IOTConstants.NULL_KEY,

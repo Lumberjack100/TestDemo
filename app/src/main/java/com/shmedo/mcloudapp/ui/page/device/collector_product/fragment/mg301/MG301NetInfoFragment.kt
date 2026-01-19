@@ -164,7 +164,6 @@ class MG301NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
             // 添加各信息分组
             add4GNetworkGroup(groupList, stateStr)
             addDataLinkGroup(groupList, stateStr)
-            addBeidouGroup(groupList)
 
             // 更新 RecyclerView 数据
             binding.recyclerview.models = groupList
@@ -236,9 +235,12 @@ class MG301NetInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
             DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                 groupList,
                 name = "待发数据数量",
-                value = if (satModInfo.waitnum > 0) satModInfo.waitnum.toString() else AppContants.PLACE_HOLDER_VALUE,
+                value = if (satModInfo.waitnum >= 0) satModInfo.waitnum.toString() else AppContants.PLACE_HOLDER_VALUE,
                 isBottomItem = true
             )
+
+            addBeidouGroup(groupList)
+
 
             // 追加到 RecyclerView
             binding.recyclerview.bindingAdapter.apply {
