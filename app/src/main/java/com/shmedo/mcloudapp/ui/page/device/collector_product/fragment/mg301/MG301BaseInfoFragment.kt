@@ -6,8 +6,12 @@ import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.mg301.MG301DeviceStatusInfo
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
+import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
+import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
@@ -44,6 +48,21 @@ class MG301BaseInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         super.initView(savedInstanceState)
         // 设置页面标题
         binding.llToolbar.toolbar.title = "基本信息"
+    }
+
+    override fun queryStatusInfo() {
+        val commands = mutableListOf<String>()
+
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "limittime=60")
+        commands.add(command)
+
+        sendCommandSequence(
+            commands = commands,
+            config = CommandSequenceConfig(
+                showLoadingDialog = false, // 使用刷新动画而不是加载动画弹窗
+                errorConfig = ErrorConfig.Companion.dialogConfig()
+            )
+        )
     }
 
     // ==================== 数据处理 ====================

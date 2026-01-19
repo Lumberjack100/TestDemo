@@ -168,9 +168,10 @@ data class MG301DeviceStatusInfo(
         }
 
         return try {
-            val year = productDate.substring(0, 4)
+            val year = productDate.take(4)
             val month = productDate.substring(4, 6)
             val day = productDate.substring(6, 8)
+
             "$year-$month-$day"
         } catch (e: Exception) {
             AppContants.PLACE_HOLDER_VALUE
