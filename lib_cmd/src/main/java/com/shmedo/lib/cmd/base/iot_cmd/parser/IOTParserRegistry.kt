@@ -111,6 +111,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UDFlowCalculationInfoPar
 import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UD485SerialPortInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UDRainGaugeSerialPortInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.ULInitialParamParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.mg301.MG301SatModParser
 
 /**
  * 创建者：gonghe
@@ -239,5 +240,7 @@ object IOTParserRegistry {
         // GT600 工作模式配置解析器
         BasePositionDataParser(),
         GnssModeDataParser(),
+        // MG301 解析器
+        MG301SatModParser(),
     )
 }

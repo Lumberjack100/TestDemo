@@ -34,10 +34,9 @@
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <!-- 网络信息页面 - 显示网络连接状态 -->
-    <!-- TODO: 创建 MG301NetInfoFragment 类 -->
     <fragment
         android:id="@+id/mg301NetInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702NetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mg301.MG301NetInfoFragment"
         android:label="MG301NetInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
