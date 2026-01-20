@@ -405,6 +405,13 @@ enum class IOTCommandType(val value: String) {
     /** 获取卫通模块状态 - 用于 MG301 网络信息页面卫通信息分组 */
     MD_GET_SATMOD("md_getsatmod"),
 
+    /**
+     * 卫星数据清空 - 清空卫星模组内所有待发数据
+     *
+     * 发送: $cmd=md_cleansatdata&number=0
+     */
+    MD_CLEAN_SAT_DATA("md_cleansatdata"),
+
     // </editor-fold>
 
     // <editor-fold desc="E40 指令">

@@ -163,11 +163,11 @@ class MG301HomeFragment : BaseDeviceHomeFragment() {
                     isSupport = false  // 置灰处理
                 ).toUnified(),
 
-                // 设备操作模块 - 设备控制操作（重启、召测等）
+                // 设备操作模块 - 设备控制操作（卫星数据清空等）
                 CommonModule(
                     name = "设备操作",
                     resID = R.drawable.ic_module_equip_operation,
-                    navId = R.id.action_global_to_mg301EquipmentOperationFragment
+                    navId = R.id.action_global_to_mg301DeviceOperationFragment
                 ).toUnified(),
 
                 // 时间校准模块 - 设备时间同步（复用通用时间校准页面）

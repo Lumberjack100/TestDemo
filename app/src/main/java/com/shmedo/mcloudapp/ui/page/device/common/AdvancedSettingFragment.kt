@@ -42,6 +42,7 @@ import com.shmedo.mcloudapp.extensions.isGT600Series
 import com.shmedo.mcloudapp.extensions.isGateway
 import com.shmedo.mcloudapp.extensions.isM20Series
 import com.shmedo.mcloudapp.extensions.isM50Series
+import com.shmedo.mcloudapp.extensions.isMultiModeGatewaySeries
 import com.shmedo.mcloudapp.extensions.isSupportFirmwareUpgrade
 import com.shmedo.mcloudapp.extensions.isUIProduct
 import com.shmedo.mcloudapp.extensions.launchAndRepeatWithViewLifecycle
@@ -301,6 +302,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
         return productType != ProductType.U_L_1
                 && productType != ProductType.COLLECTOR_G_0
                 && !productType.isGT600Series()
+                && !productType.isMultiModeGatewaySeries()
     }
 
     override fun createObserver() {

@@ -56,11 +56,7 @@
 
     <!-- 上报配置页面 - 配置数据上报策略 -->
     <!-- TODO: 创建 MG301ReportConfigFragment 类 -->
-    <fragment
-        android:id="@+id/mg301ReportConfigFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702ReportConfigFragment"
-        android:label="MG301ReportConfigFragment"
-        tools:layout="@layout/fragment_mr702_report_config" />
+
 
     <!-- 链路配置主页面 - 配置数据中心连接参数 -->
     <fragment
@@ -76,12 +72,11 @@
         tools:layout="@layout/fragment_data_center_param" />
 
 
-    <!-- 设备操作页面 - 设备控制操作（重启、召测等） -->
-    <!-- TODO: 创建 MG301EquipmentOperationFragment 类 -->
+    <!-- 设备操作页面 - 设备控制操作（卫星数据清空等） -->
     <fragment
-        android:id="@+id/mg301EquipmentOperationFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702EquipmentOperationFragment"
-        android:label="MG301EquipmentOperationFragment"
+        android:id="@+id/mg301DeviceOperationFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mg301.MG301DeviceOperationFragment"
+        android:label="MG301DeviceOperationFragment"
         tools:layout="@layout/fragment_mr702_equipment_operation" />
 
     <!-- ========== 导航动作定义 ========== -->
@@ -123,13 +118,7 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <!-- 跳转到上报配置页面 -->
-    <action
-        android:id="@+id/action_global_to_mg301ReportConfigFragment"
-        app:destination="@id/mg301ReportConfigFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
+
 
     <!-- 跳转到链路配置页面 -->
     <action
@@ -159,8 +148,8 @@
 
     <!-- 跳转到设备操作页面 -->
     <action
-        android:id="@+id/action_global_to_mg301EquipmentOperationFragment"
-        app:destination="@id/mg301EquipmentOperationFragment"
+        android:id="@+id/action_global_to_mg301DeviceOperationFragment"
+        app:destination="@id/mg301DeviceOperationFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
