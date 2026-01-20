@@ -90,8 +90,11 @@
     <string name="lora_station_node_edittext_input_filter">0123456789QWERTZUIOPASDFGHJKLYXCVBNM</string>
     <string name="data_modified_warn">数据已修改尚未保存，是否确认离开？</string>
     <string name="device_config_banner_text">当对设备进行各种功能配置时，只要变更了设备的配置参数，都需要重启设备才能使配置生效。</string>
-    <string name="collector_closed_warn">采集器已关闭(地址设置为0)！如果想再次配置传感器，请先到"采集配置"页面打开采集器(地址不为0)!</string>
+    <string name="collector_closed_warn">采集器已关闭(地址设置为0)！如果想再次配置传感器，请先到\"采集配置\"页面打开采集器(地址不为0)!</string>
 
+    <!-- LoRa 配置 -->
+    <string name="lora_channel_label">通讯信道</string>
+    <string name="lora_frequency_label">收发频点</string>
 
     <!-- USB Serial 通信 -->
     <string name="any_characters">数据格式: 任意字符</string>

@@ -152,7 +152,7 @@ class MG301HomeFragment : BaseDeviceHomeFragment() {
                 CommonModule(
                     name = "LORA配置",
                     resID = R.drawable.ic_module_lora_new,
-                    navId = R.id.action_global_to_mg301LoraSettingFragment
+                    navId = R.id.action_global_to_loraSettingFragment
                 ).toUnified(),
 
                 // 卫通配置模块 - 暂不支持，置灰处理
@@ -215,7 +215,7 @@ class MG301HomeFragment : BaseDeviceHomeFragment() {
                 nav().safeNavigate(
                     configModule.navId,
                     BaseDataCenterHomeFragment.newBundleArguments(
-                        centerNum = 5,  // MG301 支持5个数据中心
+                        centerNum = 4,  // MG301 支持4个数据中心
                         productType,
                         communicateWay,
                         deviceInfo,

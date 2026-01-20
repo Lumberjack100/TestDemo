@@ -6,6 +6,7 @@
     app:startDestination="@id/mg301HomeFragment">
 
     <!-- ========== 引入通用导航图 ========== -->
+    <include app:graph="@navigation/include_lora_graph" />
     <!-- 数据查询页面 -->
     <include app:graph="@navigation/include_query_data_graph" />
     <!-- 一键配置页面 -->
@@ -74,14 +75,6 @@
         android:label="DataCenterParamFragment"
         tools:layout="@layout/fragment_data_center_param" />
 
-
-    <!-- LORA配置页面 - 配置LoRa无线通信参数 -->
-    <!-- TODO: 创建 MG301LoraSettingFragment 类 -->
-    <fragment
-        android:id="@+id/mg301LoraSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702HomeFragment"
-        android:label="MG301LoraSettingFragment"
-        tools:layout="@layout/fragment_lora_setting" />
 
     <!-- 设备操作页面 - 设备控制操作（重启、召测等） -->
     <!-- TODO: 创建 MG301EquipmentOperationFragment 类 -->
@@ -157,8 +150,8 @@
 
     <!-- 跳转到LORA配置页面 -->
     <action
-        android:id="@+id/action_global_to_mg301LoraSettingFragment"
-        app:destination="@id/mg301LoraSettingFragment"
+        android:id="@+id/action_global_to_loraSettingFragment"
+        app:destination="@id/lora_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

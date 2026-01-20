@@ -53,14 +53,34 @@
                     android:paddingTop="@dimen/page_content_container_padding_top_12"
                     android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
+                    <!-- LORA型号选择项（仅 MG301 设备显示） -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
-                        onClickWithDebouncing="@{()->click.onChannelChooseClick()}"
+                        onClickWithDebouncing="@{()->click.onLoraTypeChooseClick()}"
+                        visible="@{stateVM.isLoraTypeSupport}"
                         android:background="@drawable/layer_common_click_item_top_corner_4_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="收发频点" />
+                            android:text="LORA型号" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+
+                            android:text="@{stateVM.loraType}"
+                            tools:text="F8L10C" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- 通讯信道/收发频点选择项 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onChannelChooseClick()}"
+                        android:background="@{stateVM.isLoraTypeSupport ? @drawable/layer_common_click_item_with_divider : @drawable/layer_common_click_item_top_corner_4_with_divider}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="@{stateVM.isLoraTypeSupport ? @string/lora_channel_label : @string/lora_frequency_label}"
+                            tools:text="通讯信道" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
