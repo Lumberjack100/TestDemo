@@ -137,14 +137,15 @@ class MG301HomeFragment : BaseDeviceHomeFragment() {
                 CommonModule(
                     name = "上报配置",
                     resID = R.drawable.ic_module_work_mode_new,
-                    navId = R.id.action_global_to_mg301ReportConfigFragment
+                    navId = 0,
+                    isSupport = false  // 置灰处理
                 ).toUnified(),
 
                 // 链路配置模块 - 配置数据中心连接参数
                 DataCenterModule(
                     name = "链路配置",
                     resID = R.drawable.ic_module_datacenter_new,
-                    navId = R.id.action_global_to_mg301DataCenterHomeFragment
+                    navId = R.id.action_global_to_dataCenterHomeFragment
                 ).toUnified(),
 
                 // LORA配置模块 - 配置LoRa无线通信参数

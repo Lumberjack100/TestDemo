@@ -236,14 +236,7 @@
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
-    <action
-        android:id="@+id/action_global_to_advancedSettingFragment"
-        app:destination="@id/advanced_setting_graph"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
+    <!-- 跳转到一键配置页面 (复用通用页面) -->
     <action
         android:id="@+id/action_global_to_quickConfigCommandParam"
         app:destination="@id/quick_config_cmd_graph"
@@ -252,6 +245,7 @@
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
+    <!-- 跳转到时间校准页面 (复用通用页面) -->
     <action
         android:id="@+id/action_global_to_time_calibration"
         app:destination="@id/time_calibration_graph"
@@ -260,6 +254,17 @@
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
+    <!-- 跳转到系统配置页面 (复用通用页面) -->
+    <action
+        android:id="@+id/action_global_to_advancedSettingFragment"
+        app:destination="@id/advanced_setting_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+
+    <!-- 跳转到数据查询页面 -->
     <action
         android:id="@+id/action_global_to_queryDeviceDataFragment"
         app:destination="@id/query_data_graph"

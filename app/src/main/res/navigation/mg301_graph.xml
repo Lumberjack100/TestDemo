@@ -14,8 +14,7 @@
     <include app:graph="@navigation/include_advanced_setting_graph" />
     <!-- 时间校准页面 -->
     <include app:graph="@navigation/include_time_calibration_graph" />
-    <!-- 蓝牙指令调试页面 -->
-    <include app:graph="@navigation/include_ble_command_debug_graph" />
+
 
     <!-- ========== MG301 页面定义 ========== -->
 
@@ -63,12 +62,18 @@
         tools:layout="@layout/fragment_mr702_report_config" />
 
     <!-- 链路配置主页面 - 配置数据中心连接参数 -->
-    <!-- TODO: 创建 MG301DataCenterHomeFragment 类 -->
     <fragment
-        android:id="@+id/mg301DataCenterHomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702DataCenterHomeFragment"
-        android:label="MG301DataCenterHomeFragment"
+        android:id="@+id/dataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment"
+        android:label="UniversalDataCenterHomeFragment"
         tools:layout="@layout/fragment_universal_data_center_home" />
+
+    <fragment
+        android:id="@+id/dataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment"
+        android:label="DataCenterParamFragment"
+        tools:layout="@layout/fragment_data_center_param" />
+
 
     <!-- LORA配置页面 - 配置LoRa无线通信参数 -->
     <!-- TODO: 创建 MG301LoraSettingFragment 类 -->
@@ -135,8 +140,16 @@
 
     <!-- 跳转到链路配置页面 -->
     <action
-        android:id="@+id/action_global_to_mg301DataCenterHomeFragment"
-        app:destination="@id/mg301DataCenterHomeFragment"
+        android:id="@+id/action_global_to_dataCenterHomeFragment"
+        app:destination="@id/dataCenterHomeFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dataCenterParamFragment"
+        app:destination="@id/dataCenterParamFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -182,15 +195,6 @@
     <action
         android:id="@+id/action_global_to_advancedSettingFragment"
         app:destination="@id/advanced_setting_graph"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <!-- 跳转到蓝牙指令调试页面 (仅蓝牙连接时可用) -->
-    <action
-        android:id="@+id/action_global_to_commandDebug"
-        app:destination="@id/ble_command_debug_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

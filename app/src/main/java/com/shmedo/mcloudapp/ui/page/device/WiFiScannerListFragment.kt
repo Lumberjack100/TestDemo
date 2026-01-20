@@ -33,8 +33,8 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentWifiScannerListBinding
 import com.shmedo.mcloudapp.databinding.ItemWifiNetworkBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
-import com.shmedo.mcloudapp.extensions.isESeries
-import com.shmedo.mcloudapp.extensions.isGTSeries
+import com.shmedo.mcloudapp.extensions.isE40Series
+import com.shmedo.mcloudapp.extensions.isGT600Series
 import com.shmedo.mcloudapp.extensions.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -322,7 +322,7 @@ class WiFiScannerListFragment : BaseFragment() {
      */
     private fun onWifiNetworkClick(network: DiscoveredWifiNetwork) {
         val type: ProductType = ProductType.valueByNewSuffix(network.ssid)
-        if (!type.isGTSeries() && !type.isESeries()) {
+        if (!type.isGT600Series() && !type.isE40Series()) {
             showMessageDialog("不支持的设备类型")
             return
         }

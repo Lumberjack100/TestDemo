@@ -23,8 +23,9 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
 import com.shmedo.mcloudapp.extensions.InsetsManager
 import com.shmedo.mcloudapp.extensions.getAppViewModel
-import com.shmedo.mcloudapp.extensions.isESeries
-import com.shmedo.mcloudapp.extensions.isGTSeries
+import com.shmedo.mcloudapp.extensions.isCommunicationTerminalProduct
+import com.shmedo.mcloudapp.extensions.isE40Series
+import com.shmedo.mcloudapp.extensions.isGT600Series
 import com.shmedo.mcloudapp.extensions.isM20Series
 import com.shmedo.mcloudapp.extensions.isM50Series
 import com.shmedo.mcloudapp.extensions.isMultiModeGatewaySeries
@@ -137,28 +138,37 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
-            in ProductType.entries.filter { it.isGTSeries() } -> {
+            in ProductType.entries.filter { it.isGT600Series() } -> {
                 navController.setGraph(
                     R.navigation.gt600_graph,
                     bundle2
                 )
             }
 
-            in ProductType.entries.filter { it.isESeries() } -> {
+            in ProductType.entries.filter { it.isE40Series() } -> {
                 navController.setGraph(
                     R.navigation.gt600_graph,
                     bundle2
                 )
             }
 
-            ProductType.COLLECTOR_G_0 -> {//自组网报警网关
+            ProductType.COLLECTOR_G_0,//自组网报警网关
+            in ProductType.entries.filter { it.isCommunicationTerminalProduct() } -> {
                 navController.setGraph(
                     R.navigation.gw_graph,
                     bundle2
                 )
             }
 
-            ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
+            in ProductType.entries.filter { it.isMultiModeGatewaySeries() } -> {
+                navController.setGraph(
+                    R.navigation.mg301_graph,
+                    bundle2
+                )
+            }
+
+            ProductType.COLLECTOR_R_1,
+            ProductType.DAS, ProductType.BHY -> {
                 navController.setGraph(
                     R.navigation.das_graph, bundle2
                 )
@@ -169,13 +179,6 @@ class DeviceHomeActivity : BaseActivity() {
                 bundle2
             )
 
-            in ProductType.entries.filter { it.isMultiModeGatewaySeries() } -> {
-                navController.setGraph(
-                    R.navigation.mg301_graph,
-                    bundle2
-                )
-            }
-
             ProductType.LB20S -> {
                 navController.setGraph(
                     R.navigation.lb20s_graph,
@@ -183,16 +186,17 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
-            ProductType.LR200, ProductType.U_I_1, ProductType.U_L_1, ProductType.U_R_1 -> {
+            in ProductType.entries.filter { it.isUDSeries() } -> {
                 navController.setGraph(
-                    R.navigation.u_product_graph,
+                    R.navigation.ud_graph,
                     bundle2
                 )
             }
 
-            in ProductType.entries.filter { it.isUDSeries() } -> {
+            ProductType.LR200,
+            ProductType.U_I_1, ProductType.U_L_1, ProductType.U_R_1 -> {
                 navController.setGraph(
-                    R.navigation.ud_graph,
+                    R.navigation.u_product_graph,
                     bundle2
                 )
             }

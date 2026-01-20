@@ -13,6 +13,8 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.ItemM50MeasureDataBinding
+import com.shmedo.mcloudapp.extensions.isE40Series
+import com.shmedo.mcloudapp.extensions.isGT600Series
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
@@ -42,10 +44,25 @@ class GT600HomeFragment : BaseDeviceHomeFragment() {
 
     override fun initData() {
         super.initData()
-        mHeadStates.productErrorResId.set(R.drawable.device_logo_gt600_error)
-        mHeadStates.productAlarmResId.set(R.drawable.device_logo_gt600_alarm)
-        mHeadStates.productOfflineResId.set(R.drawable.device_logo_gt600_offline)
-        mHeadStates.productNormalResId.set(R.drawable.device_logo_gt600)
+        if (productType.isGT600Series()) {
+            mHeadStates.productErrorResId.set(R.drawable.device_logo_gt600_error)
+            mHeadStates.productAlarmResId.set(R.drawable.device_logo_gt600_alarm)
+            mHeadStates.productOfflineResId.set(R.drawable.device_logo_gt600_offline)
+            mHeadStates.productNormalResId.set(R.drawable.device_logo_gt600)
+
+        } else if (productType.isE40Series()) {
+            mHeadStates.productErrorResId.set(R.drawable.device_logo_e40_error)
+            mHeadStates.productAlarmResId.set(R.drawable.device_logo_e40_alarm)
+            mHeadStates.productOfflineResId.set(R.drawable.device_logo_e40_offline)
+            mHeadStates.productNormalResId.set(R.drawable.device_logo_e40)
+
+        } else {
+            mHeadStates.productErrorResId.set(R.drawable.device_logo_default_error)
+            mHeadStates.productAlarmResId.set(R.drawable.device_logo_default_alarm)
+            mHeadStates.productOfflineResId.set(R.drawable.device_logo_default_offline)
+            mHeadStates.productNormalResId.set(R.drawable.device_logo_default)
+        }
+
         mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
     }
 
