@@ -412,6 +412,11 @@ enum class IOTCommandType(val value: String) {
      */
     MD_CLEAN_SAT_DATA("md_cleansatdata"),
 
+    /**
+     * 查询/设置 MS101 卫通参数 - 用于 MS101 卫通信息页面
+     */
+    MD_CFG_SAT_PARAM("md_cfgsatparam"),
+
     // </editor-fold>
 
     // <editor-fold desc="E40 指令">

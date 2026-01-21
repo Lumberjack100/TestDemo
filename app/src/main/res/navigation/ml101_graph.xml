@@ -50,11 +50,19 @@
         android:label="ML101RadioInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
+
     <!-- 状态信息页面 - 显示设备运行状态、信号强度等 -->
     <fragment
         android:id="@+id/ml101StatusInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.ML101StatusInfoFragment"
         android:label="ML101StatusInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style" />
+
+    <!-- MS101 卫通信息页面 - 显示卫星通信参数（仅 MS101 使用） -->
+    <fragment
+        android:id="@+id/ms101SatInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.MS101SatInfoFragment"
+        android:label="MS101SatInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <!-- 位置信息页面 - 复用通用位置信息页面，显示 GPS 坐标 -->
@@ -122,6 +130,15 @@
     <action
         android:id="@+id/action_global_to_commonLocationInfoFragment"
         app:destination="@id/commonLocationInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到 MS101 卫通信息页面 -->
+    <action
+        android:id="@+id/action_global_to_ms101SatInfoFragment"
+        app:destination="@id/ms101SatInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

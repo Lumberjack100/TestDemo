@@ -121,7 +121,7 @@ class ML101HomeFragment : BaseDeviceHomeFragment() {
                     name = if (isML101) "电台信息" else "卫通信息",
                     resID = R.drawable.ic_module_net_info,
                     iconSize = ConvertUtils.dp2px(34f),
-                    navId = R.id.action_global_to_ml101RadioInfoFragment
+                    navId = if (isML101) R.id.action_global_to_ml101RadioInfoFragment else R.id.action_global_to_ms101SatInfoFragment
                 ).toUnified(),
 
                 // 状态信息模块 - 显示设备运行状态、信号强度等
