@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    ML101 电台配置页面布局
+    创建者：gonghe
+    创建时间：2026/1/21
+
+    功能说明：
+    - 配置 LoRa 电台参数（工作模式、收发频点、发射功率、空中速率、地址等）
+    - 支持中心节点和终端节点两种工作模式
+    - 中心节点模式下目标地址自动设为 0 且不可编辑
+-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <!-- 工具栏 ViewModel -->
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <!-- 页面状态 ViewModel -->
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ML101RadioConfigViewModel" />
+
+        <!-- 点击事件代理 -->
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.ML101RadioConfigFragment.ClickProxy" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <!-- 顶部工具栏 -->
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
+
+        <!-- 下拉刷新布局 -->
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_container_padding_top_12"
+                    android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
+
+                    <!-- ========== 工作模式选择 ========== -->
+                    <!-- 中心节点：广播模式，目标地址自动为 0 -->
+                    <!-- 终端节点：点对点模式，目标地址可手动输入 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onWorkModeChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_top_corner_4_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="工作模式" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.workMode}"
+                            tools:text="中心节点" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- ========== 收发频点选择 ========== -->
+                    <!-- 频点范围：470MHz ~ 508MHz，步进 2MHz -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onFrequencyChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="收发频点" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.frequency}"
+                            tools:text="472MHz" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- ========== 发射功率选择 ========== -->
+                    <!-- 功率范围：0 ~ 20 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onTxPowerChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="发射功率" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.txPower}"
+                            tools:text="20" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- ========== 空中速率选择 ========== -->
+                    <!-- 速率选项：2.4Kbps / 19.2Kbps / 76.8Kbps -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onAirRateChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="空中速率" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.airRate}"
+                            tools:text="19.2Kbps" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- ========== 本机地址输入 ========== -->
+                    <!-- 地址范围：1 ~ 65535 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="本机地址" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="5"
+                            android:text="@={stateVM.localAddress}"
+                            tools:text="2" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- ========== 目标地址输入 ========== -->
+                    <!-- 中心节点模式：自动设为 0，不可编辑 -->
+                    <!-- 终端节点模式：可手动输入，范围 0 ~ 65535 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isTargetAddressEnabled}"
+                            android:text="目标地址" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isTargetAddressEnabled}"
+                            android:enabled="@{stateVM.isTargetAddressEnabled}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="5"
+                            android:text="@={stateVM.targetAddress}"
+                            tools:text="1" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- ========== 恢复默认配置按钮 ========== -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reset"
+                        style="@style/ResetButton_Style"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:onClick="@{()->click.onResetClick()}"
+                        android:text="@string/button_reset_text" />
+
+                    <!-- ========== 保存按钮 ========== -->
+                    <!-- 只有在数据被修改后才启用 -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_confirm"
+                        style="@style/SubmitButton_Style"
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:enabled="@{stateVM.isDataModified}"
+                        android:text="@string/button_save_text" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.core.widget.NestedScrollView>
+        </com.drake.brv.PageRefreshLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

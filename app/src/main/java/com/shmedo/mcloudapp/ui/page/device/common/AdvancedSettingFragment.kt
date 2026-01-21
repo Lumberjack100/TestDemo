@@ -38,6 +38,7 @@ import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentAdvancedSettingBinding
 import com.shmedo.mcloudapp.databinding.ItemAdvancedSettingBinding
+import com.shmedo.mcloudapp.extensions.isCommunicationTerminalProduct
 import com.shmedo.mcloudapp.extensions.isGT600Series
 import com.shmedo.mcloudapp.extensions.isGateway
 import com.shmedo.mcloudapp.extensions.isM20Series
@@ -303,6 +304,7 @@ class AdvancedSettingFragment : OptimizedBaseIOTDeviceFragment() {
                 && productType != ProductType.COLLECTOR_G_0
                 && !productType.isGT600Series()
                 && !productType.isMultiModeGatewaySeries()
+                && !productType.isCommunicationTerminalProduct()
     }
 
     override fun createObserver() {

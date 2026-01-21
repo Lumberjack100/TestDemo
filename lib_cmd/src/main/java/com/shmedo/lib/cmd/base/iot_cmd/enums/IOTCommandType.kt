@@ -417,6 +417,17 @@ enum class IOTCommandType(val value: String) {
      */
     MD_CFG_SAT_PARAM("md_cfgsatparam"),
 
+    /**
+     * 查询/设置 ML101 扩展串口参数 (RS485/RS232)
+     *
+     * 指令格式：
+     * - 查询：$cmd=md_cfgextserialparam&method=0
+     * - 设置：$cmd=md_cfgextserialparam&method=1&rs485_sw=1&rs485_mode=2&...
+     *
+     * 用于 ML101 RS485/RS232 配置页面
+     */
+    MD_CFG_EXT_SERIAL_PARAM("md_cfgextserialparam"),
+
     // </editor-fold>
 
     // <editor-fold desc="E40 指令">

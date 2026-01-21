@@ -51,7 +51,7 @@ class ML101RadioInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
      * freq_group 取值范围 0-19，对应频率 470-508MHz（间隔 2MHz）
      */
     private val frequencyLabels = (0..19).map { index ->
-        "${470.41 + index * 2}MHz"
+        "${470 + index * 2}MHz"
     }
 
     /**
