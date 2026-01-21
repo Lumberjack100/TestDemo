@@ -152,10 +152,16 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
-            ProductType.COLLECTOR_G_0,//自组网报警网关
-            in ProductType.entries.filter { it.isCommunicationTerminalProduct() } -> {
+            ProductType.COLLECTOR_G_0 -> {//自组网报警网关
                 navController.setGraph(
                     R.navigation.gw_graph,
+                    bundle2
+                )
+            }
+
+            in ProductType.entries.filter { it.isCommunicationTerminalProduct() } -> {
+                navController.setGraph(
+                    R.navigation.ml101_graph,
                     bundle2
                 )
             }
