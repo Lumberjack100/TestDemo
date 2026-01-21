@@ -178,7 +178,7 @@ class ML101HomeFragment : BaseDeviceHomeFragment() {
                 CommonModule(
                     name = if (isML101) "电台配置" else "卫通配置",
                     resID = if (isML101) R.drawable.ic_module_lora_new else R.drawable.ic_module_cors,
-                    navId = R.id.action_global_to_ml101RadioConfigFragment
+                    navId = if (isML101) R.id.action_global_to_ml101RadioConfigFragment else R.id.action_global_to_ms101SatConfigFragment
                 ).toUnified(),
 
                 // RS485 配置模块 - 配置 RS485 串口通信参数

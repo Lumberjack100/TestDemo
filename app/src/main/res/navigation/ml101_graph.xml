@@ -65,6 +65,13 @@
         android:label="MS101SatInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
+    <!-- MS101 卫通配置页面 - 配置卫星通信参数（仅 MS101 使用） -->
+    <fragment
+        android:id="@+id/ms101SatConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.MS101SatConfigFragment"
+        android:label="MS101SatConfigFragment"
+        tools:layout="@layout/fragment_ms101_sat_config" />
+
     <!-- 位置信息页面 - 复用通用位置信息页面，显示 GPS 坐标 -->
     <fragment
         android:id="@+id/commonLocationInfoFragment"
@@ -138,6 +145,15 @@
     <action
         android:id="@+id/action_global_to_ms101SatInfoFragment"
         app:destination="@id/ms101SatInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到 MS101 卫通配置页面 -->
+    <action
+        android:id="@+id/action_global_to_ms101SatConfigFragment"
+        app:destination="@id/ms101SatConfigFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

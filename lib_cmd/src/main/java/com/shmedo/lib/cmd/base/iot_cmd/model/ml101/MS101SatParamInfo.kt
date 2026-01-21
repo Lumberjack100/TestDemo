@@ -32,7 +32,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class MS101SatParamInfo(
-    /** 接入状态：0-已接入，1-未接入 */
+    /** 接入状态：0-未接入，1-已接入 */
     val status: Int = 0,
 
     /** 产品序列号 */
@@ -45,7 +45,52 @@ data class MS101SatParamInfo(
     val csq: String = IOTConstants.NULL_KEY,
 
     /** 待发数据数量，值范围 0-480 */
-    val waitnum: Int = 0
+    val waitnum: Int = 0,
+
+    // ==================== 配置相关字段 ====================
+
+    /**
+     * 卫星模组联网状态上报模式
+     * - 0: 关闭联网状态上报
+     * - 1: 开启联网状态上报
+     * - 2: 开启联网数据上报，并在数据发送成功后上报数据帧编号
+     * 默认值: 0
+     */
+    val cregmode: Int = 0,
+
+    /**
+     * 卫星模组休眠模式
+     * - 0: 不休眠
+     * - 1: 定时休眠
+     * - 2: 自动（有待发数据时定时休眠，无待发数据时一直休眠）
+     * 默认值: 0
+     */
+    val cpsmmode: Int = 0,
+
+    /**
+     * 卫星模组休眠模式等级
+     * 取值范围: 1-9
+     * 当 cpsmmode=0 时无效
+     * 默认值: 9
+     */
+    val cpsmlevel: Int = 9,
+
+    /**
+     * 用户数据存储区满时处置方式（数据存储溢出处理）
+     * - 0: 停止接收（存储满后不再接收新数据）
+     * - 1: 循环覆盖（存储器满后，覆盖最早的数据）
+     * 默认值: 0
+     */
+    val svmdmode: Int = 0,
+
+    /**
+     * 删除存储区待发数据
+     * - -1: 全部删除
+     * - 0: 不删除
+     * - 1~480: 指定删除，删除第 m 帧待发数据
+     * 默认值: 0
+     */
+    val cclrmode: Int = 0
 ) {
     /**
      * 获取卫星信号质量等级描述

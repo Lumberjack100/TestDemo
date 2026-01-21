@@ -10,10 +10,10 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.gnss_m.M50RadioParamEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.ml101.MS101SatParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50RadioParam
+import com.shmedo.lib.cmd.base.iot_cmd.model.ml101.MS101SatParamInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -22,46 +22,47 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
-import com.shmedo.mcloudapp.databinding.FragmentMl101RadioConfigBinding
+import com.shmedo.mcloudapp.databinding.FragmentMs101SatConfigBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.ML101RadioConfigViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.MS101SatConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 
 /**
  * 创建者：gonghe
  * 创建时间：2026/1/21
- * 描述：ML101 电台配置页面
+ * 描述：MS101 卫通配置页面
  *
  * 功能说明：
- * - 配置 LoRa 电台参数（工作模式、收发频点、发射功率、空中速率、地址等）
- * - 支持中心节点和终端节点两种工作模式
+ * - 配置卫通参数（联网状态上报、休眠模式、休眠等级、溢出处理、待发数据处理等）
+ * - 选择"指定删除"时，动态显示删除数据帧号输入框
  *
  * 核心业务逻辑：
- * - 中心节点模式：目标地址自动设为 0（广播模式），禁用输入
- * - 终端节点模式：目标地址可手动输入（点对点通信）
+ * - 卫星联网状态上报：关闭(0) / 开启(1) / 开启并上报数据帧号(2)
+ * - 卫星休眠模式：不休眠(0) / 定时休眠(1) / 自动休眠(2)
+ * - 卫星休眠模式等级：1-9（cpsmmode=0 时无效）
+ * - 数据存储溢出处理：停止接收(0) / 循环覆盖(1)
+ * - 待发数据处理：不删除(0) / 全部删除(-1) / 指定删除(1-480)
  *
- * 使用指令：IOTCommandType.M50_MD_RADIO_PARAM (md_cfgradioparam)
+ * 使用指令：IOTCommandType.MD_CFG_SAT_PARAM (md_cfgsatparam)
  * - 获取参数：method=0
  * - 设置参数：method=1
- *
- * 复用实体类：M50RadioParam（解析响应）、M50RadioParamEntity（构建请求）
  */
-class ML101RadioConfigFragment : OptimizedBaseIOTDeviceFragment() {
+class MS101SatConfigFragment : OptimizedBaseIOTDeviceFragment() {
 
     // ==================== 成员变量 ====================
 
     /** DataBinding 绑定对象 */
-    private lateinit var binding: FragmentMl101RadioConfigBinding
+    private lateinit var binding: FragmentMs101SatConfigBinding
 
     /** 工具栏 ViewModel */
     private val toolbarViewModel: ToolbarViewModel by viewModels()
 
     /** 页面状态 ViewModel */
-    private val mStates: ML101RadioConfigViewModel by viewModels()
+    private val mStates: MS101SatConfigViewModel by viewModels()
 
     /** IOT 指令解析管理器 */
     private val iotParseManager: IOTParserManager by inject()
@@ -76,46 +77,60 @@ class ML101RadioConfigFragment : OptimizedBaseIOTDeviceFragment() {
     private data class Option(val code: String, val label: String)
 
     /**
-     * 工作模式选项
-     * - 中心节点 (mode=0)：广播模式，所有同频设备均可收到
-     * - 终端节点 (mode=1)：点对点模式，仅目标地址设备可收到
-     *
-     * 注意：根据需求文档，mode 实际取值为 0-3（TypeA-TypeD），
-     * 这里简化为 0（中心节点）和 3（终端节点，使用 TypeD 模式）
+     * 卫星联网状态上报选项
+     * - 0: 关闭联网状态上报
+     * - 1: 开启联网状态上报
+     * - 2: 开启联网数据上报，并在数据发送成功后上报数据帧编号
      */
-    private val workModeOptions = listOf(
-        Option("0", "中心节点"),
-        Option("3", "终端节点")
+    private val cregModeOptions = listOf(
+        Option("0", "关闭"),
+        Option("1", "开启"),
+        Option("2", "开启并上报数据帧号")
     )
 
     /**
-     * 收发频点选项
-     * 频率范围：470MHz ~ 508MHz，步进 2MHz，共 20 个信道
-     * freq_group 取值：0-19 对应 470.41-508.41MHz
+     * 卫星休眠模式选项
+     * - 0: 不休眠
+     * - 1: 定时休眠
+     * - 2: 自动（有待发数据时定时休眠，无待发数据时一直休眠）
      */
-    private val frequencyOptions = (0..19).map { index ->
-        val freq = 470 + index * 2
-        Option(index.toString(), "${freq}MHz")
+    private val cpsmModeOptions = listOf(
+        Option("0", "不休眠"),
+        Option("1", "定时休眠"),
+        Option("2", "自动休眠")
+    )
+
+    /**
+     * 卫星休眠模式等级选项
+     * 取值范围：1-9
+     * cpsmmode=0 时无效，默认值 9
+     */
+    private val cpsmLevelOptions = (1..9).map { level ->
+        Option(level.toString(), level.toString())
     }
 
     /**
-     * 发射功率选项
-     * 功率范围：0 ~ 20，默认 20
+     * 数据存储溢出处理选项
+     * - 0: 停止接收（存储满后不再接收新数据）
+     * - 1: 循环覆盖（存储器满后，覆盖最早的数据）
      */
-    private val txPowerOptions = (0..20).map { power ->
-        Option(power.toString(), power.toString())
-    }
+    private val svmdModeOptions = listOf(
+        Option("0", "停止接收"),
+        Option("1", "循环覆盖")
+    )
 
     /**
-     * 空中速率选项
-     * - 1: 2.4kbps
-     * - 2: 19.2kbps（默认）
-     * - 3: 76.8kbps
+     * 待发数据处理选项
+     * - 0: 不删除
+     * - -1: 全部删除
+     * - 1~480: 指定删除（在此选项中，实际帧号通过输入框输入）
+     *
+     * 注意：选择"指定删除"时，需要在输入框中输入具体的帧号（1-480）
      */
-    private val airRateOptions = listOf(
-        Option("1", "2.4Kbps"),
-        Option("2", "19.2Kbps"),
-        Option("3", "76.8Kbps")
+    private val cclrModeOptions = listOf(
+        Option("0", "不删除"),
+        Option("-1", "全部删除"),
+        Option("specify", "指定删除")  // 特殊标记，实际值由输入框决定
     )
 
     // ==================== 生命周期方法 ====================
@@ -126,7 +141,7 @@ class ML101RadioConfigFragment : OptimizedBaseIOTDeviceFragment() {
      */
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_ml101_radio_config,
+            R.layout.fragment_ms101_sat_config,
             BR.stateVM,
             mStates
         )
@@ -139,9 +154,9 @@ class ML101RadioConfigFragment : OptimizedBaseIOTDeviceFragment() {
      * 设置工具栏标题、返回按钮事件、下拉刷新
      */
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentMl101RadioConfigBinding
+        binding = getBinding() as FragmentMs101SatConfigBinding
         // 设置页面标题
-        binding.llToolbar.toolbar.title = "电台配置"
+        binding.llToolbar.toolbar.title = "卫通配置"
         // 设置返回按钮事件
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
@@ -187,18 +202,18 @@ class ML101RadioConfigFragment : OptimizedBaseIOTDeviceFragment() {
      * 根据需求文档设置各参数的默认值
      */
     private fun resetDefaultParams() {
-        // 默认工作模式：终端节点
-        mStates.updateWorkMode(workModeOptions[1].label)
-        // 默认收发频点：472MHz（freq_group=1）
-        mStates.frequency.set(frequencyOptions[1].label)
-        // 默认发射功率：20
-        mStates.txPower.set(txPowerOptions.last().label)
-        // 默认空中速率：19.2kbps（airbaud=2）
-        mStates.airRate.set(airRateOptions[1].label)
-        // 默认本机地址：2
-        mStates.localAddress.set("2")
-        // 默认目标地址：1（终端节点模式下可编辑）
-        mStates.targetAddress.set("1")
+        // 默认卫星联网状态上报：关闭 (cregmode=0)
+        mStates.cregMode.set(cregModeOptions[0].label)
+        // 默认卫星休眠模式：不休眠 (cpsmmode=0)
+        mStates.cpsmMode.set(cpsmModeOptions[0].label)
+        // 默认卫星休眠模式等级：9 (cpsmlevel=9)
+        mStates.cpsmLevel.set(cpsmLevelOptions.last().label)
+        // 默认数据存储溢出处理：停止接收 (svmdmode=0)
+        mStates.svmdMode.set(svmdModeOptions[0].label)
+        // 默认待发数据处理：不删除 (cclrmode=0)
+        mStates.updateCclrMode(cclrModeOptions[0].label)
+        // 默认删除帧号为空
+        mStates.deleteFrameNo.set("")
     }
 
     // ==================== 点击事件处理 ====================
@@ -210,56 +225,68 @@ class ML101RadioConfigFragment : OptimizedBaseIOTDeviceFragment() {
     inner class ClickProxy : BaseClickProxy() {
 
         /**
-         * 工作模式选择点击事件
-         * 弹出底部选择器，切换中心节点/终端节点模式
+         * 卫星联网状态上报选择点击事件
+         * 弹出底部选择器，选择上报模式
          */
-        fun onWorkModeChooseClick() {
+        fun onCregModeChooseClick() {
             showBottomListPopup(
-                options = workModeOptions,
-                currentValue = mStates.workMode.get()
+                options = cregModeOptions,
+                currentValue = mStates.cregMode.get()
             ) { selectedLabel ->
-                // 使用 ViewModel 的方法更新工作模式
-                // 该方法会自动处理目标地址的启用/禁用逻辑
-                mStates.updateWorkMode(selectedLabel)
+                mStates.cregMode.set(selectedLabel)
             }
         }
 
         /**
-         * 收发频点选择点击事件
-         * 弹出底部选择器，选择 470-508MHz 范围内的频点
+         * 卫星休眠模式选择点击事件
+         * 弹出底部选择器，选择休眠模式
          */
-        fun onFrequencyChooseClick() {
+        fun onCpsmModeChooseClick() {
             showBottomListPopup(
-                options = frequencyOptions,
-                currentValue = mStates.frequency.get()
+                options = cpsmModeOptions,
+                currentValue = mStates.cpsmMode.get()
             ) { selectedLabel ->
-                mStates.frequency.set(selectedLabel)
+                mStates.cpsmMode.set(selectedLabel)
             }
         }
 
         /**
-         * 发射功率选择点击事件
-         * 弹出底部选择器，选择 0-20 范围内的功率值
+         * 卫星休眠模式等级选择点击事件
+         * 弹出底部选择器，选择等级 1-9
          */
-        fun onTxPowerChooseClick() {
+        fun onCpsmLevelChooseClick() {
             showBottomListPopup(
-                options = txPowerOptions,
-                currentValue = mStates.txPower.get()
+                options = cpsmLevelOptions,
+                currentValue = mStates.cpsmLevel.get()
             ) { selectedLabel ->
-                mStates.txPower.set(selectedLabel)
+                mStates.cpsmLevel.set(selectedLabel)
             }
         }
 
         /**
-         * 空中速率选择点击事件
-         * 弹出底部选择器，选择空中传输速率
+         * 数据存储溢出处理选择点击事件
+         * 弹出底部选择器，选择处理方式
          */
-        fun onAirRateChooseClick() {
+        fun onSvmdModeChooseClick() {
             showBottomListPopup(
-                options = airRateOptions,
-                currentValue = mStates.airRate.get()
+                options = svmdModeOptions,
+                currentValue = mStates.svmdMode.get()
             ) { selectedLabel ->
-                mStates.airRate.set(selectedLabel)
+                mStates.svmdMode.set(selectedLabel)
+            }
+        }
+
+        /**
+         * 待发数据处理选择点击事件
+         * 弹出底部选择器，选择处理方式
+         * 选择"指定删除"时会自动显示删除帧号输入框
+         */
+        fun onCclrModeChooseClick() {
+            showBottomListPopup(
+                options = cclrModeOptions,
+                currentValue = mStates.cclrMode.get()
+            ) { selectedLabel ->
+                mStates.updateCclrMode(selectedLabel)
             }
         }
 
@@ -288,7 +315,7 @@ class ML101RadioConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 return
             }
             // 发送配置指令
-            saveRadioParam()
+            saveSatParam()
         }
     }
 
@@ -331,48 +358,24 @@ class ML101RadioConfigFragment : OptimizedBaseIOTDeviceFragment() {
      * @return true: 校验通过，false: 校验失败
      */
     private fun validateInput(): Boolean {
-        val local = mStates.localAddress.get()
-        val target = mStates.targetAddress.get()
+        // 校验删除帧号（仅在"指定删除"模式下需要校验）
+        if (mStates.isDeleteFrameNoVisible.value == true) {
+            val frameNo = mStates.deleteFrameNo.get()
 
-        // 校验本机地址
-        if (local.isBlank()) {
-            showMessageDialog("请输入本机地址")
-            return false
-        }
-        if (!local.all { it.isDigit() }) {
-            showMessageDialog("本机地址仅支持数字")
-            return false
-        }
-        val localValue = local.toIntOrNull() ?: run {
-            showMessageDialog("本机地址格式不正确")
-            return false
-        }
-        if (localValue !in 1..65535) {
-            showMessageDialog("本机地址取值范围为 1-65535")
-            return false
-        }
-
-        // 校验目标地址（仅终端节点模式需要校验，中心节点自动为 0）
-        if (mStates.isTargetAddressEnabled.value == true) {
-            if (target.isBlank()) {
-                showMessageDialog("请输入目标地址")
+            if (frameNo.isBlank()) {
+                showMessageDialog("请输入删除数据帧号")
                 return false
             }
-            if (!target.all { it.isDigit() }) {
-                showMessageDialog("目标地址仅支持数字")
+            if (!frameNo.all { it.isDigit() }) {
+                showMessageDialog("删除数据帧号仅支持数字")
                 return false
             }
-            val targetValue = target.toIntOrNull() ?: run {
-                showMessageDialog("目标地址格式不正确")
+            val frameNoValue = frameNo.toIntOrNull() ?: run {
+                showMessageDialog("删除数据帧号格式不正确")
                 return false
             }
-            if (targetValue !in 0..65535) {
-                showMessageDialog("目标地址取值范围为 0-65535")
-                return false
-            }
-            // 校验本机地址与目标地址不能相同
-            if (localValue == targetValue) {
-                showMessageDialog("本机地址与目标地址不能相同")
+            if (frameNoValue !in 1..480) {
+                showMessageDialog("删除数据帧号取值范围为 1-480")
                 return false
             }
         }
@@ -383,33 +386,44 @@ class ML101RadioConfigFragment : OptimizedBaseIOTDeviceFragment() {
     // ==================== 通信方法 ====================
 
     /**
-     * 保存电台配置参数
+     * 保存卫通配置参数
      * 构建设置指令并发送到设备
      */
-    private fun saveRadioParam() {
+    private fun saveSatParam() {
         // 获取当前选项的代码值（用于发送指令）
-        val freqCode = frequencyOptions.firstOrNull { it.label == mStates.frequency.get() }?.code
-            ?: frequencyOptions[1].code
-        val txPowerCode = txPowerOptions.firstOrNull { it.label == mStates.txPower.get() }?.code
-            ?: txPowerOptions.last().code
-        val airRateCode = airRateOptions.firstOrNull { it.label == mStates.airRate.get() }?.code
-            ?: airRateOptions[1].code
+        val cregmodeCode = cregModeOptions.firstOrNull { it.label == mStates.cregMode.get() }?.code
+            ?: cregModeOptions[0].code
+        val cpsmmodeCode = cpsmModeOptions.firstOrNull { it.label == mStates.cpsmMode.get() }?.code
+            ?: cpsmModeOptions[0].code
+        val cpsmlevelCode = cpsmLevelOptions.firstOrNull { it.label == mStates.cpsmLevel.get() }?.code
+            ?: cpsmLevelOptions.last().code
+        val svmdmodeCode = svmdModeOptions.firstOrNull { it.label == mStates.svmdMode.get() }?.code
+            ?: svmdModeOptions[0].code
 
-        // 构建电台参数配置实体
-        // 注意：中心节点模式下，target_addr 已被自动设为 "0"
-        val entity = M50RadioParamEntity(
+        // 计算 cclrmode 的值
+        // - 不删除: 0
+        // - 全部删除: -1
+        // - 指定删除: 1~480（使用输入框的值）
+        val cclrmodeCode = when (mStates.cclrMode.get()) {
+            "不删除" -> "0"
+            "全部删除" -> "-1"
+            "指定删除" -> mStates.deleteFrameNo.get()
+            else -> "0"
+        }
+
+        // 构建卫通参数配置实体
+        val entity = MS101SatParamEntity(
             method = "1",  // 1: 设置参数
-            sw = "1",  // 工作开关始终开启
-            freq_group = freqCode,
-            airbaud = airRateCode,
-            txpower = txPowerCode,
-            local_addr = mStates.localAddress.get(),
-            target_addr = mStates.targetAddress.get()
+            cregmode = cregmodeCode,
+            cpsmmode = cpsmmodeCode,
+            cpsmlevel = cpsmlevelCode,
+            svmdmode = svmdmodeCode,
+            cclrmode = cclrmodeCode
         )
 
         // 发送指令
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.M50_MD_RADIO_PARAM,
+            IOTCommandType.MD_CFG_SAT_PARAM,
             entity.toCommandString()
         )
         sendCommandSequence(
@@ -430,12 +444,12 @@ class ML101RadioConfigFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 查询当前电台配置
+     * 查询当前卫通配置
      * 发送获取参数指令（method=0）
      */
     private fun queryData() {
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.M50_MD_RADIO_PARAM,
+            IOTCommandType.MD_CFG_SAT_PARAM,
             "method=0"
         )
         sendCommandSequence(
@@ -453,11 +467,11 @@ class ML101RadioConfigFragment : OptimizedBaseIOTDeviceFragment() {
      */
     override fun handleCommandResponse(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.M50_MD_RADIO_PARAM -> {
+            IOTCommandType.MD_CFG_SAT_PARAM -> {
                 // 根据响应类型选择解析方式
                 val result = if (cmdStr.contains("method=0"))
-                // 查询响应：解析为电台参数对象
-                    iotParseManager.parse<M50RadioParam>(cmdStr, IOTCommandType.M50_MD_RADIO_PARAM)
+                // 查询响应：解析为卫通参数对象
+                    iotParseManager.parse<MS101SatParamInfo>(cmdStr, IOTCommandType.MD_CFG_SAT_PARAM)
                 else
                 // 设置响应：解析为通用设置结果
                     iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
@@ -465,16 +479,16 @@ class ML101RadioConfigFragment : OptimizedBaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = if (cmdStr.contains("method=0"))
-                            "查询电台参数出错: ${result.message}"
+                            "查询卫通参数出错: ${result.message}"
                         else
-                            "设置电台参数出错: ${result.message}"
+                            "设置卫通参数出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
                     }
 
                     is IOTCommandResult.Success -> {
                         if (cmdStr.contains("method=0")) {
                             // 查询成功：更新界面数据
-                            initRadioData(result.data as M50RadioParam)
+                            initSatData(result.data as MS101SatParamInfo)
                         } else {
                             // 设置成功：检查是否还有指令需要执行
                             if (!isCommunicationExecuting()) {
@@ -490,50 +504,57 @@ class ML101RadioConfigFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     /**
-     * 初始化电台配置数据
+     * 初始化卫通配置数据
      * 将设备返回的参数填充到界面
      *
-     * @param data 解析后的电台参数对象
+     * @param data 解析后的卫通参数对象
      */
-    private fun initRadioData(data: M50RadioParam) {
-        // 解析收发频点
-        frequencyOptions.firstOrNull { it.code == data.freq_group }
-            ?.let { mStates.frequency.set(it.label) }
-            ?: run {
-                val resolved = data.freq_group.toIntOrNull()?.let { index ->
-                    frequencyOptions.getOrNull(index)
-                }
-                mStates.frequency.set(resolved?.label ?: frequencyOptions[1].label)
+    private fun initSatData(data: MS101SatParamInfo) {
+        // 解析卫星联网状态上报模式
+        cregModeOptions.firstOrNull { it.code == data.cregmode.toString() }
+            ?.let { mStates.cregMode.set(it.label) }
+            ?: run { mStates.cregMode.set(cregModeOptions[0].label) }
+
+        // 解析卫星休眠模式
+        cpsmModeOptions.firstOrNull { it.code == data.cpsmmode.toString() }
+            ?.let { mStates.cpsmMode.set(it.label) }
+            ?: run { mStates.cpsmMode.set(cpsmModeOptions[0].label) }
+
+        // 解析卫星休眠模式等级
+        cpsmLevelOptions.firstOrNull { it.code == data.cpsmlevel.toString() }
+            ?.let { mStates.cpsmLevel.set(it.label) }
+            ?: run { mStates.cpsmLevel.set(cpsmLevelOptions.last().label) }
+
+        // 解析数据存储溢出处理模式
+        svmdModeOptions.firstOrNull { it.code == data.svmdmode.toString() }
+            ?.let { mStates.svmdMode.set(it.label) }
+            ?: run { mStates.svmdMode.set(svmdModeOptions[0].label) }
+
+        // 解析待发数据处理模式
+        when {
+            data.cclrmode == 0 -> {
+                // 不删除
+                mStates.updateCclrMode("不删除")
+                mStates.deleteFrameNo.set("")
             }
 
-        // 解析发射功率
-        txPowerOptions.firstOrNull { it.code == data.txpower }
-            ?.let { mStates.txPower.set(it.label) }
-            ?: run {
-                val resolved = data.txpower.toIntOrNull()?.let { value ->
-                    txPowerOptions.getOrNull(value)
-                }
-                mStates.txPower.set(resolved?.label ?: txPowerOptions.last().label)
+            data.cclrmode == -1 -> {
+                // 全部删除
+                mStates.updateCclrMode("全部删除")
+                mStates.deleteFrameNo.set("")
             }
 
-        // 解析空中速率
-        airRateOptions.firstOrNull { it.code == data.airbaud }
-            ?.let { mStates.airRate.set(it.label) }
-            ?: run {
-                val resolved = data.airbaud.toIntOrNull()?.let { value ->
-                    airRateOptions.getOrNull(value - 1)
-                }
-                mStates.airRate.set(resolved?.label ?: airRateOptions[1].label)
+            data.cclrmode in 1..480 -> {
+                // 指定删除
+                mStates.updateCclrMode("指定删除")
+                mStates.deleteFrameNo.set(data.cclrmode.toString())
             }
 
-        // 解析本机地址
-        if (data.local_addr.isNotEmpty()) {
-            mStates.localAddress.set(data.local_addr)
-        }
-
-        // 解析目标地址
-        if (data.target_addr.isNotEmpty()) {
-            mStates.targetAddress.set(data.target_addr)
+            else -> {
+                // 默认不删除
+                mStates.updateCclrMode("不删除")
+                mStates.deleteFrameNo.set("")
+            }
         }
 
         // 保存初始状态，用于后续修改检测
