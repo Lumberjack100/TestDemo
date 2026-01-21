@@ -37,26 +37,23 @@
         tools:layout="@layout/fragment_universal_device_home_new" />
 
     <!-- 基本信息页面 - 显示设备型号、序列号等基本参数 -->
-    <!-- TODO: 创建 ML101BaseInfoFragment 类 -->
     <fragment
         android:id="@+id/ml101BaseInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.ML101BaseInfoFragment"
         android:label="ML101BaseInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <!-- 电台信息/卫通信息页面 - 显示 LoRa 电台或卫星通信参数 -->
-    <!-- TODO: 创建 ML101RadioInfoFragment 类 -->
     <fragment
         android:id="@+id/ml101RadioInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.ML101RadioInfoFragment"
         android:label="ML101RadioInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 
     <!-- 状态信息页面 - 显示设备运行状态、信号强度等 -->
-    <!-- TODO: 创建 ML101StatusInfoFragment 类 -->
     <fragment
         android:id="@+id/ml101StatusInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.ML101StatusInfoFragment"
         android:label="ML101StatusInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style" />
 

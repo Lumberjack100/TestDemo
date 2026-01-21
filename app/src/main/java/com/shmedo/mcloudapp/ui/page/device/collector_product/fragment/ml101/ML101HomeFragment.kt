@@ -119,7 +119,7 @@ class ML101HomeFragment : BaseDeviceHomeFragment() {
                 // ML101 显示 LoRa 电台参数，MS101 显示卫星通信参数
                 CommonModule(
                     name = if (isML101) "电台信息" else "卫通信息",
-                    resID = if (isML101) R.drawable.ic_module_lora_new else R.drawable.ic_module_cors,
+                    resID = R.drawable.ic_module_net_info,
                     iconSize = ConvertUtils.dp2px(34f),
                     navId = R.id.action_global_to_ml101RadioInfoFragment
                 ).toUnified(),
