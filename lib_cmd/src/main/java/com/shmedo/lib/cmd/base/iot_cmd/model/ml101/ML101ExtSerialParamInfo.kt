@@ -74,17 +74,17 @@ data class ML101ExtSerialParamInfo(
 ) {
     /**
      * RS485 是否开启
-     * 注意：开关值的含义与直觉相反，0-开, 1-关
+     * 开关值：0-关, 1-开
      * @return true-开启, false-关闭
      */
-    fun isRs485Enabled(): Boolean = rs485_sw == 0
+    fun isRs485Enabled(): Boolean = rs485_sw == 1
 
     /**
      * RS232 是否开启
-     * 注意：开关值的含义与直觉相反，0-开, 1-关
+     * 开关值：0-关, 1-开
      * @return true-开启, false-关闭
      */
-    fun isRs232Enabled(): Boolean = rs232_sw == 0
+    fun isRs232Enabled(): Boolean = rs232_sw == 1
 
     /**
      * 获取 RS485 功能模式文本

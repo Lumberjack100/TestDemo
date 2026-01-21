@@ -183,14 +183,14 @@ class ML101HomeFragment : BaseDeviceHomeFragment() {
 
                 // RS485 配置模块 - 配置 RS485 串口通信参数
                 CommonModule(
-                    name = "RS485配置",
+                    name = "485配置",
                     resID = R.drawable.ic_module_serial_port,
                     navId = R.id.action_global_to_ml101RS485ConfigFragment
                 ).toUnified(),
 
                 // RS232 配置模块 - 配置 RS232 串口通信参数
                 CommonModule(
-                    name = "RS232配置",
+                    name = "232配置",
                     resID = R.drawable.ic_module_serial_port,
                     navId = R.id.action_global_to_ml101RS232ConfigFragment
                 ).toUnified(),

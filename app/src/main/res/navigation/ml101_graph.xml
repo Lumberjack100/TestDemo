@@ -94,12 +94,11 @@
         tools:layout="@layout/fragment_ml101_rs485_config" />
 
     <!-- RS232 配置页面 - 配置 RS232 串口通信参数 -->
-    <!-- TODO: 创建 ML101RS232ConfigFragment 类 -->
     <fragment
         android:id="@+id/ml101RS232ConfigFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.ML101RS232ConfigFragment"
         android:label="ML101RS232ConfigFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style" />
+        tools:layout="@layout/fragment_ml101_rs232_config" />
 
 
     <!-- ========== 导航动作定义 ========== -->
