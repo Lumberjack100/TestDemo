@@ -113,6 +113,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UDRainGaugeSerialPortInf
 import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.ULInitialParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mg301.MG301SatModParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.ml101.MS101SatParamParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.ml101.ML101ExtSerialParamParser
 
 /**
  * 创建者：gonghe
@@ -245,5 +246,6 @@ object IOTParserRegistry {
         MG301SatModParser(),
         // ML101/MS101 解析器
         MS101SatParamParser(),
+        ML101ExtSerialParamParser(),
     )
 }

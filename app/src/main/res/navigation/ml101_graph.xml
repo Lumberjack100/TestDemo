@@ -87,12 +87,11 @@
         tools:layout="@layout/fragment_ml101_radio_config" />
 
     <!-- RS485 配置页面 - 配置 RS485 串口通信参数 -->
-    <!-- TODO: 创建 ML101RS485ConfigFragment 类 -->
     <fragment
         android:id="@+id/ml101RS485ConfigFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.ML101RS485ConfigFragment"
         android:label="ML101RS485ConfigFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style" />
+        tools:layout="@layout/fragment_ml101_rs485_config" />
 
     <!-- RS232 配置页面 - 配置 RS232 串口通信参数 -->
     <!-- TODO: 创建 ML101RS232ConfigFragment 类 -->
