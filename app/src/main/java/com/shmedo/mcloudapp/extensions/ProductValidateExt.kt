@@ -33,30 +33,24 @@ fun ProductType.isM50Series(): Boolean {
 /**
  * 判断是否为 E 系列产品（分体机：GNSS_E_1、GNSS_E_2）
  */
-fun ProductType.isESeries(): Boolean {
+fun ProductType.isE40Series(): Boolean {
     return this == ProductType.GNSS_E_1 || this == ProductType.GNSS_E_2
 }
 
 /**
  * 判断是否为 E50 Pro 产品
  */
-fun ProductType.isE50Pro(): Boolean {
-    return this == ProductType.GNSS_E_3
+fun ProductType.isE50ProSeries(): Boolean {
+    return this == ProductType.GNSS_E_3 || this == ProductType.GNSS_E_4
 }
 
 /**
  * 判断是否为 GT 系列产品（抗干扰）
  */
-fun ProductType.isGTSeries(): Boolean {
+fun ProductType.isGT600Series(): Boolean {
     return this == ProductType.GNSS_T_1 || this == ProductType.GNSS_T_2
 }
 
-/**
- * 判断是否为所有 GNSS 产品
- */
-fun ProductType.isGNSSProduct(): Boolean {
-    return isM20Series() || isM50Series() || isESeries() || isE50Pro() || isGTSeries()
-}
 
 // ==================== 采集器产品线 ====================
 /**
@@ -133,13 +127,6 @@ fun ProductType.isUIProduct(): Boolean {
 }
 
 /**
- * 判断是否为 U_R_1 产品
- */
-fun ProductType.isURProduct(): Boolean {
-    return this == ProductType.U_R_1
-}
-
-/**
  * 判断是否为 U_I_1/U_R_1 系列产品
  */
 fun ProductType.isUIURSeries(): Boolean {
@@ -151,6 +138,20 @@ fun ProductType.isUIURSeries(): Boolean {
  */
 fun ProductType.isLB20S(): Boolean {
     return this == ProductType.LB20S
+}
+
+/**
+ * 判断是否为 通信终端产品
+ */
+fun ProductType.isCommunicationTerminalProduct(): Boolean {
+    return this == ProductType.C_L_1 || this == ProductType.C_S_2
+}
+
+/**
+ * 判断是否为 降雨预报模组产品
+ */
+fun ProductType.isRainForecastModuleProduct(): Boolean {
+    return this == ProductType.C_R_4
 }
 
 // ==================== 功能特性判断 ====================
@@ -187,19 +188,19 @@ fun ProductType.getDeviceLogoResIds(): List<Int> {
             R.drawable.device_logo_m50_error
         )
 
-        isESeries() -> listOf(
+        isE40Series() -> listOf(
             R.drawable.device_logo_e40,
             R.drawable.device_logo_e40_alarm,
             R.drawable.device_logo_e40_error
         )
 
-        isE50Pro() -> listOf(
+        isE50ProSeries() -> listOf(
             R.drawable.device_logo_e50_pro,
             R.drawable.device_logo_e50_pro_alarm,
             R.drawable.device_logo_e50_pro_error
         )
 
-        isGTSeries() -> listOf(
+        isGT600Series() -> listOf(
             R.drawable.device_logo_gt600,
             R.drawable.device_logo_gt600_alarm,
             R.drawable.device_logo_gt600_error
@@ -257,6 +258,18 @@ fun ProductType.getDeviceLogoResIds(): List<Int> {
             R.drawable.device_logo_lb20s,
             R.drawable.device_logo_lb20s_alarm,
             R.drawable.device_logo_lb20s_error
+        )
+
+        isCommunicationTerminalProduct() -> listOf(
+            R.drawable.device_logo_ml101,
+            R.drawable.device_logo_ml101_alarm,
+            R.drawable.device_logo_ml101_error
+        )
+
+        isRainForecastModuleProduct() -> listOf(
+            R.drawable.device_logo_mdra1401,
+            R.drawable.device_logo_mdra1401_alarm,
+            R.drawable.device_logo_mdra1401_error
         )
 
         else -> listOf(
@@ -331,7 +344,7 @@ fun ProductType.getSensorDataConfig(): SensorDataConfig? {
             fieldPaths = listOf("x", "y", "z", "x", "y", "z")
         )
 
-        isGTSeries() -> SensorDataConfig(
+        isGT600Series() -> SensorDataConfig(
             modelNames = listOf("X轴角度", "Y轴角度", "Z轴角度"),
             modelTokens = listOf("206", "206", "206"),
             valueDescs = listOf("角度(°)", "角度(°)", "角度(°)"),

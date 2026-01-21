@@ -342,21 +342,6 @@ class GT600SerialConfigFragment : OptimizedBaseIOTDeviceFragment() {
         }
     }
 
-    /**
-     * 处理功能开关设置响应
-     */
-    private fun handleSensorSwitchSaveResponse(cmdStr: String) {
-        when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-            is IOTCommandResult.Failure -> {
-                val errMsg = "功能开关参数保存出错: ${result.message}"
-                handleFailureResult(errMsg, isMessageDialog = true)
-            }
-            else -> {
-                if (!isCommunicationExecuting()) processNavigateUp()
-            }
-        }
-    }
-
     // ========== 数据初始化 ==========
 
     /**

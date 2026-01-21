@@ -15,6 +15,7 @@ data class M50RadioParamEntity(
     val sw: String = IOTConstants.NULL_KEY,
     val freq_group: String = IOTConstants.NULL_KEY,
     val airbaud: String = IOTConstants.NULL_KEY,
+    val txpower: String = IOTConstants.NULL_KEY,//发射功率  [0 - 20]
     val local_addr: String = IOTConstants.NULL_KEY,
     val target_addr: String = IOTConstants.NULL_KEY
 ) {

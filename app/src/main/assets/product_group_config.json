@@ -128,6 +128,24 @@
           225,
           132
         ]
+      },
+      {
+        "productSeriesName": "MG301",
+        "productIdList": [
+          638
+        ]
+      },
+      {
+        "productSeriesName": "KT620",
+        "productIdList": [
+          638
+        ]
+      },
+      {
+        "productSeriesName": "MDRA1401",
+        "productIdList": [
+          641
+        ]
       }
     ]
   },

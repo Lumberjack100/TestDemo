@@ -591,7 +591,10 @@ class GT600GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
      * 根据 NMEA 频率值设置显示文本
      */
     private fun setNMEAFreqFromValue(value: String, setter: (String) -> Unit) {
-        val index = nmeaFreqValueList.indexOf(value)
+        //尝试转换为整数：先转 Double 再转 Int，避免 "5.0" 的情况
+        val tempValue = value.toDoubleOrNull()?.toInt()?.toString() ?: value
+
+        val index = nmeaFreqValueList.indexOf(tempValue)
         if (index in nmeaFreqList.indices) {
             setter(nmeaFreqList[index])
         }

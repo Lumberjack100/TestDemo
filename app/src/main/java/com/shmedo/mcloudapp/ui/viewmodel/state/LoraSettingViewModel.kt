@@ -5,9 +5,14 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseStateViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class LoraSettingViewModel : BaseStateViewModel() {
+    /** 是否支持目标地址配置 */
     val isTargetAddressSupport = NonNullObservableField(true)
 
-    val channel = NonNullObservableField("")//收发频点
+    /** 是否支持 LORA 型号配置（仅 MG301 设备显示） */
+    val isLoraTypeSupport = NonNullObservableField(false)
+
+    val loraType = NonNullObservableField("")//LORA型号
+    val channel = NonNullObservableField("")//收发频点/通讯信道
     val transmitPower = NonNullObservableField("")//发射功率
     val airSpeed = NonNullObservableField("")//空中速率
     val networkNumber = NonNullObservableField("")//网络编号
@@ -23,7 +28,7 @@ class LoraSettingViewModel : BaseStateViewModel() {
     override fun saveInitialState() {
         isInitializing = true
         initialState = mapOf(
-            "isTargetAddressSupport" to isTargetAddressSupport.get(),
+            "loraType" to loraType.get(),
             "channel" to channel.get(),
             "transmitPower" to transmitPower.get(),
             "airSpeed" to airSpeed.get(),
@@ -37,7 +42,7 @@ class LoraSettingViewModel : BaseStateViewModel() {
 
     override fun registerField() {
         listOf(
-            isTargetAddressSupport,
+            loraType,
             channel,
             transmitPower,
             airSpeed,
@@ -57,7 +62,7 @@ class LoraSettingViewModel : BaseStateViewModel() {
         if (isInitializing) return
         isDataModified.value = initialState.any { (key, value) ->
             when (key) {
-                "isTargetAddressSupport" -> isTargetAddressSupport.get() != value
+                "loraType" -> loraType.get() != value
                 "channel" -> channel.get() != value
                 "transmitPower" -> transmitPower.get() != value
                 "airSpeed" -> airSpeed.get() != value

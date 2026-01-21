@@ -344,3 +344,20 @@ class OneClickSilenceModule(
     navId = navId,
 )
 
+//<editor-fold desc="MG301 功能模块">
+/**
+ * MG301 卫星数据清空功能模块
+ * 用于清空卫星模组内所有待发数据
+ */
+class MG301SatDataClearModule(
+    name: String = "卫星数据清空",
+    desc: String = "清空卫星模组内所有待发数据",
+    resID: Int = R.drawable.ic_sample,
+    navId: Int = 0,
+) : DeviceFunctionModule(
+    name = name,
+    desc = desc,
+    resID = resID,
+    navId = navId,
+)
+// </editor-fold>

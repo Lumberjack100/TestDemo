@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    ML101/MS101 设备导航配置
+    创建者：gonghe
+    创建时间：2026/1/21
+
+    描述：一体化通信终端（ML101/MS101）的导航图配置
+    - ML101 (ProductType.C_L_1): 一体化 LoRa 通信终端
+    - MS101 (ProductType.C_S_2): 一体化卫星通信终端
+
+    两款设备共用同一套导航配置，功能模块的差异在 Fragment 代码中根据 ProductType 动态处理
+-->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ml101_graph"
+    app:startDestination="@id/ml101HomeFragment">
+
+    <!-- ========== 引入通用导航图 ========== -->
+    <!-- LoRa 配置页面（可复用于电台配置） -->
+    <include app:graph="@navigation/include_lora_graph" />
+    <!-- 一键配置页面 -->
+    <include app:graph="@navigation/include_quick_config_cmd_graph" />
+    <!-- 系统配置（高级设置）页面 -->
+    <include app:graph="@navigation/include_advanced_setting_graph" />
+    <!-- 时间校准页面 -->
+    <include app:graph="@navigation/include_time_calibration_graph" />
+
+
+    <!-- ========== ML101/MS101 页面定义 ========== -->
+
+    <!-- ML101/MS101 主页面 - 设备配置入口页面 -->
+    <fragment
+        android:id="@+id/ml101HomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.ML101HomeFragment"
+        android:label="ML101HomeFragment"
+        tools:layout="@layout/fragment_universal_device_home_new" />
+
+    <!-- 基本信息页面 - 显示设备型号、序列号等基本参数 -->
+    <fragment
+        android:id="@+id/ml101BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.ML101BaseInfoFragment"
+        android:label="ML101BaseInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style" />
+
+    <!-- 电台信息/卫通信息页面 - 显示 LoRa 电台或卫星通信参数 -->
+    <fragment
+        android:id="@+id/ml101RadioInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.ML101RadioInfoFragment"
+        android:label="ML101RadioInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style" />
+
+
+    <!-- 状态信息页面 - 显示设备运行状态、信号强度等 -->
+    <fragment
+        android:id="@+id/ml101StatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.ML101StatusInfoFragment"
+        android:label="ML101StatusInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style" />
+
+    <!-- MS101 卫通信息页面 - 显示卫星通信参数（仅 MS101 使用） -->
+    <fragment
+        android:id="@+id/ms101SatInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.MS101SatInfoFragment"
+        android:label="MS101SatInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style" />
+
+    <!-- 位置信息页面 - 复用通用位置信息页面，显示 GPS 坐标 -->
+    <fragment
+        android:id="@+id/commonLocationInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonLocationInfoFragment"
+        android:label="CommonLocationInfoFragment"
+        tools:layout="@layout/fragment_common_location_info" />
+
+    <!-- 电台配置/卫通配置页面 - 配置 LoRa 电台或卫星通信参数 -->
+    <!-- TODO: 创建 ML101RadioConfigFragment 类 -->
+    <fragment
+        android:id="@+id/ml101RadioConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702BaseInfoFragment"
+        android:label="ML101RadioConfigFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style" />
+
+    <!-- RS485 配置页面 - 配置 RS485 串口通信参数 -->
+    <!-- TODO: 创建 ML101RS485ConfigFragment 类 -->
+    <fragment
+        android:id="@+id/ml101RS485ConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702BaseInfoFragment"
+        android:label="ML101RS485ConfigFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style" />
+
+    <!-- RS232 配置页面 - 配置 RS232 串口通信参数 -->
+    <!-- TODO: 创建 ML101RS232ConfigFragment 类 -->
+    <fragment
+        android:id="@+id/ml101RS232ConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702BaseInfoFragment"
+        android:label="ML101RS232ConfigFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style" />
+
+
+    <!-- ========== 导航动作定义 ========== -->
+
+    <!-- 跳转到基本信息页面 -->
+    <action
+        android:id="@+id/action_global_to_ml101BaseInfoFragment"
+        app:destination="@id/ml101BaseInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到电台信息/卫通信息页面 -->
+    <action
+        android:id="@+id/action_global_to_ml101RadioInfoFragment"
+        app:destination="@id/ml101RadioInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到状态信息页面 -->
+    <action
+        android:id="@+id/action_global_to_ml101StatusInfoFragment"
+        app:destination="@id/ml101StatusInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到位置信息页面 -->
+    <action
+        android:id="@+id/action_global_to_commonLocationInfoFragment"
+        app:destination="@id/commonLocationInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到 MS101 卫通信息页面 -->
+    <action
+        android:id="@+id/action_global_to_ms101SatInfoFragment"
+        app:destination="@id/ms101SatInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到电台配置/卫通配置页面 -->
+    <action
+        android:id="@+id/action_global_to_ml101RadioConfigFragment"
+        app:destination="@id/ml101RadioConfigFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到 RS485 配置页面 -->
+    <action
+        android:id="@+id/action_global_to_ml101RS485ConfigFragment"
+        app:destination="@id/ml101RS485ConfigFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到 RS232 配置页面 -->
+    <action
+        android:id="@+id/action_global_to_ml101RS232ConfigFragment"
+        app:destination="@id/ml101RS232ConfigFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到一键配置页面（复用通用页面） -->
+    <action
+        android:id="@+id/action_global_to_quickConfigCommandParam"
+        app:destination="@id/quick_config_cmd_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到时间校准页面（复用通用页面） -->
+    <action
+        android:id="@+id/action_global_to_time_calibration"
+        app:destination="@id/time_calibration_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到系统配置（高级设置）页面（复用通用页面） -->
+    <action
+        android:id="@+id/action_global_to_advancedSettingFragment"
+        app:destination="@id/advanced_setting_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+</navigation>

@@ -71,6 +71,32 @@ enum class ProductType(
         description = ""
     ),
 
+    C_L_1(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "CL1",
+        productName = "一体化LoRa通信终端",
+        productToken = "ML101",
+        description = ""
+    ),
+    C_S_2(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "CS2",
+        productName = "一体化卫星通信终端",
+        productToken = "MS101",
+        description = ""
+    ),
+
+    C_R_4(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "CR4",
+        productName = "北斗降雨预报模组",
+        productToken = "MDRA1401",
+        description = ""
+    ),
+
     //GNSS产品线 E(分体机)
     GNSS_E_1(
         prefix = "E40",
@@ -92,8 +118,16 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "GE3",
-        productName = "GNSS基准站接收机",
-        productToken = "E50Pro",
+        productName = "地基增强GNSS接收机",
+        productToken = "E50Pro(单北斗)",
+        description = "分体机，基站接收机"
+    ),
+    GNSS_E_4(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "GE4",
+        productName = "地基增强GNSS接收机",
+        productToken = "E50Pro(全星频)",
         description = "分体机，基站接收机"
     ),
 
@@ -309,16 +343,6 @@ enum class ProductType(
         description = "对应型号 MD-LL030"
     ),
 
-    //INTEGRATION(一体式传感器产品线) L(裂缝计)
-    U_L_1(
-        prefix = "",
-        oldSuffix = "",
-        newSuffix = "UL1",
-        productName = "北斗林木生长监测终端",
-        productToken = "LR100-BD",
-        description = ""
-    ),
-
     //INTEGRATION(一体式传感器产品线) I(倾斜仪)
     U_I_1(
         prefix = "",
@@ -327,6 +351,16 @@ enum class ProductType(
         productName = "倾斜震动监测仪",
         productToken = "BHY3S-QJ",
         description = "三轴，对应BHY-3S"
+    ),
+
+    //INTEGRATION(一体式传感器产品线) L(裂缝计)
+    U_L_1(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "UL1",
+        productName = "北斗林木生长监测终端",
+        productToken = "LR100-BD",
+        description = ""
     ),
 
     //INTEGRATION(一体式传感器产品线) R(雨量计)
