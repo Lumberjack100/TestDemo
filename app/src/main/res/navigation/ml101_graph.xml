@@ -72,13 +72,12 @@
         android:label="CommonLocationInfoFragment"
         tools:layout="@layout/fragment_common_location_info" />
 
-    <!-- 电台配置/卫通配置页面 - 配置 LoRa 电台或卫星通信参数 -->
-    <!-- TODO: 创建 ML101RadioConfigFragment 类 -->
+    <!-- 电台配置页面 - 配置 LoRa 电台参数（工作模式、收发频点、发射功率等） -->
     <fragment
         android:id="@+id/ml101RadioConfigFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.ML101RadioConfigFragment"
         android:label="ML101RadioConfigFragment"
-        tools:layout="@layout/fragment_base_device_status_info_style" />
+        tools:layout="@layout/fragment_ml101_radio_config" />
 
     <!-- RS485 配置页面 - 配置 RS485 串口通信参数 -->
     <!-- TODO: 创建 ML101RS485ConfigFragment 类 -->

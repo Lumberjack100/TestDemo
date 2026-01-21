@@ -75,10 +75,10 @@ data class MS101SatParamInfo(
      * 判断是否已接入
      *
      * 注意：status 字段的含义与直觉相反
-     * - status = 0 表示已接入
-     * - status = 1 表示未接入
+     * - status = 0 表示未接入
+     * - status = 1 表示已接入
      *
      * @return true-已接入，false-未接入
      */
-    fun isConnected(): Boolean = status == 0
+    fun isConnected(): Boolean = status == 1
 }
