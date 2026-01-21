@@ -65,7 +65,7 @@ class MS101SatInfoFragment : OptimizedBaseDeviceStatusInfoStyleFragment() {
         commands.add(
             IOTCommandUtil.getCommand(
                 IOTCommandType.MD_CFG_SAT_PARAM,
-                mapOf("method" to "0")
+                "method=0"
             )
         )
 

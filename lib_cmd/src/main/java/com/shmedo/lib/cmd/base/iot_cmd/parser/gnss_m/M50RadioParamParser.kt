@@ -17,6 +17,7 @@ class M50RadioParamParser : IOTCommandParser<M50RadioParam> {
             sw = keyValueMap.getOrDefault("sw", sw)
             freq_group = keyValueMap.getOrDefault("freq_group", freq_group)
             airbaud = keyValueMap.getOrDefault("airbaud", airbaud)
+            txpower = keyValueMap.getOrDefault("txpower", txpower)
             local_addr = keyValueMap.getOrDefault("local_addr", local_addr)
             target_addr = keyValueMap.getOrDefault("target_addr", target_addr)
         }
