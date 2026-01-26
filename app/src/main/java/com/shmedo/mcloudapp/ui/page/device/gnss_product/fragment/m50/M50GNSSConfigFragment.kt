@@ -58,8 +58,8 @@ class M50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     // 采样率选项列表
-    private val samplingRateList = arrayListOf("1秒", "5秒")
-    private val samplingRateValueList = arrayListOf("1", "5")
+    private val samplingRateList = arrayListOf("1秒", "5秒", "10秒", "15秒")
+    private val samplingRateValueList = arrayListOf("1", "5", "10", "15")
 
     // 截至高度角选项列表
     private val elevationAngleList = arrayListOf("5°", "10°", "15°", "20°", "25°", "30°")
@@ -298,8 +298,8 @@ class M50GNSSConfigFragment : OptimizedBaseIOTDeviceFragment() {
      */
     private fun initSamplingRateData(rawData: GNSSRawData) {
         try {
-            // 根据返回的 obs 值设置采样率显示
-            val obsValue = rawData.obs
+            // 处理 "5.00" 的情况
+            val obsValue = rawData.obs.split(".")[0]
             val index = samplingRateValueList.indexOf(obsValue)
             if (index >= 0) {
                 mStates.samplingRate.set(samplingRateList[index])
