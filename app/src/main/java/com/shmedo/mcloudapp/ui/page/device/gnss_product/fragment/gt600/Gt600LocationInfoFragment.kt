@@ -707,7 +707,7 @@ class Gt600LocationInfoFragment : BaseFragment() {
         mStates.heading.set("${heading}°")
 
         // 【仰角】显示 X轴倾角，表示高射炮的仰角
-        mStates.elevation.set("${xAng}°")
+        mStates.elevation.set("${xAng + 90}°")
 
         // ==================== 4. 更新原始经纬度 ====================
 
