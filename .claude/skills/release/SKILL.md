@@ -93,7 +93,7 @@ git branch --show-current
   git pull origin develop_v5.0
   
   # 合并 fea_next 分支
-  git merge fea_next
+  git merge --no-ff fea_next
   ```
   
   3. 如果合并出现冲突，提示用户手动解决冲突后再继续
@@ -342,7 +342,7 @@ AI Agent 执行：
 3. **询问是否切换并合并** → 用户确认
 4. 切换分支: `git checkout develop_v5.0`
 5. 拉取最新: `git pull origin develop_v5.0`
-6. 合并分支: `git merge fea_next`
+6. 合并分支: `git merge --no-ff fea_next`
 7. 读取 `CHANGELOG.md` → 当前版本 `5.5.5`
 8. 获取最新 Tag → `Tag_R_V5.5.5`
 9. 获取提交日志 → 发现 5 个 feat、8 个 fix
