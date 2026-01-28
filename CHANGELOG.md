@@ -1,4 +1,10 @@
 
+## 5.5.7
+
+### 工具
+- chore: update changelog for version 5.5.14
+- chore(gemini): 移除废弃的 changelog 命令配置
+
 ## 5.5.6
 
 ### 工具
