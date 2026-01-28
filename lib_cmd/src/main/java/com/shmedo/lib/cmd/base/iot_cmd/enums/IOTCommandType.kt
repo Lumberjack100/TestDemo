@@ -398,6 +398,35 @@ enum class IOTCommandType(val value: String) {
     /** 获取/设置 基站位置信息 */
     MD_GET_BASE_POSITION("md_getbaseposition"),
     MD_SET_BASE_POSITION("md_setbaseposition"),
+    // </editor-fold>
+
+    // <editor-fold desc="MG301 指令">
+
+    /** 获取卫通模块状态 - 用于 MG301 网络信息页面卫通信息分组 */
+    MD_GET_SATMOD("md_getsatmod"),
+
+    /**
+     * 卫星数据清空 - 清空卫星模组内所有待发数据
+     *
+     * 发送: $cmd=md_cleansatdata&number=0
+     */
+    MD_CLEAN_SAT_DATA("md_cleansatdata"),
+
+    /**
+     * 查询/设置 MS101 卫通参数 - 用于 MS101 卫通信息页面
+     */
+    MD_CFG_SAT_PARAM("md_cfgsatparam"),
+
+    /**
+     * 查询/设置 ML101 扩展串口参数 (RS485/RS232)
+     *
+     * 指令格式：
+     * - 查询：$cmd=md_cfgextserialparam&method=0
+     * - 设置：$cmd=md_cfgextserialparam&method=1&rs485_sw=1&rs485_mode=2&...
+     *
+     * 用于 ML101 RS485/RS232 配置页面
+     */
+    MD_CFG_EXT_SERIAL_PARAM("md_cfgextserialparam"),
 
     // </editor-fold>
 
@@ -414,14 +443,11 @@ enum class IOTCommandType(val value: String) {
     /** 设置E40 的板卡解算参数 */
     E40_MD_SET_BOARDSOLUTION("md_setembedams"),
 
-
     /** 获取E40 的GPS工作参数 */
     E40_MD_GET_GPS_PARAM("md_getgpsparam"),
 
     /** 设置E40 的GPS工作参数 */
     E40_MD_SET_GPS_PARAM("md_setgpsparam"),
-
-
 
     // </editor-fold>
 

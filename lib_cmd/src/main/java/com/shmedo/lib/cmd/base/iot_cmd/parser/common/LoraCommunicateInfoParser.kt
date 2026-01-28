@@ -15,9 +15,10 @@ class LoraCommunicateInfoParser : IOTCommandParser<LoraCommunicateInfo> {
 
     override fun parseKeyValueMap(keyValueMap: Map<String, String>): LoraCommunicateInfo {
         return LoraCommunicateInfo().apply {
-            airbaud = keyValueMap.getOrDefault("airbaud", airbaud)
+            loratype = keyValueMap.getOrDefault("loratype", loratype)
             chl = keyValueMap.getOrDefault("chl", chl)
             outpwr = keyValueMap.getOrDefault("outpwr", outpwr)
+            airbaud = keyValueMap.getOrDefault("airbaud", airbaud)
             netid = keyValueMap.getOrDefault("netid", netid)
             localid = keyValueMap.getOrDefault("localid", localid)
             dstid = keyValueMap.getOrDefault("dstid", dstid)

@@ -135,9 +135,10 @@
                             app:lengthFilter="@{6}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
+                    <!-- 振弦式传感器高级配置参数区域，适用于 10065、10066 物模型 -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/ll_advanced_items"
-                        visible='@{stateVM.modelToken.contains("10066")}'
+                        visible='@{stateVM.modelToken.equals("10065") || stateVM.modelToken.equals("10066")}'
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">

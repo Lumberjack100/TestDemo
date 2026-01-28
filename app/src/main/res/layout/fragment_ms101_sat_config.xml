@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    MS101 卫通配置页面布局
+    创建者：gonghe
+    创建时间：2026/1/21
+
+    功能说明：
+    - 配置卫通参数（联网状态上报、休眠模式、休眠等级、溢出处理、待发数据处理等）
+    - 选择"指定删除"时，动态显示删除数据帧号输入框
+-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <!-- 工具栏 ViewModel -->
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <!-- 页面状态 ViewModel -->
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MS101SatConfigViewModel" />
+
+        <!-- 点击事件代理 -->
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.ml101.MS101SatConfigFragment.ClickProxy" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <!-- 顶部工具栏 -->
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
+
+        <!-- 下拉刷新布局 -->
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_container_padding_top_12"
+                    android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
+
+                    <!-- ========== 卫星联网状态上报选择 ========== -->
+                    <!-- 选项：关闭 / 开启 / 开启并上报数据帧号 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onCregModeChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_top_corner_4_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="卫星联网状态上报" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.cregMode}"
+                            tools:text="关闭" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- ========== 卫星休眠模式选择 ========== -->
+                    <!-- 选项：不休眠 / 定时休眠 / 自动休眠 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onCpsmModeChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="卫星休眠模式" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.cpsmMode}"
+                            tools:text="不休眠" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- ========== 卫星休眠模式等级选择 ========== -->
+                    <!-- 等级范围：1-9 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onCpsmLevelChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="卫星休眠模式等级" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.cpsmLevel}"
+                            tools:text="9" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- ========== 数据存储溢出处理选择 ========== -->
+                    <!-- 选项：停止接收 / 循环覆盖 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onSvmdModeChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="数据存储溢出处理" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.svmdMode}"
+                            tools:text="停止接收" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- ========== 待发数据处理选择 ========== -->
+                    <!-- 选项：不删除 / 全部删除 / 指定删除 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onCclrModeChooseClick()}"
+                        android:background="@{stateVM.isDeleteFrameNoVisible ? @drawable/layer_common_click_item_with_divider : @drawable/shape_common_click_item_bottom_corner_4}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="待发数据处理" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.cclrMode}"
+                            tools:text="不删除" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- ========== 删除数据帧号输入 ========== -->
+                    <!-- 仅当选择"指定删除"时显示，帧号范围：1-480 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4"
+                        android:visibility="@{stateVM.isDeleteFrameNoVisible ? android.view.View.VISIBLE : android.view.View.GONE}"
+                        tools:visibility="visible">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="删除数据帧号" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            android:hint="请输入(1-480)"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.deleteFrameNo}"
+                            tools:text="1" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- ========== 恢复默认配置按钮 ========== -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reset"
+                        style="@style/ResetButton_Style"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:onClick="@{()->click.onResetClick()}"
+                        android:text="@string/button_reset_text" />
+
+                    <!-- ========== 保存按钮 ========== -->
+                    <!-- 只有在数据被修改后才启用 -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_confirm"
+                        style="@style/SubmitButton_Style"
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:enabled="@{stateVM.isDataModified}"
+                        android:text="@string/button_save_text" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.core.widget.NestedScrollView>
+        </com.drake.brv.PageRefreshLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

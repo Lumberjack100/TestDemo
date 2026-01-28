@@ -154,7 +154,7 @@ release: v5.2.0 正式版
 - 解决视频播放卡顿
 - 修复内存泄漏
 
-详见: v5_updates.md
+详见: CHANGELOG_PREVIEW.md
 ```
 
 ---

@@ -248,14 +248,14 @@ class MR702RS485Port2SensorParamFragment : OptimizedBaseIOTDeviceFragment() {
             lowlimit = mStates.lowerLimit.get(),
             corrvalue = mStates.correctValue.get(),
 
-            calctype = if (mStates.modelToken.get() == "10066") calculateList.indexOf(mStates.calculate.get())
+            calctype = if (mStates.isAdvancedSensorType()) calculateList.indexOf(mStates.calculate.get())
                 .toString() else IOTConstants.NULL_KEY,
-            kvalue = if (mStates.modelToken.get() == "10066") mStates.sensitivityK.get() else IOTConstants.NULL_KEY,
-            bvalue = if (mStates.modelToken.get() == "10066") mStates.temperatureCorrectionCoefficientB.get() else IOTConstants.NULL_KEY,
-            r0value = if (mStates.modelToken.get() == "10066") mStates.initialFrequencyF0.get() else IOTConstants.NULL_KEY,
-            t0value = if (mStates.modelToken.get() == "10066") mStates.initialTemperatureT0.get() else IOTConstants.NULL_KEY,
-            l0value = if (mStates.modelToken.get() == "10066") mStates.initialWaterLevel.get() else IOTConstants.NULL_KEY,
-            lvalue = if (mStates.modelToken.get() == "10066") mStates.weirHeight.get() else IOTConstants.NULL_KEY,
+            kvalue = if (mStates.isAdvancedSensorType()) mStates.sensitivityK.get() else IOTConstants.NULL_KEY,
+            bvalue = if (mStates.isAdvancedSensorType()) mStates.temperatureCorrectionCoefficientB.get() else IOTConstants.NULL_KEY,
+            r0value = if (mStates.isAdvancedSensorType()) mStates.initialFrequencyF0.get() else IOTConstants.NULL_KEY,
+            t0value = if (mStates.isAdvancedSensorType()) mStates.initialTemperatureT0.get() else IOTConstants.NULL_KEY,
+            l0value = if (mStates.isAdvancedSensorType()) mStates.initialWaterLevel.get() else IOTConstants.NULL_KEY,
+            lvalue = if (mStates.isAdvancedSensorType()) mStates.weirHeight.get() else IOTConstants.NULL_KEY,
 //            polyavalue = if (mStates.modelToken.get() == "10066") mStates.polyA.get() else IOTConstants.NULL_KEY,
 //            polybvalue = if (mStates.modelToken.get() == "10066") mStates.polyB.get() else IOTConstants.NULL_KEY,
 //            polycvalue = if (mStates.modelToken.get() == "10066") mStates.polyC.get() else IOTConstants.NULL_KEY

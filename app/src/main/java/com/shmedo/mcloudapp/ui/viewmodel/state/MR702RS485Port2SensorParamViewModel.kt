@@ -23,7 +23,17 @@ class MR702RS485Port2SensorParamViewModel : ViewModel() {
     val correctValue = NonNullObservableField("")//修正值
 
     /**
-     * 10066 振弦式传感器特有配置参数
+     * 判断当前物模型是否为需要显示高级配置参数的传感器类型
+     * 目前支持: 10065, 10066 振弦式传感器
+     * @return true 表示需要显示高级参数，false 表示不需要
+     */
+    fun isAdvancedSensorType(): Boolean {
+        val token = modelToken.get()
+        return token == "10065" || token == "10066"
+    }
+
+    /**
+     * 10065, 10066 振弦式传感器特有配置参数
      */
     //是否计算
     val calculate = NonNullObservableField("")

@@ -38,9 +38,10 @@ import com.shmedo.mcloudapp.communication.model.ErrorHandlingStrategy
 import com.shmedo.mcloudapp.databinding.ItemBeidouDataTransmissionBinding
 import com.shmedo.mcloudapp.databinding.ItemDataReportingPeriodBinding
 import com.shmedo.mcloudapp.databinding.ItemDataReportingPeriodGt600Binding
-import com.shmedo.mcloudapp.extensions.isGTSeries
+import com.shmedo.mcloudapp.extensions.isGT600Series
 import com.shmedo.mcloudapp.extensions.isM20Series
 import com.shmedo.mcloudapp.extensions.isM50Series
+import com.shmedo.mcloudapp.extensions.isMultiModeGatewaySeries
 import com.shmedo.mcloudapp.extensions.isUIURSeries
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BeidouDataTransmissionItem
@@ -92,7 +93,7 @@ class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
      * 是否需要加载 GT 系列产品的上报周期配置布局
      */
     private fun isSupportGTSeriesReportingPeriodMode(): Boolean {
-        return productType.isGTSeries()
+        return productType.isGT600Series() || productType.isMultiModeGatewaySeries()
     }
 
     override fun initRecyclerViewAdapterData() {

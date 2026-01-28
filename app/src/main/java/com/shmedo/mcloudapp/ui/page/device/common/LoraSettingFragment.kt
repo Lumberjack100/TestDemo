@@ -27,6 +27,7 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.communication.model.CommandSequenceConfig
 import com.shmedo.mcloudapp.communication.model.ErrorConfig
 import com.shmedo.mcloudapp.databinding.FragmentLoraSettingBinding
+import com.shmedo.mcloudapp.extensions.isMultiModeGatewaySeries
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ui.page.device.OptimizedBaseIOTDeviceFragment
@@ -41,7 +42,9 @@ class LoraSettingFragment : OptimizedBaseIOTDeviceFragment() {
     private val mStates: LoraSettingViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
-    private var loraReceiveChannelList: List<String> = emptyList()//收发频点
+    /** LORA型号列表：1-F8L10C, 2-TP1107 */
+    private var loraTypeList: List<String> = emptyList()
+    private var loraReceiveChannelList: List<String> = emptyList()//收发频点/通讯信道
     private var transmitPowerList: List<String> = emptyList()//发射功率
     private var airSpeedList: List<String> = emptyList()//空中速率
     private var networkNumberList: List<String> = emptyList()//网络编号
@@ -86,9 +89,16 @@ class LoraSettingFragment : OptimizedBaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         mStates.isTargetAddressSupport.set(productType != ProductType.COLLECTOR_G_0)
+        // KT620/MG301 设备显示 LORA 型号选择
+        mStates.isLoraTypeSupport.set(productType.isMultiModeGatewaySeries())
+
+        // LORA型号列表：索引+1对应 loratype 值
+        loraTypeList = listOf("F8L10C", "TP1107")
 
         loraReceiveChannelList =
-            if (productType == ProductType.U_L_1)
+            if (productType.isMultiModeGatewaySeries())
+                (1..30).map { it.toString() }
+            else if (productType == ProductType.U_L_1)
                 (47000..49900 step 100).map { (it.toFloat() / 100).toString() + "MHz" }
             else
                 (41000..42900 step 100).map { (it.toFloat() / 100).toString() + "MHz" }
@@ -105,7 +115,15 @@ class LoraSettingFragment : OptimizedBaseIOTDeviceFragment() {
     }
 
     private fun resetDefaultParams() {
-        mStates.channel.set(loraReceiveChannelList[10])
+        // KT620/MG301 默认 LORA 型号为 F8L10C（index=0, loratype=1）
+        if (mStates.isLoraTypeSupport.get()) {
+            mStates.loraType.set(loraTypeList[0])
+        }
+        // KT620/MG301 默认通讯信道为 20（index=19）
+        val defaultChannelIndex = if (productType.isMultiModeGatewaySeries()) 19 else 10
+        mStates.channel.set(loraReceiveChannelList.getOrElse(defaultChannelIndex) {
+            loraReceiveChannelList.firstOrNull() ?: ""
+        })
         mStates.transmitPower.set(transmitPowerList[transmitPowerList.lastIndex])//[5~20] 默认20
         mStates.airSpeed.set(airSpeedList[2])//空中速率  [1~6] 默认3
         mStates.networkNumber.set(networkNumberList[0])//网络号 [1~10] 默认1
@@ -119,13 +137,10 @@ class LoraSettingFragment : OptimizedBaseIOTDeviceFragment() {
 
     private fun queryData() {
         val commands = mutableListOf<String>()
-        val command =
-            //devicetype 添加且赋值为1时，表示配置自组网网关
-            if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
-                IOTCommandType.MD_GET_LORA_CTRL,
-                "devicetype=1"
-            )
-            else IOTCommandUtil.getCommand(IOTCommandType.MD_GET_LORA_CTRL)
+        val command = if (productType == ProductType.LB20S)
+            IOTCommandUtil.getCommand(IOTCommandType.MD_GET_LORA_CTRL, "devicetype=1")
+        else IOTCommandUtil.getCommand(IOTCommandType.MD_GET_LORA_CTRL)
+
         commands.add(command)
 
         sendCommandSequence(
@@ -137,23 +152,37 @@ class LoraSettingFragment : OptimizedBaseIOTDeviceFragment() {
         )
     }
 
-
     private fun initSaveCommand() {
         val commands = mutableListOf<String>()
 
+        // KT620/MG301 使用 chl 直接作为信道值，其他设备使用索引
+        val chlValue = if (productType.isMultiModeGatewaySeries()) {
+            mStates.channel.get()
+        } else {
+            loraReceiveChannelList.indexOf(mStates.channel.get()).toString()
+        }
+
+        // 构建 LoRa 参数实体
         val entity = LoraCommunicateEntity(
-            chl = loraReceiveChannelList.indexOf(mStates.channel.get()).toString(),
+            loratype = if (mStates.isLoraTypeSupport.get()) {
+                // loratype 值 = 列表索引 + 1
+                (loraTypeList.indexOf(mStates.loraType.get()) + 1).toString()
+            } else IOTConstants.NULL_KEY,
+            chl = chlValue,
             outpwr = mStates.transmitPower.get(),
             airbaud = mStates.airSpeed.get(),
             netid = mStates.networkNumber.get(),
             localid = mStates.localAddress.get(),
             dstid = if (mStates.isTargetAddressSupport.get()) mStates.targetAddress.get() else IOTConstants.NULL_KEY
         )
-        //devicetype  添加且赋值为1时，表示配置自组网网关
-        val command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_LORA_CTRL,
-            "${entity.toCommandString()}&devicetype=1"
-        ) else IOTCommandUtil.getCommand(IOTCommandType.MD_SET_LORA_CTRL, entity.toCommandString())
+
+        val command = if (productType == ProductType.LB20S)
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_LORA_CTRL, "${entity.toCommandString()}&devicetype=1"
+            ) else
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_LORA_CTRL, entity.toCommandString()
+            )
 
         commands.add(command)
 
@@ -208,13 +237,26 @@ class LoraSettingFragment : OptimizedBaseIOTDeviceFragment() {
 
     private fun initParamData(info: LoraCommunicateInfo) {
         try {
-            mStates.channel.set(
-                if (info.chl.toInt() in loraReceiveChannelList.indices) {
-                    loraReceiveChannelList[info.chl.toInt()]
-                } else {
-                    loraReceiveChannelList[10]
-                }
-            )
+            // 解析 LORA 型号（仅 MG301）
+            if (mStates.isLoraTypeSupport.get()) {
+                val loraTypeIndex = (info.loratype.toIntOrNull() ?: 1) - 1
+                mStates.loraType.set(loraTypeList.getOrElse(loraTypeIndex) { loraTypeList.first() })
+            }
+
+            // 解析通讯信道/收发频点
+            if (productType.isMultiModeGatewaySeries()) {
+                // MG301 直接使用 chl 值作为信道
+                mStates.channel.set(info.chl)
+            } else {
+                // 其他设备使用索引查找
+                mStates.channel.set(
+                    if (info.chl.toInt() in loraReceiveChannelList.indices) {
+                        loraReceiveChannelList[info.chl.toInt()]
+                    } else {
+                        loraReceiveChannelList.getOrElse(10) { loraReceiveChannelList.firstOrNull() ?: "" }
+                    }
+                )
+            }
             mStates.transmitPower.set(info.outpwr)
             mStates.airSpeed.set(info.airbaud)
             mStates.networkNumber.set(info.netid)
@@ -231,7 +273,27 @@ class LoraSettingFragment : OptimizedBaseIOTDeviceFragment() {
 
     inner class ClickProxy : BaseClickProxy() {
         /**
-         * 选择收发频点
+         * 选择 LORA 型号（仅 MG301 设备显示）
+         */
+        fun onLoraTypeChooseClick() {
+            val selectedIndex = loraTypeList.indexOf(mStates.loraType.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true)
+                .enableDrag(false)
+                .asBottomList(
+                    "", loraTypeList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.loraType.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        /**
+         * 选择收发频点/通讯信道
          */
         fun onChannelChooseClick() {
             val selectedIndex = loraReceiveChannelList.indexOf(mStates.channel.get())

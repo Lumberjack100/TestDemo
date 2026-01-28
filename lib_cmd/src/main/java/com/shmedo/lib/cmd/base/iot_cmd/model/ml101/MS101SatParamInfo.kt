@@ -1,0 +1,129 @@
+package com.shmedo.lib.cmd.base.iot_cmd.model.ml101
+
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
+import com.squareup.moshi.JsonClass
+
+/**
+ * 创建者：gonghe
+ * 创建时间：2026/01/21
+ * 描述：MS101 卫通参数信息数据模型
+ *
+ * 对应 MD_CFG_SAT_PARAM (md_cfgsatparam) 指令的响应数据结构
+ *
+ * 指令格式：
+ * 发送：$cmd=md_cfgsatparam&method=0
+ *
+ * 应答示例：
+ * ```
+ * $cmd=md_cfgsatparam&method=0&status=1&sn=0001836&cesq=-10&csq=-66&waitnum=240&cregmode=0&cpsmmode=0&cpsmlevel=9&svmdmode=0&cclrmode=0
+ * ```
+ *
+ * 字段说明（页面展示）：
+ * - status: 接入状态（0-已接入，1-未接入）
+ * - sn: 产品序列号
+ * - cesq: 卫星信号质量
+ *   (1) 差：小于-10（不含-10）
+ *   (2) 一般：-10~-6
+ *   (3) 较好：-5~0
+ *   (4) 好：大于 0（不含 0）
+ *   (5) 无：等于-128
+ * - csq: 环境噪声信号强度
+ * - waitnum: 待发数据数量（值 0-480）
+ */
+@JsonClass(generateAdapter = true)
+data class MS101SatParamInfo(
+    /** 接入状态：0-未接入，1-已接入 */
+    val status: Int = 0,
+
+    /** 产品序列号 */
+    val sn: String = IOTConstants.NULL_KEY,
+
+    /** 卫星信号质量 */
+    val cesq: String = IOTConstants.NULL_KEY,
+
+    /** 环境噪声信号强度 */
+    val csq: String = IOTConstants.NULL_KEY,
+
+    /** 待发数据数量，值范围 0-480 */
+    val waitnum: Int = 0,
+
+    // ==================== 配置相关字段 ====================
+
+    /**
+     * 卫星模组联网状态上报模式
+     * - 0: 关闭联网状态上报
+     * - 1: 开启联网状态上报
+     * - 2: 开启联网数据上报，并在数据发送成功后上报数据帧编号
+     * 默认值: 0
+     */
+    val cregmode: Int = 0,
+
+    /**
+     * 卫星模组休眠模式
+     * - 0: 不休眠
+     * - 1: 定时休眠
+     * - 2: 自动（有待发数据时定时休眠，无待发数据时一直休眠）
+     * 默认值: 0
+     */
+    val cpsmmode: Int = 0,
+
+    /**
+     * 卫星模组休眠模式等级
+     * 取值范围: 1-9
+     * 当 cpsmmode=0 时无效
+     * 默认值: 9
+     */
+    val cpsmlevel: Int = 9,
+
+    /**
+     * 用户数据存储区满时处置方式（数据存储溢出处理）
+     * - 0: 停止接收（存储满后不再接收新数据）
+     * - 1: 循环覆盖（存储器满后，覆盖最早的数据）
+     * 默认值: 0
+     */
+    val svmdmode: Int = 0,
+
+    /**
+     * 删除存储区待发数据
+     * - -1: 全部删除
+     * - 0: 不删除
+     * - 1~480: 指定删除，删除第 m 帧待发数据
+     * 默认值: 0
+     */
+    val cclrmode: Int = 0
+) {
+    /**
+     * 获取卫星信号质量等级描述
+     *
+     * 信号质量等级判断规则：
+     * - 差：cesq < -10
+     * - 一般：-10 <= cesq <= -6
+     * - 较好：-5 <= cesq <= 0
+     * - 好：cesq > 0
+     * - 无：cesq == -128
+     *
+     * @return 信号质量等级文本：差/一般/较好/好/无
+     */
+    fun getSignalQualityLevel(): String {
+        val cesqValue = cesq.toIntOrNull() ?: -128
+        return when {
+            cesqValue == -128 -> "无"
+            cesqValue < -10 -> "差"
+            cesqValue in -10..-6 -> "一般"
+            cesqValue in -5..0 -> "较好"
+            cesqValue > 0 -> "好"
+            else -> "无"
+        }
+    }
+
+    /**
+     * 判断是否已接入
+     *
+     * 注意：status 字段的含义与直觉相反
+     * - status = 0 表示未接入
+     * - status = 1 表示已接入
+     *
+     * @return true-已接入，false-未接入
+     */
+    fun isConnected(): Boolean = status == 1
+}

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mg301_graph"
+    app:startDestination="@id/mg301HomeFragment">
+
+    <!-- ========== 引入通用导航图 ========== -->
+    <include app:graph="@navigation/include_lora_graph" />
+    <!-- 数据查询页面 -->
+    <include app:graph="@navigation/include_query_data_graph" />
+    <!-- 一键配置页面 -->
+    <include app:graph="@navigation/include_quick_config_cmd_graph" />
+    <!-- 系统配置页面 -->
+    <include app:graph="@navigation/include_advanced_setting_graph" />
+    <!-- 时间校准页面 -->
+    <include app:graph="@navigation/include_time_calibration_graph" />
+
+
+    <!-- ========== MG301 页面定义 ========== -->
+
+    <!-- MG301 主页面 - 设备配置入口页面 -->
+    <fragment
+        android:id="@+id/mg301HomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mg301.MG301HomeFragment"
+        android:label="MG301HomeFragment"
+        tools:layout="@layout/fragment_universal_device_home_new" />
+
+    <!-- 基本信息页面 - 显示设备型号、序列号等基本参数 -->
+    <fragment
+        android:id="@+id/mg301BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mg301.MG301BaseInfoFragment"
+        android:label="MG301BaseInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style" />
+
+    <!-- 网络信息页面 - 显示网络连接状态 -->
+    <fragment
+        android:id="@+id/mg301NetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mg301.MG301NetInfoFragment"
+        android:label="MG301NetInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style" />
+
+    <!-- 状态信息页面 - 显示设备运行状态、模块状态等 -->
+    <fragment
+        android:id="@+id/mg301StatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mg301.MG301StatusInfoFragment"
+        android:label="MG301StatusInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style" />
+
+    <!-- 位置信息页面 - 复用通用位置信息页面 -->
+    <fragment
+        android:id="@+id/commonLocationInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonLocationInfoFragment"
+        android:label="CommonLocationInfoFragment"
+        tools:layout="@layout/fragment_common_location_info" />
+
+    <!-- 上报配置页面 - 配置数据上报策略 -->
+    <!-- TODO: 创建 MG301ReportConfigFragment 类 -->
+
+
+    <!-- 链路配置主页面 - 配置数据中心连接参数 -->
+    <fragment
+        android:id="@+id/dataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment"
+        android:label="UniversalDataCenterHomeFragment"
+        tools:layout="@layout/fragment_universal_data_center_home" />
+
+    <fragment
+        android:id="@+id/dataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment"
+        android:label="DataCenterParamFragment"
+        tools:layout="@layout/fragment_data_center_param" />
+
+
+    <!-- 设备操作页面 - 设备控制操作（卫星数据清空等） -->
+    <fragment
+        android:id="@+id/mg301DeviceOperationFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mg301.MG301DeviceOperationFragment"
+        android:label="MG301DeviceOperationFragment"
+        tools:layout="@layout/fragment_mr702_equipment_operation" />
+
+    <!-- ========== 导航动作定义 ========== -->
+
+    <!-- 跳转到基本信息页面 -->
+    <action
+        android:id="@+id/action_global_to_mg301BaseInfoFragment"
+        app:destination="@id/mg301BaseInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到网络信息页面 -->
+    <action
+        android:id="@+id/action_global_to_mg301NetInfoFragment"
+        app:destination="@id/mg301NetInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到状态信息页面 -->
+    <action
+        android:id="@+id/action_global_to_mg301StatusInfoFragment"
+        app:destination="@id/mg301StatusInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到位置信息页面 -->
+    <action
+        android:id="@+id/action_global_to_commonLocationInfoFragment"
+        app:destination="@id/commonLocationInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到上报配置页面 -->
+
+
+    <!-- 跳转到链路配置页面 -->
+    <action
+        android:id="@+id/action_global_to_dataCenterHomeFragment"
+        app:destination="@id/dataCenterHomeFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dataCenterParamFragment"
+        app:destination="@id/dataCenterParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到LORA配置页面 -->
+    <action
+        android:id="@+id/action_global_to_loraSettingFragment"
+        app:destination="@id/lora_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到设备操作页面 -->
+    <action
+        android:id="@+id/action_global_to_mg301DeviceOperationFragment"
+        app:destination="@id/mg301DeviceOperationFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到一键配置页面 (复用通用页面) -->
+    <action
+        android:id="@+id/action_global_to_quickConfigCommandParam"
+        app:destination="@id/quick_config_cmd_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到时间校准页面 (复用通用页面) -->
+    <action
+        android:id="@+id/action_global_to_time_calibration"
+        app:destination="@id/time_calibration_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到系统配置页面 (复用通用页面) -->
+    <action
+        android:id="@+id/action_global_to_advancedSettingFragment"
+        app:destination="@id/advanced_setting_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <!-- 跳转到数据查询页面 -->
+    <action
+        android:id="@+id/action_global_to_queryDeviceDataFragment"
+        app:destination="@id/query_data_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+</navigation>

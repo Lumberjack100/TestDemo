@@ -1,12 +1,12 @@
-description = "Updates v5_updates.md with recent git commits."
+description = "Updates CHANGELOG_PREVIEW.md with recent git commits."
 prompt = """
-# Task: Update v5_updates.md with recent changes
+# Task: Update CHANGELOG_PREVIEW.md with recent changes
 
-You need to update the `v5_updates.md` file with the latest changes from the git history. 
+You need to update the `CHANGELOG_PREVIEW.md` file with the latest changes from the git history. 
 
 **Steps to execute:**
 
-1.  **Read `v5_updates.md`**: Read the file to find the most recent version number listed at the top (e.g., `5.5.2`).
+1.  **Read `CHANGELOG_PREVIEW.md`**: Read the file to find the most recent version number listed at the top (e.g., `5.5.2`).
 2.  **Determine Git Tag**: Construct the git tag for that version. The format is `Tag_D_V<version>` (e.g., if version is `5.5.2`, the tag is `Tag_D_V5.5.2`).
     *   *Note*: Verify the tag exists using `git tag -l Tag_D_V<version>`.
 3.  **Get Git Log**: Retrieve the commit messages from that tag to the current `HEAD`.
@@ -15,10 +15,10 @@ You need to update the `v5_updates.md` file with the latest changes from the git
 4.  **Format and Update**: 
     *   Analyze the commit messages.
     *   Format them into a Markdown list.
-    *   Add a new version section at the top of `v5_updates.md`.
+    *   Add a new version section at the top of `CHANGELOG_PREVIEW.md`.
         *   If the user provided a version number in their request (e.g. `/changelog 5.5.3`), use that.
         *   Otherwise, use `## Unreleased` or `## <Next Version>` (infer the next version if possible, e.g. 5.5.3).
-    *   Write the updated content back to `v5_updates.md`.
+    *   Write the updated content back to `CHANGELOG_PREVIEW.md`.
 
 **Example Entry:**
 ```markdown

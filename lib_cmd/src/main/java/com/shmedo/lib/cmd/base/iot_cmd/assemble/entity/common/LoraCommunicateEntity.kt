@@ -11,8 +11,9 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class LoraCommunicateEntity(
-    val airbaud: String = "", //空中速率  [1~6] 默认3
-    val chl: String = "",//信道 [0~19] 载波频率以410Mhz为起始，间隔1Mhz，进行信道划分，共划分30个信道，默认10
+    val loratype: String = IOTConstants.NULL_KEY,//LORA模组型号 1：F8L10C  2：TP1107
+    val airbaud: String = IOTConstants.NULL_KEY, //空中速率  [1~6] 默认3
+    val chl: String = IOTConstants.NULL_KEY,//信道 [0~19] 载波频率以410Mhz为起始，间隔1Mhz，进行信道划分，共划分30个信道，默认10
     val outpwr: String = IOTConstants.NULL_KEY,//发射功率 [5~20] 默认20
     val netid: String = IOTConstants.NULL_KEY,//网络号 [1~10] 默认1
     val localid: String = IOTConstants.NULL_KEY,//本机地址 [1~20] 网关默认1,监测设备默认2
